@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>Metro Pay Calculator by Petar Stankovic</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">    
+    <script src="scripts.js"></script> 
 </head>
 
 <body>
@@ -11,6 +13,103 @@
     <p>Welcome.</p>
     <noscript>Sorry, your browser does not support JavaScript or it is disabled!</noscript>
 
-
+    <div class="row">
+        <div class="col-shift">
+            <div class="container" id="shift-details">
+                <form>
+                    <h3>Shift Details</h3>
+                    <div class="row">
+                        <label for="week-commencing-date">Week commencing: &nbsp;</label>
+                        <input type="date" id="week-commencing-date">
+                    </div>
+                    <div class="row">
+                        <span class="day-of-week"></span>
+                        <span class="time">Sign-on</span>
+                        <span class="time">Sign-off</span>
+                    </div>
+                    <div class="row">
+                        <label for="sun1-start" class="day-of-week">Sunday</label>
+                        <input type="text" id="sun1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="sun1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="mon1-start" class="day-of-week">Monday</label>
+                        <input type="text" id="mon1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="mon1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="tue1-start" class="day-of-week">Tuesday</label>
+                        <input type="text" id="tue1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="tue1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="wed1-start" class="day-of-week">Wednesday</label>
+                        <input type="text" id="wed1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="wed1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="thu1-start" class="day-of-week">Thursday</label>
+                        <input type="text" id="thu1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="thu1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="fri1-start" class="day-of-week">Friday</label>
+                        <input type="text" id="fri1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="fri1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="sat1-start" class="day-of-week">Saturday</label>
+                        <input type="text" id="sat1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="sat1-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="sun2-start" class="day-of-week">Sunday</label>
+                        <input type="text" id="sun2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="sun2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="mon2-start" class="day-of-week">Monday</label>
+                        <input type="text" id="mon2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="mon2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="tue2-start" class="day-of-week">Tuesday</label>
+                        <input type="text" id="tue2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="tue2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="wed2-start" class="day-of-week">Wednesday</label>
+                        <input type="text" id="wed2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="wed2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="thu2-start" class="day-of-week">Thursday</label>
+                        <input type="text" id="thu2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="thu2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="fri2-start" class="day-of-week">Friday</label>
+                        <input type="text" id="fri2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="fri2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                    <div class="row">
+                        <label for="sat2-start" class="day-of-week">Saturday</label>
+                        <input type="text" id="sat2-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                        <input type="text" id="sat2-end" placeholder="2400" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="inputChanged()">
+                    </div>
+                </form>
+            </div>
+        </div> 
+        
+        <div class="col-50">
+            <div class="container" id="results-container">
+                <h3>Results</h3>
+                <div id="result-area">
+                    <p>No data entered.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html> 

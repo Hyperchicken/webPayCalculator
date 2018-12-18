@@ -1,4 +1,43 @@
 body {
     background-color: rgb(17, 95, 167);
     color: white;
+    font-family: Raleway, Arial, Helvetica;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0, -16px;
+}
+
+.col-50 {
+    flex: 50%;
+    padding: 0, 16px;    
+}
+
+.container {
+    background-color: #4691db;
+    padding: 5px 20px 15px 20px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+    margin: 16px;
+    min-width: 310px;
+}
+
+.time {
+    width: 4em;
+    margin-top: 2px;
+    margin-right: 2px;
+}
+
+.day-of-week {
+    width: 10em;
+}
+
+#week-commencing-date {
+    margin-bottom: 15px;
+}
+
+#results-container {
+    max-width: 800px;
 }
