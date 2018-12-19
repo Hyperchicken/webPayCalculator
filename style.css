@@ -4,15 +4,23 @@ body {
     font-family: Raleway, Arial, Helvetica;
 }
 
+label {
+    display: block;
+}
+
 .row {
     display: flex;
     flex-wrap: wrap;
-    margin: 0, -16px;
+    margin: 0;
 }
 
 .col-50 {
-    flex: 50%;
-    padding: 0, 16px;    
+    flex: 50%;  
+}
+
+.col-50,
+.col-shift {
+    padding: 0;  
 }
 
 .container {
@@ -20,18 +28,41 @@ body {
     padding: 5px 20px 15px 20px;
     border: 1px solid lightgrey;
     border-radius: 3px;
-    margin: 16px;
-    min-width: 310px;
+    margin: 7px;
+    min-width: 350px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.shift-row {
+    
 }
 
 .time {
     width: 4em;
     margin-top: 2px;
     margin-right: 2px;
+    padding: 2px;
+}
+
+span.time {
+    font-size: 0.8em;
+    width: 53.3px
 }
 
 .day-of-week {
     width: 10em;
+}
+
+.hr {
+    background-color: white;
+    height: 1px;
+    margin: 8px 0px;
 }
 
 #week-commencing-date {
