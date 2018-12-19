@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="style.css">    
     <script src="scripts.js"></script> 
+    <meta charset="UTF-8"> 
 </head>
 
 <body>
@@ -19,7 +20,7 @@
                 <h3>Shift Details</h3>
 
                 <label class="week-commencing-label" for="week-commencing-date">Week commencing: &nbsp;</label>
-                <input type="date" id="week-commencing-date">
+                <input type="date" id="week-commencing-date" oninput="updateDates()">
                 
                 <div class="hr"></div>
 
@@ -126,4 +127,5 @@
     </div>
     
 </body>
+<script>setupDatePicker();</script>
 </html> 
