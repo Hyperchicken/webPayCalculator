@@ -14,11 +14,19 @@ function updateResults() {
 function updateDates() {
     var dateFields = document.querySelectorAll(".date-field");
     var inputDate = new Date(document.getElementById("week-commencing-date").value);
-    if(inputDate.getDay() === 0){ //only update if a Sunday
+    if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
         var x;
-        for(x in dateFields){
-            dateFields[x].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
-            inputDate.setDate(inputDate.getDate() + 1);
+            for(x in dateFields){
+                dateFields[x].innerHTML = "";
+            }
+    }
+    else { //date valid, print dates
+        if(inputDate.getDay() === 0){ //only update if a Sunday
+            var x;
+            for(x in dateFields){
+                dateFields[x].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
+                inputDate.setDate(inputDate.getDate() + 1);
+            }
         }
     }
 }
