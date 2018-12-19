@@ -18,9 +18,14 @@ label {
     flex: 50%;  
 }
 
-.col-50,
-.col-shift {
-    padding: 0;  
+.grid > h3,
+.grid-date,
+.hr {
+    grid-column: 1 / 5;
+}
+
+.grid-date {
+    text-align: center;
 }
 
 .container {
@@ -34,13 +39,9 @@ label {
 
 .grid {
     display: grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 10px;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 3px;
     padding: 10px;
-}
-
-.shift-row {
-    
 }
 
 .time {
@@ -65,10 +66,15 @@ span.time {
     margin: 8px 0px;
 }
 
-#week-commencing-date {
-    margin-bottom: 15px;
-}
+.sign-on {grid-column: 3 / 4;}
+.sign-off {grid-column: 4 / 5;}
 
 #results-container {
     max-width: 800px;
 }
+
+#week-commencing-date {
+    grid-column: 3 / 5;
+}
+
+.week-commencing-label {grid-column: 1 / 3;}

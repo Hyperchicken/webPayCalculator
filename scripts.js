@@ -11,6 +11,11 @@ function updateResults() {
     resultArea.innerHTML = "<p> Adding all the time fields gets you: " + testResult + "</p>";
 }
 
+function updateDates() {
+    var dateFields = document.querySelectorAll(".date-field");
+    
+}
+
 
 function addAllFields() {
     var times = document.querySelectorAll("input.time");
