@@ -1,4 +1,4 @@
-
+"use strict";
 
 function inputChanged() {
     updateResults();
@@ -15,16 +15,14 @@ function updateDates() {
     var dateFields = document.querySelectorAll(".date-field");
     var inputDate = new Date(document.getElementById("week-commencing-date").value);
     if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
-        var x;
-            for(x in dateFields){
-                dateFields[x].innerHTML = "";
-            }
+        for(var i = 0; i < dateFields.length; i++){
+            dateFields[i].innerHTML = "";
+        }
     }
     else { //date valid, print dates
         if(inputDate.getDay() === 0){ //only update if a Sunday
-            var x;
-            for(x in dateFields){
-                dateFields[x].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
+            for(var i = 0; i < dateFields.length; i++){
+                dateFields[i].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
                 inputDate.setDate(inputDate.getDate() + 1);
             }
         }
