@@ -21,7 +21,7 @@ label {
 .grid > h3,
 .grid-date,
 .hr {
-    grid-column: 1 / 5;
+    grid-column: 1 / 6;
 }
 
 .grid-date {
@@ -39,7 +39,7 @@ label {
 
 .grid {
     display: grid;
-    grid-template-columns: 120px auto 60px 60px;
+    grid-template-columns: 120px auto 60px 60px 30px;
     grid-gap: 3px;
 }
 
@@ -48,7 +48,6 @@ label {
     margin-top: 2px;
     margin-right: 2px;
     padding: 2px;
-    font-size: 1em;
 }
 
 .day-of-week {
@@ -76,5 +75,7 @@ label {
 
 
 @media only screen and (max-device-width: 480px) { 
-
+    .time {
+        font-size: 1em;
+    }
   }
