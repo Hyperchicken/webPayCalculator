@@ -19,8 +19,21 @@ class Shift {
         }
     }
 
-    get hoursString(){
+    get hoursString() {
         return this.calcHoursString();
+    }
+
+    get hoursDecimal() {
+        let hoursFloat = 0.0;
+        let hours = this.endHour - this.startHour;
+        let minutes = this.endMinute - this.startMinute;
+        if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
+        if(minutes < 0) {
+            minutes += 60;
+            hours--;
+        }
+        hoursFloat = hours + (minutes/60);
+        return hoursFloat;
     }
 
     calcHoursString() {
@@ -33,10 +46,6 @@ class Shift {
         }
         if(hours || minutes) return hours + ":" + minutes.toString().padStart(2, "0");
         else return "";
-    }
-
-    calcHoursDecimal() {
-
     }
 }
 
