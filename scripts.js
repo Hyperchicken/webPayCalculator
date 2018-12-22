@@ -1,11 +1,22 @@
 "use strict";
 
+let shifts = [];
+let timeField = function() {return document.querySelectorAll(".time")};
+
 class Shift {
     constructor(signOn, signOff) {
-        this.startHour = parseInt(signOn.substring(0,2));
-        this.startMinute = parseInt(signOn.substring(2,4));
-        this.endHour = parseInt(signOff.substring(0,2));
-        this.endMinute = parseInt(signOff.substring(2,4));
+        if(signOn && signOff) {
+            this.startHour = parseInt(signOn.substring(0,2));
+            this.startMinute = parseInt(signOn.substring(2,4));
+            this.endHour = parseInt(signOff.substring(0,2));
+            this.endMinute = parseInt(signOff.substring(2,4));
+        }
+        else {
+            this.startHour = 0;
+            this.startMinute = 0;
+            this.endHour = 0;
+            this.endMinute = 0;
+        }
     }
 
     get hoursString(){
@@ -13,55 +24,64 @@ class Shift {
     }
 
     calcHoursString() {
-        var timeWorked = 0;
-        var hours = this.endHour - this.startHour;
-        var minutes = this.endMinute - this.startMinute;
-        if(hours < 0) hours += 24;
-        if(minutes < 0) minutes += 60;
-        return hours + "h" + minutes + "m";
+        let hours = this.endHour - this.startHour;
+        let minutes = this.endMinute - this.startMinute;
+        if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
+        if(minutes < 0) {
+            minutes += 60;
+            hours--;
+        }
+        if(hours || minutes) return hours + ":" + minutes.toString().padStart(2, "0");
+        else return "";
+    }
+
+    calcHoursDecimal() {
+
     }
 }
 
-function inputChanged() {
-    updateResults();
-    updateHoursPerShift();
+function timeChanged(field) {
+    if(timeField()[field].textLength == 4) {
+        updateHoursPerShift();
+    }
+    else {
+        shifts[fieldToShift(field)] = new Shift();
+        printShifts();
+    }
 }
 
 function updateHoursPerShift() {
-    var times = document.querySelectorAll(".time");
-    var hoursField = document.querySelectorAll(".shift-hours");
-    var shifts = [];
-    for(var i = 0; i < times.length; i += 2) {
+    let times = timeField();
+    shifts = [];
+    for(let i = 0; i < times.length; i += 2) {
         if(times[i].textLength == 4 && times[i+1].textLength == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
-            var shift = new Shift(times[i].value, times[i+1].value);
-            console.log("Hours for i=" + i + ": " + shift.hoursString);
-            //console.log("Start hr: " + shift.startHour + " Start min: " + shift.startMinute + " End hr: " + shift.endHour + " End min: " + shift.endMinute);
-            shifts.push(shift); //TEMP: this will only work with shifts in sequence
+            shifts.push(new Shift(times[i].value, times[i+1].value));
+        }
+        else {
+            shifts.push(new Shift());
         }
     }
-    for(var i = 0; i < shifts.length; i++) {
-        hoursField[i].innerHTML = shifts[i].hoursString;
-    }
+    printShifts();
 }
 
 function updateResults() {
-    var resultArea = document.getElementById("result-area");
-    var testResult = addAllFields();
+    let resultArea = document.getElementById("result-area");
+    let testResult = addAllFields();
 
     resultArea.innerHTML = "<p> Adding all the time fields gets you: " + testResult + "</p>";
 }
 
 function updateDates() {
-    var dateFields = document.querySelectorAll(".date-field");
-    var inputDate = new Date(document.getElementById("week-commencing-date").value);
+    let dateFields = document.querySelectorAll(".date-field");
+    let inputDate = new Date(document.getElementById("week-commencing-date").value);
     if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
-        for(var i = 0; i < dateFields.length; i++){
+        for(let i = 0; i < dateFields.length; i++){
             dateFields[i].innerHTML = "";
         }
     }
     else { //date valid, print dates
         if(inputDate.getDay() === 0){ //only update if a Sunday
-            for(var i = 0; i < dateFields.length; i++){
+            for(let i = 0; i < dateFields.length; i++){
                 dateFields[i].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
                 inputDate.setDate(inputDate.getDate() + 1);
             }
@@ -69,10 +89,10 @@ function updateDates() {
     }
 }
 
-function setupDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly
-    var datePicker = document.getElementById("week-commencing-date");
-    var dateToSet = new Date();
-    var daysSinceLastSunday = dateToSet.getDay();
+function initDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly
+    let datePicker = document.getElementById("week-commencing-date");
+    let dateToSet = new Date();
+    let daysSinceLastSunday = dateToSet.getDay();
     if(daysSinceLastSunday === 0) daysSinceLastSunday = 7; //if today is Sunday, set to last Sunday
     dateToSet.setDate(dateToSet.getDate() - daysSinceLastSunday);
     var formattedDate = dateToSet.getFullYear() + "-" + (dateToSet.getMonth() + 1) + "-" + dateToSet.getDate();
@@ -82,13 +102,40 @@ function setupDatePicker() { //sets date picker to the date of the previous Sund
 }
 
 function addAllFields() {
-    var times = document.querySelectorAll("input.time");
-    var total = 0;
+    let times = document.querySelectorAll("input.time");
+    let total = 0;
 
-    var x;
+    let x;
     for (x in times) {
-        var value = parseInt(times[x].value)
+        let value = parseInt(times[x].value)
         if(!isNaN(value)) total += value;
     }
     return total;
+}
+
+function fieldToShift(field) {
+    switch(field) {
+        case 0: case 1: return 0;
+        case 2: case 3: return 1;
+        case 4: case 5: return 2;
+        case 6: case 7: return 3;
+        case 8: case 9: return 4;
+        case 10: case 11: return 5;
+        case 12: case 13: return 6;
+        case 14: case 15: return 7;
+        case 16: case 17: return 8;
+        case 18: case 19: return 9;
+        case 20: case 21: return 10;
+        case 22: case 23: return 11;
+        case 24: case 25: return 12;
+        case 26: case 27: return 13;
+        default: return NaN;
+    }
+}
+
+function printShifts() {
+    let hoursField = document.querySelectorAll(".shift-hours");
+    for(let i = 0; i < shifts.length; i++) {
+        hoursField[i].innerHTML = shifts[i].hoursString;
+    }
 }
