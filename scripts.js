@@ -3,7 +3,7 @@
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
 const spotRates =           [49.4054,      50.6405,      51.9065];
-const DriverLevel1Rates =   [33.5339,      34.3723,      35.2316];
+const driverLevel1Rates =   [33.5339,      34.3723,      35.2316];
 const traineeRates =        [28.7277,      29.4459,      30.1820];
 const conversionRates =     [46.1015,      47.2541,      48.4354];
 
