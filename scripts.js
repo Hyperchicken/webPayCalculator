@@ -1,8 +1,14 @@
 "use strict";
 
-let shifts = [];
-let timeField = function() {return document.querySelectorAll(".time")};
+//rates
+const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
+const spotRates =           [49.4054,      50.6405,      51.9065];
+const DriverLevel1Rates =   [33.5339,      34.3723,      35.2316];
+const traineeRates =        [28.7277,      29.4459,      30.1820];
+const conversionRates =     [46.1015,      47.2541,      48.4354];
 
+
+//define Classes
 class Shift {
     constructor(signOn, signOff) {
         if(signOn && signOff) {
@@ -48,6 +54,12 @@ class Shift {
         else return "";
     }
 }
+
+
+//initialise variables
+let shifts = [];
+for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
+let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 
 function timeChanged(field) {
     if(timeField()[field].textLength == 4) {
@@ -147,4 +159,15 @@ function printShifts() {
     for(let i = 0; i < shifts.length; i++) {
         hoursField[i].innerHTML = shifts[i].hoursString;
     }
+}
+
+function getEbaRate(date, rates) {
+    let wcDate = Date.parse(date);
+    for(let i = rates.length - 1; i >= 0; i--) {
+        if(wcDate >= Date.parse(rateDates[i])){
+            return rates[i];
+        }
+    }
+    console.error("calcEbaRate() Error: Invalid date or no matching payrate");
+    return 0;
 }
