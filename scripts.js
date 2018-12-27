@@ -122,7 +122,7 @@ function initDatePicker() { //sets date picker to the date of the previous Sunda
     updateDates();
 }
 
-function addAllFields() {
+function addAllFields() { //function to test time input boxes
     let times = document.querySelectorAll("input.time");
     let total = 0;
 
