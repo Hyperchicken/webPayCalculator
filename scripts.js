@@ -61,6 +61,17 @@ let shifts = [];
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 
+$(document).ready(function(){
+    $("#week-commencing-date").datepicker({
+        dateFormat: "d/m/yy",
+        beforeShowDay: function(date){
+            var day = date.getDay();
+		    return [ ( day == 0), "" ];
+        }
+    });
+});
+
+
 function timeChanged(field) {
     if(timeField()[field].textLength == 4) {
         updateHoursPerShift();
@@ -92,7 +103,7 @@ function updateResults() {
     resultArea.innerHTML = "<p> Adding all the time fields gets you: " + testResult + "</p>";
 }
 
-function updateDates() {
+function updateDates() { //for input type: date
     let dateFields = document.querySelectorAll(".date-field");
     let inputDate = new Date(document.getElementById("week-commencing-date").value);
     if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
