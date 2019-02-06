@@ -21,18 +21,26 @@
     <div class="row">
         <div class="col-shift">
             <div class="container grid" id="shift-details">
-                <h3>Shift Details</h3>
+                <h3>Data Entry</h3>
+
+                <label class="pay-grade-label" for="pay-grade">Pay grade: &nbsp;</label>
+                <form name="pay-grade-form" class="pay-grade-radio-container">
+                    <span class="pay-grade-radio"><input type="radio" name="pay-grade" oninput="updateGrade()" value="spot" checked='true'> SPOT</span>
+                    <span class="pay-grade-radio"><input type="radio" name="pay-grade" oninput="updateGrade()" value="level1"> TD Lvl 1</span>
+                    <span class="pay-grade-radio"><input type="radio" name="pay-grade" oninput="updateGrade()" value="trainee"> Trainee</span>
+                </form>
+
 
                 <label class="week-commencing-label" for="week-commencing-date">Week commencing: &nbsp;</label>
-                <input type="text" id="week-commencing-date" oninput="updateDates()">
+                <input type="text" id="week-commencing-date" placeholder="Select date" oninput="updateDates()">
                 
                 <div class="hr"></div>
 
-                <div class="grid-empty"></div>
-                <div class="grid-empty"></div>
-                <div class="sign-on">Sign-on</div>
-                <div class="sign-off">Sign-off</div>
-                <div class="grid-empty"></div>
+                <div class="grid-heading">DAY OF WEEK</div>
+                <div class="grid-heading">SHIFT</div>
+                <div class="sign-on grid-heading">SIGN ON</div>
+                <div class="sign-off grid-heading">SIGN OFF</div>
+                <div class="grid-heading">HRS</div>
                 
                 <label for="sun1-start" class="day-of-week">Sunday</label>
                 <div class="date-field"></div>

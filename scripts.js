@@ -60,6 +60,7 @@ class Shift {
 let shifts = [];
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
+let grade = null;  //declare paygrade
 
 $(document).ready(function(){
     $("#week-commencing-date").datepicker({
@@ -69,6 +70,7 @@ $(document).ready(function(){
 		    return [ ( day == 0), "" ];
         }
     });
+    $(document).ready(function(){updateGrade()}); //init paygrade
 });
 
 
@@ -125,7 +127,7 @@ function initDatePicker() { //sets date picker to the date of the previous Sunda
     let datePicker = document.getElementById("week-commencing-date");
     let dateToSet = new Date();
     let daysSinceLastSunday = dateToSet.getDay();
-    if(daysSinceLastSunday === 0) daysSinceLastSunday = 7; //if today is Sunday, set to last Sunday
+    if(daysSinceLastSunday === 0) daysSinceLastSunday = 7; //if today is Sunday, set to last Sunday 
     dateToSet.setDate(dateToSet.getDate() - daysSinceLastSunday);
     var formattedDate = dateToSet.getFullYear() + "-" + (dateToSet.getMonth() + 1) + "-" + dateToSet.getDate();
     datePicker.defaultValue = formattedDate; //set date picker
@@ -172,13 +174,27 @@ function printShifts() {
     }
 }
 
-function getEbaRate(date, rates) {
+function getRate(date, rates) {
     let wcDate = Date.parse(date);
     for(let i = rates.length - 1; i >= 0; i--) {
         if(wcDate >= Date.parse(rateDates[i])){
             return rates[i];
         }
     }
-    console.error("calcEbaRate() Error: Invalid date or no matching payrate");
+    console.error("getRate() Error: Invalid date or no matching payrate");
     return 0;
+}
+
+function getEbaRate() { //get rate from selected date and pay grade
+    let wcDate = $("#week-commencing-date")[0].value;
+    switch(grade) {
+        case "spot": return getRate(wcDate, spotRates);
+        case "level1": return getRate(wcDate, driverLevel1Rates);
+        case "trainee": return getRate(wcDate, traineeRates);
+        default: console.error("getEbaRate() Error: invalid grade"); return 0;
+    }
+}
+
+function updateGrade() {
+    grade = document.forms["pay-grade-form"]["pay-grade"].value;
 }

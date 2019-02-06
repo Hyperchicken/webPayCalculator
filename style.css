@@ -8,6 +8,14 @@ label {
     display: block;
 }
 
+.pay-grade-radio {
+    margin-right: 15px;
+}
+
+.pay-grade-radio-container {
+    grid-column: 2 / 6;
+}
+
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -28,6 +36,11 @@ label {
     text-align: center;
 }
 
+.grid-heading {
+    font-size: 0.8em;
+    text-align: center;
+}
+
 .container {
     background-color: #4691db;
     padding: 10px;
@@ -44,9 +57,8 @@ label {
 }
 
 .time {
-    width: 3em;
-    margin-top: 2px;
-    margin-right: 2px;
+    width: 65%;
+    margin: 2px auto;
     padding: 2px;
 }
 
