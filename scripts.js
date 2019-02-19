@@ -10,7 +10,8 @@ const conversionRates =     [46.1015,      47.2541,      48.4354];
 
 //define Classes
 class Shift {
-    constructor(signOn, signOff) {
+    constructor(signOn, signOff, shiftType, ojt, wastedMeal) {
+        const shiftTypes = ["ord", "ddowork", "ddo", "phwork", "phgaz", "off"];
         if(signOn && signOff) {
             this.startHour = parseInt(signOn.substring(0,2));
             this.startMinute = parseInt(signOn.substring(2,4));
@@ -23,11 +24,15 @@ class Shift {
             this.endHour = 0;
             this.endMinute = 0;
         }
+        if(shiftTypes.includes(shiftType)) this.type = shiftType;
+            else this.type = 0;
+        if(typeof ojt == "boolean") this.ojt = ojt;
+            else this.ojt = false;
+        if(typeof wastedMeal == "boolean") this.wastedMeal = wastedMeal;
+            else this.wastedMeal = false;
     }
 
-    get hoursString() {
-        return this.calcHoursString();
-    }
+    get hoursString() {return this.calcHoursString();}
 
     get hoursDecimal() {
         let hoursFloat = 0.0;
@@ -40,6 +45,22 @@ class Shift {
         }
         hoursFloat = hours + (minutes/60);
         return hoursFloat;
+    }
+
+    get isOjt() {return this.ojt;}
+    
+    get isWastedMeal() {return this.wastedMeal;}
+
+    get shiftOptions() {
+        let returnText = "";
+        switch(this.type) {
+            case "ord": returnText += "Normal"; break;
+            case "ddo": returnText += "DDO"; break; //UNFINISHED
+            default: returnText += "OFF"; break;
+        }
+        if(this.ojt) returnText += " OJT";
+        if(this.wastedMeal) returnText += "WM";
+        return returnText;
     }
 
     calcHoursString() {
@@ -61,8 +82,9 @@ let shifts = [];
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 let grade = null;  //declare paygrade
+const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
-$(document).ready(function(){
+$(document).ready(function(){ //init jquery datepicker
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         beforeShowDay: function(date){
@@ -75,13 +97,17 @@ $(document).ready(function(){
 
 
 function timeChanged(field) {
-    if(timeField()[field].textLength == 4) {
+    /*if(timeField()[field].textLength == 4) {
         updateHoursPerShift();
+        printShiftHours();
     }
     else {
         shifts[fieldToShift(field)] = new Shift();
-        printShifts();
-    }
+        printShiftHours();
+    }*/
+    updateHoursPerShift();
+    printShiftHours();
+    //printShiftOptions();
 }
 
 function updateHoursPerShift() {
@@ -89,13 +115,12 @@ function updateHoursPerShift() {
     shifts = [];
     for(let i = 0; i < times.length; i += 2) {
         if(times[i].textLength == 4 && times[i+1].textLength == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
-            shifts.push(new Shift(times[i].value, times[i+1].value));
+            shifts.push(new Shift(times[i].value, times[i+1].value, "ord"));
         }
         else {
             shifts.push(new Shift());
         }
     }
-    printShifts();
 }
 
 function updateResults() {
@@ -106,23 +131,24 @@ function updateResults() {
 }
 
 function updateDates() { //for input type: date
-    let dateFields = document.querySelectorAll(".date-field");
-    let inputDate = new Date(document.getElementById("week-commencing-date").value);
+    let dayOfWeekFields = document.querySelectorAll(".day-of-week");
+    let inputDate = $("#week-commencing-date").datepicker("getDate");
     if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
-        for(let i = 0; i < dateFields.length; i++){
-            dateFields[i].innerHTML = "";
+        for(let i = 0; i < dayOfWeekFields.length; i++){
+            dateFields[i].innerHTML = daysOfWeek[i%7];
         }
     }
     else { //date valid, print dates
         if(inputDate.getDay() === 0){ //only update if a Sunday
-            for(let i = 0; i < dateFields.length; i++){
-                dateFields[i].innerHTML = inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
+            for(let i = 0; i < dayOfWeekFields.length; i++){
+                dayOfWeekFields[i].innerHTML = daysOfWeek[i%7] + " - " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
                 inputDate.setDate(inputDate.getDate() + 1);
             }
         }
     }
 }
 
+//NON-JQUERY DATEPICKER SETUP. NOT CURRENTLY USED
 function initDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly
     let datePicker = document.getElementById("week-commencing-date");
     let dateToSet = new Date();
@@ -167,10 +193,17 @@ function fieldToShift(field) {
     }
 }
 
-function printShifts() {
+function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
     for(let i = 0; i < shifts.length; i++) {
         hoursField[i].innerHTML = shifts[i].hoursString;
+    }
+}
+
+function printShiftOptions() {
+    let optionsField = $(".shift-options"); 
+    for(let i = 0; i < shifts.length; i++) {
+        optionsField[i].innerHTML = shifts[i].shiftOptions;
     }
 }
 

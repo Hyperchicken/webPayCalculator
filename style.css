@@ -8,6 +8,17 @@ label {
     display: block;
 }
 
+.options-button {
+    margin-left: 10;
+    padding: 2px 3px 2px 3px;
+    color: white;
+    border-width: 2px;
+    border-radius: 4px;
+    display: inline-block;
+    background-color: #0094b9;
+    border-color: black;
+}
+
 .pay-grade-radio {
     margin-right: 15px;
 }
@@ -52,7 +63,7 @@ label {
 
 .grid {
     display: grid;
-    grid-template-columns: 120px auto 60px 60px 35px;
+    grid-template-columns: 100px auto 50px 50px 35px;
     grid-gap: 3px;
 }
 
