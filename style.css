@@ -15,7 +15,7 @@ label {
     border-width: 2px;
     border-radius: 4px;
     display: inline-block;
-    background-color: #0094b9;
+    background-color: #00ccff;
     border-color: black;
 }
 
@@ -25,6 +25,12 @@ label {
 
 .pay-grade-radio-container {
     grid-column: 2 / 6;
+}
+
+.shift-options-shelf {
+    grid-column: 1 / 6;
+    margin-bottom: 1em;
+    display: none;
 }
 
 .row {

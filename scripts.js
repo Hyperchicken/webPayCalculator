@@ -148,6 +148,14 @@ function updateDates() { //for input type: date
     }
 }
 
+function shiftOptions(day) {
+    if (parseInt(day) == NaN) {
+        console.error("shiftOptions() error: parameter NaN");
+        return;
+    }
+    
+}
+
 //NON-JQUERY DATEPICKER SETUP. NOT CURRENTLY USED
 function initDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly
     let datePicker = document.getElementById("week-commencing-date");
