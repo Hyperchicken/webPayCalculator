@@ -9,7 +9,7 @@ label {
 }
 
 .options-button {
-    margin-left: 10;
+    margin-left: 10px;
     padding: 2px 3px 2px 3px;
     color: white;
     border-width: 2px;
@@ -17,6 +17,12 @@ label {
     display: inline-block;
     background-color: #00ccff;
     border-color: black;
+    cursor: pointer;
+
+}
+
+.options-button:hover {
+    background-color: #5edfff;
 }
 
 .pay-grade-radio {
@@ -30,6 +36,7 @@ label {
 .shift-options-shelf {
     grid-column: 1 / 6;
     margin-bottom: 1em;
+    color: navy;
     display: none;
 }
 
