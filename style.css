@@ -8,17 +8,26 @@ label {
     display: block;
 }
 
-.options-button {
+.button {
+    font-size: 0.9em;
     margin-left: 10px;
     padding: 2px 3px 2px 3px;
     color: white;
     border-width: 2px;
     border-radius: 4px;
     display: inline-block;
+    cursor: pointer;
+}
+
+.options-button {
+    
     background-color: #00ccff;
     border-color: black;
-    cursor: pointer;
+}
 
+.ojt-button {
+    background-color: #ff7300;
+    border-color: #ff7300;
 }
 
 .options-button:hover {

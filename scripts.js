@@ -49,10 +49,6 @@ class Shift {
         return hoursFloat;
     }
 
-    get isOjt() {return this.ojt;}
-
-    get isWastedMeal() {return this.wastedMeal;}
-
     get shiftOptions() {
         let returnText = "";
         switch(this.type) {
@@ -105,23 +101,67 @@ function initButtons() {
     for(let i = 0; i < optionsButtons.length; i++) {
         optionsButtons[i].addEventListener("click", function(){toggleOptionsShelf(i)});
         optionsButtons[i].textContent = "Options";
-        //IMPLEMENT FORMAT BUTTON FUNCTION HERE
+    }
+    updateOptionsButtons();
+}
+
+function updateOptionsButtons() {
+    let optionsButtons = $(".options-button");
+    for(let i = 0; i < optionsButtons.length; i++) {
+        if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
+            optionsButtons[i].textContent = "OFF";
+            optionsButtons[i].style.backgroundColor = "black";
+            optionsButtons[i].style.fontWeight = "bold";
+        }
+        else { //if actual shift
+            if(shifts[i].ojt){
+                optionsButtons[i].textContent = "OJT";
+                optionsButtons[i].style.backgroundColor = "#ff7300";
+                optionsButtons[i].style.fontWeight = "bold";
+            }
+            else{
+                optionsButtons[i].textContent = "Normal";
+                optionsButtons[i].style.backgroundColor = "";
+                optionsButtons[i].style.fontWeight = "";
+            }
+        }   
     }
 }
 
 function toggleOptionsShelf(day) {
     if($(".shift-options-shelf")[day].style.display == "block"){ //close
         $(".shift-options-shelf")[day].style.display = "";
-        $(".options-button")[day].style.backgroundColor = "";
+        updateOptionsButtons();
     }
     else {                                                      //open
-        for(let i = 0; i < $(".shift-options-shelf").length; i++){ 
-            $(".shift-options-shelf")[i].style.display = ""
-            $(".options-button")[i].style.backgroundColor = "";
+        for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
+            $(".shift-options-shelf")[i].style.display = "";
         }
+        $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
+        updateOptionsButtons();
+        generateOptionsShelfButtons(day);
         $(".shift-options-shelf")[day].style.display = "block";
         $(".options-button")[day].style.backgroundColor = "navy";
     }
+}
+
+function generateOptionsShelfButtons(day) {
+    let shelf = $(".shift-options-shelf")[day];
+    let ojtButton = document.createElement("a");
+    ojtButton.textContent = "OJT";
+    ojtButton.setAttribute("class", "button ojt-button");
+    if(shifts[day].ojt) {//if OJT
+        ojtButton.addEventListener("click", function(){shifts[day].ojt = false; toggleOptionsShelf(day);});
+        ojtButton.style.background = "";
+        //ojtButton.style.borderStyle = "";
+    }
+    else {//if not OJT
+        ojtButton.addEventListener("click", function(){shifts[day].ojt = true; toggleOptionsShelf(day);});
+        ojtButton.style.background = "none";
+        ojtButton.style.borderStyle = "solid";
+    }
+
+    shelf.appendChild(ojtButton);
 }
 
 function timeChanged(field) {
@@ -132,6 +172,7 @@ function timeChanged(field) {
         shifts[fieldToShift(field)] = new Shift();
         printShifts();
     }
+    updateOptionsButtons();
 }
 
 function setFormColour(colour) {
@@ -153,7 +194,7 @@ function updateGrade() {
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
-            setFormColour("rgb(155, 72, 72)");
+            setFormColour("rgb(56, 149, 149)");
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
