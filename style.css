@@ -36,6 +36,7 @@ label {
 
 .pay-grade-radio {
     margin-right: 15px;
+    display: inline-block;
 }
 
 .pay-grade-radio-container {

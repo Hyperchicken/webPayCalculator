@@ -112,6 +112,7 @@ function updateOptionsButtons() {
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
             optionsButtons[i].style.fontWeight = "bold";
+            if(shifts[i].ojt) optionsButtons[i].textContent += " (OJT)";
         }
         else { //if actual shift
             if(shifts[i].ojt){
