@@ -87,6 +87,11 @@ $(document).ready(function() {
     initButtons();
     updateGrade();
 
+    let radios = $(".pay-grade-radio");
+    for(let i = 0; i < radios.length; i++) {
+        radios[i].addEventListener("change", function(){updateGrade();});
+    }
+
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         beforeShowDay: function(date){
@@ -166,7 +171,7 @@ function generateOptionsShelfButtons(day) {
 }
 
 function timeChanged(field) {
-    if(timeField()[field].textLength == 4) {
+    if(timeField()[field].value.length == 4) {
         updateHoursPerShift();
     }
     else {
@@ -209,7 +214,7 @@ function updateHoursPerShift() {
     let times = timeField();
     shifts = [];
     for(let i = 0; i < times.length; i += 2) {
-        if(times[i].textLength == 4 && times[i+1].textLength == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
+        if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
             shifts.push(new Shift(times[i].value, times[i+1].value, "ord"));
         }
         else {
