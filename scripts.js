@@ -10,8 +10,7 @@ const conversionRates =     [46.1015,      47.2541,      48.4354];
 
 //define Classes
 class Shift {
-    constructor(signOn, signOff, shiftType, ojt, wastedMeal) {
-        const shiftTypes = ["ord", "ddowork", "ddo", "phwork", "phgaz", "off"];
+    constructor(signOn, signOff) {
         if(signOn && signOff) {
             this.startHour = parseInt(signOn.substring(0,2));
             this.startMinute = parseInt(signOn.substring(2,4));
@@ -24,12 +23,8 @@ class Shift {
             this.endHour = 0;
             this.endMinute = 0;
         }
-        if(shiftTypes.includes(shiftType)) this.type = shiftType;
-            else this.type = 0;
-        if(typeof ojt == "boolean") this.ojt = ojt;
-            else this.ojt = false;
-        if(typeof wastedMeal == "boolean") this.wastedMeal = wastedMeal;
-            else this.wastedMeal = false;
+        this.ojt = false;
+        this.ph = false;
     }
 
     get hoursString() {
@@ -49,18 +44,6 @@ class Shift {
         return hoursFloat;
     }
 
-    get shiftOptions() {
-        let returnText = "";
-        switch(this.type) {
-            case "ord": returnText += "Normal"; break;
-            case "ddo": returnText += "DDO"; break; //UNFINISHED
-            default: returnText += "OFF"; break;
-        }
-        if(this.ojt) returnText += " OJT";
-        if(this.wastedMeal) returnText += "WM";
-        return returnText;
-    }
-
     calcHoursString() {
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
@@ -71,6 +54,23 @@ class Shift {
         }
         if(hours || minutes) return hours + ":" + minutes.toString().padStart(2, "0");
         else return "";
+    }
+
+    setNilHours() {
+        this.startHour = 0;
+        this.endHour = 0;
+        this.startMinute = 0;
+        this.endMinute = 0;
+    }
+
+    setShiftTimes(signOn, signOff) {
+        if(signOn && signOff) {
+            this.startHour = parseInt(signOn.substring(0,2));
+            this.startMinute = parseInt(signOn.substring(2,4));
+            this.endHour = parseInt(signOff.substring(0,2));
+            this.endMinute = parseInt(signOff.substring(2,4));
+        }
+        else console.error("setShiftTimes(): insufficient parameters");
     }
 }
 
@@ -99,6 +99,9 @@ $(document).ready(function() {
 		    return [ ( day == 0), "" ];
         }
     });
+
+    let timeField = $(".time");
+    for(let i = 0; i < timeField.length; i++) {timeField[i].addEventListener("focus", function(){closeAllOptionsShelves();});} //close shelves on time field focus
 });
 
 function initButtons() {
@@ -113,6 +116,8 @@ function initButtons() {
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
+        if($(".shift-options-shelf")[i].style.display == "block") optionsButtons[i].style.borderStyle = "solid"; //if shelf open, highlight
+            else  optionsButtons[i].style.borderStyle = "none";
         if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
@@ -140,34 +145,65 @@ function toggleOptionsShelf(day) {
         updateOptionsButtons();
     }
     else {                                                      //open
-        for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
-            $(".shift-options-shelf")[i].style.display = "";
-        }
+        closeAllOptionsShelves();
+        $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
+        $(".shift-options-shelf")[day].style.display = "block";
+        updateOptionsButtons();
+        generateOptionsShelfButtons(day);
+    }
+}
+
+function refreshOptionsShelf(day) {
+    if($(".shift-options-shelf")[day].style.display == "block"){ //if open, refresh
         $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
         updateOptionsButtons();
         generateOptionsShelfButtons(day);
-        $(".shift-options-shelf")[day].style.display = "block";
-        $(".options-button")[day].style.backgroundColor = "navy";
     }
+    else {                                                      //if closed, do not
+        console.warn("Options shelf on day " + day + " is closed!");
+    }
+}
+
+function closeAllOptionsShelves() {
+    for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
+        $(".shift-options-shelf")[i].style.display = "";
+    }
+    updateOptionsButtons();
 }
 
 function generateOptionsShelfButtons(day) {
     let shelf = $(".shift-options-shelf")[day];
+
+    //OJT button
     let ojtButton = document.createElement("a");
     ojtButton.textContent = "OJT";
     ojtButton.setAttribute("class", "button ojt-button");
     if(shifts[day].ojt) {//if OJT
-        ojtButton.addEventListener("click", function(){shifts[day].ojt = false; toggleOptionsShelf(day);});
+        ojtButton.addEventListener("click", function(){shifts[day].ojt = false; refreshOptionsShelf(day);});
         ojtButton.style.background = "";
-        //ojtButton.style.borderStyle = "";
     }
     else {//if not OJT
-        ojtButton.addEventListener("click", function(){shifts[day].ojt = true; toggleOptionsShelf(day);});
+        ojtButton.addEventListener("click", function(){shifts[day].ojt = true; refreshOptionsShelf(day);});
         ojtButton.style.background = "none";
-        ojtButton.style.borderStyle = "solid";
     }
 
+    //Public Holiday button
+    let phButton = document.createElement("a");
+    phButton.textContent = "PH";
+    phButton.setAttribute("class", "button ph-button");
+    if(shifts[day].ph) {//if PH
+        phButton.addEventListener("click", function(){shifts[day].ph = false; refreshOptionsShelf(day);});
+        phButton.style.background = "";
+        phButton.style.color = "black";
+    }
+    else {//if not PH
+        phButton.addEventListener("click", function(){shifts[day].ph = true; refreshOptionsShelf(day);});
+        phButton.style.background = "none";
+    }
+
+    //append buttons to shelf
     shelf.appendChild(ojtButton);
+    shelf.appendChild(phButton);
 }
 
 function timeChanged(field) {
@@ -175,9 +211,9 @@ function timeChanged(field) {
         updateHoursPerShift();
     }
     else {
-        shifts[fieldToShift(field)] = new Shift();
-        printShifts();
+        shifts[fieldToShift(field)].setNilHours();
     }
+    printShifts();
     updateOptionsButtons();
 }
 
@@ -212,16 +248,17 @@ function updateGrade() {
 
 function updateHoursPerShift() {
     let times = timeField();
-    shifts = [];
+    //shifts = [];
     for(let i = 0; i < times.length; i += 2) {
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
-            shifts.push(new Shift(times[i].value, times[i+1].value, "ord"));
+            //shifts.push(new Shift(times[i].value, times[i+1].value, "ord"));
+            shifts[fieldToShift(i)].setShiftTimes(times[i].value, times[i+1].value);
         }
         else {
-            shifts.push(new Shift());
+            //shifts.push(new Shift());
+            shifts[fieldToShift(i)].setNilHours();
         }
     }
-    printShifts();
 }
 
 function updateResults() {
@@ -247,14 +284,6 @@ function updateDates() { //for input type: date
             }
         }
     }
-}
-
-function shiftOptions(day) {
-    if (parseInt(day) == NaN) {
-        console.error("shiftOptions() error: parameter NaN");
-        return;
-    }
-
 }
 
 function initDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly NOT USED

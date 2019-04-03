@@ -15,6 +15,7 @@ label {
     color: white;
     border-width: 2px;
     border-radius: 4px;
+    border-style: solid;
     display: inline-block;
     cursor: pointer;
 }
@@ -22,12 +23,17 @@ label {
 .options-button {
     
     background-color: #00ccff;
-    border-color: black;
+    border-color: cyan;
 }
 
 .ojt-button {
     background-color: #ff7300;
     border-color: #ff7300;
+}
+
+.ph-button {
+    background-color: #c8ff00;
+    border-color: #c8ff00;
 }
 
 .options-button:hover {
@@ -82,6 +88,10 @@ label {
     border-radius: 3px;
     margin: 7px;
     min-width: 370px;
+}
+
+.input-container {
+    max-width: 400px;
 }
 
 .grid {
