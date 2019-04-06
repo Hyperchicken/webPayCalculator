@@ -23,8 +23,9 @@ class Shift {
             this.endHour = 0;
             this.endMinute = 0;
         }
-        this.ojt = false;
-        this.ph = false;
+        this.ojt = false; //OJT shift
+        this.ph = false; //public holiday
+        this.wm = false; //wasted meal
     }
 
     get hoursString() {
@@ -122,7 +123,25 @@ function updateOptionsButtons() {
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
             optionsButtons[i].style.fontWeight = "bold";
-            if(shifts[i].ojt) optionsButtons[i].textContent += " (OJT)";
+            if(shifts[i].ojt || shifts[i].ph || shifts[i].wm) { //if any shift options selected, show this on the main option button.
+                let multipleOptions = false; //trigger for adding delimiters for multiple options
+                optionsButtons[i].textContent += " (";
+                if(shifts[i].ojt) {
+                    optionsButtons[i].textContent += "OJT";
+                    multipleOptions = true;
+                } 
+                if(shifts[i].ph) {
+                    if(multipleOptions) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "PH";
+                    multipleOptions = true;
+                }
+                if(shifts[i].wm) {
+                    if(multipleOptions) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "WM";
+                    multipleOptions = true;
+                }
+                optionsButtons[i].textContent += ")";
+            }
         }
         else { //if actual shift
             if(shifts[i].ojt){
@@ -181,6 +200,7 @@ function generateOptionsShelfButtons(day) {
     if(shifts[day].ojt) {//if OJT
         ojtButton.addEventListener("click", function(){shifts[day].ojt = false; refreshOptionsShelf(day);});
         ojtButton.style.background = "";
+        ojtButton.style.color = "black";
     }
     else {//if not OJT
         ojtButton.addEventListener("click", function(){shifts[day].ojt = true; refreshOptionsShelf(day);});
@@ -201,9 +221,24 @@ function generateOptionsShelfButtons(day) {
         phButton.style.background = "none";
     }
 
+    //Wasted Meal button
+    let wmButton = document.createElement("a");
+    wmButton.textContent = "WM";
+    wmButton.setAttribute("class", "button wm-button");
+    if(shifts[day].wm) {//if WM
+        wmButton.addEventListener("click", function(){shifts[day].wm = false; refreshOptionsShelf(day);});
+        wmButton.style.background = "";
+        wmButton.style.color = "black";
+    }
+    else {//if not PH
+        wmButton.addEventListener("click", function(){shifts[day].wm = true; refreshOptionsShelf(day);});
+        wmButton.style.background = "none";
+    }
+
     //append buttons to shelf
     shelf.appendChild(ojtButton);
     shelf.appendChild(phButton);
+    shelf.appendChild(wmButton);
 }
 
 function timeChanged(field) {

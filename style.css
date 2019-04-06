@@ -36,6 +36,11 @@ label {
     border-color: #c8ff00;
 }
 
+.wm-button {
+    background-color: #ffbb00;
+    border-color: #ffbb00;
+}
+
 .options-button:hover {
     background-color: #5edfff;
 }
