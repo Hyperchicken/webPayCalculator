@@ -41,6 +41,11 @@ label {
     border-color: #ffbb00;
 }
 
+.sick-button {
+    background-color: #ff0000;
+    border-color: #ff0000;
+}
+
 .options-button:hover {
     background-color: #5edfff;
 }

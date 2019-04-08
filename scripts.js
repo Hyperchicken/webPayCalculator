@@ -7,6 +7,12 @@ const driverLevel1Rates =   [33.5339,      34.3723,      35.2316];
 const traineeRates =        [28.7277,      29.4459,      30.1820];
 const conversionRates =     [46.1015,      47.2541,      48.4354];
 
+//colours
+const ojtColour = "#ff7300";
+const phColour = "#c8ff00";
+const wmColour = "#ffbb00";
+const sickColour = "#ff0000";
+
 
 //define Classes
 class Shift {
@@ -26,6 +32,7 @@ class Shift {
         this.ojt = false; //OJT shift
         this.ph = false; //public holiday
         this.wm = false; //wasted meal
+        this.sick = false //sick day
     }
 
     get hoursString() {
@@ -117,42 +124,90 @@ function initButtons() {
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
+        let ojt = shifts[i].ojt;
+        let ph = shifts[i].ph;
+        let wm = shifts[i].wm;
+        let sick = shifts[i].sick;
         if($(".shift-options-shelf")[i].style.display == "block") optionsButtons[i].style.borderStyle = "solid"; //if shelf open, highlight
             else  optionsButtons[i].style.borderStyle = "none";
         if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
+            optionsButtons[i].style.backgroundImage = "";
+            optionsButtons[i].style.color = "";
             optionsButtons[i].style.fontWeight = "bold";
-            if(shifts[i].ojt || shifts[i].ph || shifts[i].wm) { //if any shift options selected, show this on the main option button.
+            if(ojt || ph || wm || sick) { //if any shift options selected, show this on the main option button.
                 let multipleOptions = false; //trigger for adding delimiters for multiple options
                 optionsButtons[i].textContent += " (";
-                if(shifts[i].ojt) {
+                if(ojt) {
                     optionsButtons[i].textContent += "OJT";
                     multipleOptions = true;
                 } 
-                if(shifts[i].ph) {
+                if(ph) {
                     if(multipleOptions) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "PH";
                     multipleOptions = true;
                 }
-                if(shifts[i].wm) {
+                if(wm) {
                     if(multipleOptions) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "WM";
+                    multipleOptions = true;
+                }
+                if(sick) {
+                    if(multipleOptions) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "Sick";
                     multipleOptions = true;
                 }
                 optionsButtons[i].textContent += ")";
             }
         }
         else { //if actual shift
-            if(shifts[i].ojt){
-                optionsButtons[i].textContent = "OJT";
-                optionsButtons[i].style.backgroundColor = "#ff7300";
+            if(ojt || ph || wm || sick){
+                let optionsCount = 0;
+                optionsButtons[i].textContent = "";
+                optionsButtons[i].style.color = "black";
                 optionsButtons[i].style.fontWeight = "bold";
+                optionsButtons[i].style.backgroundImage = "";
+                if(ojt){
+                    optionsButtons[i].textContent = "OJT";
+                    optionsButtons[i].style.backgroundColor = ojtColour;
+                    optionsCount++;
+                }
+                if(ph){
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "PH";
+                    optionsButtons[i].style.backgroundColor = phColour;
+                    
+                    optionsCount++;
+                }
+                if(wm){
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "WM";
+                    optionsButtons[i].style.backgroundColor = wmColour;
+                    optionsCount++;
+                }
+                if(sick){
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "Sick";
+                    optionsButtons[i].style.backgroundColor = sickColour;
+                    optionsCount++;
+                }
+                //set gradient colour for multiple options
+                if(optionsCount > 0) {
+                    let cssGradient = "linear-gradient(to right";
+                    if(ojt) cssGradient += "," + ojtColour;
+                    if(ph) cssGradient += "," + phColour;
+                    if(wm) cssGradient += "," + wmColour;
+                    if(sick) cssGradient += "," + sickColour;
+                    cssGradient += ")";
+                    optionsButtons[i].style.backgroundImage = cssGradient;
+                }
             }
             else{
                 optionsButtons[i].textContent = "Normal";
                 optionsButtons[i].style.backgroundColor = "";
                 optionsButtons[i].style.fontWeight = "";
+                optionsButtons[i].style.backgroundImage = "";
             }
         }   
     }
