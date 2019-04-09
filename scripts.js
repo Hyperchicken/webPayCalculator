@@ -10,7 +10,7 @@ const conversionRates =     [46.1015,      47.2541,      48.4354];
 //colours
 const ojtColour = "#ff7300";
 const phColour = "#c8ff00";
-const wmColour = "#ffbb00";
+const wmColour = "#bd4bff";
 const sickColour = "#ff0000";
 
 
@@ -130,14 +130,21 @@ function updateOptionsButtons() {
         let sick = shifts[i].sick;
         if($(".shift-options-shelf")[i].style.display == "block") optionsButtons[i].style.borderStyle = "solid"; //if shelf open, highlight
             else  optionsButtons[i].style.borderStyle = "none";
-        if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
+        if(sick) {
+            optionsButtons[i].textContent = "Sick";
+            optionsButtons[i].style.backgroundColor = sickColour;
+            optionsButtons[i].style.backgroundImage = "";
+            optionsButtons[i].style.color = "";
+            optionsButtons[i].style.fontWeight = "bold";
+        }
+        else if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
             optionsButtons[i].style.backgroundImage = "";
             optionsButtons[i].style.color = "";
             optionsButtons[i].style.fontWeight = "bold";
-            if(ojt || ph || wm || sick) { //if any shift options selected, show this on the main option button.
-                let multipleOptions = false; //trigger for adding delimiters for multiple options
+            if(ojt || ph || wm) { //if any shift options selected, show this on the main option button.
+                /*let multipleOptions = false; //trigger for adding delimiters for multiple options
                 optionsButtons[i].textContent += " (";
                 if(ojt) {
                     optionsButtons[i].textContent += "OJT";
@@ -153,20 +160,16 @@ function updateOptionsButtons() {
                     optionsButtons[i].textContent += "WM";
                     multipleOptions = true;
                 }
-                if(sick) {
-                    if(multipleOptions) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "Sick";
-                    multipleOptions = true;
-                }
-                optionsButtons[i].textContent += ")";
+                optionsButtons[i].textContent += ")";*/
+                optionsButtons[i].textContent += " (+)";
             }
         }
         else { //if actual shift
-            if(ojt || ph || wm || sick){
+            if(ojt || ph || wm){
                 let optionsCount = 0;
                 optionsButtons[i].textContent = "";
                 optionsButtons[i].style.color = "black";
-                optionsButtons[i].style.fontWeight = "bold";
+                optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
                 if(ojt){
                     optionsButtons[i].textContent = "OJT";
@@ -184,12 +187,6 @@ function updateOptionsButtons() {
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "WM";
                     optionsButtons[i].style.backgroundColor = wmColour;
-                    optionsCount++;
-                }
-                if(sick){
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "Sick";
-                    optionsButtons[i].style.backgroundColor = sickColour;
                     optionsCount++;
                 }
                 //set gradient colour for multiple options
@@ -253,12 +250,19 @@ function generateOptionsShelfButtons(day) {
     ojtButton.textContent = "OJT";
     ojtButton.setAttribute("class", "button ojt-button");
     if(shifts[day].ojt) {//if OJT
-        ojtButton.addEventListener("click", function(){shifts[day].ojt = false; refreshOptionsShelf(day);});
+        ojtButton.addEventListener("click", function(){
+            shifts[day].ojt = false;
+            refreshOptionsShelf(day);
+        });
         ojtButton.style.background = "";
         ojtButton.style.color = "black";
     }
     else {//if not OJT
-        ojtButton.addEventListener("click", function(){shifts[day].ojt = true; refreshOptionsShelf(day);});
+        ojtButton.addEventListener("click", function(){
+            shifts[day].ojt = true;
+            shifts[day].sick = false;
+            refreshOptionsShelf(day);
+        });
         ojtButton.style.background = "none";
     }
 
@@ -267,12 +271,19 @@ function generateOptionsShelfButtons(day) {
     phButton.textContent = "PH";
     phButton.setAttribute("class", "button ph-button");
     if(shifts[day].ph) {//if PH
-        phButton.addEventListener("click", function(){shifts[day].ph = false; refreshOptionsShelf(day);});
+        phButton.addEventListener("click", function(){
+            shifts[day].ph = false;
+            refreshOptionsShelf(day);
+        });
         phButton.style.background = "";
         phButton.style.color = "black";
     }
     else {//if not PH
-        phButton.addEventListener("click", function(){shifts[day].ph = true; refreshOptionsShelf(day);});
+        phButton.addEventListener("click", function(){
+            shifts[day].ph = true;
+            shifts[day].sick = false;
+            refreshOptionsShelf(day);
+        });
         phButton.style.background = "none";
     }
 
@@ -281,19 +292,50 @@ function generateOptionsShelfButtons(day) {
     wmButton.textContent = "WM";
     wmButton.setAttribute("class", "button wm-button");
     if(shifts[day].wm) {//if WM
-        wmButton.addEventListener("click", function(){shifts[day].wm = false; refreshOptionsShelf(day);});
+        wmButton.addEventListener("click", function(){
+            shifts[day].wm = false;
+            refreshOptionsShelf(day);
+        });
         wmButton.style.background = "";
         wmButton.style.color = "black";
     }
-    else {//if not PH
-        wmButton.addEventListener("click", function(){shifts[day].wm = true; refreshOptionsShelf(day);});
+    else {//if not WM
+        wmButton.addEventListener("click", function(){
+            shifts[day].wm = true;
+            shifts[day].sick = false;
+            refreshOptionsShelf(day);
+        });
         wmButton.style.background = "none";
+    }
+
+    //Sick Meal button
+    let sickButton = document.createElement("a");
+    sickButton.textContent = "Sick";
+    sickButton.setAttribute("class", "button sick-button");
+    if(shifts[day].sick) {//if sick
+        sickButton.addEventListener("click", function(){
+            shifts[day].sick = false;
+            refreshOptionsShelf(day);
+        });
+        sickButton.style.background = "";
+        sickButton.style.color = "black";
+    }
+    else {//if not sick
+        sickButton.addEventListener("click", function(){
+            shifts[day].sick = true;
+            shifts[day].ph = false;
+            shifts[day].wm = false;
+            shifts[day].ojt = false;
+            refreshOptionsShelf(day);
+        });
+        sickButton.style.background = "none";
     }
 
     //append buttons to shelf
     shelf.appendChild(ojtButton);
     shelf.appendChild(phButton);
     shelf.appendChild(wmButton);
+    shelf.appendChild(sickButton);
 }
 
 function timeChanged(field) {
