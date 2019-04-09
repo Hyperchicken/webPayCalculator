@@ -202,6 +202,7 @@ function updateOptionsButtons() {
             }
             else{
                 optionsButtons[i].textContent = "Normal";
+                optionsButtons[i].style.color = "black";
                 optionsButtons[i].style.backgroundColor = "";
                 optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
@@ -268,7 +269,7 @@ function generateOptionsShelfButtons(day) {
 
     //Public Holiday button
     let phButton = document.createElement("a");
-    phButton.textContent = "PH";
+    phButton.textContent = "Public Holiday";
     phButton.setAttribute("class", "button ph-button");
     if(shifts[day].ph) {//if PH
         phButton.addEventListener("click", function(){
@@ -289,7 +290,7 @@ function generateOptionsShelfButtons(day) {
 
     //Wasted Meal button
     let wmButton = document.createElement("a");
-    wmButton.textContent = "WM";
+    wmButton.textContent = "Wasted Meal";
     wmButton.setAttribute("class", "button wm-button");
     if(shifts[day].wm) {//if WM
         wmButton.addEventListener("click", function(){

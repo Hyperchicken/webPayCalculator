@@ -96,7 +96,7 @@ label {
     padding: 10px;
     border: 1px solid lightgrey;
     border-radius: 3px;
-    margin: 7px;
+    margin: 7px 7px 0px 0px;
     min-width: 370px;
 }
 
