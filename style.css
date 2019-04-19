@@ -139,6 +139,10 @@ label {
 
 .week-commencing-label {grid-column: 1 / 3;}
 
+li {
+    font-family:  Courier, Arial, Helvetica;
+}
+
 
 @media only screen and (max-device-width: 480px) { 
     .time {

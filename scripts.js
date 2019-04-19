@@ -397,8 +397,10 @@ function timeChanged(field) {
     else {
         shifts[fieldToShift(field)].setNilHours();
     }
-    printShifts();
+    printShiftHours();
     updateOptionsButtons();
+    updateShiftPayTable();
+    updateResults();
 }
 
 function setFormColour(colour) {
@@ -447,12 +449,21 @@ function updateHoursPerShift() {
 
 function updateResults() {
     let resultArea = document.getElementById("result-area");
+    resultArea.innerHTML = ""; //clear existing results
     for(let i = 0; i < 14; i++) {
         if(shiftPay[i].length > 0){
             let shiftDiv = document.createElement("div");
             let shiftTitle = document.createElement("h3");
             shiftTitle.textContent = "Day " + (i+1);
-
+            shiftDiv.appendChild(shiftTitle);
+            let payElements = document.createElement("ul");
+            for(let j = 0; j < shiftPay[i].length; j++) {
+                let payElement = document.createElement("li");
+                payElement.textContent = "Type: " + shiftPay[i][j].payType + " | Rate: " + shiftPay[i][j].rate + " | Hours: " + shiftPay[i][j].hours.toFixed(4) + " | $" + shiftPay[i][j].payAmount.toFixed(2);
+                payElements.appendChild(payElement);
+            }
+            shiftDiv.appendChild(payElements);
+            resultArea.appendChild(shiftDiv);
         }
     }
 }
@@ -507,7 +518,7 @@ function fieldToShift(field) {
     }
 }
 
-function printShifts() {
+function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
     for(let i = 0; i < shifts.length; i++) {
         hoursField[i].innerHTML = shifts[i].hoursString;
