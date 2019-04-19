@@ -13,6 +13,8 @@ const phColour = "#c8ff00";
 const wmColour = "#bd4bff";
 const sickColour = "#ff0000";
 
+const payTypes = ["normal", "guarantee", "edo", "wePen50", "wePen100", "ot150", "ot200", "rost50", "earlyShift", "afternoonShift", "nightShift", "metroSig2"];
+
 
 //define Classes
 class Shift {
@@ -79,6 +81,24 @@ class Shift {
             this.endMinute = parseInt(signOff.substring(2,4));
         }
         else console.error("setShiftTimes(): insufficient parameters");
+    }
+}
+
+class PayElement { 
+    constructor(payType, hours) {
+        if(!payTypes.includes(payType)) {
+            this.payType = null;
+            this.hours = null;
+            console.error("Error creating PayElement! PayType paramater invalid: \"" + payType + "\"\nValid values:  " + payTypes.toString());
+        } 
+        else {
+            this.payType = payType;
+            this.hours = hours;
+        }
+    }
+    
+    get sortOrder() {
+        return 
     }
 }
 
