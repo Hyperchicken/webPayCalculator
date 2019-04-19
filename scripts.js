@@ -97,14 +97,45 @@ class PayElement {
         }
     }
     
-    get sortOrder() {
-        return 
+    get sortIndex() {
+        return payTypes.indexOf(this.payType);
+    }
+
+    get payAmount() {
+        return this.rate * this.hours;
+    }
+
+    get rate() {
+        let selectedDate = $("#week-commencing-date").datepicker("getDate");
+        let rate = 0
+        switch(this.payType) {
+            case "normal": case "guarantee": case "edo": case "wePen100":
+                rate = getEbaRate(selectedDate, selectedGradeRates);
+                break;
+            case "wePen50":
+                rate = getEbaRate(selectedDate, selectedGradeRates);
+                rate /= 2;
+                break;
+            case "ot150": case "rost50":
+                rate = getEbaRate(selectedDate, selectedGradeRates);
+                rate *= 1.5;
+                break;
+            case "ot200":
+                rate = getEbaRate(selectedDate, selectedGradeRates);
+                rate *= 2;
+                break;
+            default:
+                console.error("PayElement.rate: unable to get rate for payType \"" + this.payType + "\"");
+                return null;
+        }
+        return parseFloat(rate.toFixed(4));
     }
 }
 
 
 //initialise variables
 let shifts = [];
+let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
 let selectedGradeRates;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
@@ -416,9 +447,14 @@ function updateHoursPerShift() {
 
 function updateResults() {
     let resultArea = document.getElementById("result-area");
-    let testResult = addAllFields();
+    for(let i = 0; i < 14; i++) {
+        if(shiftPay[i].length > 0){
+            let shiftDiv = document.createElement("div");
+            let shiftTitle = document.createElement("h3");
+            shiftTitle.textContent = "Day " + (i+1);
 
-    resultArea.innerHTML = "<p> Adding all the time fields gets you: " + testResult + "</p>";
+        }
+    }
 }
 
 function updateDates() { //for input type: date
@@ -437,18 +473,6 @@ function updateDates() { //for input type: date
             }
         }
     }
-}
-
-function initDatePicker() { //sets date picker to the date of the previous Sunday to ensure 7-day step works correctly NOT USED
-    let datePicker = document.getElementById("week-commencing-date");
-    let dateToSet = new Date();
-    let daysSinceLastSunday = dateToSet.getDay();
-    if(daysSinceLastSunday === 0) daysSinceLastSunday = 7; //if today is Sunday, set to last Sunday
-    dateToSet.setDate(dateToSet.getDate() - daysSinceLastSunday);
-    var formattedDate = dateToSet.getFullYear() + "-" + (dateToSet.getMonth() + 1) + "-" + dateToSet.getDate();
-    datePicker.defaultValue = formattedDate; //set date picker
-    datePicker.step = "7"; //only allow Sundays to be selected in the date picker
-    updateDates();
 }
 
 function addAllFields() { //function to test time input boxes
@@ -499,4 +523,19 @@ function getEbaRate(date, rates) {
     }
     console.error("getEbaRate() Error: Invalid date or no matching payrate");
     return 0;
+}
+
+//calculate pay elements for each shift
+//currently proof of concept and under development
+function updateShiftPayTable() {
+    shiftPay = []; //clear pay table
+    for(let i = 0; i < 14; i++) {
+        shiftPay.push([]);
+        if(shifts[i].hoursDecimal <= 0) { //if zero hours
+            //check for shift options (PH?)
+        }
+        else {
+            shiftPay[i].push(new PayElement("normal", shifts[i].hoursDecimal));
+        }   
+    }
 }
