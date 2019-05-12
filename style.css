@@ -11,10 +11,10 @@ label {
 .button {
     font-size: 0.9em;
     margin-left: 10px;
-    padding: 2px 3px 2px 3px;
+    padding: 4px 6px;
     color: white;
     border-width: 2px;
-    border-radius: 4px;
+    border-radius: 5px;
     border-style: solid;
     display: inline-block;
     cursor: pointer;
@@ -77,13 +77,8 @@ label {
 }
 
 .grid > h3,
-.grid-date,
 .hr {
     grid-column: 1 / 6;
-}
-
-.grid-date {
-    text-align: center;
 }
 
 .grid-heading {
@@ -106,8 +101,9 @@ label {
 
 .grid {
     display: grid;
-    grid-template-columns: 100px auto 50px 50px 35px;
+    grid-template-columns: 100px auto 50px 50px 45px;
     grid-gap: 3px;
+    align-items: center;
 }
 
 .time {
@@ -115,9 +111,13 @@ label {
     margin: 2px auto;
     padding: 2px;
 }
-
+/*
 .day-of-week {
-    width: 10em;
+    justify-self: center;
+}
+*/
+.shift-hours {
+    justify-self: center;
 }
 
 .hr {
@@ -133,14 +133,26 @@ label {
     max-width: 800px;
 }
 
-#week-commencing-date {
-    grid-column: 3 / 5;
+.week-commencing {
+    grid-column: 1 / 6;
+    display: grid;
+    grid-template-columns: auto auto;
 }
 
-.week-commencing-label {grid-column: 1 / 3;}
+#week-commencing-date {
+    width: 100px;
+}
 
 li {
     font-family:  Courier, Arial, Helvetica;
+}
+
+input[type=text],
+input[type=tel] {
+    border: none;
+    border-radius: 5px;
+    padding: 4px;
+    text-align: center;
 }
 
 

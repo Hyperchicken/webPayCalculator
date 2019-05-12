@@ -139,7 +139,7 @@ let shiftPay = [[]]; //multidimensional array to store pay elements per shift. f
 let selectedGradeRates;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
-const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 //init on document load
 $(document).ready(function() { 
@@ -151,11 +151,18 @@ $(document).ready(function() {
         radios[i].addEventListener("change", function(){updateGrade();});
     }
 
+    //setup datepicker
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         beforeShowDay: function(date){
             var day = date.getDay();
 		    return [ ( day == 0), "" ];
+        },
+        onClose: function(){
+            printShiftHours();
+            updateOptionsButtons();
+            updateShiftPayTable();
+            updateResults();
         }
     });
 
@@ -430,6 +437,10 @@ function updateGrade() {
             break;
         default: selectedGradeRates = undefined;
     }
+    printShiftHours();
+    updateOptionsButtons();
+    updateShiftPayTable();
+    updateResults();
 }
 
 function updateHoursPerShift() {
@@ -449,9 +460,10 @@ function updateHoursPerShift() {
 
 function updateResults() {
     let resultArea = document.getElementById("result-area");
+    let totalValue = 0.0;
     resultArea.innerHTML = ""; //clear existing results
     for(let i = 0; i < 14; i++) {
-        if(shiftPay[i].length > 0){
+        if(shiftPay[i].length > 0){ //if any pay elements for current day
             let shiftDiv = document.createElement("div");
             let shiftTitle = document.createElement("h3");
             shiftTitle.textContent = "Day " + (i+1);
@@ -461,10 +473,16 @@ function updateResults() {
                 let payElement = document.createElement("li");
                 payElement.textContent = "Type: " + shiftPay[i][j].payType + " | Rate: " + shiftPay[i][j].rate + " | Hours: " + shiftPay[i][j].hours.toFixed(4) + " | $" + shiftPay[i][j].payAmount.toFixed(2);
                 payElements.appendChild(payElement);
+                totalValue += shiftPay[i][j].payAmount;
             }
             shiftDiv.appendChild(payElements);
             resultArea.appendChild(shiftDiv);
         }
+    }
+    if(totalValue > 0.0) {
+        let totalElement = document.createElement("h3");
+        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+        resultArea.appendChild(totalElement);
     }
 }
 
