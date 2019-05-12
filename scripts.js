@@ -400,6 +400,7 @@ function generateOptionsShelfButtons(day) {
 function timeChanged(field) {
     if(timeField()[field].value.length == 4) {
         updateHoursPerShift();
+        if(field < 27) timeField()[field + 1].focus();
     }
     else {
         shifts[fieldToShift(field)].setNilHours();
