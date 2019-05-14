@@ -157,7 +157,8 @@ input[type=tel] {
 
 
 @media only screen and (max-device-width: 480px) { 
-    .time {
+    input[type=text],
+    input[type=tel]  {
         font-size: 1em;
     }
   }
