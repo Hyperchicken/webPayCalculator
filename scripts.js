@@ -462,32 +462,46 @@ function updateHoursPerShift() {
 function updateResults() {
     let resultArea = document.getElementById("result-area");
     let totalValue = 0.0;
+    let selectedDate = $("#week-commencing-date").datepicker("getDate");
+    let dateDiv = document.querySelector(".week-commencing");
     resultArea.innerHTML = ""; //clear existing results
-    for(let i = 0; i < 14; i++) {
-        if(shiftPay[i].length > 0){ //if any pay elements for current day
-            let shiftDiv = document.createElement("div");
-            let shiftTitle = document.createElement("h3");
-            shiftTitle.textContent = "Day " + (i+1);
-            shiftDiv.appendChild(shiftTitle);
-            let payElements = document.createElement("ul");
-            for(let j = 0; j < shiftPay[i].length; j++) {
-                let payElement = document.createElement("li");
-                payElement.textContent = "Type: " + shiftPay[i][j].payType + " | Rate: " + shiftPay[i][j].rate + " | Hours: " + shiftPay[i][j].hours.toFixed(4) + " | $" + shiftPay[i][j].payAmount.toFixed(2);
-                payElements.appendChild(payElement);
-                totalValue += shiftPay[i][j].payAmount;
-            }
-            shiftDiv.appendChild(payElements);
-            resultArea.appendChild(shiftDiv);
-        }
+    if(!selectedDate) {
+        dateDiv.style.borderStyle = "solid";
+        dateDiv.style.background = "";
+        let dateErrorElement = document.createElement("h3");
+        dateErrorElement.textContent = "Please select a Week Commencing date!";
+        resultArea.appendChild(dateErrorElement);
     }
-    if(totalValue > 0.0) {
-        let totalElement = document.createElement("h3");
-        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-        resultArea.appendChild(totalElement);
+    else {
+        dateDiv.style.borderStyle = "none";
+        dateDiv.style.background = "none";
+
+        for(let i = 0; i < 14; i++) {
+            if(shiftPay[i].length > 0){ //if any pay elements for current day
+                let shiftDiv = document.createElement("div");
+                let shiftTitle = document.createElement("h3");
+                shiftTitle.textContent = "Day " + (i+1);
+                shiftDiv.appendChild(shiftTitle);
+                let payElements = document.createElement("ul");
+                for(let j = 0; j < shiftPay[i].length; j++) {
+                    let payElement = document.createElement("li");
+                    payElement.textContent = "Type: " + shiftPay[i][j].payType + " | Rate: " + shiftPay[i][j].rate + " | Hours: " + shiftPay[i][j].hours.toFixed(4) + " | $" + shiftPay[i][j].payAmount.toFixed(2);
+                    payElements.appendChild(payElement);
+                    totalValue += shiftPay[i][j].payAmount;
+                }
+                shiftDiv.appendChild(payElements);
+                resultArea.appendChild(shiftDiv);
+            }
+        }
+        if(totalValue > 0.0) {
+            let totalElement = document.createElement("h3");
+            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+            resultArea.appendChild(totalElement);
+        }
     }
 }
 
-function updateDates() { //for input type: date
+function updateDates() { //for input type: date. NOT USED
     let dayOfWeekFields = document.querySelectorAll(".day-of-week");
     let inputDate = $("#week-commencing-date").datepicker("getDate");
     if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
