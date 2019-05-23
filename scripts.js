@@ -109,20 +109,43 @@ class PayElement {
         let selectedDate = $("#week-commencing-date").datepicker("getDate");
         let rate = 0
         switch(this.payType) {
-            case "normal": case "guarantee": case "edo": case "wePen100":
+            case "normal": //Normal rate
+            case "guarantee": //pay guarantee to 8 hours
+            case "edo":
+            case "wePen100":
+            case "phgaz":
+            case "phXpay":
+            case "phWorked":
+            case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
+
                 rate = getEbaRate(selectedDate, selectedGradeRates);
                 break;
             case "wePen50":
+            case "phPen50":
                 rate = getEbaRate(selectedDate, selectedGradeRates);
                 rate /= 2;
                 break;
-            case "ot150": case "rost50":
+            case "ot150":
+            case "rost50":
+            case "phPen150":
                 rate = getEbaRate(selectedDate, selectedGradeRates);
                 rate *= 1.5;
                 break;
             case "ot200":
                 rate = getEbaRate(selectedDate, selectedGradeRates);
                 rate *= 2;
+                break;
+            case "earlyShift":
+                //lookup early rates.
+                break;
+            case "afternoonShift":
+                //lookup arvo rates.
+                break;
+            case "nightShift":
+                //lookup night rates.
+                break;
+            case "metroSig2":
+                //lookup sig rates.
                 break;
             default:
                 console.error("PayElement.rate: unable to get rate for payType \"" + this.payType + "\"");
@@ -165,7 +188,8 @@ $(document).ready(function() {
             updateResults();
         }
     });
-
+    updateDates();
+    updateResults();
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) {timeField[i].addEventListener("focus", function(){closeAllOptionsShelves();});} //close shelves on time field focus
 });
@@ -469,7 +493,7 @@ function updateResults() {
         dateDiv.style.borderStyle = "solid";
         dateDiv.style.background = "";
         let dateErrorElement = document.createElement("h3");
-        dateErrorElement.textContent = "Please select a Week Commencing date!";
+        dateErrorElement.textContent = "Please set Week Commencing date!";
         resultArea.appendChild(dateErrorElement);
     }
     else {
@@ -501,12 +525,12 @@ function updateResults() {
     }
 }
 
-function updateDates() { //for input type: date. NOT USED
+function updateDates() { //updates day of week fields
     let dayOfWeekFields = document.querySelectorAll(".day-of-week");
     let inputDate = $("#week-commencing-date").datepicker("getDate");
-    if(isNaN(inputDate.valueOf())){ //if date invalid, blank the dates
+    if(!inputDate){ //if date invalid, blank the dates
         for(let i = 0; i < dayOfWeekFields.length; i++){
-            dateFields[i].innerHTML = daysOfWeek[i%7];
+            dayOfWeekFields[i].innerHTML = daysOfWeek[i%7];
         }
     }
     else { //date valid, print dates
@@ -573,13 +597,28 @@ function getEbaRate(date, rates) {
 //currently proof of concept and under development
 function updateShiftPayTable() {
     shiftPay = []; //clear pay table
-    for(let i = 0; i < 14; i++) {
+    for(let day = 0; day < 14; day++) {
         shiftPay.push([]);
-        if(shifts[i].hoursDecimal <= 0) { //if zero hours
+        if(shifts[day].hoursDecimal <= 0) { //if shift has zero hours
             //check for shift options (PH?)
         }
-        else {
-            shiftPay[i].push(new PayElement("normal", shifts[i].hoursDecimal));
+        else { //if shift has hours
+            if(isWeekday(day)) {
+                ///////////////////////////////
+            }
+            shiftPay[day].push(new PayElement("normal", shifts[day].hoursDecimal));
         }   
+    }
+}
+
+function isWeekday(day) { //only for values 0-13. returns True outside of this range.
+    switch(day) {
+        case 0:
+        case 6:
+        case 7:
+        case 13:
+            return false;
+        default:
+            return true;
     }
 }
