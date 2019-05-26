@@ -9,11 +9,12 @@ const conversionRates =     [46.1015,      47.2541,      48.4354];
 
 //colours
 const ojtColour = "#ff7300";
+const ddoColour = "#005229";
 const phColour = "#c8ff00";
 const wmColour = "#bd4bff";
 const sickColour = "#ff0000";
 
-const payTypes = ["normal", "guarantee", "edo", "wePen50", "wePen100", "ot150", "ot200", "rost50", "earlyShift", "afternoonShift", "nightShift", "metroSig2"];
+const payTypes = ["normal", "sick", "guarantee", "edo", "wePen50", "wePen100", "ot150", "ot200", "rost50", "phGaz", "phXpay", "phWorked", "earlyShift", "afternoonShift", "nightShift", "metroSig2"];
 
 
 //define Classes
@@ -35,6 +36,9 @@ class Shift {
         this.ph = false; //public holiday
         this.wm = false; //wasted meal
         this.sick = false //sick day
+        this.ddo = false //DDO
+        this.shiftNumber = 0;
+        this.shiftWorked = 0;
     }
 
     get hoursString() {
@@ -110,10 +114,11 @@ class PayElement {
         let rate = 0
         switch(this.payType) {
             case "normal": //Normal rate
+            case "sick":
             case "guarantee": //pay guarantee to 8 hours
             case "edo":
             case "wePen100":
-            case "phgaz":
+            case "phGaz":
             case "phXpay":
             case "phWorked":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
@@ -207,6 +212,7 @@ function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let ojt = shifts[i].ojt;
+        let ddo = shifts[i].ddo;
         let ph = shifts[i].ph;
         let wm = shifts[i].wm;
         let sick = shifts[i].sick;
@@ -215,6 +221,13 @@ function updateOptionsButtons() {
         if(sick) {
             optionsButtons[i].textContent = "Sick";
             optionsButtons[i].style.backgroundColor = sickColour;
+            optionsButtons[i].style.backgroundImage = "";
+            optionsButtons[i].style.color = "";
+            optionsButtons[i].style.fontWeight = "bold";
+        }
+        else if(ddo) {
+            optionsButtons[i].textContent = "DDO";
+            optionsButtons[i].style.backgroundColor = ddoColour;
             optionsButtons[i].style.backgroundImage = "";
             optionsButtons[i].style.color = "";
             optionsButtons[i].style.fontWeight = "bold";
@@ -275,6 +288,7 @@ function updateOptionsButtons() {
                 if(optionsCount > 0) {
                     let cssGradient = "linear-gradient(to right";
                     if(ojt) cssGradient += "," + ojtColour;
+                    if(ddo) cssGradient += "," + ddoColour;
                     if(ph) cssGradient += "," + phColour;
                     if(wm) cssGradient += "," + wmColour;
                     if(sick) cssGradient += "," + sickColour;
@@ -336,6 +350,10 @@ function generateOptionsShelfButtons(day) {
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         ojtButton.style.background = "";
         ojtButton.style.color = "black";
@@ -345,8 +363,44 @@ function generateOptionsShelfButtons(day) {
             shifts[day].ojt = true;
             shifts[day].sick = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         ojtButton.style.background = "none";
+    }
+
+    //DDO button
+    let ddoButton = document.createElement("a");
+    ddoButton.textContent = "DDO";
+    ddoButton.setAttribute("class", "button ddo-button");
+    if(shifts[day].ddo) {//if DDO
+        ddoButton.addEventListener("click", function(){
+            shifts[day].ddo = false;
+            refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
+        });
+        ddoButton.style.background = "";
+        ddoButton.style.color = "black";
+    }
+    else {//if not DDO
+        ddoButton.addEventListener("click", function(){
+            shifts[day].ddo = true;
+            shifts[day].sick = false;
+            shifts[day].ph = false;
+            shifts[day].wm = false;
+            shifts[day].ojt = false;
+            refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
+        });
+        ddoButton.style.background = "none";
     }
 
     //Public Holiday button
@@ -357,6 +411,10 @@ function generateOptionsShelfButtons(day) {
         phButton.addEventListener("click", function(){
             shifts[day].ph = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         phButton.style.background = "";
         phButton.style.color = "black";
@@ -366,6 +424,10 @@ function generateOptionsShelfButtons(day) {
             shifts[day].ph = true;
             shifts[day].sick = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         phButton.style.background = "none";
     }
@@ -378,6 +440,10 @@ function generateOptionsShelfButtons(day) {
         wmButton.addEventListener("click", function(){
             shifts[day].wm = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         wmButton.style.background = "";
         wmButton.style.color = "black";
@@ -387,11 +453,15 @@ function generateOptionsShelfButtons(day) {
             shifts[day].wm = true;
             shifts[day].sick = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         wmButton.style.background = "none";
     }
 
-    //Sick Meal button
+    //Sick button
     let sickButton = document.createElement("a");
     sickButton.textContent = "Sick";
     sickButton.setAttribute("class", "button sick-button");
@@ -399,6 +469,10 @@ function generateOptionsShelfButtons(day) {
         sickButton.addEventListener("click", function(){
             shifts[day].sick = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         sickButton.style.background = "";
         sickButton.style.color = "black";
@@ -410,12 +484,17 @@ function generateOptionsShelfButtons(day) {
             shifts[day].wm = false;
             shifts[day].ojt = false;
             refreshOptionsShelf(day);
+            updateShiftWorkedCount();
+            printShiftHours();
+            updateShiftPayTable();
+            updateResults();
         });
         sickButton.style.background = "none";
     }
 
     //append buttons to shelf
     shelf.appendChild(ojtButton);
+    shelf.appendChild(ddoButton);
     shelf.appendChild(phButton);
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
@@ -423,12 +502,13 @@ function generateOptionsShelfButtons(day) {
 
 function timeChanged(field) {
     if(timeField()[field].value.length == 4) {
-        updateHoursPerShift();
+        updateShiftTable();
         if(field < 27) timeField()[field + 1].focus();
     }
     else {
         shifts[fieldToShift(field)].setNilHours();
     }
+    updateShiftWorkedCount();
     printShiftHours();
     updateOptionsButtons();
     updateShiftPayTable();
@@ -468,18 +548,33 @@ function updateGrade() {
     updateResults();
 }
 
-function updateHoursPerShift() {
+function updateShiftTable() {
     let times = timeField();
-    //shifts = [];
     for(let i = 0; i < times.length; i += 2) {
+        let currentShift = fieldToShift(i);
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
-            //shifts.push(new Shift(times[i].value, times[i+1].value, "ord"));
-            shifts[fieldToShift(i)].setShiftTimes(times[i].value, times[i+1].value);
+            shifts[currentShift].setShiftTimes(times[i].value, times[i+1].value);
         }
         else {
-            //shifts.push(new Shift());
-            shifts[fieldToShift(i)].setNilHours();
+            shifts[currentShift].setNilHours();
         }
+    }
+    updateShiftWorkedCount();
+}
+
+function updateShiftWorkedCount() {
+    let shiftsCount = 0;
+    let shiftsWorkedCount = 0;
+    for(let i = 0; i < shifts.length; i++) {
+        //determine if shift
+        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].ph || shifts[i].ddo) {
+            shifts[i].shiftNumber = ++shiftsCount;
+        } else shifts[i].shiftNumber = 0;
+
+        //determine if worked shift
+        if(shifts[i].hoursDecimal > 0 && !shifts[i].sick) {
+            shifts[i].shiftWorked = ++shiftsWorkedCount;
+        } else shifts[i].shiftWorked = 0;
     }
 }
 
@@ -504,8 +599,11 @@ function updateResults() {
             if(shiftPay[i].length > 0){ //if any pay elements for current day
                 let shiftDiv = document.createElement("div");
                 let shiftTitle = document.createElement("h3");
-                shiftTitle.textContent = "Day " + (i+1);
+                shiftTitle.textContent = $(".day-of-week")[i].textContent;
                 shiftDiv.appendChild(shiftTitle);
+                let shiftSubtitle = document.createElement("i");
+                shiftSubtitle.textContent = "Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorked;
+                shiftDiv.appendChild(shiftSubtitle);
                 let payElements = document.createElement("ul");
                 for(let j = 0; j < shiftPay[i].length; j++) {
                     let payElement = document.createElement("li");
@@ -514,11 +612,13 @@ function updateResults() {
                     totalValue += shiftPay[i][j].payAmount;
                 }
                 shiftDiv.appendChild(payElements);
+                shiftDiv.appendChild(document.createElement("hr"));
                 resultArea.appendChild(shiftDiv);
             }
         }
         if(totalValue > 0.0) {
             let totalElement = document.createElement("h3");
+            totalElement.setAttribute("id", "totalElement");
             totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
             resultArea.appendChild(totalElement);
         }
@@ -601,10 +701,11 @@ function updateShiftPayTable() {
         shiftPay.push([]);
         if(shifts[day].hoursDecimal <= 0) { //if shift has zero hours
             //check for shift options (PH?)
+            if(shifts[day].sick) shiftPay[day].push(new PayElement("sick", 8));
         }
         else { //if shift has hours
             if(isWeekday(day)) {
-                ///////////////////////////////
+
             }
             shiftPay[day].push(new PayElement("normal", shifts[day].hoursDecimal));
         }   

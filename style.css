@@ -46,6 +46,11 @@ label {
     border-color: #ff0000;
 }
 
+.ddo-button {
+    background-color: #005229;
+    border-color: #005229;
+}
+
 .options-button:hover {
     background-color: #5edfff;
 }
@@ -79,6 +84,11 @@ label {
 .grid > h3,
 .hr {
     grid-column: 1 / 6;
+}
+
+hr {
+    border-bottom: none;
+    border-top: 1px solid white;
 }
 
 .grid-heading {
@@ -149,7 +159,7 @@ label {
     cursor: pointer;
 }
 
-li {
+li, #totalElement {
     font-family:  Courier, Arial, Helvetica;
 }
 
