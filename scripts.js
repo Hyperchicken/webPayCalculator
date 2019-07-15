@@ -128,6 +128,7 @@ class PayElement {
             case "sick":
             case "guarantee": //pay guarantee to 8 hours
             case "edo":
+            case "ddoWorked":
             case "wePen100":
             case "rost100":
             case "phGaz":
@@ -178,6 +179,7 @@ class PayElement {
 //initialise variables
 let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
+let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
 let selectedGradeRates;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
@@ -248,57 +250,47 @@ function updateOptionsButtons() {
             optionsButtons[i].style.color = "";
             optionsButtons[i].style.fontWeight = "bold";
         }
-        else if(ddo) {
-            optionsButtons[i].textContent = "DDO";
-            optionsButtons[i].style.backgroundColor = ddoColour;
-            optionsButtons[i].style.backgroundImage = "";
-            optionsButtons[i].style.color = "";
-            optionsButtons[i].style.fontWeight = "bold";
-        }
         else if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
+            if(ph || ddo) {
+
+            }
+            else {
+
+            }
             optionsButtons[i].textContent = "OFF";
             optionsButtons[i].style.backgroundColor = "black";
             optionsButtons[i].style.backgroundImage = "";
             optionsButtons[i].style.color = "";
             optionsButtons[i].style.fontWeight = "bold";
-            if(ojt || ph || wm) { //if any shift options selected, show this on the main option button.
-                /*let multipleOptions = false; //trigger for adding delimiters for multiple options
-                optionsButtons[i].textContent += " (";
-                if(ojt) {
-                    optionsButtons[i].textContent += "OJT";
-                    multipleOptions = true;
-                } 
-                if(ph) {
-                    if(multipleOptions) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "PH";
-                    multipleOptions = true;
-                }
-                if(wm) {
-                    if(multipleOptions) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "WM";
-                    multipleOptions = true;
-                }
-                optionsButtons[i].textContent += ")";*/
+            if(ojt || wm) { //if any shift options selected, show this on the main option button.
                 optionsButtons[i].textContent += " (+)";
             }
         }
         else { //if actual shift
-            if(ojt || ph || wm){
+            if(ojt || ph || wm || ddo){
                 let optionsCount = 0;
                 optionsButtons[i].textContent = "";
                 optionsButtons[i].style.color = "black";
                 optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
                 if(ojt){
-                    optionsButtons[i].textContent = "OJT";
+                    optionsButtons[i].textContent += "OJT";
                     optionsButtons[i].style.backgroundColor = ojtColour;
+                    optionsCount++;
+                }
+                if(ddo) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "DDO Worked";
+                    optionsButtons[i].style.backgroundColor = ddoColour;
+                    optionsButtons[i].style.backgroundImage = "";
+                    optionsButtons[i].style.color = "";
+                    optionsButtons[i].style.fontWeight = "bold";
                     optionsCount++;
                 }
                 if(ph){
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "PH";
                     optionsButtons[i].style.backgroundColor = phColour;
-                    
                     optionsCount++;
                 }
                 if(wm){
@@ -414,9 +406,6 @@ function generateOptionsShelfButtons(day) {
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = true;
             shifts[day].sick = false;
-            shifts[day].ph = false;
-            shifts[day].wm = false;
-            shifts[day].ojt = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -650,6 +639,22 @@ function updateResults(viewFormat) {
                         resultArea.appendChild(shiftDiv);
                     }
                 }
+                if(additionalPayments.length > 0) {
+                    let additionalPaymentsDiv = document.createElement("div");
+                    let title = document.createElement("h3");
+                    title.textContent = "Additional Payments";
+                    additionalPaymentsDiv.appendChild(title);
+                    let payElements = document.createElement("ul");
+                    for(let j = 0; j < additionalPayments.length; j++) {
+                        let payElement = document.createElement("li");
+                        payElement.textContent = "Type: " + additionalPayments[j].payClass + " | Rate: " + additionalPayments[j].rate.toFixed(4) + " | Hours: " + additionalPayments[j].hours.toFixed(4) + " | $" + additionalPayments[j].payAmount.toFixed(2);
+                        payElements.appendChild(payElement);
+                        totalValue += additionalPayments[j].payAmount;
+                    }
+                    additionalPaymentsDiv.appendChild(payElements);
+                    additionalPaymentsDiv.appendChild(document.createElement("hr"));
+                    resultArea.appendChild(additionalPaymentsDiv);
+                }
                 if(totalValue > 0.0) {
                     let totalElement = document.createElement("h3");
                     totalElement.setAttribute("id", "totalElement");
@@ -731,12 +736,17 @@ function getEbaRate(date, rates) {
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
     shiftPay = []; //clear pay table
+    additionalPayments = [];
+    let edoWeek = false;
     for(let day = 0; day < 14; day++) {
         let s = shifts[day]; //alias
         shiftPay.push([]);
+        if(s.ddo) {
+            edoWeek = true;
+        }
         if(s.hoursDecimal <= 0) { //if shift has zero hours
             //check for shift options (PH?)
-            if(shifts[day].sick) shiftPay[day].push(new PayElement("sick", 8));
+            if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
         }
         else { //if shift has hours
             if(s.ph) { //Public Holiday
@@ -848,6 +858,9 @@ function updateShiftPayTable() {
                         }
                     }
                 }
+                if(s.ddo) {
+                    shiftPay[day].push(new PayElement("ddoWorked", 0));  //NEED TO GET ONE OFF PAYMENT DETAILS
+                }
             }
         }
         if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) { //suburban allowance
@@ -856,6 +869,12 @@ function updateShiftPayTable() {
         if(s.wm) { //wasted meal
             shiftPay[day].push(new PayElement("mealAllowance", 1));
         }   
+    }
+    if(edoWeek) {
+        additionalPayments.push(new PayElement("edo", 4));
+    }
+    else {
+        additionalPayments.push(new PayElement("edo", -4));
     }
 }
 
