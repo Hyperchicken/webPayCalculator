@@ -199,10 +199,12 @@ $(document).ready(function() {
     }
 
     //setup datepicker
+    let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
+        defaultDate: daysToLastFortnight,
         beforeShowDay: function(date){
             let day = date.getDay();
             if(day == 0) {
@@ -212,14 +214,16 @@ $(document).ready(function() {
                 return [false, "datePickHidden" ];
             }
         },
-        onClose: function(){
+        onSelect: function(){
             printShiftHours();
             updateOptionsButtons();
             updateShiftPayTable();
             updateResults();
+            toggleDatepicker();
         }
     });
     //update any existing data on page load
+    toggleDatepicker();
     updateDates();
     updateShiftTable();
     updateShiftWorkedCount();
@@ -241,6 +245,17 @@ function initButtons() {
         optionsButtons[i].textContent = "Options";
     }
     updateOptionsButtons();
+}
+
+function toggleDatepicker() {
+    if($("#week-commencing-date").css("display") == "none") {
+        $("#week-commencing-date").css("display", "");
+        $("#date-button").css("border-style", "solid");
+    }
+    else {
+        $("#week-commencing-date").css("display", "none");
+        $("#date-button").css("border-style", "");
+    }
 }
 
 function updateOptionsButtons() {

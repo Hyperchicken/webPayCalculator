@@ -155,8 +155,14 @@ hr {
 }
 
 #week-commencing-date {
-    width: 100px;
+    grid-column: 1 / 6;
+    justify-self: center;
+}
+
+#date-button {
     cursor: pointer;
+    border-color: #00ccff;
+    border-width: 2px;
 }
 
 li, #totalElement {
