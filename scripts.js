@@ -211,7 +211,7 @@ $(document).ready(function() {
                 return [true , "" ];
             }
             else {
-                return [false, "datePickHidden" ];
+                return [false, "" ];
             }
         },
         onSelect: function(){

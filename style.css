@@ -161,7 +161,7 @@ hr {
 
 #date-button {
     cursor: pointer;
-    border-color: #00ccff;
+    border-color: #e48100;
     border-width: 2px;
 }
 
@@ -177,17 +177,17 @@ input[type=tel] {
     text-align: center;
 }
 
-.datePickHidden {
-}
-
-.datePickVisible {
-
-}
-
 
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
     input[type=tel]  {
         font-size: 1em;
+    }
+    .ui-datepicker {
+        width: 22em !important;
+    }
+    .ui-datepicker td a,
+    .ui-datepicker td span {
+        height: 2em !important;
     }
   }
