@@ -167,6 +167,7 @@ hr {
 
 li, #totalElement {
     font-family:  Courier, Arial, Helvetica;
+    white-space: pre-wrap;
 }
 
 input[type=text],

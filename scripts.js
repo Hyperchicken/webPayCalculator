@@ -276,16 +276,19 @@ function updateOptionsButtons() {
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
             if(s.sick || s.ph || s.ddo) {
                 if(s.sick) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent = "Sick";
                     optionsButtons[i].style.backgroundColor = sickColour;
                     optionsCount++;
                 }
                 if(s.ph) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "PH-OFF";
                     optionsButtons[i].style.backgroundColor = phColour;
                     optionsCount++;
                 }
                 if(s.ddo) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "DDO";
                     optionsButtons[i].style.backgroundColor = ddoColour;
                     optionsCount++;
@@ -302,6 +305,7 @@ function updateOptionsButtons() {
         else { //if actual shift
             if(s.ojt || s.ph || s.wm || s.ddo || s.sick){
                 if(s.sick) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent = "Sick";
                     optionsButtons[i].style.backgroundColor = sickColour;
                     optionsCount++;
@@ -343,18 +347,18 @@ function updateOptionsButtons() {
                 optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
             }
-            //set gradient colour for multiple options
-            if(optionsCount > 0) {
-                let cssGradient = "linear-gradient(to right";
-                if(s.sick) cssGradient += "," + sickColour;
-                if(s.ojt) cssGradient += "," + ojtColour;
-                if(s.ddo) cssGradient += "," + ddoColour;
-                if(s.ph) cssGradient += "," + phColour;
-                if(s.wm) cssGradient += "," + wmColour;
-                cssGradient += ")";
-                optionsButtons[i].style.backgroundImage = cssGradient;
-            }
         }   
+        //set gradient colour for multiple options
+        if(optionsCount > 0) {
+            let cssGradient = "linear-gradient(to right";
+            if(s.sick) cssGradient += "," + sickColour;
+            if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
+            if(s.ddo) cssGradient += "," + ddoColour;
+            if(s.ph) cssGradient += "," + phColour;
+            if(s.wm && s.hoursDecimal > 0) cssGradient += "," + wmColour;
+            cssGradient += ")";
+            optionsButtons[i].style.backgroundImage = cssGradient;
+        }
     }
 }
 
@@ -407,7 +411,6 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         ojtButton.style.background = "";
-        ojtButton.style.color = "black";
     }
     else {//if not OJT
         ojtButton.addEventListener("click", function(){
@@ -435,7 +438,6 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         ddoButton.style.background = "";
-        ddoButton.style.color = "black";
     }
     else {//if not DDO
         ddoButton.addEventListener("click", function(){
@@ -491,7 +493,6 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         wmButton.style.background = "";
-        //wmButton.style.color = "black";
     }
     else {//if not WM
         wmButton.addEventListener("click", function(){
@@ -519,7 +520,6 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         sickButton.style.background = "";
-        sickButton.style.color = "black";
     }
     else {//if not sick
         sickButton.addEventListener("click", function(){
@@ -659,7 +659,7 @@ function updateResults(viewFormat) {
                         let payElements = document.createElement("ul");
                         for(let j = 0; j < shiftPay[i].length; j++) {
                             let payElement = document.createElement("li");
-                            payElement.textContent = "Type: " + shiftPay[i][j].payClass + " | Rate: " + shiftPay[i][j].rate.toFixed(4) + " | Hours: " + shiftPay[i][j].hours.toFixed(4) + " | $" + shiftPay[i][j].payAmount.toFixed(2);
+                            payElement.textContent = "Type: " + shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(7, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(7, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
                             payElements.appendChild(payElement);
                             totalValue += shiftPay[i][j].payAmount;
                         }
