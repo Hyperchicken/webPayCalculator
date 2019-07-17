@@ -14,9 +14,10 @@ const afternoonShiftRates = [3.2508,       3.3321,       3.4154]; //a shift whic
 const nightShiftRates =     [3.8209,       3.9164,       4.0143]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
 
 //colours
+const normalColour = "#00ccff";
 const ojtColour = "#ff7300";
 const ddoColour = "#005229";
-const phColour = "#c8ff00";
+const phColour = "#44c600";
 const wmColour = "#bd4bff";
 const sickColour = "#ff0000";
 
@@ -38,8 +39,10 @@ class Shift {
         }
         this.ojt = false; //OJT shift
         this.ph = false; //public holiday
+        this.phExtraPay = false; //ph extra pay. extra leave if false.
         this.wm = false; //wasted meal
         this.sick = false; //sick day
+        this.sickPart = false; //worked but went home sick partway through shift
         this.ddo = false; //DDO
         this.shiftNumber = 0;
         this.shiftWorkedNumber = 0;
@@ -198,9 +201,16 @@ $(document).ready(function() {
     //setup datepicker
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
+        altField: "#date-button",
+        firstDay: 0,
         beforeShowDay: function(date){
-            var day = date.getDay();
-		    return [ ( day == 0), "" ];
+            let day = date.getDay();
+            if(day == 0) {
+                return [true , "" ];
+            }
+            else {
+                return [false, "datePickHidden" ];
+            }
         },
         onClose: function(){
             printShiftHours();
@@ -236,79 +246,79 @@ function initButtons() {
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
-        let ojt = shifts[i].ojt;
-        let ddo = shifts[i].ddo;
-        let ph = shifts[i].ph;
-        let wm = shifts[i].wm;
-        let sick = shifts[i].sick;
-        if($(".shift-options-shelf")[i].style.display == "block") optionsButtons[i].style.borderStyle = "solid"; //if shelf open, highlight
-            else  optionsButtons[i].style.borderStyle = "none";
-        if(sick) {
-            optionsButtons[i].textContent = "Sick";
-            optionsButtons[i].style.backgroundColor = sickColour;
-            optionsButtons[i].style.backgroundImage = "";
-            optionsButtons[i].style.color = "";
-            optionsButtons[i].style.fontWeight = "bold";
+        let s = shifts[i];
+        if($(".shift-options-shelf")[i].style.display == "block") {
+            optionsButtons[i].style.borderStyle = "solid"; 
+        } //if shelf open, highlight
+        else {
+            optionsButtons[i].style.borderStyle = "none";
         }
-        else if(shifts[i].hoursDecimal <= 0){ //if ZERO HOURS
-            if(ph || ddo) {
-
+        optionsButtons[i].textContent = "";
+        optionsButtons[i].style.color = "";
+        optionsButtons[i].style.fontWeight = "bold";
+        optionsButtons[i].style.backgroundImage = "";
+        let optionsCount = 0;
+        if(s.hoursDecimal <= 0){ //if ZERO HOURS
+            if(s.sick || s.ph || s.ddo) {
+                if(s.sick) {
+                    optionsButtons[i].textContent = "Sick";
+                    optionsButtons[i].style.backgroundColor = sickColour;
+                    optionsCount++;
+                }
+                if(s.ph) {
+                    optionsButtons[i].textContent += "PH-OFF";
+                    optionsButtons[i].style.backgroundColor = phColour;
+                    optionsCount++;
+                }
+                if(s.ddo) {
+                    optionsButtons[i].textContent += "DDO";
+                    optionsButtons[i].style.backgroundColor = ddoColour;
+                    optionsCount++;
+                }
             }
             else {
-
-            }
-            optionsButtons[i].textContent = "OFF";
-            optionsButtons[i].style.backgroundColor = "black";
-            optionsButtons[i].style.backgroundImage = "";
-            optionsButtons[i].style.color = "";
-            optionsButtons[i].style.fontWeight = "bold";
-            if(ojt || wm) { //if any shift options selected, show this on the main option button.
-                optionsButtons[i].textContent += " (+)";
+                optionsButtons[i].textContent = "OFF";
+                optionsButtons[i].style.backgroundColor = "black";
+                if(s.ojt || s.wm) { //if any shift options selected, show this on the main option button.
+                    optionsButtons[i].textContent += " (+)";
+                }
             }
         }
         else { //if actual shift
-            if(ojt || ph || wm || ddo){
-                let optionsCount = 0;
-                optionsButtons[i].textContent = "";
-                optionsButtons[i].style.color = "black";
-                optionsButtons[i].style.fontWeight = "";
-                optionsButtons[i].style.backgroundImage = "";
-                if(ojt){
+            if(s.ojt || s.ph || s.wm || s.ddo || s.sick){
+                if(s.sick) {
+                    optionsButtons[i].textContent = "Sick";
+                    optionsButtons[i].style.backgroundColor = sickColour;
+                    optionsCount++;
+                }
+                if(s.ojt){
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "OJT";
                     optionsButtons[i].style.backgroundColor = ojtColour;
                     optionsCount++;
                 }
-                if(ddo) {
+                if(s.ddo) {
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "DDO Worked";
+                    optionsButtons[i].textContent += "DDO-W";
                     optionsButtons[i].style.backgroundColor = ddoColour;
-                    optionsButtons[i].style.backgroundImage = "";
-                    optionsButtons[i].style.color = "";
-                    optionsButtons[i].style.fontWeight = "bold";
                     optionsCount++;
                 }
-                if(ph){
+                if(s.ph){
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "PH";
+                    if(s.phExtraPay) {
+                        optionsButtons[i].textContent += "PH-XP";
+                    }
+                    else {
+                        optionsButtons[i].textContent += "PH-XL";
+                    }
                     optionsButtons[i].style.backgroundColor = phColour;
                     optionsCount++;
                 }
-                if(wm){
+                if(s.wm){
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "WM";
                     optionsButtons[i].style.backgroundColor = wmColour;
                     optionsCount++;
-                }
-                //set gradient colour for multiple options
-                if(optionsCount > 0) {
-                    let cssGradient = "linear-gradient(to right";
-                    if(ojt) cssGradient += "," + ojtColour;
-                    if(ddo) cssGradient += "," + ddoColour;
-                    if(ph) cssGradient += "," + phColour;
-                    if(wm) cssGradient += "," + wmColour;
-                    if(sick) cssGradient += "," + sickColour;
-                    cssGradient += ")";
-                    optionsButtons[i].style.backgroundImage = cssGradient;
                 }
             }
             else{
@@ -317,6 +327,17 @@ function updateOptionsButtons() {
                 optionsButtons[i].style.backgroundColor = "";
                 optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
+            }
+            //set gradient colour for multiple options
+            if(optionsCount > 0) {
+                let cssGradient = "linear-gradient(to right";
+                if(s.sick) cssGradient += "," + sickColour;
+                if(s.ojt) cssGradient += "," + ojtColour;
+                if(s.ddo) cssGradient += "," + ddoColour;
+                if(s.ph) cssGradient += "," + phColour;
+                if(s.wm) cssGradient += "," + wmColour;
+                cssGradient += ")";
+                optionsButtons[i].style.backgroundImage = cssGradient;
             }
         }   
     }
@@ -376,7 +397,6 @@ function generateOptionsShelfButtons(day) {
     else {//if not OJT
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = true;
-            shifts[day].sick = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -405,7 +425,6 @@ function generateOptionsShelfButtons(day) {
     else {//if not DDO
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = true;
-            shifts[day].sick = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -429,12 +448,11 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         phButton.style.background = "";
-        phButton.style.color = "black";
+        //phButton.style.color = "black";
     }
     else {//if not PH
         phButton.addEventListener("click", function(){
             shifts[day].ph = true;
-            shifts[day].sick = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -458,12 +476,11 @@ function generateOptionsShelfButtons(day) {
             updateResults();
         });
         wmButton.style.background = "";
-        wmButton.style.color = "black";
+        //wmButton.style.color = "black";
     }
     else {//if not WM
         wmButton.addEventListener("click", function(){
             shifts[day].wm = true;
-            shifts[day].sick = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -492,9 +509,6 @@ function generateOptionsShelfButtons(day) {
     else {//if not sick
         sickButton.addEventListener("click", function(){
             shifts[day].sick = true;
-            shifts[day].ph = false;
-            shifts[day].wm = false;
-            shifts[day].ojt = false;
             refreshOptionsShelf(day);
             updateShiftWorkedCount();
             printShiftHours();
@@ -749,6 +763,9 @@ function updateShiftPayTable() {
             if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
         }
         else { //if shift has hours
+            if(s.sick) {
+                if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
+            }
             if(s.ph) { //Public Holiday
                 //check for XPAY or XLEAVE //PLACEHOLDER CALCULATION
                 shiftPay[day].push(new PayElement("phWorked", s.hoursDecimal, s.ojt));

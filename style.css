@@ -32,8 +32,8 @@ label {
 }
 
 .ph-button {
-    background-color: #c8ff00;
-    border-color: #c8ff00;
+    background-color: #44c600;
+    border-color: #44c600;
 }
 
 .wm-button {
@@ -169,6 +169,13 @@ input[type=tel] {
     border-radius: 5px;
     padding: 4px;
     text-align: center;
+}
+
+.datePickHidden {
+}
+
+.datePickVisible {
+
 }
 
 
