@@ -223,7 +223,6 @@ $(document).ready(function() {
         }
     });
     //update any existing data on page load
-    toggleDatepicker();
     updateDates();
     updateShiftTable();
     updateShiftWorkedCount();
@@ -248,25 +247,18 @@ function initButtons() {
 }
 
 function toggleDatepicker() {
-    if($("#week-commencing-date").css("display") == "none") {
-        $("#week-commencing-date").css("display", "");
-        $("#date-button").css("border-style", "solid");
-    }
-    else {
-        $("#week-commencing-date").css("display", "none");
-        $("#date-button").css("border-style", "");
-    }
+    $( "#week-commencing-date" ).slideToggle(300);
 }
 
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
-        if($(".shift-options-shelf")[i].style.display == "block") {
-            optionsButtons[i].style.borderStyle = "solid"; 
+        if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
+            optionsButtons[i].style.borderColor = "cyan"; 
         } //if shelf open, highlight
         else {
-            optionsButtons[i].style.borderStyle = "none";
+            optionsButtons[i].style.borderColor = "";
         }
         optionsButtons[i].textContent = "";
         optionsButtons[i].style.color = "";
@@ -363,7 +355,7 @@ function updateOptionsButtons() {
 }
 
 function toggleOptionsShelf(day) {
-    if($(".shift-options-shelf")[day].style.display == "block"){ //close
+    /*if($(".shift-options-shelf")[day].style.display == "block"){ //close
         $(".shift-options-shelf")[day].style.display = "";
         updateOptionsButtons();
     }
@@ -373,11 +365,22 @@ function toggleOptionsShelf(day) {
         $(".shift-options-shelf")[day].style.display = "block";
         updateOptionsButtons();
         generateOptionsShelfButtons(day);
+    } */
+    if($(".shift-options-shelf:eq("+day+")").is(":hidden")){ //open
+        closeAllOptionsShelves();
+        $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
+        generateOptionsShelfButtons(day);
+        $(".shift-options-shelf:eq("+day+")").slideDown(150);
+        updateOptionsButtons();
+    }
+    else {                                                      //close
+        $(".shift-options-shelf:eq("+day+")").slideUp(150, updateOptionsButtons);
+        //$(".options-button")[day].style.border = "none";
     }
 }
 
 function refreshOptionsShelf(day) {
-    if($(".shift-options-shelf")[day].style.display == "block"){ //if open, refresh
+    if($(".shift-options-shelf:eq("+day+")").is(":visible")){ //if open, refresh
         $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
         updateOptionsButtons();
         generateOptionsShelfButtons(day);
@@ -389,9 +392,11 @@ function refreshOptionsShelf(day) {
 
 function closeAllOptionsShelves() {
     for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
-        $(".shift-options-shelf")[i].style.display = "";
+        if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
+            $(".shift-options-shelf:eq("+i+")").slideUp(150, updateOptionsButtons);
+        }
     }
-    updateOptionsButtons();
+
 }
 
 function generateOptionsShelfButtons(day) {

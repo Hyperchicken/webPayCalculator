@@ -15,7 +15,7 @@ label {
     color: white;
     border-width: 2px;
     border-radius: 5px;
-    border-style: solid;
+    border-style:  solid;
     display: inline-block;
     cursor: pointer;
 }
@@ -23,7 +23,8 @@ label {
 .options-button {
     
     background-color: #00ccff;
-    border-color: cyan;
+    border-color: black;
+    border-style: solid;
 }
 
 .ojt-button {
@@ -157,6 +158,8 @@ hr {
 #week-commencing-date {
     grid-column: 1 / 6;
     justify-self: center;
+    display: none;
+    transition: eas
 }
 
 #date-button {
