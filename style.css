@@ -24,12 +24,20 @@ label {
     margin-bottom: 4px;
 }
 
+.shift-options-shelf span {
+    display: inline-block;
+}
+
 .dual-button-l {
-    
+    margin-left: 0px;
+    border-radius: 5px 0px 0px 5px;
+    border-right-style: none;
 }
 
 .dual-button-r {
     margin-left: 0px;
+    border-radius: 0px 5px 5px 0px;
+    border-left-style: none;
 }
 
 .options-button {

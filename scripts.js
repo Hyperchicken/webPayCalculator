@@ -540,9 +540,9 @@ function generateOptionsShelfButtons(day) {
     //append buttons to shelf
     shelf.appendChild(ojtButton);
     shelf.appendChild(ddoButton);
-    shelf.appendChild(phSpan);
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
+    shelf.appendChild(phSpan);
 }
 
 function timeChanged(field) {
