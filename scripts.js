@@ -247,7 +247,8 @@ function initButtons() {
 }
 
 function toggleDatepicker() {
-    $( "#week-commencing-date" ).slideToggle(300);
+    //$( "#week-commencing-date" ).slideToggle(300); //animated slide. looks a bit jerky on mobile
+    $( "#week-commencing-date" ).toggle();
 }
 
 function updateOptionsButtons() {
@@ -255,10 +256,10 @@ function updateOptionsButtons() {
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
-            optionsButtons[i].style.borderColor = "cyan"; 
+            optionsButtons[i].style.borderStyle = "inset"; 
         } //if shelf open, highlight
         else {
-            optionsButtons[i].style.borderColor = "";
+            optionsButtons[i].style.borderStyle = "";
         }
         optionsButtons[i].textContent = "";
         optionsButtons[i].style.color = "";
@@ -370,11 +371,14 @@ function toggleOptionsShelf(day) {
         closeAllOptionsShelves();
         $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
         generateOptionsShelfButtons(day);
-        $(".shift-options-shelf:eq("+day+")").slideDown(150);
+        //$(".shift-options-shelf:eq("+day+")").slideDown(150);
+        $(".shift-options-shelf:eq("+day+")").toggle();
         updateOptionsButtons();
     }
     else {                                                      //close
-        $(".shift-options-shelf:eq("+day+")").slideUp(150, updateOptionsButtons);
+        //$(".shift-options-shelf:eq("+day+")").slideUp(150, updateOptionsButtons);
+        $(".shift-options-shelf:eq("+day+")").toggle();
+        updateOptionsButtons();
         //$(".options-button")[day].style.border = "none";
     }
 }
@@ -393,7 +397,9 @@ function refreshOptionsShelf(day) {
 function closeAllOptionsShelves() {
     for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
-            $(".shift-options-shelf:eq("+i+")").slideUp(150, updateOptionsButtons);
+            //$(".shift-options-shelf:eq("+i+")").slideUp(150, updateOptionsButtons);
+            $(".shift-options-shelf:eq("+i+")").toggle();
+            updateOptionsButtons();
         }
     }
 

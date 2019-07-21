@@ -159,7 +159,6 @@ hr {
     grid-column: 1 / 6;
     justify-self: center;
     display: none;
-    transition: eas
 }
 
 #date-button {
