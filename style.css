@@ -20,6 +20,18 @@ label {
     cursor: pointer;
 }
 
+.shelf-button {
+    margin-bottom: 4px;
+}
+
+.dual-button-l {
+    
+}
+
+.dual-button-r {
+    margin-left: 0px;
+}
+
 .options-button {
     
     background-color: #00ccff;
