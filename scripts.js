@@ -407,30 +407,29 @@ function closeAllOptionsShelves() {
 
 function generateOptionsShelfButtons(day) {
     let shelf = $(".shift-options-shelf")[day];
+    const reloadPageData = () => {
+        refreshOptionsShelf(day);
+        updateShiftWorkedCount();
+        printShiftHours();
+        updateShiftPayTable();
+        updateResults();
+    }
 
     //OJT button
     let ojtButton = document.createElement("a");
     ojtButton.textContent = "OJT";
-    ojtButton.setAttribute("class", "button ojt-button");
+    ojtButton.setAttribute("class", "button ojt-button shelf-button");
     if(shifts[day].ojt) {//if OJT
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = false;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         ojtButton.style.background = "";
     }
     else {//if not OJT
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = true;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         ojtButton.style.background = "none";
     }
@@ -438,54 +437,64 @@ function generateOptionsShelfButtons(day) {
     //DDO button
     let ddoButton = document.createElement("a");
     ddoButton.textContent = "DDO";
-    ddoButton.setAttribute("class", "button ddo-button");
+    ddoButton.setAttribute("class", "button ddo-button shelf-button");
     if(shifts[day].ddo) {//if DDO
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = false;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         ddoButton.style.background = "";
     }
     else {//if not DDO
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = true;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         ddoButton.style.background = "none";
     }
 
     //Public Holiday button
+    let phSpan = document.createElement("span");
     let phButton = document.createElement("a");
     phButton.textContent = "Public Holiday";
-    phButton.setAttribute("class", "button ph-button");
+    phButton.setAttribute("class", "button ph-button shelf-button");
+    phSpan.appendChild(phButton);
     if(shifts[day].ph) {//if PH
         phButton.addEventListener("click", function(){
             shifts[day].ph = false;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         phButton.style.background = "";
-        //phButton.style.color = "black";
+        if(shifts[day].hoursDecimal > 0) {
+            let xLeaveButton = document.createElement("a");
+            let xPayButton = document.createElement("a");
+            xLeaveButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
+            xPayButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
+            xLeaveButton.textContent = "Extra Leave";
+            xPayButton.textContent = "Extra Pay";
+            phSpan.appendChild(xLeaveButton);
+            phSpan.appendChild(xPayButton);
+            if(shifts[day].phExtraPay) {
+                xLeaveButton.addEventListener("click", function() {
+                    shifts[day].phExtraPay = false;
+                    reloadPageData();
+                });
+                xLeaveButton.style.background = "none";
+                xPayButton.style.background = "";
+            } else {
+                xPayButton.addEventListener("click", function() {
+                    shifts[day].phExtraPay = true;
+                    reloadPageData();
+                });
+                xLeaveButton.style.background = "";
+                xPayButton.style.background = "none";
+            }
+        }
     }
     else {//if not PH
         phButton.addEventListener("click", function(){
             shifts[day].ph = true;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         phButton.style.background = "none";
     }
@@ -493,26 +502,18 @@ function generateOptionsShelfButtons(day) {
     //Wasted Meal button
     let wmButton = document.createElement("a");
     wmButton.textContent = "Wasted Meal";
-    wmButton.setAttribute("class", "button wm-button");
+    wmButton.setAttribute("class", "button wm-button shelf-button");
     if(shifts[day].wm) {//if WM
         wmButton.addEventListener("click", function(){
             shifts[day].wm = false;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         wmButton.style.background = "";
     }
     else {//if not WM
         wmButton.addEventListener("click", function(){
             shifts[day].wm = true;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         wmButton.style.background = "none";
     }
@@ -520,26 +521,18 @@ function generateOptionsShelfButtons(day) {
     //Sick button
     let sickButton = document.createElement("a");
     sickButton.textContent = "Sick";
-    sickButton.setAttribute("class", "button sick-button");
+    sickButton.setAttribute("class", "button sick-button shelf-button");
     if(shifts[day].sick) {//if sick
         sickButton.addEventListener("click", function(){
             shifts[day].sick = false;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         sickButton.style.background = "";
     }
     else {//if not sick
         sickButton.addEventListener("click", function(){
             shifts[day].sick = true;
-            refreshOptionsShelf(day);
-            updateShiftWorkedCount();
-            printShiftHours();
-            updateShiftPayTable();
-            updateResults();
+            reloadPageData();
         });
         sickButton.style.background = "none";
     }
@@ -547,7 +540,7 @@ function generateOptionsShelfButtons(day) {
     //append buttons to shelf
     shelf.appendChild(ojtButton);
     shelf.appendChild(ddoButton);
-    shelf.appendChild(phButton);
+    shelf.appendChild(phSpan);
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
 }
