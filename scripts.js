@@ -184,6 +184,7 @@ let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
 let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
 let selectedGradeRates;
+var viewFormat;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -192,6 +193,8 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function() { 
     initButtons();
     updateGrade();
+
+    viewFormat = 
 
     let radios = $(".pay-grade-radio");
     for(let i = 0; i < radios.length; i++) {
@@ -626,7 +629,7 @@ function updateShiftWorkedCount() {
     }
 }
 
-function updateResults(viewFormat) {
+function updateResults() {
     let resultArea = document.getElementById("result-area");
     let totalValue = 0.0;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
