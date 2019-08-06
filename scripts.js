@@ -184,7 +184,6 @@ let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
 let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
 let selectedGradeRates;
-var viewFormat;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -193,8 +192,6 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function() { 
     initButtons();
     updateGrade();
-
-    viewFormat = 
 
     let radios = $(".pay-grade-radio");
     for(let i = 0; i < radios.length; i++) {
@@ -631,6 +628,7 @@ function updateShiftWorkedCount() {
 
 function updateResults() {
     let resultArea = document.getElementById("result-area");
+    let resultsViewFormat = document.forms.resultsViewForm.resultsView.value;
     let totalValue = 0.0;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
@@ -646,13 +644,30 @@ function updateResults() {
         dateDiv.style.borderStyle = "none";
         dateDiv.style.background = "none";
 
-        switch(viewFormat) {
+        switch(resultsViewFormat) {
+            case "grouped":
+            case "split":
             case "test":
                 let shiftTitle = document.createElement("h3");
                 shiftTitle.textContent = "TEST VIEW FORMAT";
                 resultArea.appendChild(shiftTitle);
                 break;
-            case "debug":
+            case "debug-grouped":
+                let groupedElements = [];
+                shiftPay.forEach(function(day){
+                    day.forEach(function(element){
+                        let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
+                        if(elementIndex == -1) {
+                            groupedElements.push(new PayElement(element.payClass, element.hours, element.ojt));
+                        }
+                        else {
+                            groupedElements[elementIndex].hours += element.hours;
+                        }
+                    });
+                });
+                groupedElements.forEach(function(value){console.log(value)});
+                break;
+            case "debug-split":
             default:
                 for(let i = 0; i < 14; i++) {
                     if(shiftPay[i].length > 0){ //if any pay elements for current day
