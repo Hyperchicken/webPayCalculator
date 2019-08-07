@@ -658,14 +658,40 @@ function updateResults() {
                     day.forEach(function(element){
                         let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
                         if(elementIndex == -1) {
-                            groupedElements.push(new PayElement(element.payClass, element.hours, element.ojt));
+                            groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
                         }
                         else {
                             groupedElements[elementIndex].hours += element.hours;
                         }
                     });
                 });
-                groupedElements.forEach(function(value){console.log(value)});
+                additionalPayments.forEach(function(element){
+                    let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
+                        if(elementIndex == -1) {
+                            groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
+                        }
+                        else {
+                            groupedElements[elementIndex].hours += element.hours;
+                        }
+                });
+                let listDiv = document.createElement("div");
+                let payElements = document.createElement("ul");
+                groupedElements.forEach(function(e){
+                    let payElement = document.createElement("li");
+                    payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(7, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(7, " ") + " | $" + e.payAmount.toFixed(2);
+                    payElements.appendChild(payElement);
+                    totalValue += e.payAmount;
+                });
+                listDiv.appendChild(payElements);
+                listDiv.appendChild(document.createElement("hr"));
+                resultArea.appendChild(listDiv);
+                if(totalValue > 0.0) {
+                    let totalElement = document.createElement("h3");
+                    totalElement.setAttribute("id", "totalElement");
+                    totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+                    resultArea.appendChild(totalElement);
+                }
+                //groupedElements.forEach(function(value){console.log(value)});
                 break;
             case "debug-split":
             default:
@@ -681,7 +707,7 @@ function updateResults() {
                         let payElements = document.createElement("ul");
                         for(let j = 0; j < shiftPay[i].length; j++) {
                             let payElement = document.createElement("li");
-                            payElement.textContent = "Type: " + shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(7, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(7, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
+                            payElement.textContent = shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(7, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(7, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
                             payElements.appendChild(payElement);
                             totalValue += shiftPay[i][j].payAmount;
                         }
