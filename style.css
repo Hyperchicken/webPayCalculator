@@ -8,12 +8,18 @@ label {
     display: block;
 }
 
+.radio-buttons {
+    display: inline-block;
+}
+
  /* Customize the label (the container) */
  .radio-container {
-    display: inline;
+    float: left;
+    display: block;
     position: relative;
     padding-left: 25px;
-    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
     cursor: pointer;
     font-size: 1em;
     -webkit-user-select: none;

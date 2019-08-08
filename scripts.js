@@ -193,11 +193,6 @@ $(document).ready(function() {
     initButtons();
     updateGrade();
 
-    let radios = $(".pay-grade-radio");
-    for(let i = 0; i < radios.length; i++) {
-        radios[i].addEventListener("change", function(){updateGrade();});
-    }
-
     //setup datepicker
     let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
     $("#week-commencing-date").datepicker({

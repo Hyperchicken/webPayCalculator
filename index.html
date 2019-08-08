@@ -24,11 +24,23 @@
                 <h3>Data Entry</h3>
 
                 <label class="pay-grade-label" for="payGradeForm">Pay grade: &nbsp;</label>
-                <form name="payGradeForm" class="pay-grade-radio-container">
-                    <span class="pay-grade-radio"><input type="radio" name="payGrade" value="spot" checked='true'> SPOT</span>
-                    <span class="pay-grade-radio"><input type="radio" name="payGrade" value="level1"> TD Lvl 1</span>
-                    <span class="pay-grade-radio"><input type="radio" name="payGrade" value="trainee"> Trainee</span>
-                    <span class="pay-grade-radio"><input type="radio" name="payGrade" value="conversion"> Conversion</span>
+                <form name="payGradeForm" class="pay-grade-radio-container" oninput="updateGrade()">
+                    <label class="radio-container">SPOT
+                            <input type="radio" name="payGrade" value="spot" checked="checked">
+                            <span class="checkmark"></span>
+                    </label>
+                    <label class="radio-container">TD Lvl 1
+                            <input type="radio" name="payGrade" value="level1">
+                            <span class="checkmark"></span>
+                    </label>
+                    <label class="radio-container">Trainee
+                            <input type="radio" name="payGrade" value="trainee">
+                            <span class="checkmark"></span>
+                    </label>
+                    <label class="radio-container">Conversion
+                            <input type="radio" name="payGrade" value="conversion">
+                            <span class="checkmark"></span>
+                    </label>
                 </form>
 
                 <div class="week-commencing">
