@@ -608,9 +608,10 @@ function updateShiftTable() {
 function updateShiftWorkedCount() {
     let shiftsCount = 0;
     let shiftsWorkedCount = 0;
+    if(ddoWeek()) shiftsWorkedCount = 1;
     for(let i = 0; i < shifts.length; i++) {
         //determine if shift
-        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].ph || shifts[i].ddo) {
+        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].ph) {
             shifts[i].shiftNumber = ++shiftsCount;
         } else shifts[i].shiftNumber = 0;
 
@@ -805,17 +806,20 @@ function getEbaRate(date, rates) {
     return 0;
 }
 
+function ddoWeek() {
+    for(let i = 0; i < shifts.length; i++) {
+        if(shifts[i].ddo) return true;
+    }
+    return false;
+}
+
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
     shiftPay = []; //clear pay table
     additionalPayments = [];
-    let edoWeek = false;
     for(let day = 0; day < 14; day++) {
         let s = shifts[day]; //alias
         shiftPay.push([]);
-        if(s.ddo) {
-            edoWeek = true;
-        }
         if(s.hoursDecimal <= 0) { //if shift has zero hours
             //check for shift options (PH?)
             if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
@@ -953,7 +957,7 @@ function updateShiftPayTable() {
         }   
     }
     if(getPayGrade() != "trainee") {
-        if(edoWeek) {
+        if(ddoWeek()) {
             additionalPayments.push(new PayElement("edo", 4));
         }
         else {
