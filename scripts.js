@@ -135,7 +135,6 @@ class PayElement {
             case "wePen100":
             case "rost100":
             case "phGaz":
-            case "phXpay":
             case "phWorked":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
                 rate += getEbaRate(selectedDate, selectedGradeRates);
@@ -628,6 +627,29 @@ function updateResults() {
     let totalValue = 0.0;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
+    //create grouped elements table for combined view
+    let groupedElements = [];
+    shiftPay.forEach(function(day){
+        day.forEach(function(element){
+            let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
+            if(elementIndex == -1) {
+                groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
+            }
+            else {
+                groupedElements[elementIndex].hours += element.hours;
+            }
+        });
+    });
+    additionalPayments.forEach(function(element){
+        let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
+            if(elementIndex == -1) {
+                groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
+            }
+            else {
+                groupedElements[elementIndex].hours += element.hours;
+            }
+    });
+
     resultArea.innerHTML = ""; //clear existing results
     if(!selectedDate) {
         dateDiv.style.borderStyle = "solid";
@@ -642,34 +664,6 @@ function updateResults() {
 
         switch(resultsViewFormat) {
             case "grouped":
-            case "split":
-            case "test":
-                let shiftTitle = document.createElement("h3");
-                shiftTitle.textContent = "TEST VIEW FORMAT";
-                resultArea.appendChild(shiftTitle);
-                break;
-            case "debug-grouped":
-                let groupedElements = [];
-                shiftPay.forEach(function(day){
-                    day.forEach(function(element){
-                        let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
-                        if(elementIndex == -1) {
-                            groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
-                        }
-                        else {
-                            groupedElements[elementIndex].hours += element.hours;
-                        }
-                    });
-                });
-                additionalPayments.forEach(function(element){
-                    let elementIndex = groupedElements.findIndex(function(elem){return element.payClass == elem.payClass;});
-                        if(elementIndex == -1) {
-                            groupedElements.push(new PayElement(element.payType, element.hours, element.ojt));
-                        }
-                        else {
-                            groupedElements[elementIndex].hours += element.hours;
-                        }
-                });
                 let listDiv = document.createElement("div");
                 let payElements = document.createElement("ul");
                 groupedElements.forEach(function(e){
@@ -687,7 +681,31 @@ function updateResults() {
                     totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
                     resultArea.appendChild(totalElement);
                 }
-                //groupedElements.forEach(function(value){console.log(value)});
+                break;
+            case "split":
+            case "test":
+                let shiftTitle = document.createElement("h3");
+                shiftTitle.textContent = "TEST VIEW FORMAT";
+                resultArea.appendChild(shiftTitle);
+                break;
+            case "debug-grouped":
+                let listDiv = document.createElement("div");
+                let payElements = document.createElement("ul");
+                groupedElements.forEach(function(e){
+                    let payElement = document.createElement("li");
+                    payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
+                    payElements.appendChild(payElement);
+                    totalValue += e.payAmount;
+                });
+                listDiv.appendChild(payElements);
+                listDiv.appendChild(document.createElement("hr"));
+                resultArea.appendChild(listDiv);
+                if(totalValue > 0.0) {
+                    let totalElement = document.createElement("h3");
+                    totalElement.setAttribute("id", "totalElement");
+                    totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+                    resultArea.appendChild(totalElement);
+                }
                 break;
             case "debug-split":
             default:
@@ -822,14 +840,18 @@ function updateShiftPayTable() {
         shiftPay.push([]);
         if(s.hoursDecimal <= 0) { //if shift has zero hours
             //check for shift options (PH?)
-            if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
+            if(s.sick) {
+                shiftPay[day].push(new PayElement("sick", 8));
+            }
+            if(s.ph) {
+                shiftPay[day].push(new PayElement("phGaz", 8));
+            }
         }
         else { //if shift has hours
             if(s.sick) {
                 if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
             }
             if(s.ph) { //Public Holiday
-                //check for XPAY or XLEAVE //PLACEHOLDER CALCULATION
                 shiftPay[day].push(new PayElement("phWorked", s.hoursDecimal, s.ojt));
                 if(s.phExtraPay || day == 0 || day == 7) {
                     shiftPay[day].push(new PayElement("phPen150", s.hoursDecimal, s.ojt));
