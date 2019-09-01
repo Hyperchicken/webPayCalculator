@@ -86,7 +86,7 @@ label {
 
 .button {
     font-size: 0.9em;
-    margin-left: 10px;
+    margin: 0px 5px;
     padding: 4px 6px;
     color: white;
     border-width: 2px;
@@ -98,20 +98,17 @@ label {
 
 .shelf-button {
     margin-bottom: 4px;
-}
-
-.shift-options-shelf span {
-    display: inline-block;
+    height: 18px;
 }
 
 .dual-button-l {
-    margin-left: 0px;
+    margin-left: -5px;
     border-radius: 5px 0px 0px 5px;
     border-right-style: none;
 }
 
 .dual-button-r {
-    margin-left: 0px;
+    margin-left: -5px;
     border-radius: 0px 5px 5px 0px;
     border-left-style: none;
 }
@@ -148,6 +145,21 @@ label {
     border-color: #005229;
 }
 
+.bonus-button {
+    background-color: #e79e00;
+    border-color: #e79e00;
+}
+
+.bonus-button > input {
+    margin: -4px 5px -4px 10px;
+    width: 2em;
+}
+
+.bonus-button > input::after {
+    content: "hrs";
+}
+
+
 .options-button:hover {
     background-color: #5edfff;
 }
@@ -166,6 +178,14 @@ label {
     margin-bottom: 1em;
     color: navy;
     display: none;
+    border-style: none none dashed none;
+    border-width: 1px;
+    border-color: white;
+    padding: 5px 0px;
+}
+
+.shift-options-shelf span {
+    display: inline-block;
 }
 
 .row {

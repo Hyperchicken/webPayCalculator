@@ -20,6 +20,7 @@ const ddoColour = "#005229";
 const phColour = "#44c600";
 const wmColour = "#bd4bff";
 const sickColour = "#ff0000";
+const bonusColour = "#e79e00";
 
 
 //define Classes
@@ -44,6 +45,8 @@ class Shift {
         this.sick = false; //sick day
         this.sickPart = false; //worked but went home sick partway through shift
         this.ddo = false; //DDO
+        this.bonus = false;
+        this.bonusHours = 0.0; //bonus payment hours
         this.shiftNumber = 0;
         this.shiftWorkedNumber = 0;
     }
@@ -137,6 +140,7 @@ class PayElement {
             case "phGaz":
             case "phWorked":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
+            case "bonusPayment":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 break;
             case "wePen50":
@@ -183,6 +187,7 @@ let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
 let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
 let selectedGradeRates;
+let selectBonusTextbox; //keep track of elements to select in future
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -261,13 +266,13 @@ function updateOptionsButtons() {
         optionsButtons[i].style.backgroundImage = "";
         let optionsCount = 0;
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
-            if(s.sick || s.ph || s.ddo) {
-                if(s.sick) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent = "Sick";
-                    optionsButtons[i].style.backgroundColor = sickColour;
-                    optionsCount++;
-                }
+            if(s.sick) {
+                if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                optionsButtons[i].textContent = "Sick";
+                optionsButtons[i].style.backgroundColor = sickColour;
+                optionsCount++;
+            }
+            else if(s.ph || s.ddo || (s.bonus && s.bonusHours > 0)) {
                 if(s.ph) {
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "PH-OFF";
@@ -280,23 +285,29 @@ function updateOptionsButtons() {
                     optionsButtons[i].style.backgroundColor = ddoColour;
                     optionsCount++;
                 }
+                if(s.bonus && s.bonusHours > 0) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "Bonus";
+                    optionsButtons[i].style.backgroundColor = bonusColour;
+                    optionsCount++;
+                }
             }
             else {
                 optionsButtons[i].textContent = "OFF";
                 optionsButtons[i].style.backgroundColor = "black";
-                if(s.ojt || s.wm) { //if any shift options selected, show this on the main option button.
+                if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
                     optionsButtons[i].textContent += " (+)";
                 }
             }
         }
         else { //if actual shift
-            if(s.ojt || s.ph || s.wm || s.ddo || s.sick){
-                if(s.sick) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent = "Sick";
-                    optionsButtons[i].style.backgroundColor = sickColour;
-                    optionsCount++;
-                }
+            if(s.sick) {
+                if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                optionsButtons[i].textContent = "Sick";
+                optionsButtons[i].style.backgroundColor = sickColour;
+                optionsCount++;
+            }
+            else if(s.ojt || s.ph || s.wm || s.ddo || s.bonus){
                 if(s.ojt){
                     if(optionsCount > 0) optionsButtons[i].textContent += " + ";
                     optionsButtons[i].textContent += "OJT";
@@ -326,23 +337,30 @@ function updateOptionsButtons() {
                     optionsButtons[i].style.backgroundColor = wmColour;
                     optionsCount++;
                 }
+                if(s.bonus && s.bonusHours > 0) {
+                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    optionsButtons[i].textContent += "Bonus";
+                    optionsButtons[i].style.backgroundColor = bonusColour;
+                    optionsCount++;
+                }
             }
-            else{
+            if(optionsCount == 0) {
                 optionsButtons[i].textContent = "Normal";
                 optionsButtons[i].style.color = "black";
                 optionsButtons[i].style.backgroundColor = "";
                 optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
             }
-        }   
+        }
         //set gradient colour for multiple options
-        if(optionsCount > 0) {
+        if(optionsCount > 0 && !s.sick) {
             let cssGradient = "linear-gradient(to right";
             if(s.sick) cssGradient += "," + sickColour;
             if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
             if(s.ddo) cssGradient += "," + ddoColour;
             if(s.ph) cssGradient += "," + phColour;
             if(s.wm && s.hoursDecimal > 0) cssGradient += "," + wmColour;
+            if(s.bonus && s.bonusHours > 0) cssGradient += "," + bonusColour;
             cssGradient += ")";
             optionsButtons[i].style.backgroundImage = cssGradient;
         }
@@ -468,26 +486,39 @@ function generateOptionsShelfButtons(day) {
             xPayButton.textContent = "Extra Pay";
             phSpan.appendChild(xLeaveButton);
             phSpan.appendChild(xPayButton);
-            if(shifts[day].phExtraPay) {
+            if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
                 xLeaveButton.addEventListener("click", function() {
-                    shifts[day].phExtraPay = false;
-                    reloadPageData();
+                    //add tooltip functionality explaining reason you cant have extra leave on a sunday
                 });
-                xLeaveButton.style.background = "none";
+                xLeaveButton.style.background = "#808080ad";
+                xLeaveButton.style.color = "black";
                 xPayButton.style.background = "";
-            } else {
-                xPayButton.addEventListener("click", function() {
-                    shifts[day].phExtraPay = true;
-                    reloadPageData();
-                });
-                xLeaveButton.style.background = "";
-                xPayButton.style.background = "none";
+            }
+            else {
+                if(shifts[day].phExtraPay) {
+                    xLeaveButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = false;
+                        reloadPageData();
+                    });
+                    xLeaveButton.style.background = "none";
+                    xPayButton.style.background = "";
+                } else {
+                    xPayButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = true;
+                        reloadPageData();
+                    });
+                    xLeaveButton.style.background = "";
+                    xPayButton.style.background = "none";
+                }
             }
         }
     }
     else {//if not PH
         phButton.addEventListener("click", function(){
             shifts[day].ph = true;
+            if(day == 0 || day == 7) {
+                shifts[day].phExtraPay = true;
+            }
             reloadPageData();
         });
         phButton.style.background = "none";
@@ -531,12 +562,61 @@ function generateOptionsShelfButtons(day) {
         sickButton.style.background = "none";
     }
 
+    //Bonus Payment button
+    let bonusButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
+    let bonusButtonText = document.createElement("a");
+    let bonusTextbox = document.createElement("input");
+    bonusButtonText.textContent = "Bonus Payment";
+    bonusButton.setAttribute("class", "button bonus-button shelf-button");
+    bonusTextbox.setAttribute("type", "tel");
+    bonusTextbox.pattern = "\\d{1,2}(\\.\\d{0,2})?";
+    bonusTextbox.maxLength = "5";
+    bonusButton.appendChild(bonusButtonText);
+    if(shifts[day].bonus) { //if bonus payment
+        let bonusHrsText = document.createElement("a");
+        bonusHrsText.textContent = "hrs";
+        bonusTextbox.value = shifts[day].bonusHours;
+        bonusButton.appendChild(bonusTextbox);
+        bonusButton.appendChild(bonusHrsText);
+        bonusButtonText.addEventListener("click", function(){
+            shifts[day].bonus = false;
+            reloadPageData();
+        });
+        bonusTextbox.addEventListener("input", function(){
+            if(this.validity.valid && parseFloat(this.value)) { //only accept valid input for bonus hours.
+                shifts[day].bonusHours = parseFloat(this.value);
+            }
+            else {
+                shifts[day].bonusHours = 0.0;
+            }
+            updateOptionsButtons();
+            updateShiftPayTable();
+            updateResults();
+        });
+    }
+    else {
+        bonusButton.addEventListener("click", function(){
+            shifts[day].bonus = true;
+            selectBonusTextbox = true;
+            reloadPageData();
+        });
+        bonusButton.style.background = "none";
+    }
+    
+
     //append buttons to shelf
     shelf.appendChild(ojtButton);
     shelf.appendChild(ddoButton);
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
+    shelf.appendChild(bonusButton);
+
+    //set focus if any
+    if(selectBonusTextbox) {
+        bonusTextbox.select();
+        selectBonusTextbox = false;
+    }
 }
 
 function timeChanged(field) {
@@ -662,96 +742,101 @@ function updateResults() {
         dateDiv.style.borderStyle = "none";
         dateDiv.style.background = "none";
 
-        switch(resultsViewFormat) {
-            case "grouped":
-                let listDiv = document.createElement("div");
-                let payElements = document.createElement("ul");
-                groupedElements.forEach(function(e){
-                    let payElement = document.createElement("li");
-                    payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                    payElements.appendChild(payElement);
-                    totalValue += e.payAmount;
-                });
-                listDiv.appendChild(payElements);
-                listDiv.appendChild(document.createElement("hr"));
-                resultArea.appendChild(listDiv);
-                if(totalValue > 0.0) {
-                    let totalElement = document.createElement("h3");
-                    totalElement.setAttribute("id", "totalElement");
-                    totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                    resultArea.appendChild(totalElement);
-                }
-                break;
-            case "split":
-            case "test":
-                let shiftTitle = document.createElement("h3");
-                shiftTitle.textContent = "TEST VIEW FORMAT";
-                resultArea.appendChild(shiftTitle);
-                break;
-            case "debug-grouped":
-                let listDiv = document.createElement("div");
-                let payElements = document.createElement("ul");
-                groupedElements.forEach(function(e){
-                    let payElement = document.createElement("li");
-                    payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                    payElements.appendChild(payElement);
-                    totalValue += e.payAmount;
-                });
-                listDiv.appendChild(payElements);
-                listDiv.appendChild(document.createElement("hr"));
-                resultArea.appendChild(listDiv);
-                if(totalValue > 0.0) {
-                    let totalElement = document.createElement("h3");
-                    totalElement.setAttribute("id", "totalElement");
-                    totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                    resultArea.appendChild(totalElement);
-                }
-                break;
-            case "debug-split":
-            default:
-                for(let i = 0; i < 14; i++) {
-                    if(shiftPay[i].length > 0){ //if any pay elements for current day
-                        let shiftDiv = document.createElement("div");
-                        let shiftTitle = document.createElement("h3");
-                        shiftTitle.textContent = $(".day-of-week")[i].textContent;
-                        shiftDiv.appendChild(shiftTitle);
-                        let shiftSubtitle = document.createElement("i");
-                        shiftSubtitle.textContent = "Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
-                        shiftDiv.appendChild(shiftSubtitle);
-                        let payElements = document.createElement("ul");
-                        for(let j = 0; j < shiftPay[i].length; j++) {
-                            let payElement = document.createElement("li");
-                            payElement.textContent = shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(8, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(8, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
-                            payElements.appendChild(payElement);
-                            totalValue += shiftPay[i][j].payAmount;
-                        }
-                        shiftDiv.appendChild(payElements);
-                        shiftDiv.appendChild(document.createElement("hr"));
-                        resultArea.appendChild(shiftDiv);
-                    }
-                }
-                if(additionalPayments.length > 0) {
-                    let additionalPaymentsDiv = document.createElement("div");
-                    let title = document.createElement("h3");
-                    title.textContent = "Additional Payments";
-                    additionalPaymentsDiv.appendChild(title);
+        if(resultsViewFormat == "grouped"){
+            let listDiv = document.createElement("div");
+            let payElements = document.createElement("ul");
+            groupedElements.forEach(function(e){
+                let payElement = document.createElement("li");
+                payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
+                payElements.appendChild(payElement);
+                totalValue += e.payAmount;
+            });
+            listDiv.appendChild(payElements);
+            listDiv.appendChild(document.createElement("hr"));
+            resultArea.appendChild(listDiv);
+            if(totalValue > 0.0) {
+                let totalElement = document.createElement("h3");
+                totalElement.setAttribute("id", "totalElement");
+                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+                resultArea.appendChild(totalElement);
+            }
+        }
+        else if(resultsViewFormat == "split") {
+            
+        }
+        else if(resultsViewFormat == "test") {
+            let shiftTitle = document.createElement("h3");
+            shiftTitle.textContent = "TEST VIEW FORMAT";
+            resultArea.appendChild(shiftTitle);
+        }
+        else if(resultsViewFormat == "debug-grouped") {
+            let listDiv = document.createElement("div");
+            let payElements = document.createElement("ul");
+            groupedElements.forEach(function(e){
+                let payElement = document.createElement("li");
+                payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
+                payElements.appendChild(payElement);
+                totalValue += e.payAmount;
+            });
+            listDiv.appendChild(payElements);
+            listDiv.appendChild(document.createElement("hr"));
+            resultArea.appendChild(listDiv);
+            if(totalValue > 0.0) {
+                let totalElement = document.createElement("h3");
+                totalElement.setAttribute("id", "totalElement");
+                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+                resultArea.appendChild(totalElement);
+            }
+        }
+        else if(resultsViewFormat == "debug-split") {
+            for(let i = 0; i < 14; i++) {
+                if(shiftPay[i].length > 0){ //if any pay elements for current day
+                    let shiftDiv = document.createElement("div");
+                    let shiftTitle = document.createElement("h3");
+                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
+                    shiftDiv.appendChild(shiftTitle);
+                    let shiftSubtitle = document.createElement("i");
+                    shiftSubtitle.textContent = "Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
+                    shiftDiv.appendChild(shiftSubtitle);
                     let payElements = document.createElement("ul");
-                    for(let j = 0; j < additionalPayments.length; j++) {
+                    for(let j = 0; j < shiftPay[i].length; j++) {
                         let payElement = document.createElement("li");
-                        payElement.textContent = "Type: " + additionalPayments[j].payClass + " | Rate: " + additionalPayments[j].rate.toFixed(4) + " | Hours: " + additionalPayments[j].hours.toFixed(4) + " | $" + additionalPayments[j].payAmount.toFixed(2);
+                        payElement.textContent = shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(8, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(8, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
                         payElements.appendChild(payElement);
-                        totalValue += additionalPayments[j].payAmount;
+                        totalValue += shiftPay[i][j].payAmount;
                     }
-                    additionalPaymentsDiv.appendChild(payElements);
-                    additionalPaymentsDiv.appendChild(document.createElement("hr"));
-                    resultArea.appendChild(additionalPaymentsDiv);
+                    shiftDiv.appendChild(payElements);
+                    shiftDiv.appendChild(document.createElement("hr"));
+                    resultArea.appendChild(shiftDiv);
                 }
-                if(totalValue > 0.0) {
-                    let totalElement = document.createElement("h3");
-                    totalElement.setAttribute("id", "totalElement");
-                    totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                    resultArea.appendChild(totalElement);
+            }
+            if(additionalPayments.length > 0) {
+                let additionalPaymentsDiv = document.createElement("div");
+                let title = document.createElement("h3");
+                title.textContent = "Additional Payments";
+                additionalPaymentsDiv.appendChild(title);
+                let payElements = document.createElement("ul");
+                for(let j = 0; j < additionalPayments.length; j++) {
+                    let payElement = document.createElement("li");
+                    payElement.textContent = "Type: " + additionalPayments[j].payClass + " | Rate: " + additionalPayments[j].rate.toFixed(4) + " | Hours: " + additionalPayments[j].hours.toFixed(4) + " | $" + additionalPayments[j].payAmount.toFixed(2);
+                    payElements.appendChild(payElement);
+                    totalValue += additionalPayments[j].payAmount;
                 }
+                additionalPaymentsDiv.appendChild(payElements);
+                additionalPaymentsDiv.appendChild(document.createElement("hr"));
+                resultArea.appendChild(additionalPaymentsDiv);
+            }
+            if(totalValue > 0.0) {
+                let totalElement = document.createElement("h3");
+                totalElement.setAttribute("id", "totalElement");
+                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+                resultArea.appendChild(totalElement);
+            }
+        }
+        else {
+            let shiftTitle = document.createElement("h3");
+            shiftTitle.textContent = "Error displaying results: invalid view format '" + resultsViewFormat + "'";
+            resultArea.appendChild(shiftTitle);
         }
     }
 }
@@ -851,124 +936,128 @@ function updateShiftPayTable() {
             if(s.sick) {
                 if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
             }
-            if(s.ph) { //Public Holiday
-                shiftPay[day].push(new PayElement("phWorked", s.hoursDecimal, s.ojt));
-                if(s.phExtraPay || day == 0 || day == 7) {
-                    shiftPay[day].push(new PayElement("phPen150", s.hoursDecimal, s.ojt));
+            else {
+                if(s.ph) { //Public Holiday
+                    shiftPay[day].push(new PayElement("phWorked", s.hoursDecimal, s.ojt));
+                    if(s.phExtraPay || day == 0 || day == 7) {
+                        shiftPay[day].push(new PayElement("phPen150", s.hoursDecimal, s.ojt));
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("phPen50", s.hoursDecimal, s.ojt));
+                    }
                 }
-                else {
-                    shiftPay[day].push(new PayElement("phPen50", s.hoursDecimal, s.ojt));
-                }
-            }
-            else { //NOT PH
-                if(s.shiftWorkedNumber <= 10){ //ordinary rate for non-excess shifts
-                    shiftPay[day].push(new PayElement("normal", s.hoursDecimal, s.ojt));
-                }
-
-                //calculate guarantee
-                if(isWeekday(day) && s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
-                    if(getPayGrade() == "trainee") {
-                        if(s.hoursDecimal < 7.6) {
-                            let guaranteeHours = 7.6 - s.hoursDecimal;
+                else { //NOT PH
+                    if(s.shiftWorkedNumber <= 10){ //ordinary rate for non-excess shifts
+                        shiftPay[day].push(new PayElement("normal", s.hoursDecimal, s.ojt));
+                    }
+    
+                    //calculate guarantee
+                    if(isWeekday(day) && s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
+                        if(getPayGrade() == "trainee") {
+                            if(s.hoursDecimal < 7.6) {
+                                let guaranteeHours = 7.6 - s.hoursDecimal;
+                                shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
+                            }
+                        }
+                        else {
+                            let guaranteeHours = 8 - s.hoursDecimal;
                             shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
                         }
                     }
-                    else {
-                        let guaranteeHours = 8 - s.hoursDecimal;
-                        shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
+    
+                    //calculate weekend penalties
+                    if(s.shiftWorkedNumber <= 10) { //not OT shift only
+                        if(day == 5 || day == 12) { //friday
+                            if(s.endHour48 > 23) {
+                                let penaltyTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into saturday
+                                if(penaltyTime > 0) {
+                                    shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
+                                }
+                            }
+                        }
+                        else if(day == 6 || day == 13) { //saturday
+                            let saturdayTime = 0;
+                            let sundayTime = 0;
+                            if(s.endHour48 > 23) {
+                                sundayTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into sunday
+                                saturdayTime = 24 - (s.startHour + (s.startMinute / 60));
+                            }
+                            else { //shift doesnt spill into sunday
+                                saturdayTime = s.hoursDecimal;
+                            }
+                            shiftPay[day].push(new PayElement("wePen50", saturdayTime, s.ojt));
+                            if(sundayTime) {
+                                shiftPay[day].push(new PayElement("wePen100", sundayTime, s.ojt));
+                            }
+                        }
+                        else if(day == 0 || day == 7) { //sunday
+                            let penaltyTime = 0;
+                            if(s.endHour48 > 23) {
+                                penaltyTime = 24 - (s.startHour + (s.startMinute / 60));
+                            }
+                            else {
+                                penaltyTime = s.hoursDecimal;
+                            }
+                            shiftPay[day].push(new PayElement("wePen100", penaltyTime, s.ojt));
+                        }
                     }
-                }
-
-                //calculate weekend penalties
-                if(s.shiftWorkedNumber <= 10) { //not OT shift only
-                    if(day == 5 || day == 12) { //friday
-                        if(s.endHour48 > 23) {
-                            let penaltyTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into saturday
-                            if(penaltyTime > 0) {
-                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
+      
+                    //calulate excess hours overtime 
+                    if(s.hoursDecimal > 8) {
+                        let overtimeHours = s.hoursDecimal - 8;
+                        if(overtimeHours > 3) {
+                            shiftPay[day].push(new PayElement("rost50", 3, s.ojt));
+                            shiftPay[day].push(new PayElement("rost100", overtimeHours - 3, s.ojt));
+                        }
+                        else {
+                            shiftPay[day].push(new PayElement("rost50", overtimeHours, s.ojt));
+                        }
+                        if(overtimeHours > 2) {
+                            shiftPay[day].push(new PayElement("mealAllowance", 1));
+                        }
+                    }
+    
+                    //calculate excess shift overtime
+                    if(s.shiftWorkedNumber > 10){
+                        if(s.shiftWorkedNumber > 12 || day == 13) {
+                            shiftPay[day].push(new PayElement("ot200", s.hoursDecimal, s.ojt));
+                        }
+                        else {
+                            shiftPay[day].push(new PayElement("ot150", s.hoursDecimal, s.ojt));
+                        }
+                    }
+    
+                    //calculate shiftwork allowances
+                    if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
+                        let shiftworkHours = 0;
+                        if((day == 0 || day == 7) && (s.endHour48 > 23)) { //sunday into monday
+                            shiftworkHours = (s.endHour48 - 24) + (s.endMinute / 60);
+                        }
+                        else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
+                            shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
+                        }
+                        else if([1,2,3,4,8,9,10,11].includes(day)) { 
+                            shiftworkHours = s.hoursDecimal;
+                        }
+                        shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
+                        if(shiftworkHours) {
+                            if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
+                                shiftPay[day].push(new PayElement("earlyShift", shiftworkHours));
+                            }
+                            if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
+                                shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours));
+                            }
+                            if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
+                                shiftPay[day].push(new PayElement("nightShift", shiftworkHours));
                             }
                         }
                     }
-                    else if(day == 6 || day == 13) { //saturday
-                        let saturdayTime = 0;
-                        let sundayTime = 0;
-                        if(s.endHour48 > 23) {
-                            sundayTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into sunday
-                            saturdayTime = 24 - (s.startHour + (s.startMinute / 60));
-                        }
-                        else { //shift doesnt spill into sunday
-                            saturdayTime = s.hoursDecimal;
-                        }
-                        shiftPay[day].push(new PayElement("wePen50", saturdayTime, s.ojt));
-                        if(sundayTime) {
-                            shiftPay[day].push(new PayElement("wePen100", sundayTime, s.ojt));
-                        }
-                    }
-                    else if(day == 0 || day == 7) { //sunday
-                        let penaltyTime = 0;
-                        if(s.endHour48 > 23) {
-                            penaltyTime = 24 - (s.startHour + (s.startMinute / 60));
-                        }
-                        else {
-                            penaltyTime = s.hoursDecimal;
-                        }
-                        shiftPay[day].push(new PayElement("wePen100", penaltyTime, s.ojt));
-                    }
                 }
-  
-                //calulate excess hours overtime 
-                if(s.hoursDecimal > 8) {
-                    let overtimeHours = s.hoursDecimal - 8;
-                    if(overtimeHours > 3) {
-                        shiftPay[day].push(new PayElement("rost50", 3, s.ojt));
-                        shiftPay[day].push(new PayElement("rost100", overtimeHours - 3, s.ojt));
-                    }
-                    else {
-                        shiftPay[day].push(new PayElement("rost50", overtimeHours, s.ojt));
-                    }
-                    if(overtimeHours > 2) {
-                        shiftPay[day].push(new PayElement("mealAllowance", 1));
-                    }
-                }
-
-                //calculate excess shift overtime
-                if(s.shiftWorkedNumber > 10){
-                    if(s.shiftWorkedNumber > 12 || day == 13) {
-                        shiftPay[day].push(new PayElement("ot200", s.hoursDecimal, s.ojt));
-                    }
-                    else {
-                        shiftPay[day].push(new PayElement("ot150", s.hoursDecimal, s.ojt));
-                    }
-                }
-
-                //calculate shiftwork allowances
-                if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
-                    let shiftworkHours = 0;
-                    if((day == 0 || day == 7) && (s.endHour48 > 23)) { //sunday into monday
-                        shiftworkHours = (s.endHour48 - 24) + (s.endMinute / 60);
-                    }
-                    else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
-                        shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
-                    }
-                    else if([1,2,3,4,8,9,10,11].includes(day)) { 
-                        shiftworkHours = s.hoursDecimal;
-                    }
-                    shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
-                    if(shiftworkHours) {
-                        if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
-                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours));
-                        }
-                        if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
-                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours));
-                        }
-                        if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
-                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours));
-                        }
-                    }
-                }
-                if(s.ddo) {
-                    shiftPay[day].push(new PayElement("ddoWorked", 0));  //NEED TO GET ONE OFF PAYMENT DETAILS
-                }
+            }
+        }
+        if(s.bonus) {
+            if(s.bonusHours > 0) {
+                shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours)); 
             }
         }
         if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) { //suburban allowance
