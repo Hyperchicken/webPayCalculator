@@ -238,11 +238,17 @@ hr {
     margin: 2px auto;
     padding: 2px;
 }
-/*
-.day-of-week {
-    justify-self: center;
+
+.pay-element-table {
+    width: 100%;
+    font-family: "Lucida Console", Monaco, monospace;
 }
-*/
+
+.pay-element-table th {
+    text-align: left;
+    padding: 5px 0px;
+}
+
 .shift-hours {
     justify-self: center;
 }
@@ -284,8 +290,12 @@ hr {
 }
 
 li, #totalElement {
-    font-family:  Courier, Arial, Helvetica;
+    font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
+}
+
+.pay-elements-list > ul {
+    padding-left: 3%;
 }
 
 input[type=text],
@@ -308,5 +318,8 @@ input[type=tel] {
     .ui-datepicker td a,
     .ui-datepicker td span {
         height: 2em !important;
+    }
+    li, #totalElement {
+        font-size: 2.2vw;
     }
   }

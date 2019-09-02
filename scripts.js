@@ -744,14 +744,30 @@ function updateResults() {
 
         if(resultsViewFormat == "grouped"){
             let listDiv = document.createElement("div");
-            let payElements = document.createElement("ul");
+            let elementTable = document.createElement("table");
+            elementTable.className = "pay-element-table";
+            let headerRow = document.createElement("tr");
+            headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
+            elementTable.appendChild(headerRow);
             groupedElements.forEach(function(e){
-                let payElement = document.createElement("li");
-                payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                payElements.appendChild(payElement);
+                let payElementRow = document.createElement("tr");
+                //payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
+                let elemClass = document.createElement("td");
+                let elemRate = document.createElement("td");
+                let elemHours = document.createElement("td");
+                let elemAmount = document.createElement("td");
+                elemClass.textContent = e.payClass.padEnd(14, " ");
+                elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
+                elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
+                elemAmount.textContent = "$" + e.payAmount.toFixed(2);
+                payElementRow.appendChild(elemClass);
+                payElementRow.appendChild(elemRate);
+                payElementRow.appendChild(elemHours);
+                payElementRow.appendChild(elemAmount);
+                elementTable.appendChild(payElementRow);
                 totalValue += e.payAmount;
             });
-            listDiv.appendChild(payElements);
+            listDiv.appendChild(elementTable);
             listDiv.appendChild(document.createElement("hr"));
             resultArea.appendChild(listDiv);
             if(totalValue > 0.0) {
@@ -771,6 +787,7 @@ function updateResults() {
         }
         else if(resultsViewFormat == "debug-grouped") {
             let listDiv = document.createElement("div");
+            listDiv.className = "pay-elements-list";
             let payElements = document.createElement("ul");
             groupedElements.forEach(function(e){
                 let payElement = document.createElement("li");
