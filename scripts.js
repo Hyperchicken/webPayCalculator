@@ -768,17 +768,91 @@ function updateResults() {
                 totalValue += e.payAmount;
             });
             listDiv.appendChild(elementTable);
-            listDiv.appendChild(document.createElement("hr"));
             resultArea.appendChild(listDiv);
-            if(totalValue > 0.0) {
-                let totalElement = document.createElement("h3");
-                totalElement.setAttribute("id", "totalElement");
-                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                resultArea.appendChild(totalElement);
-            }
+            //subtotal
+            listDiv.appendChild(document.createElement("hr"));
+            let totalElement = document.createElement("h3");
+            totalElement.setAttribute("id", "totalElement");
+            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+            resultArea.appendChild(totalElement);
         }
         else if(resultsViewFormat == "split") {
-            
+            let elementTable = document.createElement("table");
+            elementTable.className = "pay-element-table";
+            for(let i = 0; i < 14; i++) {
+                if(shiftPay[i].length > 0){ //if any pay elements for current day
+                    let shiftHeaderRow = document.createElement("tr");
+                    let shiftTitle = document.createElement("td");
+                    shiftHeaderRow.className = "splitview-title";
+                    shiftTitle.className = "splitview-title-data";
+                    if(i == 0) shiftTitle.className += " first";
+                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
+                    //shiftTitle.textContent += " | Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
+                    shiftTitle.colSpan = 4;
+                    shiftHeaderRow.appendChild(shiftTitle);
+                    elementTable.appendChild(shiftHeaderRow);
+                    if(i == 0) {
+                        let payHeaderRow = document.createElement("tr");
+                        payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
+                        elementTable.appendChild(payHeaderRow);
+                    }
+                    for(let j = 0; j < shiftPay[i].length; j++) {
+                        let payElementRow = document.createElement("tr");
+                        let elemClass = document.createElement("td");
+                        let elemRate = document.createElement("td");
+                        let elemHours = document.createElement("td");
+                        let elemAmount = document.createElement("td");
+                        elemClass.textContent = shiftPay[i][j].payClass;
+                        elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
+                        elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
+                        elemAmount.textContent = "$" + shiftPay[i][j].payAmount.toFixed(2);
+                        payElementRow.appendChild(elemClass);
+                        payElementRow.appendChild(elemRate);
+                        payElementRow.appendChild(elemHours);
+                        payElementRow.appendChild(elemAmount);
+                        elementTable.appendChild(payElementRow);
+                        totalValue += shiftPay[i][j].payAmount;
+                    }
+                    let lastRow = document.createElement("tr");
+                    let lastRowData = document.createElement("td");
+                    lastRowData.colSpan = 4;
+                    lastRowData.className = "last-row";
+                    lastRow.appendChild(lastRowData);
+                    elementTable.appendChild(lastRow);
+                }
+            }
+            if(additionalPayments.length > 0) {
+                let shiftHeaderRow = document.createElement("tr");
+                let shiftTitle = document.createElement("td");
+                shiftHeaderRow.className = "splitview-title";
+                shiftTitle.textContent = "Additional Payments";
+                shiftTitle.colSpan = 4;
+                shiftHeaderRow.appendChild(shiftTitle);
+                elementTable.appendChild(shiftHeaderRow);
+                for(let j = 0; j < additionalPayments.length; j++) {
+                    let payElementRow = document.createElement("tr");
+                        let elemClass = document.createElement("td");
+                        let elemRate = document.createElement("td");
+                        let elemHours = document.createElement("td");
+                        let elemAmount = document.createElement("td");
+                        elemClass.textContent = additionalPayments[j].payClass;
+                        elemRate.textContent = additionalPayments[j].rate.toFixed(4);
+                        elemHours.textContent = additionalPayments[j].hours.toFixed(4);
+                        elemAmount.textContent = "$" + additionalPayments[j].payAmount.toFixed(2);
+                        payElementRow.appendChild(elemClass);
+                        payElementRow.appendChild(elemRate);
+                        payElementRow.appendChild(elemHours);
+                        payElementRow.appendChild(elemAmount);
+                        elementTable.appendChild(payElementRow);
+                        totalValue += additionalPayments[j].payAmount;
+                }
+            }
+            resultArea.appendChild(elementTable);
+            resultArea.appendChild(document.createElement("hr"));
+            let totalElement = document.createElement("h3");
+            totalElement.setAttribute("id", "totalElement");
+            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+            resultArea.appendChild(totalElement);
         }
         else if(resultsViewFormat == "test") {
             let shiftTitle = document.createElement("h3");
@@ -798,12 +872,10 @@ function updateResults() {
             listDiv.appendChild(payElements);
             listDiv.appendChild(document.createElement("hr"));
             resultArea.appendChild(listDiv);
-            if(totalValue > 0.0) {
-                let totalElement = document.createElement("h3");
-                totalElement.setAttribute("id", "totalElement");
-                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                resultArea.appendChild(totalElement);
-            }
+            let totalElement = document.createElement("h3");
+            totalElement.setAttribute("id", "totalElement");
+            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+            resultArea.appendChild(totalElement);
         }
         else if(resultsViewFormat == "debug-split") {
             for(let i = 0; i < 14; i++) {
@@ -843,12 +915,10 @@ function updateResults() {
                 additionalPaymentsDiv.appendChild(document.createElement("hr"));
                 resultArea.appendChild(additionalPaymentsDiv);
             }
-            if(totalValue > 0.0) {
-                let totalElement = document.createElement("h3");
-                totalElement.setAttribute("id", "totalElement");
-                totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-                resultArea.appendChild(totalElement);
-            }
+            let totalElement = document.createElement("h3");
+            totalElement.setAttribute("id", "totalElement");
+            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+            resultArea.appendChild(totalElement);
         }
         else {
             let shiftTitle = document.createElement("h3");
