@@ -6,6 +6,29 @@ body {
     font-family: Raleway, Arial, Helvetica;
 }
 
+.page-subtitle {
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.page-subtitle.version {
+    font-size: 1.1em;
+    font-family: monospace;
+}
+
+#known-issues-ul {
+    margin-top: 0px;
+    display: none;
+}
+
+#known-issues-anchor {
+    cursor: pointer;
+}
+
+#known-issues-anchor:hover {
+    text-decoration: underline;
+}
+
 label {
     display: block;
 }

@@ -15,7 +15,23 @@
 <body>
 
     <h1>Pay Calculator</h1>
-    <p>Alpha development version.</p>
+    <p class="page-subtitle"> 
+        <em>Beta development version.</em> This tool is still under development will contain inaccuracies and bugs!<br>
+        <a id="known-issues-anchor" onclick="toggleKnownIssues()">Click here to see known issues.</a>
+    </p>
+    <ul id="known-issues-ul">
+        <li class="page-subtitle">Conversion driver calculation is incomplete.</li>
+        <li class="page-subtitle">Incorrect calculation when working a public holiday on a Saturday into Sunday.</li>
+        <li class="page-subtitle">Sick-part not yet supported.</li>
+        <li class="page-subtitle">Refreshing the page will reset parts of the form.</li>
+        <li class="page-subtitle">Untested on many mobile-device screen-sizes. Page may not be sized correctly on some devices!</li>
+        <li class="page-subtitle">Probably a bunch more issues. Please let me know what you find! <em>- Petar</em></li>
+        <ul>
+            <li class="page-subtitle version">Last update: 03/09/19</li>
+            <li class="page-subtitle version">Version: 0.50</li>
+        </ul>
+    </ul>
+    
     <noscript>Sorry, your browser does not support JavaScript or it is disabled! Please enable JavaScript to use the calculator!</noscript>
 
     <div class="row">

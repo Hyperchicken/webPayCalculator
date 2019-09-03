@@ -779,19 +779,21 @@ function updateResults() {
         else if(resultsViewFormat == "split") {
             let elementTable = document.createElement("table");
             elementTable.className = "pay-element-table";
+            let firstDay = true;
             for(let i = 0; i < 14; i++) {
                 if(shiftPay[i].length > 0){ //if any pay elements for current day
                     let shiftHeaderRow = document.createElement("tr");
                     let shiftTitle = document.createElement("td");
                     shiftHeaderRow.className = "splitview-title";
                     shiftTitle.className = "splitview-title-data";
-                    if(i == 0) shiftTitle.className += " first";
                     shiftTitle.textContent = $(".day-of-week")[i].textContent;
                     //shiftTitle.textContent += " | Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
                     shiftTitle.colSpan = 4;
                     shiftHeaderRow.appendChild(shiftTitle);
                     elementTable.appendChild(shiftHeaderRow);
-                    if(i == 0) {
+                    if(firstDay) {
+                        firstDay = false;
+                        shiftTitle.className += " first";
                         let payHeaderRow = document.createElement("tr");
                         payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
                         elementTable.appendChild(payHeaderRow);
@@ -825,10 +827,18 @@ function updateResults() {
                 let shiftHeaderRow = document.createElement("tr");
                 let shiftTitle = document.createElement("td");
                 shiftHeaderRow.className = "splitview-title";
+                shiftTitle.className = "splitview-title-data";
                 shiftTitle.textContent = "Additional Payments";
                 shiftTitle.colSpan = 4;
                 shiftHeaderRow.appendChild(shiftTitle);
                 elementTable.appendChild(shiftHeaderRow);
+                if(firstDay) {
+                    firstDay = false;
+                    shiftTitle.className += " first";
+                    let payHeaderRow = document.createElement("tr");
+                    payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
+                    elementTable.appendChild(payHeaderRow);
+                }
                 for(let j = 0; j < additionalPayments.length; j++) {
                     let payElementRow = document.createElement("tr");
                         let elemClass = document.createElement("td");
@@ -1174,4 +1184,8 @@ function isWeekday(day) { //only for values 0-13. returns True outside of this r
         default:
             return true;
     }
+}
+
+function toggleKnownIssues() {
+    $("#known-issues-ul").toggle();
 }
