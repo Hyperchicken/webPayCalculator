@@ -136,7 +136,6 @@ class PayElement {
             case "edo":
             case "ddoWorked":
             case "wePen100":
-            case "rost100":
             case "phGaz":
             case "phWorked":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
@@ -145,16 +144,17 @@ class PayElement {
                 break;
             case "wePen50":
             case "phPen50":
-            case "rost50":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 rate /= 2;
                 break;
             case "ot150":
             case "phPen150":
+            case "rost+50":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 rate *= 1.5;
                 break;
             case "ot200":
+            case "rost+100":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 rate *= 2;
                 break;
@@ -1045,7 +1045,7 @@ function updateShiftPayTable() {
                 }
                 else { //NOT PH
                     if(s.shiftWorkedNumber <= 10){ //ordinary rate for non-excess shifts
-                        shiftPay[day].push(new PayElement("normal", s.hoursDecimal, s.ojt));
+                        shiftPay[day].push(new PayElement("normal", Math.min(s.hoursDecimal, 8.0), s.ojt));
                     }
     
                     //calculate guarantee
@@ -1103,11 +1103,11 @@ function updateShiftPayTable() {
                     if(s.hoursDecimal > 8) {
                         let overtimeHours = s.hoursDecimal - 8;
                         if(overtimeHours > 3) {
-                            shiftPay[day].push(new PayElement("rost50", 3, s.ojt));
-                            shiftPay[day].push(new PayElement("rost100", overtimeHours - 3, s.ojt));
+                            shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
+                            shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
                         }
                         else {
-                            shiftPay[day].push(new PayElement("rost50", overtimeHours, s.ojt));
+                            shiftPay[day].push(new PayElement("rost+50", overtimeHours, s.ojt));
                         }
                         if(overtimeHours > 2) {
                             shiftPay[day].push(new PayElement("mealAllowance", 1));
@@ -1133,7 +1133,8 @@ function updateShiftPayTable() {
                         else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
                             shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
                         }
-                        else if([1,2,3,4,8,9,10,11].includes(day)) { 
+                        //else if([1,2,3,4,8,9,10,11].includes(day)) { 
+                        else {
                             shiftworkHours = s.hoursDecimal;
                         }
                         shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
