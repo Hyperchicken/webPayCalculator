@@ -1133,8 +1133,7 @@ function updateShiftPayTable() {
                         else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
                             shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
                         }
-                        //else if([1,2,3,4,8,9,10,11].includes(day)) { 
-                        else {
+                        else if([1,2,3,4,5,8,9,10,11,12].includes(day)) { 
                             shiftworkHours = s.hoursDecimal;
                         }
                         shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
