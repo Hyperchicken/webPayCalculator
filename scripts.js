@@ -1025,128 +1025,151 @@ function updateShiftPayTable() {
             if(s.sick) {
                 shiftPay[day].push(new PayElement("sick", 8));
             }
-            if(s.ph) {
+            else if(s.ph) {
                 shiftPay[day].push(new PayElement("phGaz", 8));
             }
         }
         else { //if shift has hours
+            let phHours = 0.0;
+            let nonPhHours = s.hoursDecimal;
+            let todayHours = 0.0;
+            let tomorrowHours = 0.0;
+            let tomorrowPh = shifts[day + 1].ph;
+            if(s.endHour48 > 23) {
+                todayHours = 24 - (s.startHour + (s.startMinute / 60));
+                tomorrowHours = (s.endHour48 - 24) + (s.endMinute / 60);
+            } 
+            else todayHours = s.hoursDecimal;
             if(s.sick) {
                 if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
             }
             else {
-                if(s.ph) { //Public Holiday
-                    shiftPay[day].push(new PayElement("phWorked", s.hoursDecimal, s.ojt));
+                if(s.ph || tomorrowPh) { //Public Holiday
+                    if(s.ph && tomorrowPh) {
+                        phHours = s.hoursDecimal
+                        nonPhHours = 0.0;
+                    }
+                    else if(s.ph) {
+                        phHours = todayHours;
+                        nonPhHours = tomorrowHours;
+                    }
+                    else if(tomorrowPh) {
+                        phHours = tomorrowHours;
+                        nonPhHours = todayHours;
+                    }
+                    if(phHours) {
+                        shiftPay[day].push(new PayElement("phWorked", phHours, s.ojt));
+                    }
                     if(s.phExtraPay || day == 0 || day == 7) {
-                        shiftPay[day].push(new PayElement("phPen150", s.hoursDecimal, s.ojt));
+                        shiftPay[day].push(new PayElement("phPen150", phHours, s.ojt));
                     }
                     else {
-                        shiftPay[day].push(new PayElement("phPen50", s.hoursDecimal, s.ojt));
+                        shiftPay[day].push(new PayElement("phPen50", phHours, s.ojt));
                     }
                 }
-                else { //NOT PH
-                    if(s.shiftWorkedNumber <= 10){ //ordinary rate for non-excess shifts
-                        shiftPay[day].push(new PayElement("normal", Math.min(s.hoursDecimal, 8.0), s.ojt));
-                    }
-    
-                    //calculate guarantee
-                    if(isWeekday(day) && s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
-                        if(getPayGrade() == "trainee") {
-                            if(s.hoursDecimal < 7.6) {
-                                let guaranteeHours = 7.6 - s.hoursDecimal;
-                                shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
-                            }
-                        }
-                        else {
-                            let guaranteeHours = 8 - s.hoursDecimal;
+
+                if(s.shiftWorkedNumber <= 10 && nonPhHours){ //ordinary rate for non-excess shifts
+                    shiftPay[day].push(new PayElement("normal", Math.min(nonPhHours, 8.0), s.ojt));
+                }
+
+                //calculate guarantee
+                if(isWeekday(day) && s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
+                    if(getPayGrade() == "trainee") {
+                        if(s.hoursDecimal < 7.6) {
+                            let guaranteeHours = 7.6 - s.hoursDecimal;
                             shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
                         }
                     }
-    
-                    //calculate weekend penalties
-                    if(s.shiftWorkedNumber <= 10) { //not OT shift only
-                        if(day == 5 || day == 12) { //friday
-                            if(s.endHour48 > 23) {
-                                let penaltyTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into saturday
-                                if(penaltyTime > 0) {
-                                    shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
-                                }
+                    else {
+                        let guaranteeHours = 8 - s.hoursDecimal;
+                        shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
+                    }
+                }
+
+                //calculate weekend penalties
+                if(s.shiftWorkedNumber <= 10) { //not OT shift only
+                    if(day == 5 || day == 12) { //friday
+                        if(s.endHour48 > 23) {
+                            let penaltyTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into saturday
+                            if(penaltyTime > 0) {
+                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
                             }
-                        }
-                        else if(day == 6 || day == 13) { //saturday
-                            let saturdayTime = 0;
-                            let sundayTime = 0;
-                            if(s.endHour48 > 23) {
-                                sundayTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into sunday
-                                saturdayTime = 24 - (s.startHour + (s.startMinute / 60));
-                            }
-                            else { //shift doesnt spill into sunday
-                                saturdayTime = s.hoursDecimal;
-                            }
-                            shiftPay[day].push(new PayElement("wePen50", saturdayTime, s.ojt));
-                            if(sundayTime) {
-                                shiftPay[day].push(new PayElement("wePen100", sundayTime, s.ojt));
-                            }
-                        }
-                        else if(day == 0 || day == 7) { //sunday
-                            let penaltyTime = 0;
-                            if(s.endHour48 > 23) {
-                                penaltyTime = 24 - (s.startHour + (s.startMinute / 60));
-                            }
-                            else {
-                                penaltyTime = s.hoursDecimal;
-                            }
-                            shiftPay[day].push(new PayElement("wePen100", penaltyTime, s.ojt));
                         }
                     }
-      
-                    //calulate excess hours overtime 
-                    if(s.hoursDecimal > 8) {
-                        let overtimeHours = s.hoursDecimal - 8;
-                        if(overtimeHours > 3) {
-                            shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
-                            shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
+                    else if(day == 6 || day == 13) { //saturday
+                        let saturdayTime = 0;
+                        let sundayTime = 0;
+                        if(s.endHour48 > 23) {
+                            sundayTime = (s.endHour48 - 24) + (s.endMinute / 60); //time into sunday
+                            saturdayTime = 24 - (s.startHour + (s.startMinute / 60));
+                        }
+                        else { //shift doesnt spill into sunday
+                            saturdayTime = s.hoursDecimal;
+                        }
+                        shiftPay[day].push(new PayElement("wePen50", saturdayTime, s.ojt));
+                        if(sundayTime) {
+                            shiftPay[day].push(new PayElement("wePen100", sundayTime, s.ojt));
+                        }
+                    }
+                    else if(day == 0 || day == 7) { //sunday
+                        let penaltyTime = 0;
+                        if(s.endHour48 > 23) {
+                            penaltyTime = 24 - (s.startHour + (s.startMinute / 60));
                         }
                         else {
-                            shiftPay[day].push(new PayElement("rost+50", overtimeHours, s.ojt));
+                            penaltyTime = s.hoursDecimal;
                         }
-                        if(overtimeHours > 2) {
-                            shiftPay[day].push(new PayElement("mealAllowance", 1));
-                        }
+                        shiftPay[day].push(new PayElement("wePen100", penaltyTime, s.ojt));
                     }
+                }
     
-                    //calculate excess shift overtime
-                    if(s.shiftWorkedNumber > 10){
-                        if(s.shiftWorkedNumber > 12 || day == 13) {
-                            shiftPay[day].push(new PayElement("ot200", s.hoursDecimal, s.ojt));
-                        }
-                        else {
-                            shiftPay[day].push(new PayElement("ot150", s.hoursDecimal, s.ojt));
-                        }
+                //calulate excess hours overtime 
+                if(s.hoursDecimal > 8) {
+                    let overtimeHours = s.hoursDecimal - 8;
+                    if(overtimeHours > 3) {
+                        shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
+                        shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
                     }
-    
-                    //calculate shiftwork allowances
-                    if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
-                        let shiftworkHours = 0;
-                        if((day == 0 || day == 7) && (s.endHour48 > 23)) { //sunday into monday
-                            shiftworkHours = (s.endHour48 - 24) + (s.endMinute / 60);
+                    else {
+                        shiftPay[day].push(new PayElement("rost+50", overtimeHours, s.ojt));
+                    }
+                    if(overtimeHours > 2) {
+                        shiftPay[day].push(new PayElement("mealAllowance", 1));
+                    }
+                }
+
+                //calculate excess shift overtime
+                if(s.shiftWorkedNumber > 10){
+                    if(s.shiftWorkedNumber > 12 || day == 13) {
+                        shiftPay[day].push(new PayElement("ot200", s.hoursDecimal, s.ojt));
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("ot150", s.hoursDecimal, s.ojt));
+                    }
+                }
+
+                //calculate shiftwork allowances
+                if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
+                    let shiftworkHours = 0;
+                    if((day == 0 || day == 7) && (s.endHour48 > 23)) { //sunday into monday
+                        shiftworkHours = (s.endHour48 - 24) + (s.endMinute / 60);
+                    }
+                    else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
+                        shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
+                    }
+                    else if([1,2,3,4,5,8,9,10,11,12].includes(day)) { 
+                        shiftworkHours = s.hoursDecimal;
+                    }
+                    shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
+                    if(shiftworkHours) {
+                        if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
+                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours));
                         }
-                        else if((day == 5 || day == 12) && (s.endHour48 > 23)) { //friday into saturday
-                            shiftworkHours = 24 - (s.startHour + (s.startMinute / 60));
+                        if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
+                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours));
                         }
-                        else if([1,2,3,4,5,8,9,10,11,12].includes(day)) { 
-                            shiftworkHours = s.hoursDecimal;
-                        }
-                        shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
-                        if(shiftworkHours) {
-                            if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
-                                shiftPay[day].push(new PayElement("earlyShift", shiftworkHours));
-                            }
-                            if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
-                                shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours));
-                            }
-                            if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
-                                shiftPay[day].push(new PayElement("nightShift", shiftworkHours));
-                            }
+                        if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
+                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours));
                         }
                     }
                 }
