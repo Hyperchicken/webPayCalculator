@@ -1049,7 +1049,7 @@ function updateShiftPayTable() {
                     }
     
                     //calculate guarantee
-                    if(isWeekday(day) && s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
+                    if(s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
                         if(getPayGrade() == "trainee") {
                             if(s.hoursDecimal < 7.6) {
                                 let guaranteeHours = 7.6 - s.hoursDecimal;
