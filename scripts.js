@@ -243,6 +243,7 @@ function initButtons() {
         optionsButtons[i].addEventListener("click", function(){toggleOptionsShelf(i)});
         optionsButtons[i].textContent = "Options";
     }
+    $(".last-sunday").hide();
     $("#lastSunPhNo").on("click", function(){toggleDay14ph();});
     $("#lastSunPhYes").on("click", function(){toggleDay14ph();});
     updateOptionsButtons();
@@ -640,12 +641,9 @@ function generateOptionsShelfButtons(day) {
 
 function timeChanged(field) {
     if(timeField()[field].value.length == 4) {
-        updateShiftTable();
         if(field < 27) timeField()[field + 1].focus();
     }
-    else {
-        shifts[fieldToShift(field)].setNilHours();
-    }
+    updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
     updateOptionsButtons();
@@ -700,6 +698,8 @@ function updateShiftTable() {
             shifts[currentShift].setNilHours();
         }
     }
+    if((shifts[13].endHour48 - 24) + (shifts[13].endMinute / 60) > 0) $(".last-sunday").show();
+        else $(".last-sunday").hide();
     updateShiftWorkedCount();
 }
 
