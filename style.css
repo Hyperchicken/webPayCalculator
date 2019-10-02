@@ -126,8 +126,19 @@ label {
     height: 18px;
 }
 
-.dual-button-l {
+.grid-2-6 {
+    grid-column: 2 / 6;
+}
+
+.last-sunday > p {
+    display: inline;
+}
+
+.dual-button-l.shelf-button {
     margin-left: -5px;
+}
+
+.dual-button-l {
     border-radius: 5px 0px 0px 5px;
     border-right-style: none;
 }
@@ -136,6 +147,14 @@ label {
     margin-left: -5px;
     border-radius: 0px 5px 5px 0px;
     border-left-style: none;
+}
+
+.yes-no-button {
+    border-color: #000;
+}
+
+.yes-no-button.dual-button-r {
+    margin-left: -10px;
 }
 
 .options-button {
