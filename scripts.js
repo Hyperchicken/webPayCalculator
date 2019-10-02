@@ -1039,7 +1039,8 @@ function updateShiftPayTable() {
     for(let day = 0; day < 14; day++) {
         let s = shifts[day]; //alias
         shiftPay.push([]);
-        if(s.hoursDecimal <= 0) { //if shift has zero hours
+        let shiftHours = s.hoursDecimal;
+        if(shiftHours <= 0) { //if shift has zero hours
             //check for shift options (PH?)
             if(s.sick) {
                 shiftPay[day].push(new PayElement("sick", 8));
@@ -1049,22 +1050,42 @@ function updateShiftPayTable() {
             }
         }
         else { //if shift has hours
-            let phHours = 0.0;
-            let normalHours = s.hoursDecimal;
-            let todayHours = 0.0;
-            let tomorrowHours = 0.0;
+            let todayOrdHours = 0.0;
+            let tomorrowOrdHours = 0.0;
+            let todayPhHours = 0.0;
+            let tomorrowPhHours = 0.0;
             let tomorrowPh;
+
             if((day + 1) == 14) tomorrowPh = day14ph;
-            else tomorrowPh = shifts[day + 1].ph;
+                else tomorrowPh = shifts[day + 1].ph;
             if(s.endHour48 > 23) {
-                todayHours = 24 - (s.startHour + (s.startMinute / 60));
-                tomorrowHours = (s.endHour48 - 24) + (s.endMinute / 60);
+                let todayHours = 24 - (s.startHour + (s.startMinute / 60));
+                let tomorrowHours = (s.endHour48 - 24) + (s.endMinute / 60);
+                if(s.ph) todayPhHours += todayHours;
+                    else todayOrdHours += todayHours;
+                if(tomorrowPh) tomorrowPhHours += tomorrowHours;
+                    else tomorrowOrdHours += tomorrowHours;
             } 
-            else todayHours = s.hoursDecimal;
-            if(s.sick) {
-                if(s.sick) shiftPay[day].push(new PayElement("sick", 8));
+            else if(s.ph) {
+                todayPhHours += shiftHours;
             }
             else {
+                todayOrdHours += shiftHours;
+            }
+
+            if(s.sick) {
+                if(s.sick) shiftPay[day].push(new PayElement("sick", 8)); //force 8 hours sick pay if sick pay set regardless of hours entered. TEMP BEHVIOUR until sick-part implemented.
+            }
+            else {
+                if(todayOrdHours > 0.0 || tomorrowOrdHours > 0.0) {
+
+                }
+                if(todayPhHours) {
+
+                }
+                if(tomorrowPhHours) {
+                    
+                }
                 if(s.ph || tomorrowPh) { //Public Holiday
                     let phPen50Hours = 0.0;
                     let phPen150Hours = 0.0;
