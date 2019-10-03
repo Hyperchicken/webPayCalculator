@@ -14,7 +14,7 @@ const afternoonShiftRates = [3.2508,       3.3321,       3.4154]; //a shift whic
 const nightShiftRates =     [3.8209,       3.9164,       4.0143]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
 
 //colours
-const normalColour = "#00ccff";
+const normalColour = "#00b9e8";
 const ojtColour = "#ff7300";
 const ddoColour = "#005229";
 const phColour = "#44c600";
@@ -266,101 +266,100 @@ function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
+        let buttonIcon = document.createElement("i");
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //if shelf open, inset
-            optionsButtons[i].style.borderStyle = "inset"; 
+            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-up");
         }
         else {
-            optionsButtons[i].style.borderStyle = "";
+            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-down");
         }
+        let buttonText = document.createElement("span");
         optionsButtons[i].textContent = "";
-        optionsButtons[i].style.color = "";
-        optionsButtons[i].style.fontWeight = "bold";
+        buttonText.style.fontWeight = "bold";
         optionsButtons[i].style.backgroundImage = "";
         let optionsCount = 0;
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
             if(s.sick) {
-                if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                optionsButtons[i].textContent = "Sick";
+                if(optionsCount > 0) buttonText.textContent += " + ";
+                buttonText.textContent = "Sick";
                 optionsButtons[i].style.backgroundColor = sickColour;
                 optionsCount++;
             }
             else if(s.ph || s.ddo || (s.bonus && s.bonusHours > 0)) {
                 if(s.ph) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "PH-OFF";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "PH-OFF";
                     optionsButtons[i].style.backgroundColor = phColour;
                     optionsCount++;
                 }
                 if(s.ddo) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "DDO";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "DDO";
                     optionsButtons[i].style.backgroundColor = ddoColour;
                     optionsCount++;
                 }
                 if(s.bonus && s.bonusHours > 0) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "Bonus";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "Bonus";
                     optionsButtons[i].style.backgroundColor = bonusColour;
                     optionsCount++;
                 }
             }
             else {
-                optionsButtons[i].innerHTML = "OFF <i class='fas fa-caret-down fa-lg' style='margin-left: 0.2em;'></i>";
+                buttonText.textContent = "OFF";
                 optionsButtons[i].style.backgroundColor = "black";
                 if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
-                    optionsButtons[i].textContent += " (+)";
+                    buttonText.textContent += " (+)";
                 }
             }
         }
         else { //if actual shift
             if(s.sick) {
-                if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                optionsButtons[i].textContent = "Sick";
+                if(optionsCount > 0) buttonText.textContent += " + ";
+                buttonText.textContent = "Sick";
                 optionsButtons[i].style.backgroundColor = sickColour;
                 optionsCount++;
             }
             else if(s.ojt || s.ph || s.wm || s.ddo || s.bonus){
                 if(s.ojt){
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "OJT";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "OJT";
                     optionsButtons[i].style.backgroundColor = ojtColour;
                     optionsCount++;
                 }
                 if(s.ddo) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "DDO-W";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "DDO-W";
                     optionsButtons[i].style.backgroundColor = ddoColour;
                     optionsCount++;
                 }
                 if(s.ph){
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
                     if(s.phExtraPay) {
-                        optionsButtons[i].textContent += "PH-XP";
+                        buttonText.textContent += "PH-XP";
                     }
                     else {
-                        optionsButtons[i].textContent += "PH-XL";
+                        buttonText.textContent += "PH-XL";
                     }
                     optionsButtons[i].style.backgroundColor = phColour;
                     optionsCount++;
                 }
                 if(s.wm){
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "WM";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "WM";
                     optionsButtons[i].style.backgroundColor = wmColour;
                     optionsCount++;
                 }
                 if(s.bonus && s.bonusHours > 0) {
-                    if(optionsCount > 0) optionsButtons[i].textContent += " + ";
-                    optionsButtons[i].textContent += "Bonus";
+                    if(optionsCount > 0) buttonText.textContent += " + ";
+                    buttonText.textContent += "Bonus";
                     optionsButtons[i].style.backgroundColor = bonusColour;
                     optionsCount++;
                 }
             }
             if(optionsCount == 0) {
-                optionsButtons[i].textContent = "Normal";
-                optionsButtons[i].style.color = "black";
+                buttonText.textContent = "Normal";
                 optionsButtons[i].style.backgroundColor = "";
-                optionsButtons[i].style.fontWeight = "";
                 optionsButtons[i].style.backgroundImage = "";
             }
         }
@@ -376,6 +375,8 @@ function updateOptionsButtons() {
             cssGradient += ")";
             optionsButtons[i].style.backgroundImage = cssGradient;
         }
+        optionsButtons[i].appendChild(buttonIcon);
+        optionsButtons[i].appendChild(buttonText);
     }
     if(day14ph) {
         $("#lastSunPhNo")[0].style.backgroundColor = "#5557";

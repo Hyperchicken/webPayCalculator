@@ -29,10 +29,6 @@ body {
     text-decoration: underline;
 }
 
-label {
-    display: block;
-}
-
 .radio-buttons {
     display: inline-block;
 }
@@ -84,7 +80,7 @@ label {
   
   /* When the radio button is checked, add a blue background */
   .radio-container input:checked ~ .checkmark {
-    background-color: #000;
+    background-color: #414141;
   }
   
   /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -119,6 +115,11 @@ label {
     border-style:  solid;
     display: inline-block;
     cursor: pointer;
+}
+
+.button-icon {
+    margin: -1px auto -1px 0.4em;
+    float: right;
 }
 
 .shelf-button {
@@ -159,9 +160,10 @@ label {
 
 .options-button {
     
-    background-color: #00ccff;
+    background-color: #00b9e8;
     border-color: black;
     border-style: solid;
+    word-break: keep-all;
 }
 
 .ojt-button {
@@ -333,13 +335,18 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
 
 .week-commencing {
     grid-column: 1 / 6;
-    display: grid;
-    grid-template-columns: auto auto;
-    border-color: orange;
+}
+
+.week-commencing-label {
+    margin-right: 20px;
+}
+
+.week-commencing-button {
+    background-color: #fff;
+    cursor: pointer;
+    border: none;
     border-radius: 5px;
-    border-width: 2px;
-    background-color: rgba(255, 166, 0, 0.3);
-    padding: 5px;
+    padding: 3px;
 }
 
 #week-commencing-date {
@@ -349,9 +356,12 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
 }
 
 #date-button {
-    cursor: pointer;
-    border-color: #e48100;
-    border-width: 2px;
+    cursor: inherit;
+    background: none;
+}
+
+.calendar-icon {
+    color: #414141;
 }
 
 li, #totalElement {

@@ -61,8 +61,11 @@
                 </form>
 
                 <div class="week-commencing">
-                    <label class="week-commencing-label" for="week-commencing-date">Week commencing:</label>
-                    <input type="text" id="date-button" placeholder="Select date" onclick="toggleDatepicker()" onchange="updateDates()" readonly>
+                    <label class="week-commencing-label" for="week-commencing-date">Week commencing</label>
+                    <span class="week-commencing-button" onclick="toggleDatepicker()">
+                        <i class="far fa-calendar-alt calendar-icon"></i>
+                        <input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly>
+                    </span>
                 </div>
                 <div id="week-commencing-date">
                     
