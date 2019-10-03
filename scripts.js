@@ -265,9 +265,9 @@ function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
-        if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
+        if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //if shelf open, inset
             optionsButtons[i].style.borderStyle = "inset"; 
-        } //if shelf open, highlight
+        }
         else {
             optionsButtons[i].style.borderStyle = "";
         }
@@ -304,7 +304,7 @@ function updateOptionsButtons() {
                 }
             }
             else {
-                optionsButtons[i].textContent = "OFF";
+                optionsButtons[i].innerHTML = "OFF <i class='fas fa-caret-down fa-lg' style='margin-left: 0.2em;'></i>";
                 optionsButtons[i].style.backgroundColor = "black";
                 if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
                     optionsButtons[i].textContent += " (+)";
