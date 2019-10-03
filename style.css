@@ -348,6 +348,7 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     border: none;
     border-radius: 5px;
     padding: 3px;
+    white-space: nowrap;
 }
 
 #week-commencing-date {
