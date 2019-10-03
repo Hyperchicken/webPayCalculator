@@ -11,8 +11,8 @@ body {
     font-family: inherit;
 }
 
-.page-subtitle.version {
-    font-size: 1.1em;
+.version {
+    font-size: 1.2em;
     font-family: monospace;
 }
 
@@ -23,6 +23,7 @@ body {
 
 #known-issues-anchor {
     cursor: pointer;
+    text-decoration-line: underline;
 }
 
 #known-issues-anchor:hover {
@@ -364,7 +365,7 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     color: #414141;
 }
 
-li, #totalElement {
+#totalElement {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
 }

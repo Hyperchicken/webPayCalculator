@@ -18,18 +18,27 @@
     <h1>Pay Calculator</h1>
     <p class="page-subtitle"> 
         <em>Beta development version.</em> This tool is still under development and will contain inaccuracies and bugs!<br>
-        <a id="known-issues-anchor" onclick="toggleKnownIssues()">Click here to see known issues.</a>
+        <a id="known-issues-anchor" onclick="toggleKnownIssues()">Click here to see known issues and changelog.</a>
     </p>
-    <ul id="known-issues-ul">
-        <li class="page-subtitle">Sick-part and Annual Leave not yet implemented.</li>
-        <li class="page-subtitle">Conversion and Trainee calculations not yet verified. Likely to be innacurate.</li>
-        <li class="page-subtitle">Results are not yet sorted in any meaningful way.</li>
-        <li class="page-subtitle">Refreshing the page will reset parts of the form. Data persistence to be implemented in future.</li>
-        <li class="page-subtitle">Untested on many mobile-device screen-sizes. Page may not be sized correctly on some smaller devices!</li>
-        <li class="page-subtitle">Probably a bunch more issues. Please let me know what you find! <em>- Petar</em></li>
+    <ul id="known-issues-ul" class="page-subtitle">
+        <li font-weight="bold">Known Issues</li>
         <ul>
-            <li class="page-subtitle version">Last update: 03/10/19</li>
-            <li class="page-subtitle version">Version: 0.54</li>
+            <li>Sick-part and Annual Leave not yet implemented.</li>
+            <li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>
+            <li>Results are not yet sorted in any meaningful way.</li>
+            <li>Refreshing the page will reset parts of the form. Data persistence to be implemented in future.</li>
+            <li>Page doesn't fit correctly on some devices with smaller screens.</li>
+            <li>Probably a bunch more issues. Please let me know what you find! <em>- Petar</em></li>
+        </ul>
+        <li font-weight="bold">Latest Updates</li>
+        <ul>
+            <li>Added calendar and dropdown icons to make functionality clearer [3/10/19]</li>
+            <li>Fixed calculations not correctly handling shifts that flow into the next day [2/10/19]</li>
+            <li>Fixed an issue with guarantee calculation [1/10/19]</li>
+            <ul>
+                <li class="version">Last update: 03/10/19</li>
+                <li class="version">Version: 0.55</li>
+            </ul>
         </ul>
     </ul>
     
