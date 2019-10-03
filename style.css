@@ -206,11 +206,6 @@ body {
     content: "hrs";
 }
 
-
-.options-button:hover {
-    background-color: #5edfff;
-}
-
 .pay-grade-radio {
     margin-right: 15px;
     display: inline-block;
