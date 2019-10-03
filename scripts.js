@@ -18,9 +18,10 @@ const normalColour = "#00b9e8";
 const ojtColour = "#ff7300";
 const ddoColour = "#005229";
 const phColour = "#44c600";
-const wmColour = "#bd4bff";
+const wmColour = "#aa60d5";
 const sickColour = "#ff0000";
 const bonusColour = "#e79e00";
+const alColour = "#1c4ab3";
 
 
 //define Classes
@@ -44,6 +45,7 @@ class Shift {
         this.wm = false; //wasted meal
         this.sick = false; //sick full day
         this.sickPart = false; //worked but went home sick partway through shift
+        this.al = false; //annual leave
         this.ddo = false; //DDO
         this.bonus = false;
         this.bonusHours = 0.0; //bonus payment hours
@@ -140,6 +142,7 @@ class PayElement {
             case "phWorked":
             case "phXpay":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
+            case "annualLeave":
             case "bonusPayment":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 break;
@@ -583,6 +586,25 @@ function generateOptionsShelfButtons(day) {
         sickButton.style.background = "none";
     }
 
+    //Annual leave button
+    let alButton = document.createElement("a");
+    alButton.textContent = "Annual Leave";
+    alButton.setAttribute("class", "button annual-leave-button shelf-button");
+    if(shifts[day].al) {//if AL
+        alButton.addEventListener("click", function(){
+            shifts[day].al = false;
+            reloadPageData();
+        });
+        alButton.style.background = "";
+    }
+    else {//if not AL
+        alButton.addEventListener("click", function(){
+            shifts[day].al = true;
+            reloadPageData();
+        });
+        alButton.style.background = "none";
+    }
+
     //Bonus Payment button
     let bonusButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
     let bonusButtonText = document.createElement("a");
@@ -631,6 +653,7 @@ function generateOptionsShelfButtons(day) {
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
+    shelf.appendChild(alButton);
     shelf.appendChild(bonusButton);
 
     //set focus if any

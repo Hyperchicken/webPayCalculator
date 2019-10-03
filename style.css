@@ -178,8 +178,8 @@ body {
 }
 
 .wm-button {
-    background-color: #bd4bff;
-    border-color: #bd4bff;
+    background-color: #aa60d5;
+    border-color: #aa60d5;
 }
 
 .sick-button {
@@ -190,6 +190,11 @@ body {
 .ddo-button {
     background-color: #005229;
     border-color: #005229;
+}
+
+.annual-leave-button {
+    background-color: #1c4ab3;
+    border-color: #1c4ab3;
 }
 
 .bonus-button {
@@ -240,7 +245,11 @@ body {
     flex: 50%;  
 }
 
-.grid > h3,
+.grid > h3 {
+    grid-column: 1 / 6;
+    margin-top: 10px;
+}
+
 .hr {
     grid-column: 1 / 6;
 }
@@ -355,10 +364,12 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
 #date-button {
     cursor: inherit;
     background: none;
+    width: 120px;
 }
 
 .calendar-icon {
     color: #414141;
+    padding-left: 3px;
 }
 
 #totalElement {
@@ -400,5 +411,9 @@ input[type=tel] {
     }
     #totalElement { 
         font-size: 4.5vw;
+    }
+
+    .container {
+        margin: 7px 0px 0px 0px;
     }
   }
