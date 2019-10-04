@@ -215,6 +215,7 @@ $(document).ready(function() {
             }
         },
         onSelect: function(){
+            updateDates();
             printShiftHours();
             updateOptionsButtons();
             updateShiftPayTable();
