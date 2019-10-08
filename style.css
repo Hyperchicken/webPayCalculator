@@ -108,7 +108,6 @@ body {
 
 .button {
     font-size: 0.9em;
-    margin: 0px 5px;
     padding: 4px 6px;
     color: white;
     border-width: 2px;
@@ -120,11 +119,10 @@ body {
 
 .button-icon {
     margin: -1px auto -1px 0.4em;
-    float: right;
 }
 
 .shelf-button {
-    margin-bottom: 4px;
+    margin: 0px 5px 4px 5px;
     height: 18px;
 }
 
@@ -160,7 +158,9 @@ body {
 }
 
 .options-button {
-    
+    display: grid;
+    grid-template-columns: auto min-content;
+    width: min-content;
     background-color: #00b9e8;
     border-color: black;
     border-style: solid;

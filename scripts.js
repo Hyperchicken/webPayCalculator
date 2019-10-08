@@ -241,6 +241,7 @@ $(document).ready(function() {
     } 
 });
 
+//initialise options buttons
 function initButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
@@ -253,6 +254,7 @@ function initButtons() {
     updateOptionsButtons();
 }
 
+//toggles if Day 14 (sunday after last day of fortnight) is a pubnlic holiday
 function toggleDay14ph() {
     if(day14ph) day14ph = false;
     else day14ph = true;
@@ -261,17 +263,19 @@ function toggleDay14ph() {
     updateResults();
 }
 
+//show/hide the datepicker
 function toggleDatepicker() {
     //$( "#week-commencing-date" ).slideToggle(300); //animated slide. looks a bit jerky on mobile
     $( "#week-commencing-date" ).toggle();
 }
 
+//Update all options buttons with the appropriate colours/text/icons based on each Shift.
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
         let buttonIcon = document.createElement("i");
-        if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //if shelf open, inset
+        if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //set appropriate button icon
             buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-up");
         }
         else {
@@ -282,94 +286,65 @@ function updateOptionsButtons() {
         buttonText.style.fontWeight = "bold";
         optionsButtons[i].style.backgroundImage = "";
         let optionsCount = 0;
+        let setButton = (label, colour) => {
+            if(optionsCount > 0) buttonText.innerHTML += "<br>";
+            buttonText.innerHTML += label;
+            optionsButtons[i].style.backgroundColor = colour;
+            optionsCount++;
+        }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
-            if(s.sick) {
-                if(optionsCount > 0) buttonText.textContent += " + ";
-                buttonText.textContent = "Sick";
-                optionsButtons[i].style.backgroundColor = sickColour;
-                optionsCount++;
+            if(s.sick)
+                setButton("Sick", sickColour);
+            else if(s.al) { //annual leave
+                if(s.ph) {
+                    setButton("PH (AL)", phColour);
+                }
+                else {
+                    setButton("AL", alColour);
+                }
             }
             else if(s.ph || s.ddo || (s.bonus && s.bonusHours > 0)) {
-                if(s.ph) {
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "PH-OFF";
-                    optionsButtons[i].style.backgroundColor = phColour;
-                    optionsCount++;
-                }
-                if(s.ddo) {
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "DDO";
-                    optionsButtons[i].style.backgroundColor = ddoColour;
-                    optionsCount++;
-                }
-                if(s.bonus && s.bonusHours > 0) {
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "Bonus";
-                    optionsButtons[i].style.backgroundColor = bonusColour;
-                    optionsCount++;
-                }
+                if(s.ph) 
+                    setButton("PH-OFF", phColour);
+                if(s.ddo) 
+                    setButton("DDO-OFF", ddoColour);
+                if(s.bonus && s.bonusHours > 0) 
+                    setButton("Bonus", bonusColour);
             }
             else {
-                buttonText.textContent = "OFF";
-                optionsButtons[i].style.backgroundColor = "black";
-                if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
-                    buttonText.textContent += " (+)";
-                }
+                if(s.ojt || s.wm || s.bonus) //if any shift options selected, show this on the main option button.
+                    setButton("OFF&nbsp(+)", "black");
+                else
+                    setButton("OFF", "black");
             }
         }
         else { //if actual shift
             if(s.sick) {
-                if(optionsCount > 0) buttonText.textContent += " + ";
-                buttonText.textContent = "Sick";
-                optionsButtons[i].style.backgroundColor = sickColour;
-                optionsCount++;
+                setButton("Sick", sickColour);
             }
             else if(s.ojt || s.ph || s.wm || s.ddo || s.bonus){
-                if(s.ojt){
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "OJT";
-                    optionsButtons[i].style.backgroundColor = ojtColour;
-                    optionsCount++;
-                }
-                if(s.ddo) {
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "DDO-W";
-                    optionsButtons[i].style.backgroundColor = ddoColour;
-                    optionsCount++;
-                }
+                if(s.ojt)
+                    setButton("OJT", ojtColour);
+                if(s.ddo)
+                    setButton("DDO-Worked", ddoColour);
                 if(s.ph){
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    if(s.phExtraPay) {
-                        buttonText.textContent += "PH-XP";
-                    }
-                    else {
-                        buttonText.textContent += "PH-XL";
-                    }
-                    optionsButtons[i].style.backgroundColor = phColour;
-                    optionsCount++;
+                    if(s.phExtraPay)
+                        setButton("PH-XPay", phColour);
+                    else
+                        setButton("PH-XLeave", phColour);
                 }
-                if(s.wm){
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "WM";
-                    optionsButtons[i].style.backgroundColor = wmColour;
-                    optionsCount++;
-                }
-                if(s.bonus && s.bonusHours > 0) {
-                    if(optionsCount > 0) buttonText.textContent += " + ";
-                    buttonText.textContent += "Bonus";
-                    optionsButtons[i].style.backgroundColor = bonusColour;
-                    optionsCount++;
-                }
+                if(s.wm)
+                    setButton("WM", wmColour);
+                if(s.bonus && s.bonusHours > 0)
+                    setButton("Bonus", bonusColour);
             }
             if(optionsCount == 0) {
-                buttonText.textContent = "Normal";
-                optionsButtons[i].style.backgroundColor = "";
-                optionsButtons[i].style.backgroundImage = "";
+                setButton("Normal", normalColour);
             }
         }
         //set gradient colour for multiple options
         if(optionsCount > 0 && !s.sick) {
-            let cssGradient = "linear-gradient(to right";
+            let cssGradient = "linear-gradient(to bottom";
             if(s.sick) cssGradient += "," + sickColour;
             if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
             if(s.ddo) cssGradient += "," + ddoColour;
@@ -379,8 +354,11 @@ function updateOptionsButtons() {
             cssGradient += ")";
             optionsButtons[i].style.backgroundImage = cssGradient;
         }
-        optionsButtons[i].appendChild(buttonIcon);
+        else {
+            optionsButtons[i].style.backgroundImage = "";
+        }
         optionsButtons[i].appendChild(buttonText);
+        optionsButtons[i].appendChild(buttonIcon);
     }
     if(day14ph) {
         $("#lastSunPhNo")[0].style.backgroundColor = "#5557";
