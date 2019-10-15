@@ -285,22 +285,23 @@ function updateOptionsButtons() {
         optionsButtons[i].textContent = "";
         buttonText.style.fontWeight = "bold";
         optionsButtons[i].style.backgroundImage = "";
-        let optionsCount = 0;
-        let setButton = (label, colour) => {
+        let buttonColours = [];
+        let setButton = (label, ...colours) => {
             if(optionsCount > 0) buttonText.innerHTML += "<br>";
             buttonText.innerHTML += label;
-            optionsButtons[i].style.backgroundColor = colour;
-            optionsCount++;
+            for(let i=0; i < colours.length; i++) {
+                buttonColours.push(colours[i]);
+            }
         }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
             if(s.sick)
                 setButton("Sick", sickColour);
             else if(s.al) { //annual leave
                 if(s.ph) {
-                    setButton("PH (AL)", phColour);
+                    setButton("PH&nbsp(AL)", phColour);
                 }
                 else {
-                    setButton("AL", alColour);
+                    setButton("A/Leave", alColour);
                 }
             }
             else if(s.ph || s.ddo || (s.bonus && s.bonusHours > 0)) {
@@ -343,14 +344,16 @@ function updateOptionsButtons() {
             }
         }
         //set gradient colour for multiple options
-        if(optionsCount > 0 && !s.sick) {
+        if(optionsCount > 0) {
             let cssGradient = "linear-gradient(to bottom";
-            if(s.sick) cssGradient += "," + sickColour;
-            if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
-            if(s.ddo) cssGradient += "," + ddoColour;
-            if(s.ph) cssGradient += "," + phColour;
-            if(s.wm && s.hoursDecimal > 0) cssGradient += "," + wmColour;
-            if(s.bonus && s.bonusHours > 0) cssGradient += "," + bonusColour;
+            if(s.sick) {
+                if(s.sick) cssGradient += "," + sickColour;
+                if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
+                if(s.ddo) cssGradient += "," + ddoColour;
+                if(s.ph) cssGradient += "," + phColour;
+                if(s.wm && s.hoursDecimal > 0) cssGradient += "," + wmColour;
+                if(s.bonus && s.bonusHours > 0) cssGradient += "," + bonusColour;
+            }
             cssGradient += ")";
             optionsButtons[i].style.backgroundImage = cssGradient;
         }
