@@ -294,8 +294,14 @@ function updateOptionsButtons() {
             }
         }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
-            if(s.sick)
-                setButton("Sick", sickColour);
+            if(s.sick) {
+                if(s.ph) {
+                    setButton("Sick&nbsp(PH)", sickColour, phColour);
+                }
+                else {
+                    setButton("Sick", sickColour);
+                }
+            }
             else if(s.al) { //annual leave
                 if(s.ph) {
                     setButton("PH&nbsp(AL)", alColour, phColour);
@@ -1041,6 +1047,7 @@ function ddoWeek() {
 
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
+    let alCount = 0; //counter to cap annual leave at 5 per week
     let ordinaryHours = 8;
     if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
@@ -1049,20 +1056,31 @@ function updateShiftPayTable() {
         let s = shifts[day]; //alias
         shiftPay.push([]);
         let shiftHours = s.hoursDecimal;
+        if(day == 7) alCount = 0; //reset for new week
         if(shiftHours <= 0) { //if shift has zero hours
-            //check for shift options (PH?)
             if(s.sick) {
-                shiftPay[day].push(new PayElement("sick", ordinaryHours));
-            }
-            else if(s.al) {
+                alCount++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
                 }
+                else {
+                    shiftPay[day].push(new PayElement("sick", ordinaryHours));
+                }
+            }
+            else if(s.al) {
+                if(s.ph) {
+                    alCount++;
+                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
+                }
                 else{
-                    shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
+                    if(alCount < 5) {
+                        alCount++;
+                        shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
+                    }
                 }
             }
             else if(s.ph) {
+                alCount++; //count as annual leave for the week so as to not use annual leave on a PH
                 shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
         }
@@ -1074,7 +1092,7 @@ function updateShiftPayTable() {
             let tomorrowPhHours = 0.0;
             let tomorrowPh;
 
-            //categorise hours
+            //categorise hours into today/tomorrow and ph/nonPh
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
             if(s.endHour48 > 23) {
