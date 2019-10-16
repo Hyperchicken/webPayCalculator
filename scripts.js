@@ -287,7 +287,7 @@ function updateOptionsButtons() {
         optionsButtons[i].style.backgroundImage = "";
         let buttonColours = [];
         let setButton = (label, ...colours) => {
-            if(optionsCount > 0) buttonText.innerHTML += "<br>";
+            if(buttonColours.length > 0) buttonText.innerHTML += "<br>";
             buttonText.innerHTML += label;
             for(let i=0; i < colours.length; i++) {
                 buttonColours.push(colours[i]);
@@ -298,7 +298,7 @@ function updateOptionsButtons() {
                 setButton("Sick", sickColour);
             else if(s.al) { //annual leave
                 if(s.ph) {
-                    setButton("PH&nbsp(AL)", phColour);
+                    setButton("PH&nbsp(AL)", alColour, phColour);
                 }
                 else {
                     setButton("A/Leave", alColour);
@@ -310,7 +310,7 @@ function updateOptionsButtons() {
                 if(s.ddo) 
                     setButton("DDO-OFF", ddoColour);
                 if(s.bonus && s.bonusHours > 0) 
-                    setButton("Bonus", bonusColour);
+                    setButton("Bonus&nbspPay", bonusColour);
             }
             else {
                 if(s.ojt || s.wm || s.bonus) //if any shift options selected, show this on the main option button.
@@ -335,30 +335,31 @@ function updateOptionsButtons() {
                         setButton("PH-XLeave", phColour);
                 }
                 if(s.wm)
-                    setButton("WM", wmColour);
+                    setButton("Wasted&nbspMeal", wmColour);
                 if(s.bonus && s.bonusHours > 0)
-                    setButton("Bonus", bonusColour);
+                    setButton("Bonus&nbspPay", bonusColour);
             }
-            if(optionsCount == 0) {
+            if(buttonColours.length == 0) {
                 setButton("Normal", normalColour);
             }
         }
         //set gradient colour for multiple options
-        if(optionsCount > 0) {
-            let cssGradient = "linear-gradient(to bottom";
-            if(s.sick) {
-                if(s.sick) cssGradient += "," + sickColour;
-                if(s.ojt && s.hoursDecimal > 0) cssGradient += "," + ojtColour;
-                if(s.ddo) cssGradient += "," + ddoColour;
-                if(s.ph) cssGradient += "," + phColour;
-                if(s.wm && s.hoursDecimal > 0) cssGradient += "," + wmColour;
-                if(s.bonus && s.bonusHours > 0) cssGradient += "," + bonusColour;
+        optionsButtons[i].style.backgroundImage = "";
+        optionsButtons[i].style.backgroundColor = "";
+        if(buttonColours.length == 1) {
+            optionsButtons[i].style.backgroundColor = buttonColours[0];
+        }
+        else if(buttonColours.length > 1) {
+            let cssGradient = "linear-gradient(to right";
+            for(let i = 0; i < buttonColours.length; i++) {
+                cssGradient += "," + buttonColours[i];
             }
             cssGradient += ")";
             optionsButtons[i].style.backgroundImage = cssGradient;
         }
         else {
-            optionsButtons[i].style.backgroundImage = "";
+            optionsButtons[i].style.backgroundColor = "white";
+            console.warn("No button options set! Setting button " + i + "to white!");
         }
         optionsButtons[i].appendChild(buttonText);
         optionsButtons[i].appendChild(buttonIcon);
@@ -1040,6 +1041,8 @@ function ddoWeek() {
 
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
+    let ordinaryHours = 8;
+    if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
     additionalPayments = [];
     for(let day = 0; day < 14; day++) {
@@ -1049,10 +1052,18 @@ function updateShiftPayTable() {
         if(shiftHours <= 0) { //if shift has zero hours
             //check for shift options (PH?)
             if(s.sick) {
-                shiftPay[day].push(new PayElement("sick", 8));
+                shiftPay[day].push(new PayElement("sick", ordinaryHours));
+            }
+            else if(s.al) {
+                if(s.ph) {
+                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
+                }
+                else{
+                    shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
+                }
             }
             else if(s.ph) {
-                shiftPay[day].push(new PayElement("phGaz", 8));
+                shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
         }
         else { //if shift has hours
@@ -1083,7 +1094,7 @@ function updateShiftPayTable() {
             normalHours = todayNormalHours + tomorrowNormalHours;
 
             if(s.sick) {
-                if(s.sick) shiftPay[day].push(new PayElement("sick", 8)); //force 8 hours sick pay if sick pay set regardless of hours entered. TEMP BEHVIOUR until sick-part implemented.
+                if(s.sick) shiftPay[day].push(new PayElement("sick", ordinaryHours)); //force 8 hours sick pay if sick pay set regardless of hours entered. TEMP BEHVIOUR until sick-part implemented.
             }
             else {
                 //Public Holidays
@@ -1105,7 +1116,7 @@ function updateShiftPayTable() {
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
-                    shiftPay[day].push(new PayElement("normal", Math.min(normalHours, 8.0), s.ojt));
+                    shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), s.ojt));
                 }
 
                 //Guarantee
