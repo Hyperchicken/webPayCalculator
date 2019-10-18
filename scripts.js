@@ -176,6 +176,10 @@ class PayElement {
             case "mealAllowance":
                 rate += getEbaRate(selectedDate, mealAllowanceRates);
                 break;
+            case "leaveLoading":
+                rate += getEbaRate(selectedDate, selectedGradeRates);
+                rate *= 0.2;
+                break;
             default:
                 console.error("PayElement.rate: unable to get rate for payType \"" + this.payType + "\"");
                 return null;
@@ -1076,6 +1080,7 @@ function updateShiftPayTable() {
                     if(alCount < 5) {
                         alCount++;
                         shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
+                        shiftPay[day].push(new PayElement("leaveLoading", ordinaryHours));
                     }
                 }
             }
