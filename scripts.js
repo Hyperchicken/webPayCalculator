@@ -115,7 +115,35 @@ class PayElement {
     }
     
     get sortIndex() {
-        return payTypes.indexOf(this.payType);
+        switch(this.payType) {
+            case "normal": return 1;
+            case "guarantee": return 2;
+            case "sick": return 3;
+            case "annualLeave": return 4;
+            case "phGaz": return 5;
+            case "phWorked": return 6;
+            case "wePen50": return 7;
+            case "wePen100": return 8;
+            case "phXpay": return 9;
+            case "ot150": return 10;
+            case "ot200": return 11;
+            case "nonRosPH": return 12;
+            case "phPen50": return 13;
+            case "rost+50": return 14;
+            case "rost+100": return 15;
+            case "edo": return 16;
+            case "ddoWorked": return 17;
+            case "bonusPayment": return 18;
+            case "earlyShift": return 19;
+            case "afternoonShift": return 20;
+            case "nightShift": return 21;
+            case "metroSig2": return 25;
+            case "mealAllowance": return 30;
+            case "leaveLoading": return 50;
+            default:
+                console.warn("PayElement.sortIndex: no sort index for pay type \"" + this.payType + "\"");
+                return 1000;
+        }
     }
 
     get payAmount() {
