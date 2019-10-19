@@ -22,6 +22,7 @@ const wmColour = "#aa60d5";
 const sickColour = "#ff0000";
 const bonusColour = "#e79e00";
 const alColour = "#1c4ab3";
+const buttonBackgroundColour = "#5554";
 
 
 //define Classes
@@ -121,24 +122,24 @@ class PayElement {
             case "sick": return 3;
             case "annualLeave": return 4;
             case "phGaz": return 5;
-            case "phWorked": return 6;
-            case "wePen50": return 7;
-            case "wePen100": return 8;
-            case "phXpay": return 9;
-            case "ot150": return 10;
-            case "ot200": return 11;
-            case "nonRosPH": return 12;
-            case "phPen50": return 13;
+            case "phXpay": return 6;
+            case "phWorked": return 7;
+            case "nonRosPH": return 8;
+            case "phPen50": return 9;
+            case "wePen50": return 10;
+            case "wePen100": return 11;
+            case "ot150": return 12;
+            case "ot200": return 13;
             case "rost+50": return 14;
             case "rost+100": return 15;
-            case "edo": return 16;
             case "ddoWorked": return 17;
-            case "bonusPayment": return 18;
             case "earlyShift": return 19;
             case "afternoonShift": return 20;
             case "nightShift": return 21;
             case "metroSig2": return 25;
             case "mealAllowance": return 30;
+            case "bonusPayment": return 31;
+            case "edo": return 35;
             case "leaveLoading": return 50;
             default:
                 console.warn("PayElement.sortIndex: no sort index for pay type \"" + this.payType + "\"");
@@ -403,12 +404,12 @@ function updateOptionsButtons() {
         optionsButtons[i].appendChild(buttonIcon);
     }
     if(day14ph) {
-        $("#lastSunPhNo")[0].style.backgroundColor = "#5557";
+        $("#lastSunPhNo")[0].style.backgroundColor = buttonBackgroundColour;
         $("#lastSunPhYes")[0].style.backgroundColor = phColour;
     }
     else {
         $("#lastSunPhNo")[0].style.backgroundColor = "#c60000";
-        $("#lastSunPhYes")[0].style.backgroundColor = "#5557";
+        $("#lastSunPhYes")[0].style.backgroundColor = buttonBackgroundColour;
     }
 }
 
@@ -488,7 +489,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].ojt = true;
             reloadPageData();
         });
-        ojtButton.style.background = "none";
+        ojtButton.style.background = buttonBackgroundColour;
     }
 
     //DDO button
@@ -507,7 +508,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].ddo = true;
             reloadPageData();
         });
-        ddoButton.style.background = "none";
+        ddoButton.style.background = buttonBackgroundColour;
     }
 
     //Public Holiday button
@@ -545,7 +546,7 @@ function generateOptionsShelfButtons(day) {
                         shifts[day].phExtraPay = false;
                         reloadPageData();
                     });
-                    xLeaveButton.style.background = "none";
+                    xLeaveButton.style.background = buttonBackgroundColour;
                     xPayButton.style.background = "";
                 } else {
                     xPayButton.addEventListener("click", function() {
@@ -553,7 +554,7 @@ function generateOptionsShelfButtons(day) {
                         reloadPageData();
                     });
                     xLeaveButton.style.background = "";
-                    xPayButton.style.background = "none";
+                    xPayButton.style.background = buttonBackgroundColour;
                 }
             }
         }
@@ -566,7 +567,7 @@ function generateOptionsShelfButtons(day) {
             }
             reloadPageData();
         });
-        phButton.style.background = "none";
+        phButton.style.background = buttonBackgroundColour;
     }
 
     //Wasted Meal button
@@ -585,7 +586,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].wm = true;
             reloadPageData();
         });
-        wmButton.style.background = "none";
+        wmButton.style.background = buttonBackgroundColour;
     }
 
     //Sick button
@@ -604,7 +605,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].sick = true;
             reloadPageData();
         });
-        sickButton.style.background = "none";
+        sickButton.style.background = buttonBackgroundColour;
     }
 
     //Annual leave button
@@ -623,7 +624,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].al = true;
             reloadPageData();
         });
-        alButton.style.background = "none";
+        alButton.style.background = buttonBackgroundColour;
     }
 
     //Bonus Payment button
@@ -664,7 +665,7 @@ function generateOptionsShelfButtons(day) {
             selectBonusTextbox = true;
             reloadPageData();
         });
-        bonusButton.style.background = "none";
+        bonusButton.style.background = buttonBackgroundColour;
     }
     
 
@@ -813,6 +814,7 @@ function updateResults() {
             let headerRow = document.createElement("tr");
             headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
             elementTable.appendChild(headerRow);
+            groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
             groupedElements.forEach(function(e){
                 let payElementRow = document.createElement("tr");
                 //payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
@@ -846,6 +848,7 @@ function updateResults() {
             let firstDay = true;
             for(let i = 0; i < 14; i++) {
                 if(shiftPay[i].length > 0){ //if any pay elements for current day
+                    shiftPay[i].sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements as per defined sort index
                     let shiftHeaderRow = document.createElement("tr");
                     let shiftTitle = document.createElement("td");
                     shiftHeaderRow.className = "splitview-title";
@@ -1079,11 +1082,17 @@ function ddoWeek() {
 
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
+    let alShifts = [0, 0]; //[week1, week2]  //shifts counted as annual leave. designed to avoid using annual leave when sick or ph.
+    let sickPhShifts = [0, 0];
     let alCount = 0; //counter to cap annual leave at 5 per week
     let ordinaryHours = 8;
     if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
     additionalPayments = [];
+    let weekNo = (day) => {
+        if(day < 7) return 0;
+        else return 1;
+    }
     for(let day = 0; day < 14; day++) {
         let s = shifts[day]; //alias
         shiftPay.push([]);
@@ -1092,6 +1101,7 @@ function updateShiftPayTable() {
         if(shiftHours <= 0) { //if shift has zero hours
             if(s.sick) {
                 alCount++;
+                sickPhShifts[weekNo(day)]++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
                 }
@@ -1102,9 +1112,11 @@ function updateShiftPayTable() {
             else if(s.al) {
                 if(s.ph) {
                     alCount++;
+                    sickPhShifts[weekNo(day)]++;
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
                 }
                 else{
+                    alShifts[weekNo(day)]++;
                     if(alCount < 5) {
                         alCount++;
                         shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
