@@ -132,7 +132,6 @@ class PayElement {
             case "ot200": return 13;
             case "rost+50": return 14;
             case "rost+100": return 15;
-            case "ddoWorked": return 17;
             case "earlyShift": return 19;
             case "afternoonShift": return 20;
             case "nightShift": return 21;
@@ -152,6 +151,40 @@ class PayElement {
     }
 
     get payClass() {
+        let payClassName = "";
+        switch(this.payType) {
+            case "normal": payClassName = "Normal"; break;
+            case "guarantee": payClassName = "Guarantee"; break;
+            case "sick": payClassName = "Sick Full"; break;
+            case "annualLeave": payClassName = "A/Leave"; break;
+            case "phGaz": payClassName = "PH Gazette"; break;
+            case "phXpay": payClassName = "PH X/Pay"; break;
+            case "phWorked": payClassName = "PH Worked"; break;
+            case "nonRosPH": payClassName = "Non-Ros PH"; break;
+            case "phPen50": payClassName = "PhPen 50%"; break;
+            case "wePen50": payClassName = "WePen 50%"; break;
+            case "wePen100": payClassName = "WePen 100%"; break;
+            case "ot150": payClassName = "O/T1.5 Vol"; break;
+            case "ot200": payClassName = "O/T2.0 Vol"; break;
+            case "rost+50": payClassName = "Rost+50%"; break;
+            case "rost+100": payClassName = "Rost+100%"; break;
+            case "earlyShift": payClassName = "E/Shift"; break;
+            case "afternoonShift": payClassName = "A/Shift"; break;
+            case "nightShift": payClassName = "N/Shift"; break;
+            case "metroSig2": payClassName = "Metro Sig2"; break;
+            case "mealAllowance": payClassName = "Meal Allow"; break;
+            case "bonusPayment": payClassName = "Bonus Pay"; break;
+            case "edo": payClassName = "EDO"; break;
+            case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
+            default:
+                payClassName = this.payType;
+                console.warn("PayElement.payClass: no pay-type name defined for \"" + this.payType + "\"");
+        }
+        if(this.ojt) return payClassName + " (OJT)";
+        else return payClassName;
+    }
+
+    get payClassRaw() {
         if(this.ojt) return this.payType + "_OJT";
         else return this.payType;
     }
@@ -165,7 +198,6 @@ class PayElement {
             case "sick":
             case "guarantee": //pay guarantee to 8 hours
             case "edo":
-            case "ddoWorked":
             case "wePen100":
             case "phGaz":
             case "phWorked":
@@ -895,7 +927,7 @@ function updateResults() {
                 let shiftTitle = document.createElement("td");
                 shiftHeaderRow.className = "splitview-title";
                 shiftTitle.className = "splitview-title-data";
-                shiftTitle.textContent = "Additional Payments";
+                shiftTitle.textContent = "Other Payments";
                 shiftTitle.colSpan = 4;
                 shiftHeaderRow.appendChild(shiftTitle);
                 elementTable.appendChild(shiftHeaderRow);
@@ -926,72 +958,6 @@ function updateResults() {
             }
             resultArea.appendChild(elementTable);
             resultArea.appendChild(document.createElement("hr"));
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
-        }
-        else if(resultsViewFormat == "test") {
-            let shiftTitle = document.createElement("h3");
-            shiftTitle.textContent = "TEST VIEW FORMAT";
-            resultArea.appendChild(shiftTitle);
-        }
-        else if(resultsViewFormat == "debug-grouped") {
-            let listDiv = document.createElement("div");
-            listDiv.className = "pay-elements-list";
-            let payElements = document.createElement("ul");
-            groupedElements.forEach(function(e){
-                let payElement = document.createElement("li");
-                payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                payElements.appendChild(payElement);
-                totalValue += e.payAmount;
-            });
-            listDiv.appendChild(payElements);
-            listDiv.appendChild(document.createElement("hr"));
-            resultArea.appendChild(listDiv);
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
-        }
-        else if(resultsViewFormat == "debug-split") {
-            for(let i = 0; i < 14; i++) {
-                if(shiftPay[i].length > 0){ //if any pay elements for current day
-                    let shiftDiv = document.createElement("div");
-                    let shiftTitle = document.createElement("h3");
-                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
-                    shiftDiv.appendChild(shiftTitle);
-                    let shiftSubtitle = document.createElement("i");
-                    shiftSubtitle.textContent = "Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
-                    shiftDiv.appendChild(shiftSubtitle);
-                    let payElements = document.createElement("ul");
-                    for(let j = 0; j < shiftPay[i].length; j++) {
-                        let payElement = document.createElement("li");
-                        payElement.textContent = shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(8, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(8, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
-                        payElements.appendChild(payElement);
-                        totalValue += shiftPay[i][j].payAmount;
-                    }
-                    shiftDiv.appendChild(payElements);
-                    shiftDiv.appendChild(document.createElement("hr"));
-                    resultArea.appendChild(shiftDiv);
-                }
-            }
-            if(additionalPayments.length > 0) {
-                let additionalPaymentsDiv = document.createElement("div");
-                let title = document.createElement("h3");
-                title.textContent = "Additional Payments";
-                additionalPaymentsDiv.appendChild(title);
-                let payElements = document.createElement("ul");
-                for(let j = 0; j < additionalPayments.length; j++) {
-                    let payElement = document.createElement("li");
-                    payElement.textContent = "Type: " + additionalPayments[j].payClass + " | Rate: " + additionalPayments[j].rate.toFixed(4) + " | Hours: " + additionalPayments[j].hours.toFixed(4) + " | $" + additionalPayments[j].payAmount.toFixed(2);
-                    payElements.appendChild(payElement);
-                    totalValue += additionalPayments[j].payAmount;
-                }
-                additionalPaymentsDiv.appendChild(payElements);
-                additionalPaymentsDiv.appendChild(document.createElement("hr"));
-                resultArea.appendChild(additionalPaymentsDiv);
-            }
             let totalElement = document.createElement("h3");
             totalElement.setAttribute("id", "totalElement");
             totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
