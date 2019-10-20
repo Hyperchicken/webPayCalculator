@@ -1083,8 +1083,7 @@ function ddoWeek() {
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
     let alShifts = [0, 0]; //[week1, week2]  //shifts counted as annual leave. designed to avoid using annual leave when sick or ph.
-    let sickPhShifts = [0, 0];
-    let alCount = 0; //counter to cap annual leave at 5 per week
+    let sickPhShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let ordinaryHours = 8;
     if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
@@ -1093,14 +1092,16 @@ function updateShiftPayTable() {
         if(day < 7) return 0;
         else return 1;
     }
+    //pay calculation: pass 1. calculate everything except AL
     for(let day = 0; day < 14; day++) {
         let s = shifts[day]; //alias
         shiftPay.push([]);
         let shiftHours = s.hoursDecimal;
-        if(day == 7) alCount = 0; //reset for new week
         if(shiftHours <= 0) { //if shift has zero hours
+            if(s.al) {
+                alShifts[weekNo(day)]++;
+            }
             if(s.sick) {
-                alCount++;
                 sickPhShifts[weekNo(day)]++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
@@ -1109,23 +1110,8 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("sick", ordinaryHours));
                 }
             }
-            else if(s.al) {
-                if(s.ph) {
-                    alCount++;
-                    sickPhShifts[weekNo(day)]++;
-                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
-                }
-                else{
-                    alShifts[weekNo(day)]++;
-                    if(alCount < 5) {
-                        alCount++;
-                        shiftPay[day].push(new PayElement("annualLeave", ordinaryHours));
-                        shiftPay[day].push(new PayElement("leaveLoading", ordinaryHours));
-                    }
-                }
-            }
             else if(s.ph) {
-                alCount++; //count as annual leave for the week so as to not use annual leave on a PH
+                sickPhShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
         }
@@ -1294,6 +1280,27 @@ function updateShiftPayTable() {
             shiftPay[day].push(new PayElement("mealAllowance", 1));
         }   
     }
+
+    //pay calculation: pass 2. determine and cap which days to pay annual leave on.
+    //AL capped at 5 days per week, with any sick or PH-off day during annual leave to be paid in place of annual leave.
+    for(let i = 0; i < 2; i++) {
+        let endWeekDay = [7, 14];
+        if(alShifts[i] > 0) {
+            if(alShifts[i] > 5) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave
+            if(alShifts[i] + sickPhShifts[i] > 5) {
+                alShifts[i] -= sickPhShifts[i]; //deduct any sick or PH-OFF shifts from annual leave count
+            }
+            for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
+                if(shifts[j].al && (!shifts[j].ph || !shifts[j].sick) && alShifts[i] > 0) {
+                    alShifts[i]--;
+                    shiftPay[j].push(new PayElement("annualLeave", ordinaryHours));
+                    shiftPay[j].push(new PayElement("leaveLoading", ordinaryHours));
+                }
+            }
+        }
+    }
+    
+    //pay calculation: DDO. determine how to pay DDO
     if(getPayGrade() != "trainee") {
         if(ddoWeek()) {
             additionalPayments.push(new PayElement("edo", 4));
