@@ -184,6 +184,49 @@ class PayElement {
         else return payClassName;
     }
 
+    get tooltipText() {
+        let tooltipText = "";
+        switch(this.payType) {
+            case "normal": 
+                tooltipText = "<strong>Normal</strong>"
+                + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>";
+                break;
+            case "guarantee": 
+                tooltipText = "<strong>Guarantee</strong>"
+                + "<p><em>Guaranteed</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
+                + "<ul><li>First 10 worked shifts eligible.</li>"
+                + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
+                + "<li>Trainees not eligible.</li></ul>";
+                break;
+            case "sick": tooltipText = "Sick Full"; break;
+            case "annualLeave": tooltipText = "A/Leave"; break;
+            case "phGaz": tooltipText = "PH Gazette"; break;
+            case "phXpay": tooltipText = "PH X/Pay"; break;
+            case "phWorked": tooltipText = "PH Worked"; break;
+            case "nonRosPH": tooltipText = "Non-Ros PH"; break;
+            case "phPen50": tooltipText = "PhPen 50%"; break;
+            case "wePen50": tooltipText = "WePen 50%"; break;
+            case "wePen100": tooltipText = "WePen 100%"; break;
+            case "ot150": tooltipText = "O/T1.5 Vol"; break;
+            case "ot200": tooltipText = "O/T2.0 Vol"; break;
+            case "rost+50": tooltipText = "Rost+50%"; break;
+            case "rost+100": tooltipText = "Rost+100%"; break;
+            case "earlyShift": tooltipText = "E/Shift"; break;
+            case "afternoonShift": tooltipText = "A/Shift"; break;
+            case "nightShift": tooltipText = "N/Shift"; break;
+            case "metroSig2": tooltipText = "Metro Sig2"; break;
+            case "mealAllowance": tooltipText = "Meal Allow"; break;
+            case "bonusPayment": tooltipText = "Bonus Pay"; break;
+            case "edo": tooltipText = "EDO"; break;
+            case "leaveLoading": tooltipText = "Leave Ldg 20%"; break;
+            default:
+                tooltipText = "";
+                console.warn("PayElement.tooltipText: no tooltip-text defined for \"" + this.payType + "\"");
+        }
+        if(this.ojt) return tooltipText + " (OJT)";
+        else return tooltipText;
+    }
+
     get payClassRaw() {
         if(this.ojt) return this.payType + "_OJT";
         else return this.payType;
@@ -858,6 +901,13 @@ function updateResults() {
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
                 elemAmount.textContent = "$" + e.payAmount.toFixed(2);
+                if(e.tooltipText) {
+                    elemClass.className = "tooltip-element";
+                    let tooltipSpan = document.createElement("span");
+                    tooltipSpan.className = "tooltip-text";
+                    tooltipSpan.innerHTML = e.tooltipText;
+                    elemClass.appendChild(tooltipSpan);
+                }
                 payElementRow.appendChild(elemClass);
                 payElementRow.appendChild(elemRate);
                 payElementRow.appendChild(elemHours);
