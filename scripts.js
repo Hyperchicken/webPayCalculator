@@ -184,7 +184,7 @@ class PayElement {
         else return payClassName;
     }
 
-    get tooltipText() {
+    get helpText() {
         let tooltipText = "";
         switch(this.payType) {
             case "normal": 
@@ -901,28 +901,33 @@ function updateResults() {
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
                 elemAmount.textContent = "$" + e.payAmount.toFixed(2);
-                if(e.tooltipText) {
-                    elemClass.className = "tooltip-element";
-                    let tooltipSpan = document.createElement("span");
-                    tooltipSpan.className = "tooltip-text";
-                    tooltipSpan.innerHTML = e.tooltipText;
-                    elemClass.appendChild(tooltipSpan);
-                }
                 payElementRow.appendChild(elemClass);
                 payElementRow.appendChild(elemRate);
                 payElementRow.appendChild(elemHours);
                 payElementRow.appendChild(elemAmount);
                 elementTable.appendChild(payElementRow);
                 totalValue += e.payAmount;
+                if(e.helpText) {
+                    elemClass.addEventListener("click", function(){
+                        document.getElementById("helpDiv").innerHTML = e.helpText;
+                    });
+                }
             });
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
+            
             //subtotal
             listDiv.appendChild(document.createElement("hr"));
             let totalElement = document.createElement("h3");
             totalElement.setAttribute("id", "totalElement");
             totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
             resultArea.appendChild(totalElement);
+            
+            //element help tips
+            let helpDiv = document.createElement("div");
+            helpDiv.id = "helpDiv";
+            helpDiv.innerHTML = "<";
+            resultArea.appendChild(helpDiv);
         }
         else if(resultsViewFormat == "split") {
             let elementTable = document.createElement("table");

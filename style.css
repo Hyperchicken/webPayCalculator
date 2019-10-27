@@ -325,39 +325,12 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     height: 10px;
 }
 
-.tooltip-element {
-    position: relative;
-  }
-
-.tooltip-element .tooltip-text {
-    visibility: hidden;
-    width: max-content;
-    top: 100%;
-    left: 25px;
-    background-color: #333;
-    color: #fff;
-    text-align: left;
-    padding: 3px 10px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 0.9em;
-}
-
-.tooltip-element .tooltip-text::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;  /* At the top of the tooltip */
-    left: 12px;
-    margin-left: -5px;
-    border-width: 5px;
+#helpDiv {
     border-style: solid;
-    border-color: transparent transparent #333 transparent;
-  }
-
-.tooltip-element:hover .tooltip-text, .tooltip-element:active .tooltip-text {
-    visibility: visible;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #00000070;
 }
 
 .shift-hours {
