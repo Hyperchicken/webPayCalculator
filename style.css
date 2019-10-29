@@ -297,6 +297,7 @@ hr {
 .pay-element-table {
     width: 100%;
     font-family: "Lucida Console", Monaco, monospace;
+    border-collapse: collapse;
 }
 
 .pay-element-table th {
@@ -323,6 +324,14 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
 
 .pay-element-table .last-row {
     height: 10px;
+}
+
+.pay-element-class {
+    cursor: pointer;
+}
+
+.pay-element-class:hover {
+    text-decoration: underline;
 }
 
 #helpDiv {

@@ -198,7 +198,13 @@ class PayElement {
                 + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
                 + "<li>Trainees not eligible.</li></ul>";
                 break;
-            case "sick": tooltipText = "Sick Full"; break;
+            case "sick": 
+                tooltipText = "<strong>Sick Full</strong>"
+                + "<p>A full day of <em>Sick or Carer's leave</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
+                + "<ul><li>First 10 worked shifts eligible.</li>"
+                + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
+                + "<li>Trainees not eligible.</li></ul>";
+                break;
             case "annualLeave": tooltipText = "A/Leave"; break;
             case "phGaz": tooltipText = "PH Gazette"; break;
             case "phXpay": tooltipText = "PH X/Pay"; break;
@@ -901,6 +907,7 @@ function updateResults() {
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
                 elemAmount.textContent = "$" + e.payAmount.toFixed(2);
+                elemClass.className = "pay-element-class";
                 payElementRow.appendChild(elemClass);
                 payElementRow.appendChild(elemRate);
                 payElementRow.appendChild(elemHours);
@@ -909,7 +916,9 @@ function updateResults() {
                 totalValue += e.payAmount;
                 if(e.helpText) {
                     elemClass.addEventListener("click", function(){
+                        $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
                         document.getElementById("helpDiv").innerHTML = e.helpText;
+                        payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
                     });
                 }
             });
@@ -922,12 +931,6 @@ function updateResults() {
             totalElement.setAttribute("id", "totalElement");
             totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
             resultArea.appendChild(totalElement);
-            
-            //element help tips
-            let helpDiv = document.createElement("div");
-            helpDiv.id = "helpDiv";
-            helpDiv.innerHTML = "<";
-            resultArea.appendChild(helpDiv);
         }
         else if(resultsViewFormat == "split") {
             let elementTable = document.createElement("table");
@@ -962,6 +965,7 @@ function updateResults() {
                         elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
                         elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
                         elemAmount.textContent = "$" + shiftPay[i][j].payAmount.toFixed(2);
+                        elemClass.className = "pay-element-class";
                         payElementRow.appendChild(elemClass);
                         payElementRow.appendChild(elemRate);
                         payElementRow.appendChild(elemHours);
@@ -1023,6 +1027,11 @@ function updateResults() {
             shiftTitle.textContent = "Error displaying results: invalid view format '" + resultsViewFormat + "'";
             resultArea.appendChild(shiftTitle);
         }
+        //element help tips
+        let helpDiv = document.createElement("div");
+        helpDiv.id = "helpDiv";
+        helpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to display information about it here!</p>";
+        resultArea.appendChild(helpDiv);
     }
 }
 
@@ -1266,10 +1275,10 @@ function updateShiftPayTable() {
                 if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
-                        shiftworkHours += tomorrowNormalHours;
+                        shiftworkHours +=  tomorrowNormalHours;
                     }
-                    else if((day == 5 || day == 12) && tomorrowNormalHours > 0.0) { //friday into saturday
-                        shiftworkHours += tomorrowNormalHours;
+                    else if((day == 5 || day == 12) && todayNormalHours > 0.0) { //friday into saturday
+                        shiftworkHours += todayNormalHours;
                     }
                     else if([1,2,3,4,5,8,9,10,11,12].includes(day) && normalHours > 0.0) { 
                         shiftworkHours += normalHours;
