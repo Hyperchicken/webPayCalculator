@@ -191,7 +191,7 @@ class PayElement {
                 tooltipText = "<strong>Normal</strong>"
                 + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
                 + "<ul><li>Ordinary hours are up to 8 hours per day for non-trainees and 7.6 hours for trainees.</li>"
-                + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime and public holidays).</li></ul>";
+                + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime, public holidays, weekends, etc).</li></ul>";
                 break;
             case "guarantee": 
                 tooltipText = "<strong>Guarantee</strong>"
@@ -215,32 +215,71 @@ class PayElement {
                 + "<p>A full day's <em>Paid leave of absence</em> for a <em>Public Holiday</em> not worked.</p>";
                 break;
             case "phXpay": tooltipText = "<strong>PH X/Pay</strong>"
-                + "<p><em>Public Holiday Extra Pay.</em> Brings the total Public Holiday pay to 'double time and a half'.</p>"
-                + "<ul><li>Paid when Extra Pay is elected when signing-on on a Public Holiday.</li>"
-                + "<li>Public Holidays that fall on a Sunday are automatically <em>PH X/Pay</em></li></ul>";
+                + "<p><em>Public Holiday Extra Pay.</em> Additional pay at the normal rate for the hours worked on a public holiday where 'extra pay' was elected when signing-on, or if the public holiday falls on a Sunday.</p>"
+                + "<ul><li>Public Holidays that fall on a Sunday are automatically <em>Extra Pay</em> as opposed to <em>Extra Leave</em>.</li></ul>";
                 break;
-            case "phWorked": tooltipText = "PH Worked"; break;
-            case "nonRosPH": tooltipText = "Non-Ros PH"; break;
-            case "phPen50": tooltipText = "PhPen 50%"; break;
-            case "wePen50": tooltipText = "WePen 50%"; break;
-            case "wePen100": tooltipText = "WePen 100%"; break;
-            case "ot150": tooltipText = "O/T1.5 Vol"; break;
-            case "ot200": tooltipText = "O/T2.0 Vol"; break;
-            case "rost+50": tooltipText = "Rost+50%"; break;
-            case "rost+100": tooltipText = "Rost+100%"; break;
-            case "earlyShift": tooltipText = "E/Shift"; break;
-            case "afternoonShift": tooltipText = "A/Shift"; break;
-            case "nightShift": tooltipText = "N/Shift"; break;
-            case "metroSig2": tooltipText = "Metro Sig2"; break;
-            case "mealAllowance": tooltipText = "Meal Allow"; break;
-            case "bonusPayment": tooltipText = "Bonus Pay"; break;
-            case "edo": tooltipText = "EDO"; break;
-            case "leaveLoading": tooltipText = "Leave Ldg 20%"; break;
+            case "phWorked": tooltipText = "<strong>PH Worked</strong>"
+                + "<p><em>Public Holiday Worked.</em> Time worked on a Public Holiday, paid at <em>normal time</em>.</p>";
+                break;
+            case "nonRosPH": tooltipText = "<strong>Non-Ros PH</strong>"
+                + "<p><em>Non-Rostered Public Holiday.</em></p>"
+                break;
+            case "phPen50": tooltipText = "<strong>PhPen 50%</strong>"
+                + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>"
+                break;
+            case "wePen50": tooltipText = "<strong>WePen 50%</strong>"
+                + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>"
+                break;
+            case "wePen100": tooltipText = "<strong>WePen 100%</strong>"
+                + "<p><em>Weekend Penalty 100% (Sunday Time). Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</em></p>"
+                break;
+            case "ot150": tooltipText = "<strong>O/T1.5 Vol</strong>"
+                + "<p><em>Excess Shift Overtime x1.5.</em> Time worked on the 11th and 12th shifts of the fortnight, paid at <em>time and half</em>.</p>"
+                break;
+            case "ot200": tooltipText = "<strong>O/T2.0 Vol</strong>"
+                + "<p><em>Excess Shift Overtime x2.</em> Time worked on the 13th and 14th shifts of the fortnight, or the 11th or 12th shift if it falls on a Saturday, paid at <em>double time</em>.</p>"
+                break;
+            case "rost+50": tooltipText = "<strong>Rost+50%</strong>"
+                + "<p><em>Excess Hours Overtime x1.5.</em> Time worked on an ordinary shift in excess of 8 hours, paid at <em>time and a half</em> for for the first three excess hours.</p>"
+                break;
+            case "rost+100": tooltipText = "<strong>Rost+100%</strong>"
+                + "<p><em>Excess Hours Overtime x2.</em> Time worked on an ordinary shift in excess of 11 hours, paid at <em>double time.</em></p>"
+                break;
+            case "earlyShift": tooltipText = "<strong>E/Shift</strong>"
+                + "<p><em>Early Shift.</em> Penalty payment for a shift that commences at or between 0400 and 0530.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "afternoonShift": tooltipText = "<strong>A/Shift</strong>"
+                + "<p><em>Afternoon Shift.</em> Penalty payment for a shift that commences before 1800 and concludes at or after 1830.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "nightShift": tooltipText = "<strong>N/Shift</strong>"
+                + "<p><em>Night Shift.</em> Penalty payment for a shift that commences at or between 1800 and 0359.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "metroSig2": tooltipText = "<strong>Metro Sig2</strong>"
+                + "<p><em>Suburban Allowance.</em> The following excerpt is taken from the 2015-2019 EA section 4.7:</p>"
+                + "<blockquote><p>Employees regularly employed driving suburban electric trains in the Melbourne Metropolitan Rail Network and who are qualified to drive under the Metrol Signalling and Safe Working System are to be paid a Suburban Allowance in accordance with Schedule C of the Agreement, per shift for all rostered shifts for which they are ready willing and able to perform all of the functions required of that position. This allowance does not apply to Trainee Drivers.</p></blockquote>";
+                break;
+            case "mealAllowance": tooltipText = "<strong>Meal Allow</strong>"
+                + "<p><em>Meal Allowance.</em> Paid where the employee has had a wasted meal, or if they have worked more than 2 hours of overtime that shift.</p>"
+                break;
+            case "bonusPayment": tooltipText = "<strong>Bonus Pay</strong>"
+                + "<p><em>Bonus Payment</em> paid where the company has offered an incentive payment on a particular shift.</p>"
+                + "<ul><li>The name of this payment on your payslip will be different!</li>"
+                + "<li>In the past, bonus payments have been offered on days such as White Night and New Years.</li></ul>";
+                break;
+            case "edo": tooltipText = "<strong>EDO</strong>"
+                + "<p><em>Discretionary Day Off</em>. +4 hours paid on a DDO fortnight, -4 hours deducted otherwise.</p>"
+                break;
+            case "leaveLoading": tooltipText = "<strong>Leave Ldg 20%</strong>"
+                + "<p><em>Leave Loading 20%.</em> Additional 20% loading paid on Annual Leave taken.</p>"
+                break;
             default:
                 tooltipText = "";
                 console.warn("PayElement.tooltipText: no tooltip-text defined for \"" + this.payType + "\"");
         }
-        if(this.ojt) return tooltipText + " (OJT)";
+        if(this.ojt) return tooltipText + "<p><em>OJT rate</em></p>";
         else return tooltipText;
     }
 
@@ -930,6 +969,7 @@ function updateResults() {
                         $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
                         document.getElementById("helpDiv").innerHTML = e.helpText;
                         payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                        window.location.replace("#helpDiv"); //scroll to help box
                     });
                 }
             });
@@ -988,6 +1028,7 @@ function updateResults() {
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
                                 document.getElementById("helpDiv").innerHTML = shiftPay[i][j].helpText;
                                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                                window.location.replace("#helpDiv"); //scroll to help box
                             });
                         }
                     }
@@ -1031,6 +1072,14 @@ function updateResults() {
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
                         totalValue += additionalPayments[j].payAmount;
+                        if(additionalPayments[j].helpText) {
+                            elemClass.addEventListener("click", function(){
+                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                document.getElementById("helpDiv").innerHTML = additionalPayments[j].helpText;
+                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                                window.location.replace("#helpDiv"); //scroll to help box
+                            });
+                        }
                 }
             }
             resultArea.appendChild(elementTable);
@@ -1283,8 +1332,8 @@ function updateShiftPayTable() {
                     else { //all other excess shifts
                         ot150Hours += normalHours;
                     }
-                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", ot150Hours, s.ojt));
-                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", ot200Hours, s.ojt));
+                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", Math.min(ot150Hours, ordinaryHours), s.ojt));
+                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", Math.min(ot200Hours, ordinaryHours), s.ojt));
                 }
 
                 //Shiftwork Allowances
