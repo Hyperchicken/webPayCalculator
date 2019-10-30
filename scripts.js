@@ -1247,8 +1247,8 @@ function updateShiftPayTable() {
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
                         shiftworkHours += tomorrowNormalHours;
                     }
-                    else if((day == 5 || day == 12) && tomorrowNormalHours > 0.0) { //friday into saturday
-                        shiftworkHours += tomorrowNormalHours;
+                    else if((day == 5 || day == 12) && todayNormalHours > 0.0) { //friday into saturday
+                        shiftworkHours += todayNormalHours;
                     }
                     else if([1,2,3,4,5,8,9,10,11,12].includes(day) && normalHours > 0.0) { 
                         shiftworkHours += normalHours;
