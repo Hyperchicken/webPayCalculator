@@ -189,7 +189,9 @@ class PayElement {
         switch(this.payType) {
             case "normal": 
                 tooltipText = "<strong>Normal</strong>"
-                + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>";
+                + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
+                + "<ul><li>Ordinary hours are up to 8 hours per day for non-trainees and 7.6 hours for trainees.</li>"
+                + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime and public holidays).</li></ul>";
                 break;
             case "guarantee": 
                 tooltipText = "<strong>Guarantee</strong>"
@@ -200,14 +202,23 @@ class PayElement {
                 break;
             case "sick": 
                 tooltipText = "<strong>Sick Full</strong>"
-                + "<p>A full day of <em>Sick or Carer's leave</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
-                + "<ul><li>First 10 worked shifts eligible.</li>"
-                + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
-                + "<li>Trainees not eligible.</li></ul>";
+                + "<p>A full day of <em>personal leave</em>.</p>";
                 break;
-            case "annualLeave": tooltipText = "A/Leave"; break;
-            case "phGaz": tooltipText = "PH Gazette"; break;
-            case "phXpay": tooltipText = "PH X/Pay"; break;
+            case "annualLeave": 
+                tooltipText = "<strong>Annual Leave</strong>"
+                + "<p><em>Annual Leave</em> paid at 8 hours per day of leave, up to 40 hours (5 shifts) per week.</p>"
+                + "<ul><li>A 20% loading is paid on Annual Leave.</li>"
+                + "<li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as Annual Leave.</li>"
+                + "<li>Public Holidays that occur during Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave.</li></ul>";
+                break;
+            case "phGaz": tooltipText = "<strong>PH Gazette</strong>"
+                + "<p>A full day's <em>Paid leave of absence</em> for a <em>Public Holiday</em> not worked.</p>";
+                break;
+            case "phXpay": tooltipText = "<strong>PH X/Pay</strong>"
+                + "<p><em>Public Holiday Extra Pay.</em> Brings the total Public Holiday pay to 'double time and a half'.</p>"
+                + "<ul><li>Paid when Extra Pay is elected when signing-on on a Public Holiday.</li>"
+                + "<li>Public Holidays that fall on a Sunday are automatically <em>PH X/Pay</em></li></ul>";
+                break;
             case "phWorked": tooltipText = "PH Worked"; break;
             case "nonRosPH": tooltipText = "Non-Ros PH"; break;
             case "phPen50": tooltipText = "PhPen 50%"; break;
@@ -972,6 +983,13 @@ function updateResults() {
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
                         totalValue += shiftPay[i][j].payAmount;
+                        if(shiftPay[i][j].helpText) {
+                            elemClass.addEventListener("click", function(){
+                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                document.getElementById("helpDiv").innerHTML = shiftPay[i][j].helpText;
+                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                            });
+                        }
                     }
                     let lastRow = document.createElement("tr");
                     let lastRowData = document.createElement("td");
@@ -1030,7 +1048,7 @@ function updateResults() {
         //element help tips
         let helpDiv = document.createElement("div");
         helpDiv.id = "helpDiv";
-        helpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to display information about it here!</p>";
+        helpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to see its definition here!</p>";
         resultArea.appendChild(helpDiv);
     }
 }
