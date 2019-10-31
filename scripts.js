@@ -202,13 +202,12 @@ class PayElement {
                 break;
             case "sick": 
                 tooltipText = "<strong>Sick Full</strong>"
-                + "<p>A full day of <em>personal leave</em>.</p>";
+                + "<p>A full day of <em>personal leave</em>. </p>";
                 break;
             case "annualLeave": 
                 tooltipText = "<strong>Annual Leave</strong>"
                 + "<p><em>Annual Leave</em> paid at 8 hours per day of leave, up to 40 hours (5 shifts) per week.</p>"
-                + "<ul><li>A 20% loading is paid on Annual Leave.</li>"
-                + "<li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as Annual Leave.</li>"
+                + "<ul><li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as Annual Leave.</li>"
                 + "<li>Public Holidays that occur during Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave.</li></ul>";
                 break;
             case "phGaz": tooltipText = "<strong>PH Gazette</strong>"

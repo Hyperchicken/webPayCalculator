@@ -414,6 +414,10 @@ input[type=tel] {
     display: none;
 }
 
+::placeholder {
+    color: #909090;
+}
+
 
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
@@ -427,7 +431,7 @@ input[type=tel] {
     .ui-datepicker td span {
         height: 2em !important;
     }
-    li, .pay-element-table {
+    .pay-element-table {
         font-size: 3.5vw;
     }
     #totalElement { 
