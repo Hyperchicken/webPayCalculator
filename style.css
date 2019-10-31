@@ -6,6 +6,10 @@ body {
     font-family: Raleway, Arial, Helvetica;
 }
 
+p {
+    margin: 0.5em 0;
+}
+
 .page-subtitle {
     font-size: 0.9em;
     font-family: inherit;
@@ -293,6 +297,7 @@ hr {
 .pay-element-table {
     width: 100%;
     font-family: "Lucida Console", Monaco, monospace;
+    border-collapse: collapse;
 }
 
 .pay-element-table th {
@@ -319,6 +324,22 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
 
 .pay-element-table .last-row {
     height: 10px;
+}
+
+.pay-element-class {
+    cursor: pointer;
+}
+
+.pay-element-class:hover {
+    text-decoration: underline;
+}
+
+#helpDiv {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #00000070;
 }
 
 .shift-hours {
@@ -393,6 +414,10 @@ input[type=tel] {
     display: none;
 }
 
+::placeholder {
+    color: #909090;
+}
+
 
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
@@ -406,7 +431,7 @@ input[type=tel] {
     .ui-datepicker td span {
         height: 2em !important;
     }
-    li, .pay-element-table {
+    .pay-element-table {
         font-size: 3.5vw;
     }
     #totalElement { 

@@ -132,7 +132,6 @@ class PayElement {
             case "ot200": return 13;
             case "rost+50": return 14;
             case "rost+100": return 15;
-            case "ddoWorked": return 17;
             case "earlyShift": return 19;
             case "afternoonShift": return 20;
             case "nightShift": return 21;
@@ -152,6 +151,138 @@ class PayElement {
     }
 
     get payClass() {
+        let payClassName = "";
+        switch(this.payType) {
+            case "normal": payClassName = "Normal"; break;
+            case "guarantee": payClassName = "Guarantee"; break;
+            case "sick": payClassName = "Sick Full"; break;
+            case "annualLeave": payClassName = "A/Leave"; break;
+            case "phGaz": payClassName = "PH Gazette"; break;
+            case "phXpay": payClassName = "PH X/Pay"; break;
+            case "phWorked": payClassName = "PH Worked"; break;
+            case "nonRosPH": payClassName = "Non-Ros PH"; break;
+            case "phPen50": payClassName = "PhPen 50%"; break;
+            case "wePen50": payClassName = "WePen 50%"; break;
+            case "wePen100": payClassName = "WePen 100%"; break;
+            case "ot150": payClassName = "O/T1.5 Vol"; break;
+            case "ot200": payClassName = "O/T2.0 Vol"; break;
+            case "rost+50": payClassName = "Rost+50%"; break;
+            case "rost+100": payClassName = "Rost+100%"; break;
+            case "earlyShift": payClassName = "E/Shift"; break;
+            case "afternoonShift": payClassName = "A/Shift"; break;
+            case "nightShift": payClassName = "N/Shift"; break;
+            case "metroSig2": payClassName = "Metro Sig2"; break;
+            case "mealAllowance": payClassName = "Meal Allow"; break;
+            case "bonusPayment": payClassName = "Bonus Pay"; break;
+            case "edo": payClassName = "EDO"; break;
+            case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
+            default:
+                payClassName = this.payType;
+                console.warn("PayElement.payClass: no pay-type name defined for \"" + this.payType + "\"");
+        }
+        if(this.ojt) return payClassName + " (OJT)";
+        else return payClassName;
+    }
+
+    get helpText() {
+        let tooltipText = "";
+        switch(this.payType) {
+            case "normal": 
+                tooltipText = "<strong>Normal</strong>"
+                + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
+                + "<ul><li>Ordinary hours are up to 8 hours per day for non-trainees and 7.6 hours for trainees.</li>"
+                + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime, public holidays, weekends, etc).</li></ul>";
+                break;
+            case "guarantee": 
+                tooltipText = "<strong>Guarantee</strong>"
+                + "<p><em>Guaranteed</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
+                + "<ul><li>First 10 worked shifts eligible.</li>"
+                + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
+                + "<li>Trainees not eligible.</li></ul>";
+                break;
+            case "sick": 
+                tooltipText = "<strong>Sick Full</strong>"
+                + "<p>A full day of <em>personal leave</em>. </p>";
+                break;
+            case "annualLeave": 
+                tooltipText = "<strong>Annual Leave</strong>"
+                + "<p><em>Annual Leave</em> paid at 8 hours per day of leave, up to 40 hours (5 shifts) per week.</p>"
+                + "<ul><li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as Annual Leave.</li>"
+                + "<li>Public Holidays that occur during Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave.</li></ul>";
+                break;
+            case "phGaz": tooltipText = "<strong>PH Gazette</strong>"
+                + "<p>A full day's <em>Paid leave of absence</em> for a <em>Public Holiday</em> not worked.</p>";
+                break;
+            case "phXpay": tooltipText = "<strong>PH X/Pay</strong>"
+                + "<p><em>Public Holiday Extra Pay.</em> Additional pay at the normal rate for the hours worked on a public holiday where 'extra pay' was elected when signing-on, or if the public holiday falls on a Sunday.</p>"
+                + "<ul><li>Public Holidays that fall on a Sunday are automatically <em>Extra Pay</em> as opposed to <em>Extra Leave</em>.</li></ul>";
+                break;
+            case "phWorked": tooltipText = "<strong>PH Worked</strong>"
+                + "<p><em>Public Holiday Worked.</em> Time worked on a Public Holiday, paid at <em>normal time</em>.</p>";
+                break;
+            case "nonRosPH": tooltipText = "<strong>Non-Ros PH</strong>"
+                + "<p><em>Non-Rostered Public Holiday.</em></p>"
+                break;
+            case "phPen50": tooltipText = "<strong>PhPen 50%</strong>"
+                + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>"
+                break;
+            case "wePen50": tooltipText = "<strong>WePen 50%</strong>"
+                + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>"
+                break;
+            case "wePen100": tooltipText = "<strong>WePen 100%</strong>"
+                + "<p><em>Weekend Penalty 100% (Sunday Time). Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</em></p>"
+                break;
+            case "ot150": tooltipText = "<strong>O/T1.5 Vol</strong>"
+                + "<p><em>Excess Shift Overtime x1.5.</em> Time worked on the 11th and 12th shifts of the fortnight, paid at <em>time and half</em>.</p>"
+                break;
+            case "ot200": tooltipText = "<strong>O/T2.0 Vol</strong>"
+                + "<p><em>Excess Shift Overtime x2.</em> Time worked on the 13th and 14th shifts of the fortnight, or the 11th or 12th shift if it falls on a Saturday, paid at <em>double time</em>.</p>"
+                break;
+            case "rost+50": tooltipText = "<strong>Rost+50%</strong>"
+                + "<p><em>Excess Hours Overtime x1.5.</em> Time worked on an ordinary shift in excess of 8 hours, paid at <em>time and a half</em> for for the first three excess hours.</p>"
+                break;
+            case "rost+100": tooltipText = "<strong>Rost+100%</strong>"
+                + "<p><em>Excess Hours Overtime x2.</em> Time worked on an ordinary shift in excess of 11 hours, paid at <em>double time.</em></p>"
+                break;
+            case "earlyShift": tooltipText = "<strong>E/Shift</strong>"
+                + "<p><em>Early Shift.</em> Penalty payment for a shift that commences at or between 0400 and 0530.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "afternoonShift": tooltipText = "<strong>A/Shift</strong>"
+                + "<p><em>Afternoon Shift.</em> Penalty payment for a shift that commences before 1800 and concludes at or after 1830.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "nightShift": tooltipText = "<strong>N/Shift</strong>"
+                + "<p><em>Night Shift.</em> Penalty payment for a shift that commences at or between 1800 and 0359.</p>"
+                + "<ul><li>Rounded to the nearest whole hour.</li></ul>";
+                break;
+            case "metroSig2": tooltipText = "<strong>Metro Sig2</strong>"
+                + "<p><em>Suburban Allowance.</em> The following excerpt is taken from the 2015-2019 EA section 4.7:</p>"
+                + "<blockquote><p>Employees regularly employed driving suburban electric trains in the Melbourne Metropolitan Rail Network and who are qualified to drive under the Metrol Signalling and Safe Working System are to be paid a Suburban Allowance in accordance with Schedule C of the Agreement, per shift for all rostered shifts for which they are ready willing and able to perform all of the functions required of that position. This allowance does not apply to Trainee Drivers.</p></blockquote>";
+                break;
+            case "mealAllowance": tooltipText = "<strong>Meal Allow</strong>"
+                + "<p><em>Meal Allowance.</em> Paid where the employee has had a wasted meal, or if they have worked more than 2 hours of overtime that shift.</p>"
+                break;
+            case "bonusPayment": tooltipText = "<strong>Bonus Pay</strong>"
+                + "<p><em>Bonus Payment</em> paid where the company has offered an incentive payment on a particular shift.</p>"
+                + "<ul><li>The name of this payment on your payslip will be different!</li>"
+                + "<li>In the past, bonus payments have been offered on days such as White Night and New Years.</li></ul>";
+                break;
+            case "edo": tooltipText = "<strong>EDO</strong>"
+                + "<p><em>Discretionary Day Off</em>. +4 hours paid on a DDO fortnight, -4 hours deducted otherwise.</p>"
+                break;
+            case "leaveLoading": tooltipText = "<strong>Leave Ldg 20%</strong>"
+                + "<p><em>Leave Loading 20%.</em> Additional 20% loading paid on Annual Leave taken.</p>"
+                break;
+            default:
+                tooltipText = "";
+                console.warn("PayElement.tooltipText: no tooltip-text defined for \"" + this.payType + "\"");
+        }
+        if(this.ojt) return tooltipText + "<p><em>OJT rate</em></p>";
+        else return tooltipText;
+    }
+
+    get payClassRaw() {
         if(this.ojt) return this.payType + "_OJT";
         else return this.payType;
     }
@@ -165,7 +296,6 @@ class PayElement {
             case "sick":
             case "guarantee": //pay guarantee to 8 hours
             case "edo":
-            case "ddoWorked":
             case "wePen100":
             case "phGaz":
             case "phWorked":
@@ -826,15 +956,25 @@ function updateResults() {
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
                 elemAmount.textContent = "$" + e.payAmount.toFixed(2);
+                elemClass.className = "pay-element-class";
                 payElementRow.appendChild(elemClass);
                 payElementRow.appendChild(elemRate);
                 payElementRow.appendChild(elemHours);
                 payElementRow.appendChild(elemAmount);
                 elementTable.appendChild(payElementRow);
                 totalValue += e.payAmount;
+                if(e.helpText) {
+                    elemClass.addEventListener("click", function(){
+                        $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                        document.getElementById("helpDiv").innerHTML = e.helpText;
+                        payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                        window.location.replace("#helpDiv"); //scroll to help box
+                    });
+                }
             });
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
+            
             //subtotal
             listDiv.appendChild(document.createElement("hr"));
             let totalElement = document.createElement("h3");
@@ -875,12 +1015,21 @@ function updateResults() {
                         elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
                         elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
                         elemAmount.textContent = "$" + shiftPay[i][j].payAmount.toFixed(2);
+                        elemClass.className = "pay-element-class";
                         payElementRow.appendChild(elemClass);
                         payElementRow.appendChild(elemRate);
                         payElementRow.appendChild(elemHours);
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
                         totalValue += shiftPay[i][j].payAmount;
+                        if(shiftPay[i][j].helpText) {
+                            elemClass.addEventListener("click", function(){
+                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                document.getElementById("helpDiv").innerHTML = shiftPay[i][j].helpText;
+                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                                window.location.replace("#helpDiv"); //scroll to help box
+                            });
+                        }
                     }
                     let lastRow = document.createElement("tr");
                     let lastRowData = document.createElement("td");
@@ -895,7 +1044,7 @@ function updateResults() {
                 let shiftTitle = document.createElement("td");
                 shiftHeaderRow.className = "splitview-title";
                 shiftTitle.className = "splitview-title-data";
-                shiftTitle.textContent = "Additional Payments";
+                shiftTitle.textContent = "Other Payments";
                 shiftTitle.colSpan = 4;
                 shiftHeaderRow.appendChild(shiftTitle);
                 elementTable.appendChild(shiftHeaderRow);
@@ -922,76 +1071,18 @@ function updateResults() {
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
                         totalValue += additionalPayments[j].payAmount;
+                        if(additionalPayments[j].helpText) {
+                            elemClass.addEventListener("click", function(){
+                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                document.getElementById("helpDiv").innerHTML = additionalPayments[j].helpText;
+                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                                window.location.replace("#helpDiv"); //scroll to help box
+                            });
+                        }
                 }
             }
             resultArea.appendChild(elementTable);
             resultArea.appendChild(document.createElement("hr"));
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
-        }
-        else if(resultsViewFormat == "test") {
-            let shiftTitle = document.createElement("h3");
-            shiftTitle.textContent = "TEST VIEW FORMAT";
-            resultArea.appendChild(shiftTitle);
-        }
-        else if(resultsViewFormat == "debug-grouped") {
-            let listDiv = document.createElement("div");
-            listDiv.className = "pay-elements-list";
-            let payElements = document.createElement("ul");
-            groupedElements.forEach(function(e){
-                let payElement = document.createElement("li");
-                payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                payElements.appendChild(payElement);
-                totalValue += e.payAmount;
-            });
-            listDiv.appendChild(payElements);
-            listDiv.appendChild(document.createElement("hr"));
-            resultArea.appendChild(listDiv);
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
-        }
-        else if(resultsViewFormat == "debug-split") {
-            for(let i = 0; i < 14; i++) {
-                if(shiftPay[i].length > 0){ //if any pay elements for current day
-                    let shiftDiv = document.createElement("div");
-                    let shiftTitle = document.createElement("h3");
-                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
-                    shiftDiv.appendChild(shiftTitle);
-                    let shiftSubtitle = document.createElement("i");
-                    shiftSubtitle.textContent = "Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
-                    shiftDiv.appendChild(shiftSubtitle);
-                    let payElements = document.createElement("ul");
-                    for(let j = 0; j < shiftPay[i].length; j++) {
-                        let payElement = document.createElement("li");
-                        payElement.textContent = shiftPay[i][j].payClass.padEnd(14, " ") + " | Rate: " + shiftPay[i][j].rate.toFixed(4).padEnd(8, " ") + " | Hours: " + shiftPay[i][j].hours.toFixed(4).padEnd(8, " ") + " | $" + shiftPay[i][j].payAmount.toFixed(2);
-                        payElements.appendChild(payElement);
-                        totalValue += shiftPay[i][j].payAmount;
-                    }
-                    shiftDiv.appendChild(payElements);
-                    shiftDiv.appendChild(document.createElement("hr"));
-                    resultArea.appendChild(shiftDiv);
-                }
-            }
-            if(additionalPayments.length > 0) {
-                let additionalPaymentsDiv = document.createElement("div");
-                let title = document.createElement("h3");
-                title.textContent = "Additional Payments";
-                additionalPaymentsDiv.appendChild(title);
-                let payElements = document.createElement("ul");
-                for(let j = 0; j < additionalPayments.length; j++) {
-                    let payElement = document.createElement("li");
-                    payElement.textContent = "Type: " + additionalPayments[j].payClass + " | Rate: " + additionalPayments[j].rate.toFixed(4) + " | Hours: " + additionalPayments[j].hours.toFixed(4) + " | $" + additionalPayments[j].payAmount.toFixed(2);
-                    payElements.appendChild(payElement);
-                    totalValue += additionalPayments[j].payAmount;
-                }
-                additionalPaymentsDiv.appendChild(payElements);
-                additionalPaymentsDiv.appendChild(document.createElement("hr"));
-                resultArea.appendChild(additionalPaymentsDiv);
-            }
             let totalElement = document.createElement("h3");
             totalElement.setAttribute("id", "totalElement");
             totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
@@ -1002,6 +1093,11 @@ function updateResults() {
             shiftTitle.textContent = "Error displaying results: invalid view format '" + resultsViewFormat + "'";
             resultArea.appendChild(shiftTitle);
         }
+        //element help tips
+        let helpDiv = document.createElement("div");
+        helpDiv.id = "helpDiv";
+        helpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to see its definition here!</p>";
+        resultArea.appendChild(helpDiv);
     }
 }
 
@@ -1235,8 +1331,8 @@ function updateShiftPayTable() {
                     else { //all other excess shifts
                         ot150Hours += normalHours;
                     }
-                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", ot150Hours, s.ojt));
-                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", ot200Hours, s.ojt));
+                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", Math.min(ot150Hours, ordinaryHours), s.ojt));
+                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", Math.min(ot200Hours, ordinaryHours), s.ojt));
                 }
 
                 //Shiftwork Allowances
@@ -1245,7 +1341,7 @@ function updateShiftPayTable() {
                 if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
-                        shiftworkHours += tomorrowNormalHours;
+                        shiftworkHours +=  tomorrowNormalHours;
                     }
                     else if((day == 5 || day == 12) && todayNormalHours > 0.0) { //friday into saturday
                         shiftworkHours += todayNormalHours;
