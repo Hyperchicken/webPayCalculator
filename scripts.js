@@ -364,6 +364,14 @@ $(document).ready(function() {
     initButtons();
     updateGrade();
 
+    //check if local storage is supported
+    if (storageAvailable('localStorage')) {
+        console.log('Local Storage available!');
+    }
+    else {
+        console.alert('Local Storage NOT AVAILABLE!');
+    }
+
     //setup datepicker
     let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
     $("#week-commencing-date").datepicker({
@@ -1421,4 +1429,61 @@ function isWeekday(day) { //only for values 0-13. returns True outside of this r
 
 function toggleKnownIssues() {
     $("#known-issues-ul").toggle();
+}
+
+//data storage
+//function to check if browser storage is available
+function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
+//save all data on whole page to localStorage
+function saveAllData() {
+    if(!storageAvailable('localStorage')) {
+        console.alert("saveAllData: no local storage available!");
+        return false;
+    }
+    let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
+    let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString(); //YYYYMMDD
+    
+    return datePrefix;
+}
+
+//save a single data to local storage, automatically appending the week commencing prefix.
+function setSaveData(field, value) {
+    if(!storageAvailable('localStorage')) {
+        console.alert("saveAllData: no local storage available!");
+    }
+    else {
+        let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
+        let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+        localStorage.setItem((datePrefix + field), value);
+    }
+}
+
+function getSaveData(field, value) {
+    let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
+    let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+    return localStorage.getItem((datePrefix + field));
 }
