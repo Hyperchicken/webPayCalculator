@@ -362,15 +362,6 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 //init on document load
 $(document).ready(function() { 
     initButtons();
-    updateGrade();
-
-    //check if local storage is supported
-    if (storageAvailable('localStorage')) {
-        console.log('Local Storage available!');
-    }
-    else {
-        console.alert('Local Storage NOT AVAILABLE!');
-    }
 
     //setup datepicker
     let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
@@ -390,6 +381,10 @@ $(document).ready(function() {
         },
         onSelect: function(){
             updateDates();
+            loadSavedData();
+            updateGrade();
+            updateShiftTable();
+            updateShiftWorkedCount();
             printShiftHours();
             updateOptionsButtons();
             updateShiftPayTable();
@@ -399,6 +394,8 @@ $(document).ready(function() {
     });
     //update any existing data on page load
     updateDates();
+    loadSavedData(); //load any save data (previously entered data, attatched to the set date)
+    updateGrade();
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
@@ -425,10 +422,16 @@ function initButtons() {
     updateOptionsButtons();
 }
 
-//toggles if Day 14 (sunday after last day of fortnight) is a pubnlic holiday
+//toggles if Day 14 (sunday after last day of fortnight) is a public holiday
 function toggleDay14ph() {
-    if(day14ph) day14ph = false;
-    else day14ph = true;
+    if(day14ph) {
+        day14ph = false;
+        setSaveData("day14ph", "false");
+    }
+    else {
+        day14ph = true;
+        setSaveData("day14ph", "true");
+    }
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
@@ -611,6 +614,10 @@ function generateOptionsShelfButtons(day) {
         updateResults();
     }
 
+    const saveToStorage = (name, value) => {
+        setSaveData("day" + day + name, value);
+    }
+
     //OJT button
     let ojtButton = document.createElement("a");
     ojtButton.textContent = "OJT";
@@ -619,6 +626,7 @@ function generateOptionsShelfButtons(day) {
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = false;
             reloadPageData();
+            saveToStorage("ojt", "false");
         });
         ojtButton.style.background = "";
     }
@@ -626,6 +634,7 @@ function generateOptionsShelfButtons(day) {
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = true;
             reloadPageData();
+            saveToStorage("ojt", "true");
         });
         ojtButton.style.background = buttonBackgroundColour;
     }
@@ -638,6 +647,7 @@ function generateOptionsShelfButtons(day) {
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = false;
             reloadPageData();
+            saveToStorage("ddo", "false");
         });
         ddoButton.style.background = "";
     }
@@ -645,6 +655,7 @@ function generateOptionsShelfButtons(day) {
         ddoButton.addEventListener("click", function(){
             shifts[day].ddo = true;
             reloadPageData();
+            saveToStorage("ddo", "true");
         });
         ddoButton.style.background = buttonBackgroundColour;
     }
@@ -659,6 +670,7 @@ function generateOptionsShelfButtons(day) {
         phButton.addEventListener("click", function(){
             shifts[day].ph = false;
             reloadPageData();
+            saveToStorage("ph", "false");
         });
         phButton.style.background = "";
         if(shifts[day].hoursDecimal > 0) {
@@ -683,6 +695,7 @@ function generateOptionsShelfButtons(day) {
                     xLeaveButton.addEventListener("click", function() {
                         shifts[day].phExtraPay = false;
                         reloadPageData();
+                        saveToStorage("phxp", "false");
                     });
                     xLeaveButton.style.background = buttonBackgroundColour;
                     xPayButton.style.background = "";
@@ -690,6 +703,7 @@ function generateOptionsShelfButtons(day) {
                     xPayButton.addEventListener("click", function() {
                         shifts[day].phExtraPay = true;
                         reloadPageData();
+                        saveToStorage("phxp", "true");
                     });
                     xLeaveButton.style.background = "";
                     xPayButton.style.background = buttonBackgroundColour;
@@ -702,8 +716,10 @@ function generateOptionsShelfButtons(day) {
             shifts[day].ph = true;
             if(day == 0 || day == 7) {
                 shifts[day].phExtraPay = true;
+                saveToStorage("phxp", "true");
             }
             reloadPageData();
+            saveToStorage("ph", "true");
         });
         phButton.style.background = buttonBackgroundColour;
     }
@@ -716,6 +732,7 @@ function generateOptionsShelfButtons(day) {
         wmButton.addEventListener("click", function(){
             shifts[day].wm = false;
             reloadPageData();
+            saveToStorage("wm", "false");
         });
         wmButton.style.background = "";
     }
@@ -723,6 +740,7 @@ function generateOptionsShelfButtons(day) {
         wmButton.addEventListener("click", function(){
             shifts[day].wm = true;
             reloadPageData();
+            saveToStorage("wm", "true");
         });
         wmButton.style.background = buttonBackgroundColour;
     }
@@ -735,6 +753,7 @@ function generateOptionsShelfButtons(day) {
         sickButton.addEventListener("click", function(){
             shifts[day].sick = false;
             reloadPageData();
+            saveToStorage("sick", "false");
         });
         sickButton.style.background = "";
     }
@@ -742,6 +761,7 @@ function generateOptionsShelfButtons(day) {
         sickButton.addEventListener("click", function(){
             shifts[day].sick = true;
             reloadPageData();
+            saveToStorage("sick", "true");
         });
         sickButton.style.background = buttonBackgroundColour;
     }
@@ -754,6 +774,7 @@ function generateOptionsShelfButtons(day) {
         alButton.addEventListener("click", function(){
             shifts[day].al = false;
             reloadPageData();
+            saveToStorage("al", "false");
         });
         alButton.style.background = "";
     }
@@ -761,6 +782,7 @@ function generateOptionsShelfButtons(day) {
         alButton.addEventListener("click", function(){
             shifts[day].al = true;
             reloadPageData();
+            saveToStorage("al", "true");
         });
         alButton.style.background = buttonBackgroundColour;
     }
@@ -784,13 +806,16 @@ function generateOptionsShelfButtons(day) {
         bonusButtonText.addEventListener("click", function(){
             shifts[day].bonus = false;
             reloadPageData();
+            saveToStorage("bonus", "false");
         });
         bonusTextbox.addEventListener("input", function(){
             if(this.validity.valid && parseFloat(this.value)) { //only accept valid input for bonus hours.
                 shifts[day].bonusHours = parseFloat(this.value);
+                saveToStorage("bonusHours", parseFloat(this.value).toString());
             }
             else {
                 shifts[day].bonusHours = 0.0;
+                saveToStorage("bonusHours", "0");
             }
             updateOptionsButtons();
             updateShiftPayTable();
@@ -802,6 +827,7 @@ function generateOptionsShelfButtons(day) {
             shifts[day].bonus = true;
             selectBonusTextbox = true;
             reloadPageData();
+            saveToStorage("bonus", "true");
         });
         bonusButton.style.background = buttonBackgroundColour;
     }
@@ -827,6 +853,7 @@ function timeChanged(field) {
     if(timeField()[field].value.length == 4) {
         if(field < 27) timeField()[field + 1].focus();
     }
+    setSaveData("field" + field.toString(), timeField()[field].value);
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
@@ -850,20 +877,25 @@ function updateGrade() {
         case "spot": 
             selectedGradeRates = spotRates;
             setFormColour("#4691db");
+            setSaveData("paygrade", "spot", false);
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
             setFormColour("rgb(114, 99, 191)");
+            setSaveData("paygrade", "level1", false);
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
             setFormColour("rgb(56, 149, 149)");
+            setSaveData("paygrade", "trainee", false);
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
             setFormColour("rgb(207, 133, 50)");
+            setSaveData("paygrade", "conversion", false);
             break;
-        default: selectedGradeRates = undefined;
+        default: 
+            selectedGradeRates = undefined;
     }
     printShiftHours();
     updateOptionsButtons();
@@ -1458,32 +1490,105 @@ function storageAvailable(type) {
     }
 }
 
-//save all data on whole page to localStorage
-function saveAllData() {
-    if(!storageAvailable('localStorage')) {
-        console.alert("saveAllData: no local storage available!");
-        return false;
-    }
-    let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
-    let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString(); //YYYYMMDD
-    
-    return datePrefix;
-}
-
 //save a single data to local storage, automatically appending the week commencing prefix.
-function setSaveData(field, value) {
+function setSaveData(field, value, prefixDate = true) {
     if(!storageAvailable('localStorage')) {
         console.alert("saveAllData: no local storage available!");
     }
     else {
         let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
-        let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
-        localStorage.setItem((datePrefix + field), value);
+        let datePrefix = "";
+        if(prefixDate){ //date will be automatically prefixed to save key unless specified in parameters. date prefix binds the save data to the currently set date.
+            datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+        }
+        if(value === "" || value === "false") {
+            localStorage.removeItem(datePrefix + field);
+            //console.debug("setSaveData(): Data deleted! " + datePrefix + field);
+        }
+        else {
+            try {
+                localStorage.setItem((datePrefix + field), value);
+               // console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
+            }
+            catch(ex) {
+                console.warn("setSaveData(): unable to save data. exception thrown:");
+                console.warn(ex.message)
+            }
+        }
     }
 }
 
-function getSaveData(field, value) {
+function getSaveData(field, prefixDate = true) {
     let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
-    let datePrefix = "" + weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+    let datePrefix = "";
+    if(prefixDate){ //date will be automatically prefixed to save key unless specified in parameters. date prefix binds the save data to the currently set date.
+        datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+    }
+    //console.debug("getSaveData(): getting save data: " + datePrefix + field + ":" + localStorage.getItem((datePrefix + field)));
     return localStorage.getItem((datePrefix + field));
+}
+
+//populates fields with any saved data on the selected date. using no date parameter will load from the current date.
+function loadSavedData(datePrefix = "") {
+    closeAllOptionsShelves();
+    //first reset all shifts
+    shifts = [];
+    for (let i = 0; i < 14; i++) shifts.push(new Shift());
+
+    if(datePrefix === "") {
+        let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
+        datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
+    }
+    switch(getSaveData("paygrade", false)) {
+        case "spot":
+            document.forms.payGradeForm.payGrade[0].checked = true;
+            break;
+        case "level1":
+            document.forms.payGradeForm.payGrade[1].checked = true;
+            break;
+        case "trainee":
+            document.forms.payGradeForm.payGrade[2].checked = true;
+            break;
+        case "conversion":
+            document.forms.payGradeForm.payGrade[3].checked = true;
+            break;
+    }
+    //shift options save data
+    for(let day = 0; day < 14; day++) {
+        let ojtSave = getSaveData("day" + day + "ojt");
+        let ddoSave = getSaveData("day" + day + "ddo");
+        let wmSave = getSaveData("day" + day + "wm");
+        let sickSave = getSaveData("day" + day + "sick");
+        let phSave = getSaveData("day" + day + "ph");
+        let phxpSave = getSaveData("day" + day + "phxp");
+        let alSave = getSaveData("day" + day + "al");
+        let bonusSave = getSaveData("day" + day + "bonus");
+        let bonusHoursSave = getSaveData("day" + day + "bonusHours");
+
+        if(ojtSave == "true") shifts[day].ojt = true;
+        if(ddoSave == "true") shifts[day].ddo = true;
+        if(wmSave == "true") shifts[day].wm = true;
+        if(sickSave == "true") shifts[day].sick = true;
+        if(phSave == "true") shifts[day].ph = true;
+        if(phxpSave == "true") shifts[day].phExtraPay = true;
+        if(alSave == "true") shifts[day].al = true;
+        if(bonusSave == "true") shifts[day].bonus = true;
+        if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
+    }
+
+    //shift times save data
+    for(let field = 0; field < 28; field++) {
+        let saveData = getSaveData("field" + field);
+        if(saveData) timeField()[field].value = saveData;
+        else timeField()[field].value = "";
+    }
+
+    let day14phSave = getSaveData("day14ph");
+    if(day14phSave == "true") day14ph = true;
+    else day14ph = false;
+}
+
+function confirmDeleteData() {
+    if(confirm("Are you sure you want to delete ALL of your saved data from ALL dates?"))
+        localStorage.clear();
 }
