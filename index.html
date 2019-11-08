@@ -71,16 +71,16 @@
 
                 <div class="week-commencing">
                     <label class="week-commencing-label" for="week-commencing-date">Week commencing</label>
-                    <span class="week-commencing-button" onclick="toggleDatepicker()">
+                    <span class="week-commencing-button" onclick="toggleDatepicker(); $('#deleteDataButton').toggle()">
                         <i class="far fa-calendar-alt calendar-icon"></i>
                         <input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly>
                     </span>
                 </div>
-                <span class="grid-1-6" onclick="$('#deleteDataButton').toggle()" style="cursor: pointer;">
+                <span class="grid-1-6">
                     <i class="fas fa-exclamation-circle"></i> <em>All data entered is now saved to the selected date!</em>
                 </span>
-                <span id="deleteDataButton" class="grid-1-6" style="display: none;">
-                    <a onclick="confirmDeleteData()" style="text-decoration: underline; color: darkred; cursor: pointer; padding-left: 10px;">Click here to <strong>delete all save data</strong></a>
+                <span id="deleteDataButton" class="grid-1-6" style="display: none; margin-bottom: 5px;">
+                    <a onclick="confirmDeleteData()" style="text-decoration: underline; color: darkred; cursor: pointer; padding-left: 10px;">Click here to <strong>delete all saved data</strong></a>
                 </span>
                 <div id="week-commencing-date">
                     
