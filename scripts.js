@@ -441,6 +441,7 @@ function toggleDay14ph() {
 function toggleDatepicker() {
     //$( "#week-commencing-date" ).slideToggle(300); //animated slide. looks a bit jerky on mobile
     $( "#week-commencing-date" ).toggle();
+    $('#deleteDataButton').toggle();
 }
 
 //Update all options buttons with the appropriate colours/text/icons based on each Shift.
