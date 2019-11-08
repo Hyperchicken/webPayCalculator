@@ -3,11 +3,11 @@
 <head>
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=0.61">
+    <link rel="stylesheet" href="style.css?v=0.62">
     <link rel="stylesheet" href="jquery-ui.css">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script> 
-    <script src="scripts.js?v=0.61"></script> 
+    <script src="scripts.js?v=0.62"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,20 +25,19 @@
         <ul>
             <li>Sick-part not yet implemented.</li>
             <li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>
-            <li>Refreshing the page will reset parts of the form. Data persistence to be implemented in future.</li>
             <li>Page doesn't fit correctly on some devices with smaller screens.</li>
             <li>Probably a bunch more issues. Please let me know what you find! <em>- Petar</em></li>
         </ul>
         <li font-weight="bold">Latest Updates</li>
         <ul>
+            <li>Data saving! Any data entered is saved to the currently selected date. Data is saved locally to your browser (if you change device or browser, your saved data won't come across). - 8/11/19</li>
             <li>Renamed pay elements in the results to better match whats on the payslips. - 31/10/19</li>
             <li>Added placeholder text in sign-on/off fields. - 31/10/19</li>
             <li>Fixed issue with calculation on an overtime shift longer than ordinary hours. - 31/10/19</li>
             <li>Added pay element information box. Click a pay element to display it's definition! - 31/10/19</li>
-            <li>Fixed issue with night-shift calculation on Friday shifts. - 30/10/19</li>
             <ul>
-                <li class="version">Last update: 31/10/19</li>
-                <li class="version">Version: 0.61</li>
+                <li class="version">Last update: 8/11/19</li>
+                <li class="version">Version: 0.62</li>
             </ul>
         </ul>
     </ul>
@@ -72,11 +71,17 @@
 
                 <div class="week-commencing">
                     <label class="week-commencing-label" for="week-commencing-date">Week commencing</label>
-                    <span class="week-commencing-button" onclick="toggleDatepicker()">
+                    <span class="week-commencing-button" onclick="toggleDatepicker();">
                         <i class="far fa-calendar-alt calendar-icon"></i>
                         <input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly>
                     </span>
                 </div>
+                <span class="grid-1-6">
+                    <i class="fas fa-exclamation-circle"></i> <em>All data entered is now saved to the selected date!</em>
+                </span>
+                <span id="deleteDataButton" class="grid-1-6" style="display: none; margin-bottom: 5px;">
+                    <a onclick="confirmDeleteData()" style="text-decoration: underline; color: darkred; cursor: pointer; padding-left: 10px;">Click here to <strong>delete all saved data</strong></a>
+                </span>
                 <div id="week-commencing-date">
                     
                 </div>
