@@ -371,13 +371,15 @@ $(document).ready(function() {
         firstDay: 0,
         defaultDate: daysToLastFortnight,
         beforeShowDay: function(date){
-            let day = date.getDay();
-            if(day == 0) {
-                return [true , "" ];
+            if(date.getDay() == 0) {
+                if([2019].includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
+                    return [true , "" ];
+                }
+                else if ([2020].includes(date.getWeekYear()) && date.getWeek() % 2 == 0) {
+                    return [true , "" ];
+                }
             }
-            else {
-                return [false, "" ];
-            }
+            return [false, "" ];
         },
         onSelect: function(){
             updateDates();
@@ -421,6 +423,26 @@ function initButtons() {
     $("#lastSunPhYes").on("click", function(){toggleDay14ph();});
     updateOptionsButtons();
 }
+
+// Returns the ISO week of the date.
+Date.prototype.getWeek = function() {
+    var date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    // January 4 is always in week 1.
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                          - 3 + (week1.getDay() + 6) % 7) / 7);
+  }
+  
+  // Returns the four-digit year corresponding to the ISO week of the date.
+  Date.prototype.getWeekYear = function() {
+    var date = new Date(this.getTime());
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    return date.getFullYear();
+  }
 
 //toggles if Day 14 (sunday after last day of fortnight) is a public holiday
 function toggleDay14ph() {
@@ -1509,7 +1531,7 @@ function setSaveData(field, value, prefixDate = true) {
         else {
             try {
                 localStorage.setItem((datePrefix + field), value);
-               // console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
+                //console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
             }
             catch(ex) {
                 console.warn("setSaveData(): unable to save data. exception thrown:");
