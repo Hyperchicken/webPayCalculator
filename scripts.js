@@ -359,25 +359,62 @@ for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+
+
 //init on document load
 $(document).ready(function() { 
     initButtons();
 
     //setup datepicker
-    let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
+    let evenPayWeekYears = [2018, 2019, 2020];
+    let oddPayWeekYears = [2021];
+    let daysSinceLastWeekCommencing = () => {
+        let todaysDate = new Date();
+        let daysDifference = (todaysDate.getDay()) * -1;
+        if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
+                console.log("not payweek");
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
+                console.log("not payweek");
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else {
+            console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
+            return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
+        }
+    }
+    //((new Date().getDay()) * -1) -14
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
-        defaultDate: daysToLastFortnight,
-        beforeShowDay: function(date){
-            let day = date.getDay();
-            if(day == 0) {
-                return [true , "" ];
+        defaultDate: daysSinceLastWeekCommencing(),
+        beforeShowDay: function(date){ //Restrict calendar date selection to only first day of the fortnight.
+            if(date.getDay() == 0) { //set which week is a valid 'week commencing' week
+                if(evenPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
+                    return [true , "" ];
+                }
+                else if (oddPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 0) {
+                    return [true , "" ];
+                }
+                else if (!evenPayWeekYears.includes(date.getWeekYear()) && !oddPayWeekYears.includes(date.getWeekYear())) return [true , "" ];
             }
-            else {
-                return [false, "" ];
-            }
+            return [false, "" ];
         },
         onSelect: function(){
             updateDates();
@@ -421,6 +458,26 @@ function initButtons() {
     $("#lastSunPhYes").on("click", function(){toggleDay14ph();});
     updateOptionsButtons();
 }
+
+// Returns the ISO week of the date.
+Date.prototype.getWeek = function() {
+    var date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    // January 4 is always in week 1.
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                          - 3 + (week1.getDay() + 6) % 7) / 7);
+  }
+  
+  // Returns the four-digit year corresponding to the ISO week of the date.
+  Date.prototype.getWeekYear = function() {
+    var date = new Date(this.getTime());
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    return date.getFullYear();
+  }
 
 //toggles if Day 14 (sunday after last day of fortnight) is a public holiday
 function toggleDay14ph() {
@@ -1509,7 +1566,7 @@ function setSaveData(field, value, prefixDate = true) {
         else {
             try {
                 localStorage.setItem((datePrefix + field), value);
-               // console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
+                //console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
             }
             catch(ex) {
                 console.warn("setSaveData(): unable to save data. exception thrown:");
