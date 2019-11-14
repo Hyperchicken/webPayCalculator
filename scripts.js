@@ -359,25 +359,60 @@ for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+
+
 //init on document load
 $(document).ready(function() { 
     initButtons();
 
     //setup datepicker
-    let daysToLastFortnight = ((new Date().getDay()) * -1) -14;
+    let evenPayWeekYears = [2018, 2019, 2020];
+    let oddPayWeekYears = [2021];
+    let daysSinceLastWeekCommencing = () => {
+        let todaysDate = new Date();
+        let daysDifference = (todaysDate.getDay()) * -1;
+        if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
+                console.log("not payweek");
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
+                console.log("not payweek");
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else {
+            console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
+            return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
+        }
+    }
+    //((new Date().getDay()) * -1) -14
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
-        defaultDate: daysToLastFortnight,
-        beforeShowDay: function(date){
-            if(date.getDay() == 0) {
-                if([2019].includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
+        defaultDate: daysSinceLastWeekCommencing(),
+        beforeShowDay: function(date){ //Restrict calendar date selection to only first day of the fortnight.
+            if(date.getDay() == 0) { //set which week is a valid 'week commencing' week
+                if(evenPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
                     return [true , "" ];
                 }
-                else if ([2020].includes(date.getWeekYear()) && date.getWeek() % 2 == 0) {
+                else if (oddPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 0) {
                     return [true , "" ];
                 }
+                else if (!evenPayWeekYears.includes(date.getWeekYear()) && !oddPayWeekYears.includes(date.getWeekYear())) return [true , "" ];
             }
             return [false, "" ];
         },
