@@ -1380,29 +1380,33 @@ function updateShiftPayTable() {
                 if(s.shiftWorkedNumber <= 10) { //not OT shift only
                     if(day == 5 || day == 12) { //friday shift
                         if(tomorrowNormalHours > 0.0) { //time into saturday
-                            shiftPay[day].push(new PayElement("wePen50", tomorrowNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(tomorrowNormalHours, ordinaryHours), s.ojt));
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
+                        let penaltyTimeRemaining = ordinaryHours;
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", todayNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
+                            penaltyTimeRemaining -= todayNormalHours;
                         }
-                        if(tomorrowNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", tomorrowNormalHours, s.ojt));
+                        if(tomorrowNormalHours > 0.0 && penaltyTimeRemaining > 0.0) { //sunday time
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(penaltyTimeRemaining, ordinaryHours), s.ojt));
                         }
                     }
                     else if(day == 0 || day == 7) { //sunday
                         if(todayNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", todayNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, ordinaryHours), s.ojt));
                         }
                     }
                 }
 
                 //Excess Hours Overtime
-                let overtimeThreshold = 8; //hours worked before OT penalties begin
-                if(getPayGrade() == "trainee") overtimeThreshold = 7.6; //adjust for trainee
-                if(normalHours > overtimeThreshold) {
-                    let overtimeHours = normalHours - overtimeThreshold;
+                if(normalHours > ordinaryHours) {
+                    let overtimeHours = normalHours - ordinaryHours;
+                    let sundayOvertimeHours = 0.0;
+                    if((day == 6 || day == 13) && tomorrowNormalHours > 0.0) {
+                        overtimeHours = /////////////////////////////////////////////////////////////////////////////////////////////////////
+                    }
                     if(overtimeHours > 3) {
                         shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
                         shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
