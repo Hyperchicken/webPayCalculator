@@ -243,6 +243,7 @@ class PayElement {
                 break;
             case "rost+100": tooltipText = "<strong>Rost+100%</strong>"
                 + "<p><em>Excess Hours Overtime x2.</em> Time worked on an ordinary shift in excess of 11 hours, paid at <em>double time.</em></p>"
+                + "<p>Overtime worked on a Sunday is also paid at this rate.</p>"
                 break;
             case "earlyShift": tooltipText = "<strong>E/Shift</strong>"
                 + "<p><em>Early Shift.</em> Penalty payment for a shift that commences at or between 0400 and 0530.</p>"
@@ -1403,20 +1404,48 @@ function updateShiftPayTable() {
                 //Excess Hours Overtime
                 if(normalHours > ordinaryHours) {
                     let overtimeHours = normalHours - ordinaryHours;
-                    let sundayOvertimeHours = 0.0;
-                    if((day == 6 || day == 13) && tomorrowNormalHours > 0.0) {
-                        overtimeHours = /////////////////////////////////////////////////////////////////////////////////////////////////////
+                    let todayOvertimeHours = 0.0;
+                    let tomorrowOvertimeHours = 0.0;
+                    let rost50hours = 0.0;
+                    let rost100hours = 0.0;
+                    if(todayNormalHours > ordinaryHours){
+                        todayOvertimeHours = todayNormalHours - ordinaryHours;
                     }
-                    if(overtimeHours > 3) {
-                        shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
-                        shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
+                    tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
+                    if((day == 6 || day == 13) && tomorrowOvertimeHours > 0.0) {
+                        if(todayOvertimeHours > 3) {
+                            rost50hours = 3;
+                            rost100hours = overtimeHours - 3;
+                        }
+                        else {
+                            rost50hours = todayOvertimeHours;
+                            rost100hours = tomorrowOvertimeHours;
+                        }
+                    }
+                    else if(day == 0 || day == 7 && todayOvertimeHours > 0.0) {
+                        if(overtimeHours > 3) {
+                            rost100hours = todayOvertimeHours;
+                            rost50hours = Math.max(0, 3 - todayOvertimeHours)
+                            rost100hours += tomorrowOvertimeHours - rost50hours;
+                        }
+                        else {
+                            rost50hours = tomorrowOvertimeHours;
+                            rost100hours = todayOvertimeHours
+                        }
                     }
                     else {
-                        shiftPay[day].push(new PayElement("rost+50", overtimeHours, s.ojt));
+                        if(overtimeHours > 3) {
+                            rost50hours = 3;
+                            rost100hours = overtimeHours - 3;
+                        }
+                        else {
+                            rost50hours = overtimeHours;
+                        }
                     }
-                    if(overtimeHours > 2) {
-                        shiftPay[day].push(new PayElement("mealAllowance", 1));
-                    }
+
+                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement("rost+50", rost50hours, s.ojt));
+                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement("rost+100", rost100hours, s.ojt));
+                    if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1));
                 }
 
                 //Excess Shift Overtime
