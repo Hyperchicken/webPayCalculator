@@ -366,6 +366,12 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function() { 
     initButtons();
 
+    let timeFields = document.querySelectorAll(".time");
+    for(let i = 0; i < timeFields.length; i++) {
+        timeFields[i].addEventListener("blur", function(){
+            validateTimeFields();
+        });
+    }
     //setup datepicker
     let evenPayWeekYears = [2018, 2019, 2020];
     let oddPayWeekYears = [2021];
@@ -437,6 +443,7 @@ $(document).ready(function() {
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
+    validateTimeFields()
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
@@ -1252,8 +1259,53 @@ function fieldToShift(field) {
 
 function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
+    let timeField = document.querySelectorAll(".time");
     for(let i = 0; i < shifts.length; i++) {
-        hoursField[i].innerHTML = shifts[i].hoursString;
+        if(timeField[i*2].checkValidity() && timeField[(i*2)+1].checkValidity() && !(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "")) {
+            hoursField[i].innerHTML = shifts[i].hoursString;
+        }
+    }
+}
+
+function validateTimeFields() {
+    let hoursField = document.querySelectorAll(".shift-hours");
+    let timeField = document.querySelectorAll(".time");
+    for(let i = 0; i < shifts.length; i++) {
+        let errorSpan = document.createElement("span");
+        let errorIcon = document.createElement("i");
+        let errorPopup = document.createElement("span");
+        errorSpan.className = "popup";
+        errorIcon.className = "fas fa-exclamation-triangle fa-lg yellow-colour";
+        errorSpan.addEventListener("click", function(){
+            errorPopup.classList.toggle("show");
+        });
+        errorPopup.className = "popuptext";
+        errorPopup.textContent = "Sign-on and sign-off times must be 4 digits and between 0000 and 2359";
+        errorSpan.appendChild(errorIcon);
+        errorSpan.appendChild(errorPopup);
+        if(!timeField[i*2].checkValidity() || !timeField[(i*2)+1].checkValidity()) {
+            hoursField[i].innerHTML = "";
+            hoursField[i].appendChild(errorSpan);
+        }
+        if(!timeField[i*2].checkValidity()) {
+            timeField[i*2].style.backgroundColor = "#ffd4d4";
+        } 
+        else {
+            timeField[i*2].style.backgroundColor = "";
+        }
+        if(!timeField[(i*2)+1].checkValidity()) {
+            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+        } 
+        else {
+            timeField[(i*2)+1].style.backgroundColor = "";
+        }
+        if(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "") {
+            timeField[i*2].style.backgroundColor = "#ffd4d4";
+            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+            hoursField[i].innerHTML = "";
+            errorPopup.textContent = "Sign-on and sign-off time cannot be the same"
+            hoursField[i].appendChild(errorSpan);
+        }
     }
 }
 
