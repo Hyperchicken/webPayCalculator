@@ -3,11 +3,11 @@
 <head>
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=0.63">
+    <link rel="stylesheet" href="style.css?v=0.64">
     <link rel="stylesheet" href="jquery-ui.css">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script> 
-    <script src="scripts.js?v=0.63"></script> 
+    <script src="scripts.js?v=0.64"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,22 +23,19 @@
     <ul id="known-issues-ul" class="page-subtitle">
         <li font-weight="bold">Known Issues</li>
         <ul>
-            <li>Sick-part not yet implemented.</li>
             <li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>
             <li>Page doesn't fit correctly on some devices with smaller screens.</li>
             <li>Probably a bunch more issues. Please let me know what you find! <em>- Petar</em></li>
         </ul>
         <li font-weight="bold">Latest Updates</li>
         <ul>
-            <li>Restricted date selection to fortnightly instead of weekly. - 14/11/19</li>
-            <li>Data saving! Any data entered is saved to the currently selected date. Data is saved locally to your browser (if you change device or browser, your saved data won't come across). - 8/11/19</li>
-            <li>Renamed pay elements in the results to better match whats on the payslips. - 31/10/19</li>
-            <li>Added placeholder text in sign-on/off fields. - 31/10/19</li>
-            <li>Fixed issue with calculation on an overtime shift longer than ordinary hours. - 31/10/19</li>
-            <li>Added pay element information box. Click a pay element to display it's definition! - 31/10/19</li>
+            <li>[16/11/19] Fixed calculation error when working overtime on a Sunday past midnight.</li>
+            <li>[16/11/19] Added more visual time input validation.</li>
+            <li>[14/11/19] Restricted date selection to fortnightly instead of weekly.</li>
+            <li>[8/11/19] Data saving! Any data entered is saved to the currently selected date. Data is saved locally to your browser (if you change device or browser, your saved data won't come across).</li>
             <ul>
-                <li class="version">Last update: 14/11/19</li>
-                <li class="version">Version: 0.63</li>
+                <li class="version">Last update: 16/11/19</li>
+                <li class="version">Version: 0.64</li>
             </ul>
         </ul>
     </ul>
@@ -78,7 +75,7 @@
                     </span>
                 </div>
                 <span class="grid-1-6">
-                    <i class="fas fa-exclamation-circle"></i> <em>All data entered is now saved to the selected date!</em>
+                    <i class="fas fa-exclamation-circle"></i> <em>All data entered is saved to the selected date!</em>
                 </span>
                 <span id="deleteDataButton" class="grid-1-6" style="display: none; margin-bottom: 5px;">
                     <a onclick="confirmDeleteData()" style="text-decoration: underline; color: darkred; cursor: pointer; padding-left: 10px;">Click here to <strong>delete all saved data</strong></a>
@@ -94,7 +91,7 @@
                 <div class="sign-on grid-heading">SIGN ON</div>
                 <div class="sign-off grid-heading">SIGN OFF</div>
                 <div class="grid-heading">HRS</div>
-                
+
                 <label for="sun1-start" class="day-of-week">Sunday</label>
                 <div class="shift-options"><a class="button options-button">...</a></div>
                 <input type="tel" id="sun1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="timeChanged(0)">

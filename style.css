@@ -161,6 +161,10 @@ p {
     margin-left: -4px;
 }
 
+.yellow-colour { 
+    color: #ffe300;
+}
+
 .options-button {
     display: grid;
     grid-template-columns: auto min-content;
@@ -294,6 +298,10 @@ hr {
     padding: 2px;
 }
 
+.invalid-time {
+    background-color: #ffd4d4;
+}
+
 .pay-element-table {
     width: 100%;
     font-family: "Lucida Console", Monaco, monospace;
@@ -417,6 +425,61 @@ input[type=tel] {
 ::placeholder {
     color: #909090;
 }
+
+ /* Popup container */
+ .popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  /* The actual popup (appears on top) */
+  .popup .popuptext {
+    visibility: hidden;
+    width: 350px;
+    background-color: #662424;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 7px 3px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -330px;
+    font-size: 0.9em;
+  }
+  
+  /* Popup arrow */
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 97%;
+    left: 330px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #662424 transparent transparent transparent;
+  }
+  
+  /* Toggle this class when clicking on the popup container (hide and show the popup) */
+  .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s
+  }
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+
 
 
 @media only screen and (max-device-width: 480px) { 

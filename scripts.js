@@ -243,6 +243,7 @@ class PayElement {
                 break;
             case "rost+100": tooltipText = "<strong>Rost+100%</strong>"
                 + "<p><em>Excess Hours Overtime x2.</em> Time worked on an ordinary shift in excess of 11 hours, paid at <em>double time.</em></p>"
+                + "<p>Overtime worked on a Sunday is also paid at this rate.</p>"
                 break;
             case "earlyShift": tooltipText = "<strong>E/Shift</strong>"
                 + "<p><em>Early Shift.</em> Penalty payment for a shift that commences at or between 0400 and 0530.</p>"
@@ -365,6 +366,12 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function() { 
     initButtons();
 
+    let timeFields = document.querySelectorAll(".time");
+    for(let i = 0; i < timeFields.length; i++) {
+        timeFields[i].addEventListener("blur", function(){
+            validateTimeFields();
+        });
+    }
     //setup datepicker
     let evenPayWeekYears = [2018, 2019, 2020];
     let oddPayWeekYears = [2021];
@@ -436,6 +443,7 @@ $(document).ready(function() {
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
+    validateTimeFields()
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
@@ -1251,8 +1259,53 @@ function fieldToShift(field) {
 
 function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
+    let timeField = document.querySelectorAll(".time");
     for(let i = 0; i < shifts.length; i++) {
-        hoursField[i].innerHTML = shifts[i].hoursString;
+        if(timeField[i*2].checkValidity() && timeField[(i*2)+1].checkValidity() && !(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "")) {
+            hoursField[i].innerHTML = shifts[i].hoursString;
+        }
+    }
+}
+
+function validateTimeFields() {
+    let hoursField = document.querySelectorAll(".shift-hours");
+    let timeField = document.querySelectorAll(".time");
+    for(let i = 0; i < shifts.length; i++) {
+        let errorSpan = document.createElement("span");
+        let errorIcon = document.createElement("i");
+        let errorPopup = document.createElement("span");
+        errorSpan.className = "popup";
+        errorIcon.className = "fas fa-exclamation-triangle fa-lg yellow-colour";
+        errorSpan.addEventListener("click", function(){
+            errorPopup.classList.toggle("show");
+        });
+        errorPopup.className = "popuptext";
+        errorPopup.textContent = "Sign-on and sign-off times must be 4 digits and between 0000 and 2359";
+        errorSpan.appendChild(errorIcon);
+        errorSpan.appendChild(errorPopup);
+        if(!timeField[i*2].checkValidity() || !timeField[(i*2)+1].checkValidity()) {
+            hoursField[i].innerHTML = "";
+            hoursField[i].appendChild(errorSpan);
+        }
+        if(!timeField[i*2].checkValidity()) {
+            timeField[i*2].style.backgroundColor = "#ffd4d4";
+        } 
+        else {
+            timeField[i*2].style.backgroundColor = "";
+        }
+        if(!timeField[(i*2)+1].checkValidity()) {
+            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+        } 
+        else {
+            timeField[(i*2)+1].style.backgroundColor = "";
+        }
+        if(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "") {
+            timeField[i*2].style.backgroundColor = "#ffd4d4";
+            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+            hoursField[i].innerHTML = "";
+            errorPopup.textContent = "Sign-on and sign-off time cannot be the same"
+            hoursField[i].appendChild(errorSpan);
+        }
     }
 }
 
@@ -1380,39 +1433,71 @@ function updateShiftPayTable() {
                 if(s.shiftWorkedNumber <= 10) { //not OT shift only
                     if(day == 5 || day == 12) { //friday shift
                         if(tomorrowNormalHours > 0.0) { //time into saturday
-                            shiftPay[day].push(new PayElement("wePen50", tomorrowNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(tomorrowNormalHours, ordinaryHours), s.ojt));
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
+                        let penaltyTimeRemaining = ordinaryHours;
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", todayNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
+                            penaltyTimeRemaining -= todayNormalHours;
                         }
-                        if(tomorrowNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", tomorrowNormalHours, s.ojt));
+                        if(tomorrowNormalHours > 0.0 && penaltyTimeRemaining > 0.0) { //sunday time
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(penaltyTimeRemaining, ordinaryHours), s.ojt));
                         }
                     }
                     else if(day == 0 || day == 7) { //sunday
                         if(todayNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", todayNormalHours, s.ojt));
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, ordinaryHours), s.ojt));
                         }
                     }
                 }
 
                 //Excess Hours Overtime
-                let overtimeThreshold = 8; //hours worked before OT penalties begin
-                if(getPayGrade() == "trainee") overtimeThreshold = 7.6; //adjust for trainee
-                if(normalHours > overtimeThreshold) {
-                    let overtimeHours = normalHours - overtimeThreshold;
-                    if(overtimeHours > 3) {
-                        shiftPay[day].push(new PayElement("rost+50", 3, s.ojt));
-                        shiftPay[day].push(new PayElement("rost+100", overtimeHours - 3, s.ojt));
+                if(normalHours > ordinaryHours) {
+                    let overtimeHours = normalHours - ordinaryHours;
+                    let todayOvertimeHours = 0.0;
+                    let tomorrowOvertimeHours = 0.0;
+                    let rost50hours = 0.0;
+                    let rost100hours = 0.0;
+                    if(todayNormalHours > ordinaryHours){
+                        todayOvertimeHours = todayNormalHours - ordinaryHours;
+                    }
+                    tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
+                    if((day == 6 || day == 13) && tomorrowOvertimeHours > 0.0) {
+                        if(todayOvertimeHours > 3) {
+                            rost50hours = 3;
+                            rost100hours = overtimeHours - 3;
+                        }
+                        else {
+                            rost50hours = todayOvertimeHours;
+                            rost100hours = tomorrowOvertimeHours;
+                        }
+                    }
+                    else if(day == 0 || day == 7 && todayOvertimeHours > 0.0) {
+                        if(overtimeHours > 3) {
+                            rost100hours = todayOvertimeHours;
+                            rost50hours = Math.max(0, 3 - todayOvertimeHours)
+                            rost100hours += tomorrowOvertimeHours - rost50hours;
+                        }
+                        else {
+                            rost50hours = tomorrowOvertimeHours;
+                            rost100hours = todayOvertimeHours
+                        }
                     }
                     else {
-                        shiftPay[day].push(new PayElement("rost+50", overtimeHours, s.ojt));
+                        if(overtimeHours > 3) {
+                            rost50hours = 3;
+                            rost100hours = overtimeHours - 3;
+                        }
+                        else {
+                            rost50hours = overtimeHours;
+                        }
                     }
-                    if(overtimeHours > 2) {
-                        shiftPay[day].push(new PayElement("mealAllowance", 1));
-                    }
+
+                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement("rost+50", rost50hours, s.ojt));
+                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement("rost+100", rost100hours, s.ojt));
+                    if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1));
                 }
 
                 //Excess Shift Overtime
