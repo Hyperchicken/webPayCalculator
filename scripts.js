@@ -944,21 +944,25 @@ function updateGrade() {
             selectedGradeRates = spotRates;
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
+            setSaveData("paygrade", "spot");
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
+            setSaveData("paygrade", "level1");
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
+            setSaveData("paygrade", "trainee");
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
+            setSaveData("paygrade", "conversion");
             break;
         default: 
             selectedGradeRates = undefined;
@@ -1636,7 +1640,7 @@ function storageAvailable(type) {
 //save a single data to local storage, automatically appending the week commencing prefix.
 function setSaveData(field, value, prefixDate = true) {
     if(!storageAvailable('localStorage')) {
-        console.alert("saveAllData: no local storage available!");
+        console.alert("setSaveData: no local storage available!");
     }
     else {
         let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
@@ -1682,7 +1686,9 @@ function loadSavedData(datePrefix = "") {
         let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
-    switch(getSaveData("paygrade", false)) {
+    let savedPayGrade = getSaveData("paygrade");
+    if(savedPayGrade == null) savedPayGrade = getSaveData("paygrade", false);
+    switch(savedPayGrade) {
         case "spot":
             document.forms.payGradeForm.payGrade[0].checked = true;
             break;
