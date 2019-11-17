@@ -1195,7 +1195,7 @@ function updateResults() {
         //hours worked
         let hoursWorked = 0.0;
         groupedElements.forEach(function(e){
-            if(["normal", "guarantee", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) hoursWorked += e.hours;
+            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) hoursWorked += e.hours;
         });
         let hoursWorkedElement = document.createElement("p");
         hoursWorkedElement.id = "hoursWorked";
