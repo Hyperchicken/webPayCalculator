@@ -410,6 +410,9 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
     font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
 }
 
 .pay-elements-list > ul {

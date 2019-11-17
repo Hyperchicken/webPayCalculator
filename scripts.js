@@ -147,7 +147,8 @@ class PayElement {
     }
 
     get payAmount() {
-        return this.rate * this.hours;
+        console.log(this.rate * parseFloat(this.hours.toFixed(4)));
+        return parseFloat((this.rate * parseFloat(this.hours.toFixed(4))).toFixed(2));
     }
 
     get payClass() {
@@ -380,7 +381,6 @@ $(document).ready(function() {
         let daysDifference = (todaysDate.getDay()) * -1;
         if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
             if(todaysDate.getWeek() % 2 == 1) {//if not pay week
-                console.log("not payweek");
                 if (todaysDate.getDay() == 0) return -14;
                 else return daysDifference - 7;
             }
@@ -391,7 +391,6 @@ $(document).ready(function() {
         }
         else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
             if(todaysDate.getWeek() % 2 == 0) {//if not pay week
-                console.log("not payweek");
                 if (todaysDate.getDay() == 0) return -14;
                 else return daysDifference - 7;
             }
@@ -430,6 +429,7 @@ $(document).ready(function() {
             updateShiftTable();
             updateShiftWorkedCount();
             printShiftHours();
+            validateTimeFields();
             updateOptionsButtons();
             updateShiftPayTable();
             updateResults();
@@ -1201,6 +1201,11 @@ function updateResults() {
         hoursWorkedElement.id = "hoursWorked";
         hoursWorkedElement.textContent = "Hours Worked: " + hoursWorked.toFixed(2);
         resultArea.appendChild(hoursWorkedElement);
+        hoursWorkedElement.addEventListener("click", function(){
+            document.getElementById("helpDiv").innerHTML = "<strong>Hours Worked</strong><p>Currently reflects the <em>real</em> hours worked and NOT what is displayed on the payslip's 'Hours worked' section." 
+            + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
+            window.location.replace("#helpDiv"); //scroll to help box
+        });
 
         //subtotal
         let totalValue = 0.0; 
