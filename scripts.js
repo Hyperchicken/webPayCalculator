@@ -147,7 +147,6 @@ class PayElement {
     }
 
     get payAmount() {
-        console.log(this.rate * parseFloat(this.hours.toFixed(4)));
         return parseFloat((this.rate * parseFloat(this.hours.toFixed(4))).toFixed(2));
     }
 
