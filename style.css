@@ -406,6 +406,12 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     white-space: pre-wrap;
 }
 
+#hoursWorked {
+    font-family:  "Lucida Console", Monaco, monospace;
+    white-space: pre-wrap;
+    font-weight: bold;
+}
+
 .pay-elements-list > ul {
     padding-left: 3%;
 }

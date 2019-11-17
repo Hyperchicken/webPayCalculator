@@ -944,21 +944,25 @@ function updateGrade() {
             selectedGradeRates = spotRates;
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
+            setSaveData("paygrade", "spot");
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
+            setSaveData("paygrade", "level1");
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
+            setSaveData("paygrade", "trainee");
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
+            setSaveData("paygrade", "conversion");
             break;
         default: 
             selectedGradeRates = undefined;
@@ -1005,7 +1009,6 @@ function updateShiftWorkedCount() {
 function updateResults() {
     let resultArea = document.getElementById("result-area");
     let resultsViewFormat = document.forms.resultsViewForm.resultsView.value;
-    let totalValue = 0.0;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
     //create grouped elements table for combined view
@@ -1030,6 +1033,7 @@ function updateResults() {
                 groupedElements[elementIndex].hours += element.hours;
             }
     });
+    groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
 
     resultArea.innerHTML = ""; //clear existing results
     if(!selectedDate) {
@@ -1042,7 +1046,6 @@ function updateResults() {
     else {
         dateDiv.style.borderStyle = "none";
         dateDiv.style.background = "none";
-
         if(resultsViewFormat == "grouped"){
             let listDiv = document.createElement("div");
             let elementTable = document.createElement("table");
@@ -1050,7 +1053,6 @@ function updateResults() {
             let headerRow = document.createElement("tr");
             headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
             elementTable.appendChild(headerRow);
-            groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
             groupedElements.forEach(function(e){
                 let payElementRow = document.createElement("tr");
                 //payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
@@ -1068,7 +1070,6 @@ function updateResults() {
                 payElementRow.appendChild(elemHours);
                 payElementRow.appendChild(elemAmount);
                 elementTable.appendChild(payElementRow);
-                totalValue += e.payAmount;
                 if(e.helpText) {
                     elemClass.addEventListener("click", function(){
                         $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1080,13 +1081,6 @@ function updateResults() {
             });
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
-            
-            //subtotal
-            listDiv.appendChild(document.createElement("hr"));
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
         }
         else if(resultsViewFormat == "split") {
             let elementTable = document.createElement("table");
@@ -1127,7 +1121,6 @@ function updateResults() {
                         payElementRow.appendChild(elemHours);
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
-                        totalValue += shiftPay[i][j].payAmount;
                         if(shiftPay[i][j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1176,7 +1169,6 @@ function updateResults() {
                         payElementRow.appendChild(elemHours);
                         payElementRow.appendChild(elemAmount);
                         elementTable.appendChild(payElementRow);
-                        totalValue += additionalPayments[j].payAmount;
                         if(additionalPayments[j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1188,17 +1180,38 @@ function updateResults() {
                 }
             }
             resultArea.appendChild(elementTable);
-            resultArea.appendChild(document.createElement("hr"));
-            let totalElement = document.createElement("h3");
-            totalElement.setAttribute("id", "totalElement");
-            totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-            resultArea.appendChild(totalElement);
         }
         else {
             let shiftTitle = document.createElement("h3");
             shiftTitle.textContent = "Error displaying results: invalid view format '" + resultsViewFormat + "'";
             resultArea.appendChild(shiftTitle);
         }
+
+        resultArea.appendChild(document.createElement("hr"));
+
+        //hours paid
+        let hoursPaid = 0.0;
+
+        //hours worked
+        let hoursWorked = 0.0;
+        groupedElements.forEach(function(e){
+            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) hoursWorked += e.hours;
+        });
+        let hoursWorkedElement = document.createElement("p");
+        hoursWorkedElement.id = "hoursWorked";
+        hoursWorkedElement.textContent = "Hours Worked: " + hoursWorked.toFixed(2);
+        resultArea.appendChild(hoursWorkedElement);
+
+        //subtotal
+        let totalValue = 0.0; 
+        groupedElements.forEach(function(e){
+            totalValue += e.payAmount;
+        });
+        let totalElement = document.createElement("h3");
+        totalElement.setAttribute("id", "totalElement");
+        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+        resultArea.appendChild(totalElement);
+        
         //element help tips
         let helpDiv = document.createElement("div");
         helpDiv.id = "helpDiv";
@@ -1636,7 +1649,7 @@ function storageAvailable(type) {
 //save a single data to local storage, automatically appending the week commencing prefix.
 function setSaveData(field, value, prefixDate = true) {
     if(!storageAvailable('localStorage')) {
-        console.alert("saveAllData: no local storage available!");
+        console.alert("setSaveData: no local storage available!");
     }
     else {
         let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
@@ -1682,7 +1695,9 @@ function loadSavedData(datePrefix = "") {
         let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
-    switch(getSaveData("paygrade", false)) {
+    let savedPayGrade = getSaveData("paygrade");
+    if(savedPayGrade == null) savedPayGrade = getSaveData("paygrade", false);
+    switch(savedPayGrade) {
         case "spot":
             document.forms.payGradeForm.payGrade[0].checked = true;
             break;
