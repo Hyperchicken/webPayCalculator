@@ -22,6 +22,7 @@ const wmColour = "#aa60d5";
 const sickColour = "#ff0000";
 const bonusColour = "#e79e00";
 const alColour = "#1c4ab3";
+const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
 
 
@@ -47,6 +48,7 @@ class Shift {
         this.sick = false; //sick full day
         this.sickPart = false; //worked but went home sick partway through shift
         this.al = false; //annual leave
+        this.phc = false; //public holiday credit day off
         this.ddo = false; //DDO
         this.bonus = false;
         this.bonusHours = 0.0; //bonus payment hours
@@ -138,6 +140,7 @@ class PayElement {
             case "metroSig2": return 25;
             case "mealAllowance": return 30;
             case "bonusPayment": return 31;
+            case "phCredit": return 32;
             case "edo": return 35;
             case "leaveLoading": return 50;
             default:
@@ -174,6 +177,7 @@ class PayElement {
             case "metroSig2": payClassName = "Metro Sig2"; break;
             case "mealAllowance": payClassName = "Meal Allow"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
+            case "phCredit": payClassName = "PH Credit"; break;
             case "edo": payClassName = "EDO"; break;
             case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
             default:
@@ -269,6 +273,9 @@ class PayElement {
                 + "<ul><li>The name of this payment on your payslip will be different!</li>"
                 + "<li>In the past, bonus payments have been offered on days such as White Night and New Years.</li></ul>";
                 break;
+            case "phCredit": tooltipText = "<strong>PH Credit</strong>"
+            + "<p><em>Publc Holiday Credit.</em> Day off taken in lieu of a worked public holiday where extra-leave was accrued.</p>";
+            break;
             case "edo": tooltipText = "<strong>EDO</strong>"
                 + "<p><em>Discretionary Day Off</em>. +4 hours paid on a DDO fortnight, -4 hours deducted otherwise.</p>"
                 break;
@@ -303,6 +310,7 @@ class PayElement {
             case "phXpay":
             case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
             case "annualLeave":
+            case "phCredit":
             case "bonusPayment":
                 rate += getEbaRate(selectedDate, selectedGradeRates);
                 break;
@@ -533,12 +541,58 @@ function updateOptionsButtons() {
             }
         }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
+            let offButton = true;
+            if(s.ddo) {
+                setButton("DDO-OFF", ddoColour);
+                offButton = false;
+            }
+            if(s.sick) {
+                setButton("Sick", sickColour);
+                offButton = false;
+            }
+            if(s.al) {
+                setButton("A/Leave", alColour);
+                offButton = false;
+            }
+            if(s.phc) {
+                setButton("PH&nbspCredit", phcColour);
+                offButton = false;
+            }
+            if(s.ph) {
+                setButton("PH-OFF", phColour);
+                offButton = false;
+            }
+            if(s.wm) {
+                setButton("Wasted&nbspMeal", wmColour);
+                offButton = false;
+            }
+            if(s.bonus && s.bonusHours > 0.0) {
+                setButton("Bonus&nbspPay", bonusColour);
+                offButton = false;
+            }
+            if(offButton) {
+                if(s.ojt || (s.bonus && s.bonusHours <= 0.0)) {
+                    setButton("OFF&nbsp(+)", "black");
+                }
+                else {
+                    setButton("OFF", "black");
+                }
+            }
+/*
             if(s.sick) {
                 if(s.ph) {
                     setButton("Sick&nbsp(PH)", sickColour, phColour);
                 }
                 else {
                     setButton("Sick", sickColour);
+                }
+            }
+            else if(s.phc) { //ph credit
+                if(s.ph) {
+                    setButton("PH-OFF", phColour);
+                }
+                else {
+                    setButton("PH&nbspCredit", phcColour);
                 }
             }
             else if(s.al) { //annual leave
@@ -549,20 +603,20 @@ function updateOptionsButtons() {
                     setButton("A/Leave", alColour);
                 }
             }
-            else if(s.ph || s.ddo || (s.bonus && s.bonusHours > 0)) {
+            else if(s.ph || (s.bonus && s.bonusHours > 0)) {
                 if(s.ph) 
                     setButton("PH-OFF", phColour);
-                if(s.ddo) 
-                    setButton("DDO-OFF", ddoColour);
                 if(s.bonus && s.bonusHours > 0) 
                     setButton("Bonus&nbspPay", bonusColour);
             }
             else {
-                if(s.ojt || s.wm || s.bonus) //if any shift options selected, show this on the main option button.
-                    setButton("OFF&nbsp(+)", "black");
+                if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
+                    if(!s.ddo) setButton("OFF&nbsp(+)", "black");
+                }
                 else
-                    setButton("OFF", "black");
+                    if(!s.ddo) setButton("OFF", "black");
             }
+            if(s.ddo) setButton("DDO-OFF", ddoColour); */
         }
         else { //if actual shift
             if(s.sick) {
@@ -852,6 +906,27 @@ function generateOptionsShelfButtons(day) {
         alButton.style.background = buttonBackgroundColour;
     }
 
+    //PH Credit button
+    let phcButton = document.createElement("a");
+    phcButton.textContent = "PH Credit";
+    phcButton.setAttribute("class", "button phc-button shelf-button");
+    if(shifts[day].phc) {//if phc
+        phcButton.addEventListener("click", function(){
+            shifts[day].phc = false;
+            reloadPageData();
+            saveToStorage("phc", "false");
+        });
+        phcButton.style.background = "";
+    }
+    else {//if not phc
+        phcButton.addEventListener("click", function(){
+            shifts[day].phc = true;
+            reloadPageData();
+            saveToStorage("phc", "true");
+        });
+        phcButton.style.background = buttonBackgroundColour;
+    }
+
     //Bonus Payment button
     let bonusButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
     let bonusButtonText = document.createElement("a");
@@ -905,6 +980,7 @@ function generateOptionsShelfButtons(day) {
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
     shelf.appendChild(alButton);
+    shelf.appendChild(phcButton);
     shelf.appendChild(bonusButton);
 
     //set focus if any
@@ -1378,6 +1454,9 @@ function updateShiftPayTable() {
                 sickPhShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
+            else if(s.phc) {
+                shiftPay[day].push(new PayElement("phCredit", ordinaryHours));
+            }
         }
         else { //if shift has hours
             let todayNormalHours = 0.0;
@@ -1587,7 +1666,7 @@ function updateShiftPayTable() {
                 alShifts[i] -= sickPhShifts[i]; //deduct any sick or PH-OFF shifts from annual leave count
             }
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
-                if(shifts[j].al && (!shifts[j].ph || !shifts[j].sick) && alShifts[i] > 0) {
+                if(shifts[j].al && (!shifts[j].ph && !shifts[j].sick && !shifts[j].phc) && alShifts[i] > 0) {
                     alShifts[i]--;
                     shiftPay[j].push(new PayElement("annualLeave", ordinaryHours));
                     shiftPay[j].push(new PayElement("leaveLoading", ordinaryHours));
