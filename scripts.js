@@ -1267,18 +1267,33 @@ function updateResults() {
         //hours paid
         let hoursPaid = 0.0;
 
-        //hours worked
-        let hoursWorked = 0.0;
+        //actual hours worked
+        let actualHoursWorked = 0.0;
         groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) hoursWorked += e.hours;
+            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) actualHoursWorked += e.hours;
         });
-        let hoursWorkedElement = document.createElement("p");
-        hoursWorkedElement.id = "hoursWorked";
-        hoursWorkedElement.textContent = "Hours Worked: " + hoursWorked.toFixed(2);
-        resultArea.appendChild(hoursWorkedElement);
-        hoursWorkedElement.addEventListener("click", function(){
-            document.getElementById("helpDiv").innerHTML = "<strong>Hours Worked</strong><p>Currently reflects the <em>real</em> hours worked and NOT what is displayed on the payslip's 'Hours worked' section." 
+        let actualHoursWorkedElement = document.createElement("p");
+        actualHoursWorkedElement.classList.add("hoursWorked")
+        actualHoursWorkedElement.textContent = "Actual Hours Worked: " + actualHoursWorked.toFixed(2);
+        resultArea.appendChild(actualHoursWorkedElement);
+        actualHoursWorkedElement.addEventListener("click", function(){
+            document.getElementById("helpDiv").innerHTML = "<strong>Actual Hours Worked</strong><p>Reflects the <em>real</em> hours worked and NOT what is displayed on the payslip's 'Hours worked' section." 
             + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
+            window.location.replace("#helpDiv"); //scroll to help box
+        });
+
+        //payslip hours worked
+        let payslipHoursWorked = 0.0;
+        groupedElements.forEach(function(e){
+            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee"].includes(e.payType)) payslipHoursWorked += e.hours;
+        });
+        let payslipHoursWorkedElement = document.createElement("p");
+        payslipHoursWorkedElement.classList.add("hoursWorked");
+        payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
+        resultArea.appendChild(payslipHoursWorkedElement);
+        payslipHoursWorkedElement.addEventListener("click", function(){
+            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculated the hours worked that appears on your <em>payslip</em>." 
+            + " This includes time that wasn't physically worked such as Guarantee and A/Leave, but can be used to help identify discrepencies between the calculator and your payslip.</p>";
             window.location.replace("#helpDiv"); //scroll to help box
         });
 
