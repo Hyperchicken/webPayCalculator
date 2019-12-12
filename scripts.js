@@ -1423,8 +1423,9 @@ function ddoWeek() {
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 function updateShiftPayTable() {
     let alShifts = [0, 0]; //[week1, week2]  //shifts counted as annual leave. designed to avoid using annual leave when sick or ph.
-    let sickPhShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
+    let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let ordinaryHours = 8;
+    let alDdoDeducted = false;
     if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
     additionalPayments = [];
@@ -1442,7 +1443,7 @@ function updateShiftPayTable() {
                 alShifts[weekNo(day)]++;
             }
             if(s.sick) {
-                sickPhShifts[weekNo(day)]++;
+                deductLeaveShifts[weekNo(day)]++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
                 }
@@ -1451,11 +1452,16 @@ function updateShiftPayTable() {
                 }
             }
             else if(s.ph) {
-                sickPhShifts[weekNo(day)]++;
+                deductLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
             else if(s.phc) {
+                deductLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phCredit", ordinaryHours));
+            }
+            if(s.ddo && !alDdoDeducted) {
+                deductLeaveShifts[weekNo(day)]++;
+                alDdoDeducted = true;
             }
         }
         else { //if shift has hours
@@ -1662,11 +1668,11 @@ function updateShiftPayTable() {
         let endWeekDay = [7, 14];
         if(alShifts[i] > 0) {
             if(alShifts[i] > 5) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave
-            if(alShifts[i] + sickPhShifts[i] > 5) {
-                alShifts[i] -= sickPhShifts[i]; //deduct any sick or PH-OFF shifts from annual leave count
+            if(alShifts[i] + deductLeaveShifts[i] > 5) {
+                alShifts[i] -= deductLeaveShifts[i]; //deduct any sick or PH-OFF shifts from annual leave count
             }
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
-                if(shifts[j].al && (!shifts[j].ph && !shifts[j].sick && !shifts[j].phc) && alShifts[i] > 0) {
+                if(shifts[j].al && (!shifts[j].ph && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i] > 0) {
                     alShifts[i]--;
                     shiftPay[j].push(new PayElement("annualLeave", ordinaryHours));
                     shiftPay[j].push(new PayElement("leaveLoading", ordinaryHours));
