@@ -1824,6 +1824,7 @@ function loadSavedData(datePrefix = "") {
         let phSave = getSaveData("day" + day + "ph");
         let phxpSave = getSaveData("day" + day + "phxp");
         let alSave = getSaveData("day" + day + "al");
+        let phcSave = getSaveData("day" + day + "phc")
         let bonusSave = getSaveData("day" + day + "bonus");
         let bonusHoursSave = getSaveData("day" + day + "bonusHours");
 
@@ -1834,6 +1835,7 @@ function loadSavedData(datePrefix = "") {
         if(phSave == "true") shifts[day].ph = true;
         if(phxpSave == "true") shifts[day].phExtraPay = true;
         if(alSave == "true") shifts[day].al = true;
+        if(phcSave == "true") shifts[day].phc = true;
         if(bonusSave == "true") shifts[day].bonus = true;
         if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
     }
