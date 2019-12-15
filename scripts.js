@@ -1333,16 +1333,9 @@ function updateDates() { //updates day of week fields
     }
 }
 
-function addAllFields() { //function to test time input boxes
-    let times = document.querySelectorAll("input.time");
-    let total = 0;
-
-    let x;
-    for (x in times) {
-        let value = parseInt(times[x].value)
-        if(!isNaN(value)) total += value;
-    }
-    return total;
+function helpBox(helpText) {
+    document.getElementById("helpDiv").innerHTML = helpText;
+    window.location.replace("#helpDiv");
 }
 
 function fieldToShift(field) {
