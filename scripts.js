@@ -1285,7 +1285,7 @@ function updateResults() {
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee"].includes(e.payType)) payslipHoursWorked += e.hours;
+            if(["normal", "phWorked", "phGaz", "nonRosPh", "sick", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
