@@ -10,6 +10,11 @@ p {
     margin: 0.5em 0;
 }
 
+.a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .page-subtitle {
     font-size: 0.9em;
     font-family: inherit;
