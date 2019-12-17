@@ -1292,7 +1292,7 @@ function updateResults() {
         payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
-            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculated the hours worked that appears on your <em>payslip</em>." 
+            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the hours worked that appears on your <em>payslip</em>." 
             + " This includes time that wasn't physically worked such as Guarantee and A/Leave, but can be used to help identify discrepencies between the calculator and your payslip.</p>";
             window.location.replace("#helpDiv"); //scroll to help box
         });
