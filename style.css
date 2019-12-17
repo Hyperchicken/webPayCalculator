@@ -351,6 +351,7 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     border-style: solid;
     border-width: 1px;
     border-radius: 5px;
+    margin-top: 15px;
     padding: 10px;
     background-color: #00000070;
 }

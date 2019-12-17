@@ -1267,6 +1267,16 @@ function updateResults() {
         //hours paid
         let hoursPaid = 0.0;
 
+        //subtotal
+        let totalValue = 0.0; 
+        groupedElements.forEach(function(e){
+            totalValue += e.payAmount;
+        });
+        let totalElement = document.createElement("h3");
+        totalElement.setAttribute("id", "totalElement");
+        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
+        resultArea.appendChild(totalElement);
+
         //actual hours worked
         let actualHoursWorked = 0.0;
         groupedElements.forEach(function(e){
@@ -1292,20 +1302,10 @@ function updateResults() {
         payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
-            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the hours worked that appears on your <em>payslip</em>." 
-            + " This includes time that wasn't physically worked such as Guarantee and A/Leave, but can be used to help identify discrepencies between the calculator and your payslip.</p>";
+            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
+            + " This includes time that wasn't physically worked such as Guarantee and A/Leave.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
             window.location.replace("#helpDiv"); //scroll to help box
         });
-
-        //subtotal
-        let totalValue = 0.0; 
-        groupedElements.forEach(function(e){
-            totalValue += e.payAmount;
-        });
-        let totalElement = document.createElement("h3");
-        totalElement.setAttribute("id", "totalElement");
-        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-        resultArea.appendChild(totalElement);
         
         //element help tips
         let helpDiv = document.createElement("div");
