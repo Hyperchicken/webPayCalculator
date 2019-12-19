@@ -1846,6 +1846,9 @@ function loadSavedData(datePrefix = "") {
 }
 
 function confirmDeleteData() {
-    if(confirm("Are you sure you want to delete ALL of your saved data from ALL dates?"))
+    if(confirm("Are you sure you want to delete ALL of your saved data from ALL dates?")){
         localStorage.clear();
+        alert("All save data has been deleted!");
+        location.reload();
+    }
 }
