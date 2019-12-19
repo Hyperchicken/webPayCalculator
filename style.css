@@ -25,20 +25,6 @@ p {
     font-family: monospace;
 }
 
-#known-issues-ul {
-    margin-top: 0px;
-    display: none;
-}
-
-#known-issues-anchor {
-    cursor: pointer;
-    text-decoration-line: underline;
-}
-
-#known-issues-anchor:hover {
-    text-decoration: underline;
-}
-
 .radio-buttons {
     display: inline-block;
 }
@@ -178,6 +164,11 @@ p {
     border-color: black;
     border-style: solid;
     word-break: keep-all;
+}
+
+.delete-save-button {
+    background-color: #b90000;
+    border-color: #b90000;
 }
 
 .ojt-button {
@@ -451,10 +442,10 @@ input[type=tel] {
     position: relative;
     display: inline-block;
     cursor: pointer;
-  }
+}
   
-  /* The actual popup (appears on top) */
-  .popup .popuptext {
+/* The actual popup (appears on top) */
+.popup .popuptext {
     visibility: hidden;
     width: 350px;
     background-color: #662424;
@@ -468,10 +459,10 @@ input[type=tel] {
     left: 50%;
     margin-left: -330px;
     font-size: 0.9em;
-  }
+}
   
-  /* Popup arrow */
-  .popup .popuptext::after {
+/* Popup arrow */
+.popup .popuptext::after {
     content: "";
     position: absolute;
     top: 97%;
@@ -480,28 +471,80 @@ input[type=tel] {
     border-width: 5px;
     border-style: solid;
     border-color: #662424 transparent transparent transparent;
-  }
-  
-  /* Toggle this class when clicking on the popup container (hide and show the popup) */
-  .popup .show {
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 0.3s;
     animation: fadeIn 0.3s
-  }
+}
+ul.topnav {
+    list-style-type: none;
+    margin: -8px -8px 0 -8px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: #333;
+}
+li.topnav > a, .dropbtn, .title {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    font-size: 1.5em;
+}
+.title {
+    font-size: 1.5em;
+}
+.title-icon {
+    margin-right: 8px;
+}
+li.topnav a:hover, .dropdown:hover .dropbtn, li.topnav a:active, .dropdown:active .dropbtn {
+    background-color: rgb(0, 162, 255);
+}
+li.dropdown {
+    display: block;
+    float: right;
+}
+.dropbtn-icon { 
+    margin-left: 8px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #555;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+}
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.menu-icon {
+    margin-right: 10px;
+}
   
-  /* Add animation (fade in the popup) */
-  @-webkit-keyframes fadeIn {
+.dropdown-content a:hover, .dropdown-content a:active {background-color: #f1f1f1;}
+
+.dropdown:hover .dropdown-content, .dropdown:active .dropdown-content {
+    display: block;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
-  }
-  
-  @keyframes fadeIn {
+}
+
+@keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
-  }
-
-
-
+}
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
     input[type=tel]  {
@@ -524,4 +567,4 @@ input[type=tel] {
     .container {
         margin: 7px 0px 0px 0px;
     }
-  }
+}

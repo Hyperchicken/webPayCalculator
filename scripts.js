@@ -1338,6 +1338,31 @@ function helpBox(helpText) {
     window.location.replace("#helpDiv");
 }
 
+function helpBoxPreset(presetName) {
+    let helpText = "";
+    switch(presetName) {
+        case "gettingStarted":
+            helpText = "<strong>Getting Started</strong><p>Placeholder text</p>";
+            break;
+        case "deleteSave":
+            helpText = "<strong>Delete Save Data</strong><p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
+            + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
+            break;
+        case "saveInfo":
+            helpText = "<strong>Data Saving</strong><p>All shift-times and shift-options entered is automatically saved to the currently selected 'Week Commencing' date.</p>"
+            + "<ul><li>Data is saved locally to your web browser and not sent anywhere over the internet.</li><li>Saved data will not carry over if you use a different web browser or device.</li>"
+            + "<li>Using incognito/private browsing mode will prevent data saving.</li><li>Clearing your browser's cookies will delete all saved data.</li>";
+            break;
+        case "changelog":
+            $("#helpDiv").load("changelog.html");
+            window.location.replace("#helpDiv");
+            return;
+        default:
+            console.warn("helpBoxPreset(): invalid preset '" + presetName + "'");
+    }
+    helpBox(helpText);
+}
+
 function fieldToShift(field) {
     switch(field) {
         case 0: case 1: return 0;
