@@ -3,7 +3,7 @@
 body {
     background-color: rgb(17, 95, 167);
     color: white;
-    font-family: Raleway, Arial, Helvetica;
+    font-family: Raleway, Arial, Helvetica, sans-serif;
 }
 
 p {
@@ -343,7 +343,7 @@ td:first-of-type:not(.splitview-title-data), th:first-of-type {
     text-decoration: underline;
 }
 
-#helpDiv {
+#resultsHelpDiv {
     border-style: solid;
     border-width: 1px;
     border-radius: 5px;
@@ -500,15 +500,21 @@ li.topnav > a, .dropbtn, .title {
 .title-icon {
     margin-right: 8px;
 }
-li.topnav a:hover, .dropdown:hover .dropbtn, li.topnav a:active, .dropdown:active .dropbtn {
+li.topnav a:hover, .dropdown:hover .dropbtn, li.topnav a.active, .dropdown.active .dropbtn {
     background-color: rgb(0, 162, 255);
 }
 li.dropdown {
     display: block;
     float: right;
 }
+
+.dropbtn {
+    cursor: pointer;
+}
+
 .dropbtn-icon { 
     margin-left: 8px;
+    pointer-events: none;
 }
 .dropdown-content {
     display: none;
@@ -524,15 +530,60 @@ li.dropdown {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    cursor: pointer;
 }
 .menu-icon {
     margin-right: 10px;
 }
   
-.dropdown-content a:hover, .dropdown-content a:active {background-color: #f1f1f1;}
+.dropdown-content a:hover, .dropdown-content a.active {background-color: #f1f1f1;}
 
-.dropdown:hover .dropdown-content, .dropdown:active .dropdown-content {
-    display: block;
+.show-dropdown, .show-top-helpbox {
+    display: block !important;
+}
+
+#topHelpDiv {
+    background-color: #555B;
+    margin: 0 -8px;
+    display: none;
+}
+
+#helpboxTitle {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+ul.helpbox-topnav {
+    list-style-type: none;
+    padding: 8px;
+    margin: 0;
+    overflow: hidden;
+    background-color: #0002;
+}
+li.helpbox-topnav > a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    font-size: 1.5em;
+}
+
+.helpbox-close-button {
+    background-color: #e72929aa;
+    padding: 8px;
+    margin: -8px;
+    cursor: pointer;
+}
+
+#helpboxContent {
+    padding: 8px;
+    margin: 0;
+    font-family: Verdana, sans-serif;
+    font-size: 0.9em;
 }
 
 /* Add animation (fade in the popup) */

@@ -1,5 +1,8 @@
 "use strict";
 
+const calcVersion = "0.67";
+const calcLastUpdateDate = "20/12/2019";
+
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
 const spotRates =           [49.4054,      50.6405,      51.9065];
@@ -455,6 +458,59 @@ $(document).ready(function() {
     updateShiftPayTable();
     updateResults();
 
+    //dropdown menu event listeners
+    let closeMenu = () => {
+        $(".dropdown-content").removeClass("show-dropdown")
+        $(".dropbtn").removeClass("active");
+    }
+    $("#menuButton").on("click", function(){
+        $(".dropdown-content").toggleClass("show-dropdown");
+        if($(".dropdown-content").is(":hidden")) {
+            $(".dropbtn").removeClass("active");
+        }
+        else {
+            $(".dropbtn").addClass("active");
+        }
+    });
+    $("#helpMenuButton").on("click", function(){
+        topHelpBoxPreset("gettingStarted");
+        closeMenu();
+        $(".dropbtn").removeClass("active");
+    });
+    $("#resetMenuButton").on("click", function(){
+        if(confirm("Clear sign-on/off times and shift options for the current fortnight?")) {
+            resetForm();
+        }
+        closeMenu();
+    });
+    $("#saveInfoMenuButton").on("click", function(){
+        topHelpBoxPreset("saveInfo");
+        closeMenu();
+    });
+    $("#deleteSaveMenuButton").on("click", function(){
+        topHelpBoxPreset("deleteSave");
+        closeMenu();
+    });
+    $("#changelogMenuButton").on("click", function(){
+        topHelpBoxPreset("changelog");
+        closeMenu();
+    });
+    $("#aboutMenuButton").on("click", function(){
+        topHelpBoxPreset("about");
+        closeMenu();
+    });
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn-icon')) {
+            closeMenu();
+        }
+    } 
+
+    //top helpbox close button
+    $(".helpbox-close-button").on("click", function(){
+        $("#topHelpDiv").removeClass("show-top-helpbox");
+    });
+
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
         timeField[i].addEventListener("focus", function(){closeAllOptionsShelves();});
@@ -513,7 +569,6 @@ function toggleDay14ph() {
 function toggleDatepicker() {
     //$( "#week-commencing-date" ).slideToggle(300); //animated slide. looks a bit jerky on mobile
     $( "#week-commencing-date" ).toggle();
-    $('#deleteDataButton').toggle();
 }
 
 //Update all options buttons with the appropriate colours/text/icons based on each Shift.
@@ -578,45 +633,6 @@ function updateOptionsButtons() {
                     setButton("OFF", "black");
                 }
             }
-/*
-            if(s.sick) {
-                if(s.ph) {
-                    setButton("Sick&nbsp(PH)", sickColour, phColour);
-                }
-                else {
-                    setButton("Sick", sickColour);
-                }
-            }
-            else if(s.phc) { //ph credit
-                if(s.ph) {
-                    setButton("PH-OFF", phColour);
-                }
-                else {
-                    setButton("PH&nbspCredit", phcColour);
-                }
-            }
-            else if(s.al) { //annual leave
-                if(s.ph) {
-                    setButton("PH&nbsp(AL)", alColour, phColour);
-                }
-                else {
-                    setButton("A/Leave", alColour);
-                }
-            }
-            else if(s.ph || (s.bonus && s.bonusHours > 0)) {
-                if(s.ph) 
-                    setButton("PH-OFF", phColour);
-                if(s.bonus && s.bonusHours > 0) 
-                    setButton("Bonus&nbspPay", bonusColour);
-            }
-            else {
-                if(s.ojt || s.wm || s.bonus) { //if any shift options selected, show this on the main option button.
-                    if(!s.ddo) setButton("OFF&nbsp(+)", "black");
-                }
-                else
-                    if(!s.ddo) setButton("OFF", "black");
-            }
-            if(s.ddo) setButton("DDO-OFF", ddoColour); */
         }
         else { //if actual shift
             if(s.sick) {
@@ -1148,9 +1164,9 @@ function updateResults() {
                 if(e.helpText) {
                     elemClass.addEventListener("click", function(){
                         $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                        document.getElementById("helpDiv").innerHTML = e.helpText;
+                        document.getElementById("resultsHelpDiv").innerHTML = e.helpText;
                         payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                        window.location.replace("#helpDiv"); //scroll to help box
+                        window.location.replace("#resultsHelpDiv"); //scroll to help box
                     });
                 }
             });
@@ -1199,9 +1215,9 @@ function updateResults() {
                         if(shiftPay[i][j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                                document.getElementById("helpDiv").innerHTML = shiftPay[i][j].helpText;
+                                document.getElementById("resultsHelpDiv").innerHTML = shiftPay[i][j].helpText;
                                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                                window.location.replace("#helpDiv"); //scroll to help box
+                                window.location.replace("#resultsHelpDiv"); //scroll to help box
                             });
                         }
                     }
@@ -1247,9 +1263,9 @@ function updateResults() {
                         if(additionalPayments[j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                                document.getElementById("helpDiv").innerHTML = additionalPayments[j].helpText;
+                                document.getElementById("resultsHelpDiv").innerHTML = additionalPayments[j].helpText;
                                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                                window.location.replace("#helpDiv"); //scroll to help box
+                                window.location.replace("#resultsHelpDiv"); //scroll to help box
                             });
                         }
                 }
@@ -1287,9 +1303,9 @@ function updateResults() {
         actualHoursWorkedElement.textContent = "Actual Hours Worked: " + actualHoursWorked.toFixed(2);
         resultArea.appendChild(actualHoursWorkedElement);
         actualHoursWorkedElement.addEventListener("click", function(){
-            document.getElementById("helpDiv").innerHTML = "<strong>Actual Hours Worked</strong><p>Reflects the <em>real</em> hours worked and NOT what is displayed on the payslip's 'Hours worked' section." 
+            document.getElementById("resultsHelpDiv").innerHTML = "<strong>Actual Hours Worked</strong><p>Reflects the <em>real</em> hours worked and NOT what is displayed on the payslip's 'Hours worked' section." 
             + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
-            window.location.replace("#helpDiv"); //scroll to help box
+            window.location.replace("#resultsHelpDiv"); //scroll to help box
         });
 
         //payslip hours worked
@@ -1302,16 +1318,16 @@ function updateResults() {
         payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
-            document.getElementById("helpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
-            + " This includes time that wasn't physically worked such as Guarantee and A/Leave.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
-            window.location.replace("#helpDiv"); //scroll to help box
+            document.getElementById("resultsHelpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
+            + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -)!.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
+            window.location.replace("#resultsHelpDiv"); //scroll to help box
         });
         
         //element help tips
-        let helpDiv = document.createElement("div");
-        helpDiv.id = "helpDiv";
-        helpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to see its definition here!</p>";
-        resultArea.appendChild(helpDiv);
+        let resultsHelpDiv = document.createElement("div");
+        resultsHelpDiv.id = "resultsHelpDiv";
+        resultsHelpDiv.innerHTML = "<p>Click or touch a <em>Pay Class</em> above to see its definition here!</p>";
+        resultArea.appendChild(resultsHelpDiv);
     }
 }
 
@@ -1333,34 +1349,77 @@ function updateDates() { //updates day of week fields
     }
 }
 
-function helpBox(helpText) {
-    document.getElementById("helpDiv").innerHTML = helpText;
-    window.location.replace("#helpDiv");
+function topHelpBox(title, helpText) {
+    document.getElementById("helpboxTitle").textContent = title;
+    document.getElementById("helpboxContent").innerHTML = helpText;
+    $("#topHelpDiv").addClass("show-top-helpbox");
 }
 
-function helpBoxPreset(presetName) {
+function topHelpBoxPreset(presetName) {
+    let helpTitle = "";
     let helpText = "";
     switch(presetName) {
         case "gettingStarted":
-            helpText = "<strong>Getting Started</strong><p>Placeholder text</p>";
+            helpTitle = "Usage Guide";
+            helpText = "<p><strong>Fornight Commencing</strong><br />The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <em>Data Saving Info</em> in the menu for more information.</p>"
+            + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
+            + "<ul><li>To set shift options, click the shift options button (looks like this: <a class=\"button\" style=\"background-color: black; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">OFF</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a> or <a class=\"button\" style=\"background-color: #00b9e8; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">Normal</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a>)"
+            + ", then click the relevant options to toggle them on and off for that shift.</li>"
+            + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
+            + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
+            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the DDO shift option and enter valid sign-on and sign-off times for that shift.</p>"
+            + "<p><strong>More info to come in a future update...</strong>"
             break;
         case "deleteSave":
-            helpText = "<strong>Delete Save Data</strong><p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
+            helpTitle = "Delete Save Data";
+            helpText = "<p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
             + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
             break;
         case "saveInfo":
-            helpText = "<strong>Data Saving</strong><p>All shift-times and shift-options entered is automatically saved to the currently selected 'Week Commencing' date.</p>"
-            + "<ul><li>Data is saved locally to your web browser and not sent anywhere over the internet.</li><li>Saved data will not carry over if you use a different web browser or device.</li>"
-            + "<li>Using incognito/private browsing mode will prevent data saving.</li><li>Clearing your browser's cookies will delete all saved data.</li>";
+            helpTitle = "Data Saving";
+            helpText = "<p>All shift-times and shift-options entered is automatically saved to the currently selected 'Fortnight Commencing' date.</p>"
+            + "<ul><li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
+            + "<li>Saved data will not carry over to a different web browser or device.</li>"
+            + "<li>Using incognito/private browsing mode will prevent data saving.</li><li>Clearing your browser's cookies will delete any saved data.</li>";
+            break;
+        case "about":
+            helpTitle = "About the pay calculator";
+            helpText = "<p>A web-based calculator tool to help you check if you've been paid correctly!</p>"
+            + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
+            + "<br />If you notice any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
+            + "<ul>"
+            + "<li>Developed by Petar Stankovic</li>"
+            + "<li>Version: " + calcVersion + "</li>"
+            + "<li>Last Update: " + calcLastUpdateDate +"</li>"
+            + "</ul>";
             break;
         case "changelog":
-            $("#helpDiv").load("changelog.html");
-            window.location.replace("#helpDiv");
-            return;
+            helpTitle = "Development Changelog and Known Issues";
+            helpText = "<ul><strong>Known Issues</strong>"
+            + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
+            + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
+            + "</ul><ul><strong>Latest Updates</strong>"
+            + "<li>20/12/2019 - Version 0.67<ul>"
+            + "<li>Added new title bar and menu with several new guides and options.</li>"
+            + "<li>Added bookmark icons.</li>"
+            + "<li>Added PH Credit leave shift option.</li>"
+            + "<li>Fixed DDO during Annual Leave calculation issue.</li>"
+            + "<li>Improved 'Hours Worked' section.</li>"
+            + "</ul></li>"
+            + "<li>18/11/2019 - Version 0.66<ul>"
+            + "<li>Adjusted rounding behaviour and fixed input validation highlighting bug when changing dates.</li>"
+            + "<li>Added 'hours worked'. The payslip's 'hours worked' does not reflect the real hours worked (it includes guarantee and annual leave for some reason??). I'll expand on this in a future update.</li>"
+            + "<li>Pay grades now save to the selected date.</li>"
+            + "<li>Fixed calculation error when working overtime on a Sunday past midnight.</li>"
+            + "<li>Added more visual time input validation.</li>"
+            + "<li>Restricted date selection to fortnightly instead of weekly.</li>"
+            + "</ul></li>"
+            + "</ul>"
+            break;
         default:
             console.warn("helpBoxPreset(): invalid preset '" + presetName + "'");
     }
-    helpBox(helpText);
+    topHelpBox(helpTitle, helpText);
 }
 
 function fieldToShift(field) {
@@ -1876,4 +1935,46 @@ function confirmDeleteData() {
         alert("All save data has been deleted!");
         location.reload();
     }
+}
+
+function resetForm() {
+    for(let field = 0; field < 28; field++) {
+        timeField()[field].value = "";
+        setSaveData("field" + field.toString(), timeField()[field].value);
+    }
+    for(let day = 0; day < 14; day++) {
+        setSaveData("day" + day + "ojt", "");
+        setSaveData("day" + day + "ddo", "");
+        setSaveData("day" + day + "wm", "");
+        setSaveData("day" + day + "sick", "");
+        setSaveData("day" + day + "ph", "");
+        setSaveData("day" + day + "phxp", "");
+        setSaveData("day" + day + "al", "");
+        setSaveData("day" + day + "phc", "")
+        setSaveData("day" + day + "bonus", "");
+        setSaveData("day" + day + "bonusHours", "");
+        
+
+        shifts[day].ojt = false;
+        shifts[day].ddo = false;
+        shifts[day].wm = false;
+        shifts[day].sick = false;
+        shifts[day].ph = false;
+        shifts[day].phExtraPay = false;
+        shifts[day].al = false;
+        shifts[day].phc = false;
+        shifts[day].bonus = false;
+        shifts[day].bonusHours = 0.0;
+    }
+    setSaveData("day14ph", "");
+    day14ph = false;
+
+    updateShiftTable();
+    updateShiftWorkedCount();
+    printShiftHours();
+    validateTimeFields()
+    updateOptionsButtons();
+    updateShiftPayTable();
+    updateResults();
+    closeAllOptionsShelves();
 }

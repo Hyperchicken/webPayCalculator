@@ -2,9 +2,15 @@
 <html>
 <head>
     <title>Pay Calculator</title>
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=0.67">
     <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script> 
     <script src="scripts.js?v=0.67"></script> 
@@ -15,22 +21,31 @@
 
 <body>
     <ul class="topnav">
-        <li class="topnav title"><i class="fas fa-search-dollar title-icon"></i>Pay Calculator</li>
+        <li class="topnav title"><i class="fas fa-search-dollar title-icon"></i>Pay Calculator<sup style="font-size: 0.5em;"> Beta</sup></li>
         <li class="topnav dropdown">
-            <a href="#" class="dropbtn">Menu<i class="fas fa-bars dropbtn-icon"></i></a>
+            <a class="dropbtn" id="menuButton">Menu<i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
-                <a href="javascript:helpBoxPreset('gettingStarted')"><i class="fas fa-question-circle menu-icon"></i>Getting Started</a>
-                <a href="#"><i class="fas fa-undo menu-icon"></i>Reset Form</a>
-                <a href="javascript:helpBoxPreset('saveInfo')"><i class="fas fa-save menu-icon"></i>Data Saving Info</a>
-                <a href="javascript:helpBoxPreset('deleteSave')"><i class="fas fa-trash-alt menu-icon"></i>Delete Save Data</a>
-                <a href="javascript:helpBoxPreset('changelog')"><i class="fas fa-code-branch menu-icon"></i>Changelog</a>
-                <a href="#"><i class="fas fa-info-circle menu-icon"></i>About</a>
-                <a href="#"><i class="fas fa-times menu-icon"></i>Close Menu</a>
+                <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Usage Guide</a>
+                <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Reset Form</a>
+                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Data Saving Info</a>
+                <a id="deleteSaveMenuButton"><i class="fas fa-trash-alt fa-fw menu-icon"></i>Delete Save Data</a>
+                <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
+                <a id="aboutMenuButton"><i class="fas fa-info-circle fa-fw menu-icon"></i>About</a>
             </div>
         </li>
     </ul>
     
     <noscript>Sorry, your browser does not support JavaScript or it is disabled! Please enable JavaScript to use the calculator!</noscript>
+
+    <div id="topHelpDiv">
+        <ul class="helpbox-topnav">
+            <li class="helpbox-topnav" id="helpboxTitle"></li>
+            <li class="helpbox-topnav dropdown helpbox-close-button"><i class="fas fa-times fa-fw fa-lg helpbox-close-button-icon"></i></a></li>
+        </ul>
+        <div id="helpboxContent"></div>
+    </div>
+
+    <span style="margin-bottom: 8px"></span>
 
     <div class="row">
         <div class="col-shift">
@@ -58,18 +73,13 @@
                 </form>
 
                 <div class="week-commencing">
-                    <label class="week-commencing-label" for="week-commencing-date">Week commencing</label>
+                    <label class="week-commencing-label" for="week-commencing-date">Fortnight commencing</label>
                     <span class="week-commencing-button" onclick="toggleDatepicker();">
                         <i class="far fa-calendar-alt calendar-icon"></i>
                         <input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly>
                     </span>
                 </div>
-
-                <span id="deleteDataButton" class="grid-1-6" style="display: none; margin-bottom: 5px;">
-                    <a onclick="confirmDeleteData()" style="text-decoration: underline; color: darkred; cursor: pointer; padding-left: 10px;">Click here to <strong>delete all saved data</strong></a>
-                </span>
-                <div id="week-commencing-date">
-                    
+                    <div id="week-commencing-date">
                 </div>
                 
                 <div class="hr"></div>
