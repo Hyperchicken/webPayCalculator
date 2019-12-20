@@ -1394,7 +1394,7 @@ function topHelpBoxPreset(presetName) {
             + "</ul>";
             break;
         case "changelog":
-            helpTitle = "Development Changelog and Known Issues";
+            helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
