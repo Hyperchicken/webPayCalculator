@@ -1360,7 +1360,7 @@ function topHelpBoxPreset(presetName) {
     let helpText = "";
     switch(presetName) {
         case "gettingStarted":
-            helpTitle = "Usage Guide";
+            helpTitle = "Help Guide";
             helpText = "<p><strong>Fornight Commencing</strong><br />The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <em>Data Saving Info</em> in the menu for more information.</p>"
             + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
             + "<ul><li>To set shift options, click the shift options button (looks like this: <a class=\"button\" style=\"background-color: black; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">OFF</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a> or <a class=\"button\" style=\"background-color: #00b9e8; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">Normal</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a>)"
@@ -1376,11 +1376,16 @@ function topHelpBoxPreset(presetName) {
             + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
             break;
         case "saveInfo":
-            helpTitle = "Data Saving";
-            helpText = "<p>All shift-times and shift-options entered is automatically saved to the currently selected 'Fortnight Commencing' date.</p>"
-            + "<ul><li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
-            + "<li>Saved data will not carry over to a different web browser or device.</li>"
-            + "<li>Using incognito/private browsing mode will prevent data saving.</li><li>Clearing your browser's cookies will delete any saved data.</li>";
+            helpTitle = "About Data Saving";
+            helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected 'Fortnight Commencing' date. In other words, the calculator will remember all the details you enter every time you use it."
+            + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the Fortnight Commencing date to load any data you entered in a different fortnight! </p>"
+            + "<p>Some extra things to know about the data saving feature:</p>"
+            + "<ul><li>There is no 'save button'. Everything is saved instantly and automatically.</li>"
+            + "<li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
+            + "<li>Saved data will <strong>not</strong> carry over to a different web browser or device.</li>"
+            + "<li>Using incognito/private browsing mode will prevent data saving.</li>"
+            + "<li>Clearing your browser's cookies will delete any saved data.</li>"
+            + "</ul>";
             break;
         case "about":
             helpTitle = "About the pay calculator";
