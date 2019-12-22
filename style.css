@@ -10,6 +10,10 @@ p {
     margin: 0.5em 0;
 }
 
+a {
+    color: #83b9ff
+}
+
 .a {
     text-decoration: underline;
     cursor: pointer;
