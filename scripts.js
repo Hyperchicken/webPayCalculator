@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "0.67";
-const calcLastUpdateDate = "20/12/2019";
+const calcVersion = "0.68";
+const calcLastUpdateDate = "26/12/2019";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
