@@ -3,7 +3,7 @@
 <head>
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=0.67">
+    <link rel="stylesheet" href="style.css?v=0.68">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -13,7 +13,7 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script> 
-    <script src="scripts.js?v=0.67"></script> 
+    <script src="scripts.js?v=0.68"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,9 +26,7 @@
             <a class="dropbtn" id="menuButton">Menu<i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
-                <a id="faqButton"><i class="fas fa-user-check fa-fw menu-icon"></i>FAQ</a>
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
-                <a id="printViewButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>About Data Saving</a>
                 <a id="deleteSaveMenuButton"><i class="fas fa-trash-alt fa-fw menu-icon"></i>Delete Save Data</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
@@ -73,6 +71,10 @@
                             <span class="checkmark"></span>
                     </label>
                 </form>
+
+                <div id="payClassWarning" class="grid-1-6 start-hidden">
+                    <p style="font-size: 0.8em; font-family: Verdana, sans-serif; border-style: solid; border-radius: 3px; border-width: 1px; background-color: #0005; padding: 5px;"><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Trainee and Conversion calculations not yet thoroughly tested for accuracy!</p>
+                </div>
 
                 <div class="week-commencing">
                     <label class="week-commencing-label" for="week-commencing-date">Fortnight commencing</label>

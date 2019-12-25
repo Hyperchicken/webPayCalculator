@@ -1036,24 +1036,28 @@ function updateGrade() {
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
             setSaveData("paygrade", "spot");
+            $("#payClassWarning").hide();
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
             setSaveData("paygrade", "level1");
+            $("#payClassWarning").hide();
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
             setSaveData("paygrade", "trainee");
+            $("#payClassWarning").show();
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
             setSaveData("paygrade", "conversion");
+            $("#payClassWarning").show();
             break;
         default: 
             selectedGradeRates = undefined;
@@ -1405,12 +1409,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul><ul><strong>Latest Updates</strong>"
-            + "<li>xx/12/2019 - Version 0.68<ul>"
+            + "<li>26/12/2019 - Version 0.68<ul>"
             + "<li>Various text/phrasing adjustments for clarity.</li>"
-            + "<li>?????????FAQ SECTION?????????</li>"
-            + "<li>?????????PRINT VIEW??????????</li>"
-            + "<li></li>"
-            + "<li></li>"
+            + "<li>Added temporary warning for Trainee and Conversion pay-grades.</li>"
             + "</ul></li>"
             + "<li>20/12/2019 - Version 0.67<ul>"
             + "<li>Added new title bar and menu with several new guides and options.</li>"

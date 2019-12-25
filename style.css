@@ -542,8 +542,12 @@ li.dropdown {
   
 .dropdown-content a:hover, .dropdown-content a.active {background-color: #f1f1f1;}
 
-.show-dropdown, .show-top-helpbox {
+.show-dropdown, .show-top-helpbox, .unhide {
     display: block !important;
+}
+
+.start-hidden {
+    display: none;
 }
 
 #topHelpDiv {
