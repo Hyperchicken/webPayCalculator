@@ -10,7 +10,7 @@ p {
     margin: 0.5em 0;
 }
 
-a {
+p > a {
     color: #83b9ff
 }
 
