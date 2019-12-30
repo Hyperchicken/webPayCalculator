@@ -202,7 +202,7 @@ class PayElement {
                 break;
             case "guarantee": 
                 tooltipText = "<strong>Guarantee</strong>"
-                + "<p><em>Guaranteed</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
+                + "<p><em>Guaranteed</em> pay up to Ordinary Hours (7.6 hours for Trainees, Part-Time and Job Share. Otherwise 8 hours.).</p>"
                 + "<ul><li>First 10 worked shifts eligible.</li>"
                 + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
                 + "</ul>";

@@ -311,11 +311,21 @@ hr {
     width: 100%;
     font-family: "Lucida Console", Monaco, monospace;
     border-collapse: collapse;
+    table-layout: fixed;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .pay-element-table th {
+    padding: 5px 6px;
+}
+
+.pay-element-table td {
+    padding: 1px 6px;
+}
+
+.pay-element-table th:first-child, .pay-element-table td:first-child {
     text-align: left;
-    padding: 5px 0px;
 }
 
 .pay-element-table .splitview-title td {
@@ -325,15 +335,13 @@ hr {
     padding-top: 10px;
     border-top: solid;
     border-width: 1px;
+    padding-left: 0;
 }
 
 .pay-element-table .splitview-title td.first {
     border-top: none;
 }
 
-td:first-of-type:not(.splitview-title-data), th:first-of-type {
-    padding-left: 2%;
-}
 
 .pay-element-table .last-row {
     height: 10px;
