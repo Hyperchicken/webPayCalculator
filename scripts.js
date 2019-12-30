@@ -205,7 +205,7 @@ class PayElement {
                 + "<p><em>Guaranteed</em> 8 hours pay for a shift that is less than 8 hours long.</p>"
                 + "<ul><li>First 10 worked shifts eligible.</li>"
                 + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
-                + "<li>Trainees not eligible.</li></ul>";
+                + "</ul>";
                 break;
             case "sick": 
                 tooltipText = "<strong>Sick Full</strong>"
