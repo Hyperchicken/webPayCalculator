@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "0.69";
-const calcLastUpdateDate = "28/12/2019";
+const calcVersion = "0.70";
+const calcLastUpdateDate = "01/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1419,11 +1419,10 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul><ul><strong>Latest Updates</strong>"
-            + "<li>28/12/2019 - Version 0.69<ul>"
+            + "<li>01/01/2020 🎆 - Version 0.70<ul>"
+            + "<li>Adjusted results table alignment.</li>"
             + "<li>Fixed Bonus Pay button text colour bug.</li>"
-            + "</ul></li>"
-            + "<li>26/12/2019 - Version 0.68<ul>"
-            + "<li>Various text/phrasing adjustments for clarity.</li>"
+            + "<li>Various text/phrasing adjustments and corrections.</li>"
             + "<li>Added temporary warning for Trainee and Conversion pay-grades.</li>"
             + "</ul></li>"
             + "<li>20/12/2019 - Version 0.67<ul>"
