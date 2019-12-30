@@ -1168,6 +1168,7 @@ function updateResults() {
                 if(e.helpText) {
                     elemClass.addEventListener("click", function(){
                         $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                        $(".hoursWorked").css("background-color", "");
                         document.getElementById("resultsHelpDiv").innerHTML = e.helpText;
                         payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
                         window.location.replace("#resultsHelpDiv"); //scroll to help box
@@ -1219,6 +1220,7 @@ function updateResults() {
                         if(shiftPay[i][j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                $(".hoursWorked").css("background-color", "");
                                 document.getElementById("resultsHelpDiv").innerHTML = shiftPay[i][j].helpText;
                                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
                                 window.location.replace("#resultsHelpDiv"); //scroll to help box
@@ -1255,6 +1257,7 @@ function updateResults() {
                         let elemRate = document.createElement("td");
                         let elemHours = document.createElement("td");
                         let elemAmount = document.createElement("td");
+                        elemClass.classList.add("pay-element-class");
                         elemClass.textContent = additionalPayments[j].payClass;
                         elemRate.textContent = additionalPayments[j].rate.toFixed(4);
                         elemHours.textContent = additionalPayments[j].hours.toFixed(4);
@@ -1267,6 +1270,7 @@ function updateResults() {
                         if(additionalPayments[j].helpText) {
                             elemClass.addEventListener("click", function(){
                                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                                $(".hoursWorked").css("background-color", "");
                                 document.getElementById("resultsHelpDiv").innerHTML = additionalPayments[j].helpText;
                                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
                                 window.location.replace("#resultsHelpDiv"); //scroll to help box
@@ -1307,6 +1311,9 @@ function updateResults() {
         actualHoursWorkedElement.textContent = "Physical Hours Worked: " + actualHoursWorked.toFixed(2);
         resultArea.appendChild(actualHoursWorkedElement);
         actualHoursWorkedElement.addEventListener("click", function(){
+            $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+            $(".hoursWorked").css("background-color", "");
+            actualHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
             document.getElementById("resultsHelpDiv").innerHTML = "<strong>Physical Hours Worked</strong><p>Reflects the hours spent physically at work and NOT what is displayed on the payslip's 'Hours worked' section." 
             + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
             window.location.replace("#resultsHelpDiv"); //scroll to help box
@@ -1322,6 +1329,9 @@ function updateResults() {
         payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
+            $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+            $(".hoursWorked").css("background-color", "");
+            payslipHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
             document.getElementById("resultsHelpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
             + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -)!.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
             window.location.replace("#resultsHelpDiv"); //scroll to help box
