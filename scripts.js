@@ -1,6 +1,6 @@
 "use strict";
 
-const calcVersion = "0.71";
+const calcVersion = "1.00";
 const calcLastUpdateDate = "07/01/2020";
 
 //rates
