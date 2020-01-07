@@ -168,6 +168,7 @@ p > a {
     border-color: black;
     border-style: solid;
     word-break: keep-all;
+    white-space: nowrap;
 }
 
 .delete-save-button {

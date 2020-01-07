@@ -1427,8 +1427,8 @@ function topHelpBoxPreset(presetName) {
             + "<li>07/01/2020 - Version 1.00<ul>"
             + "<li>Out of Beta and into version 1.00! ✨</li>"
             + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
-            + "<li></li>"
-            + "<li></li>"
+            + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
+            + "<li></li>"   
             + "</ul></li>"
             + "<li>01/01/2020 🎆 - Version 0.70<ul>"
             + "<li>Adjusted results table alignment.</li>"
@@ -2020,6 +2020,26 @@ function resetForm() {
 }
 
 function showPrintView() {
+    $("body").css("background-color", "#FFF");
+    $("body").css("color", "#000");
+    $(".row").hide();
+    let printViewDiv = document.createElement("div");
+    printViewDiv.id = "printViewDiv";
+    printViewDiv.innerHTML = "<p>Test text</p>";
     
-    alert('Print View!');
+    let shiftBox = document.createElement("div");
+    let resultBox = document.createElement("div");
+
+    let shiftTable = document.createElement("table");
+    let shiftTableTopRow = document.createElement("thead");
+    let shiftTableTitle = document.createElement("td");
+    shiftTableTitle.textContent = "Shift Details";
+    shiftTableTopRow.appendChild(shiftTableTitle);
+
+    shiftTable.appendChild(shiftTableTopRow);
+    shiftBox.appendChild(shiftTable);
+
+    printViewDiv.appendChild(shiftBox);
+    printViewDiv.appendChild(resultBox);
+    document.body.appendChild(printViewDiv);
 }
