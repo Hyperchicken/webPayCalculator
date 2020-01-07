@@ -477,6 +477,11 @@ $(document).ready(function() {
         closeMenu();
         $(".dropbtn").removeClass("active");
     });
+    $("#printViewMenuButton").on("click", function(){
+        showPrintView();
+        closeMenu();
+        $(".dropbtn").removeClass("active");
+    });
     $("#resetMenuButton").on("click", function(){
         if(confirm("Clear sign-on/off times and shift options for the current fortnight?")) {
             resetForm();
@@ -2012,4 +2017,9 @@ function resetForm() {
     updateShiftPayTable();
     updateResults();
     closeAllOptionsShelves();
+}
+
+function showPrintView() {
+    
+    alert('Print View!');
 }
