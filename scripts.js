@@ -1822,10 +1822,6 @@ function isWeekday(day) { //only for values 0-13. returns True outside of this r
     }
 }
 
-function toggleKnownIssues() {
-    $("#known-issues-ul").toggle();
-}
-
 //data storage
 //function to check if browser storage is available
 function storageAvailable(type) {
