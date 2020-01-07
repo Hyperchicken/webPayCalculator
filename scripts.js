@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "0.70";
-const calcLastUpdateDate = "01/01/2020";
+const calcVersion = "0.71";
+const calcLastUpdateDate = "07/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1419,6 +1419,8 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul><ul><strong>Latest Updates</strong>"
+            + "<li>01/01/2020 🎆 - Version 0.71<ul>"
+            + "<li>Transfer to new domain warning. This version is only for the old domain.</li>"
             + "<li>01/01/2020 🎆 - Version 0.70<ul>"
             + "<li>Adjusted results table alignment.</li>"
             + "<li>Fixed Bonus Pay button text colour bug.</li>"
@@ -1442,8 +1444,15 @@ function topHelpBoxPreset(presetName) {
             + "</ul></li>"
             + "</ul>"
             break;
+        case "newDomainWarning":
+            helpTitle = "New Page Address";
+            helpText = "<p><i class='fas fa-exclamation-circle fa-2x' style='color: lightcoral; margin: 0 5px 5px 0; float: left;'></i>This Pay Calculator is moving to a new web address: <a href='https://hyperchicken.com/paycalc'>hyperchicken.com/paycalc</a>."
+            + " Please begin using the new web address to access this pay calculator as the one at <em>exetel.com.au</em> will <strong>no longer be updated</strong>, will pop-up with this semi-annoying message every time, and will soon be decommissioned.</p>"
+            + "<p>Please note that any saved data will not automatically transfer across to the new page. You will need to manually enter any historical shifts into the new page if you so desire."
+            + "<br /> Also remember to update any bookmarks to the new address!</p>";
+            break;
         default:
-            console.warn("helpBoxPreset(): invalid preset '" + presetName + "'");
+            console.warn("topHelpBoxPreset(): invalid preset '" + presetName + "'");
     }
     topHelpBox(helpTitle, helpText);
 }
