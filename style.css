@@ -600,6 +600,8 @@ li.helpbox-topnav > a {
     margin: 0;
     font-family: Verdana, sans-serif;
     font-size: 0.9em;
+    overflow-y: auto;
+    max-height: 300px;
 }
 
 /* Add animation (fade in the popup) */
