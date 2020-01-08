@@ -1,7 +1,7 @@
 "use strict";
 
 const calcVersion = "1.00";
-const calcLastUpdateDate = "07/01/2020";
+const calcLastUpdateDate = "08/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1428,8 +1428,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Out of Beta and into version 1.00! ✨</li>"
             + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
             + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
-            + "<li></li>"   
-            + "</ul></li>"
+            + "<li>Fixed Guarantee calculation with PH-OFF shifts.</li>"
             + "<li>01/01/2020 🎆 - Version 0.70<ul>"
             + "<li>Adjusted results table alignment.</li>"
             + "<li>Fixed Bonus Pay button text colour bug.</li>"
@@ -1562,6 +1561,7 @@ function updateShiftPayTable() {
     let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let ordinaryHours = 8;
     let alDdoDeducted = false;
+    let phOffCount = 0; //count PH-OFF shifts to count towards shifts worked for guarantee calculation only
     if(getPayGrade() == "trainee") ordinaryHours = 7.6;
     shiftPay = []; //clear pay table
     additionalPayments = [];
@@ -1588,6 +1588,7 @@ function updateShiftPayTable() {
                 }
             }
             else if(s.ph) {
+                phOffCount++;
                 deductLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
             }
@@ -1654,7 +1655,7 @@ function updateShiftPayTable() {
                 }
 
                 //Guarantee
-                if(s.shiftWorkedNumber <= 10 && s.hoursDecimal < 8) {
+                if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < 8) {
                     if(getPayGrade() == "trainee") {
                         if(s.hoursDecimal < 7.6) {
                             let guaranteeHours = 7.6 - s.hoursDecimal;
