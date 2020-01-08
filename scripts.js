@@ -1429,6 +1429,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
             + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
             + "<li>Fixed Guarantee calculation with PH-OFF shifts.</li>"
+            + "</ul></li>"
             + "<li>01/01/2020 🎆 - Version 0.70<ul>"
             + "<li>Adjusted results table alignment.</li>"
             + "<li>Fixed Bonus Pay button text colour bug.</li>"
