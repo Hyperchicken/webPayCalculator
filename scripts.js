@@ -1424,7 +1424,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>07/01/2020 - Version 1.00<ul>"
+            + "<li>08/01/2020 - Version 1.00<ul>"
             + "<li>Out of Beta and into version 1.00! ✨</li>"
             + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
             + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
