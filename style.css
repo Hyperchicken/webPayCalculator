@@ -606,6 +606,10 @@ li.helpbox-topnav > a {
     max-height: 300px;
 }
 
+#helpboxContent > p {
+    margin: 0.5em 0 1.5em 0;
+}
+
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
     from {opacity: 0;}

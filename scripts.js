@@ -1,7 +1,7 @@
 "use strict";
 
 const calcVersion = "1.01";
-const calcLastUpdateDate = "xx/01/2020";
+const calcLastUpdateDate = "12/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1988,16 +1988,27 @@ function topHelpBox(title, helpText) {
 function topHelpBoxPreset(presetName) {
     let helpTitle = "";
     let helpText = "";
+    let dummyButton = (text, colour, dropdown = false) => {
+        let iconCode = "";
+        let boldCode = "";
+        if(dropdown) {
+            iconCode = "<i class=\"button-icon fas fa-lg fa-angle-down\"></i>";
+            boldCode = "<span style=\"font-weight: bold;\">";
+        }
+        return "<a class=\"button\" style=\"background-color: " + colour + "; display: inline-block; border: none; cursor: default;\">" + boldCode + text + "</span>" + iconCode + "</a>"
+    }
     switch(presetName) {
         case "gettingStarted":
             helpTitle = "Help Guide";
             helpText = "<p><strong>Fornight Commencing</strong><br />Set the <em>Fortnight Commencing</em> by clicking on the date box (with the <i class='far fa-calendar-alt'></i> icon), then use the date-picker that appears to select the first Sunday of the fortnight you wish to calculate your pay. The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
             + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
-            + "<ul><li>To set shift options, click the shift options button (looks like this: <a class=\"button\" style=\"background-color: black; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">OFF</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a> or <a class=\"button\" style=\"background-color: #00b9e8; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">Normal</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a>)"
+            + "<ul><li>To set shift options, click the shift options button (looks like this: " + dummyButton("OFF", "black", true) + " or " + dummyButton("Normal", normalColour, true) + ")"
             + ", then click the relevant options to toggle them on and off for that shift.</li>"
             + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
             + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
             + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the DDO shift option and enter valid sign-on and sign-off times for that shift.</p>"
+            + "<p><strong>Sick-Part</strong>"
+            + "<br />For shifts where you went home sick part-way through a shift, set the " + dummyButton("Sick", sickColour) + " shift option and enter your sign-on time as normal. For your sign-off time, instead of your shifts normal sign-off time, set this as the time you were signed-off as going home sick.</p>"
             + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."
             + " You can also click/tap on any of the pay elements to view an explanation of that pay element.</p>";
             break;
@@ -2035,11 +2046,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>xx/01/2020 - Version 1.01<ul>"
+            + "<li>12/01/2020 - Version 1.01<ul>"
             + "<li>Added support for Part-Time/Job-Share.</li>"
             + "<li>Added Sick-Part calculation.</li>"
-            + "<li></li>"
-            + "<li></li>"
             + "</ul></li>"
             + "<li>08/01/2020 - Version 1.00<ul>"
             + "<li>Out of Beta and into version 1.00! ✨</li>"
