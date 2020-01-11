@@ -121,34 +121,40 @@ class PayElement {
     }
     
     get sortIndex() {
-        switch(this.payType) {
-            case "normal": return 1;
-            case "guarantee": return 2;
-            case "sick": return 3;
-            case "annualLeave": return 4;
-            case "phGaz": return 5;
-            case "phXpay": return 6;
-            case "phWorked": return 7;
-            case "nonRosPH": return 8;
-            case "phPen50": return 9;
-            case "wePen50": return 10;
-            case "wePen100": return 11;
-            case "ot150": return 12;
-            case "ot200": return 13;
-            case "rost+50": return 14;
-            case "rost+100": return 15;
-            case "earlyShift": return 19;
-            case "afternoonShift": return 20;
-            case "nightShift": return 21;
-            case "metroSig2": return 25;
-            case "mealAllowance": return 30;
-            case "bonusPayment": return 31;
-            case "phCredit": return 32;
-            case "edo": return 35;
-            case "leaveLoading": return 50;
-            default:
-                console.warn("PayElement.sortIndex: no sort index for pay type \"" + this.payType + "\"");
-                return 1000;
+        let sortOrder = [
+            "normal",
+            "guarantee",
+            "sickFull",
+            "sickPart",
+            "annualLeave",
+            "phGaz",
+            "phXpay",
+            "phWorked",
+            "nonRosPH",
+            "phPen50",
+            "wePen50",
+            "wePen100",
+            "ot150",
+            "ot200",
+            "rost+50",
+            "rost+100",
+            "earlyShift",
+            "afternoonShift",
+            "nightShift",
+            "metroSig2",
+            "mealAllowance",
+            "bonusPayment",
+            "phCredit",
+            "edo",
+            "leaveLoading"
+        ];
+        let sortIndex = sortOrder.indexOf(this.payType);
+        if(sortIndex < 0) {
+            console.warn("PayElement.sortIndex: no sort index for pay type \"" + this.payType + "\"");
+            return 5000;
+        }
+        else {
+            return sortIndex;
         }
     }
 
@@ -161,7 +167,8 @@ class PayElement {
         switch(this.payType) {
             case "normal": payClassName = "Normal"; break;
             case "guarantee": payClassName = "Guarantee"; break;
-            case "sick": payClassName = "Sick Full"; break;
+            case "sickFull": payClassName = "Sick Full"; break;
+            case "sickPart": payClassName = "Sick Part"; break;
             case "annualLeave": payClassName = "A/Leave"; break;
             case "phGaz": payClassName = "PH Gazette"; break;
             case "phXpay": payClassName = "PH X/Pay"; break;
@@ -207,9 +214,13 @@ class PayElement {
                 + "<li>Paid only on <em>Normal</em> hours (ie. not Public Holidays, shiftwork penalties, etc...).</li>"
                 + "</ul>";
                 break;
-            case "sick": 
+            case "sickFull": 
                 tooltipText = "<strong>Sick Full</strong>"
                 + "<p>A full day of <em>personal leave</em>. </p>";
+                break;
+            case "sickPart": 
+                tooltipText = "<strong>Sick Part</strong>"
+                + "<p>A part day of <em>personal leave</em>. </p>";
                 break;
             case "annualLeave": 
                 tooltipText = "<strong>Annual Leave</strong>"
@@ -304,7 +315,8 @@ class PayElement {
         if(this.ojt) rate += getEbaRate(selectedDate, ojtAllowanceRates); //apply OJT allowance
         switch(this.payType) {
             case "normal": //Normal rate
-            case "sick":
+            case "sickFull":
+            case "sickPart":
             case "guarantee": //pay guarantee to 8 hours
             case "edo":
             case "wePen100":
@@ -607,7 +619,7 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(s.sick) {
-                setButton("Sick", sickColour);
+                setButton("Sick-Full", sickColour);
                 offButton = false;
             }
             if(s.al) {
@@ -640,10 +652,15 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.sick) {
-                setButton("Sick", sickColour);
-            }
-            else if(s.ojt || s.ph || s.wm || s.ddo || s.bonus){
+            if(s.ojt || s.ph || s.sick || s.wm || s.ddo || s.bonus){
+                if(s.sick) {
+                    if(s.hoursDecimal > 4.0) {
+                        setButton("Sick-Part", sickColour);
+                    }
+                    else {
+                        setButton("Sick-Full", sickColour);
+                    }
+                }
                 if(s.ojt)
                     setButton("OJT", ojtColour);
                 if(s.ddo)
@@ -1066,7 +1083,7 @@ function updateGrade() {
             break;
         case "parttime":
             selectedGradeRates = spotRates;
-            setFormColour("rgb(14, 119, 26)");
+            setFormColour("rgb(56, 140, 65)");
             setSaveData("paygrade", "parttime", false);
             setSaveData("paygrade", "parttime");
             $("#payClassWarning").hide();
@@ -1107,7 +1124,7 @@ function updateShiftWorkedCount() {
         } else shifts[i].shiftNumber = 0;
 
         //determine if worked shift
-        if(shifts[i].hoursDecimal > 0 && !shifts[i].sick) {
+        if((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) {
             shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
@@ -1318,6 +1335,9 @@ function updateResults() {
         groupedElements.forEach(function(e){
             if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) actualHoursWorked += e.hours;
         });
+        shifts.forEach(function(e){ //count hours worked for sick-part shifts where less than 4 hours was worked.
+            if(e.sick && e.hoursDecimal <= 4.0) actualHoursWorked += e.hoursDecimal;
+        });
         let actualHoursWorkedElement = document.createElement("p");
         actualHoursWorkedElement.classList.add("hoursWorked")
         actualHoursWorkedElement.textContent = "Physical Hours Worked: " + actualHoursWorked.toFixed(2);
@@ -1334,7 +1354,7 @@ function updateResults() {
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "phGaz", "nonRosPh", "sick", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
+            if(["normal", "phWorked", "phGaz", "nonRosPh", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
@@ -1497,7 +1517,7 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
                 }
                 else {
-                    shiftPay[day].push(new PayElement("sick", ordinaryHours));
+                    shiftPay[day].push(new PayElement("sickFull", ordinaryHours));
                 }
             }
             else if(s.ph) {
@@ -1541,8 +1561,8 @@ function updateShiftPayTable() {
             }
             normalHours = todayNormalHours + tomorrowNormalHours;
 
-            if(s.sick) {
-                if(s.sick) shiftPay[day].push(new PayElement("sick", ordinaryHours)); //force 8 hours sick pay if sick pay set regardless of hours entered. TEMP BEHVIOUR until sick-part implemented.
+            if(s.sick && s.hoursDecimal <= 4) {
+                shiftPay[day].push(new PayElement("sickFull", ordinaryHours)); //if went of sick half-way through shift or earlier, pay sick full day.
             }
             else {
                 //Public Holidays
@@ -1567,8 +1587,14 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), s.ojt));
                 }
 
-                //Guarantee
-                if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < ordinaryHours) {
+                //Guarantee and Sick-Part
+                if(s.sick) { //if sick, sick-part in place of guarantee
+                    let sickHours = ordinaryHours - s.hoursDecimal;
+                    if(sickHours > 0.0) {
+                        shiftPay[day].push(new PayElement("sickPart", sickHours));
+                    }
+                }
+                else if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
                 }
