@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.00";
-const calcLastUpdateDate = "08/01/2020";
+const calcVersion = "1.01";
+const calcLastUpdateDate = "xx/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1375,104 +1375,6 @@ function updateDates() { //updates day of week fields
     }
 }
 
-function topHelpBox(title, helpText) {
-    document.getElementById("helpboxTitle").textContent = title;
-    document.getElementById("helpboxContent").innerHTML = helpText;
-    $("#topHelpDiv").addClass("show-top-helpbox");
-}
-
-function topHelpBoxPreset(presetName) {
-    let helpTitle = "";
-    let helpText = "";
-    switch(presetName) {
-        case "gettingStarted":
-            helpTitle = "Help Guide";
-            helpText = "<p><strong>Fornight Commencing</strong><br />Set the <em>Fortnight Commencing</em> by clicking on the date box (with the <i class='far fa-calendar-alt'></i> icon), then use the date-picker that appears to select the first Sunday of the fortnight you wish to calculate your pay. The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
-            + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
-            + "<ul><li>To set shift options, click the shift options button (looks like this: <a class=\"button\" style=\"background-color: black; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">OFF</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a> or <a class=\"button\" style=\"background-color: #00b9e8; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">Normal</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a>)"
-            + ", then click the relevant options to toggle them on and off for that shift.</li>"
-            + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
-            + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
-            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the DDO shift option and enter valid sign-on and sign-off times for that shift.</p>"
-            + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."
-            + " You can also click/tap on any of the pay elements to view an explanation of that pay element.</p>";
-            break;
-        case "deleteSave":
-            helpTitle = "Delete Save Data";
-            helpText = "<p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
-            + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
-            break;
-        case "saveInfo":
-            helpTitle = "About Data Saving";
-            helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected 'Fortnight Commencing' date. In other words, the calculator will remember all the details you enter every time you use it."
-            + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the Fortnight Commencing date to load any data you entered in a different fortnight! </p>"
-            + "<p>Some extra things to know about the data saving feature:</p>"
-            + "<ul><li>There is no 'save button'. Everything is saved instantly and automatically.</li>"
-            + "<li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
-            + "<li>Saved data will <strong>not</strong> carry over to a different web browser or device.</li>"
-            + "<li>Using incognito/private browsing mode will prevent data saving.</li>"
-            + "<li>Clearing your browser's cookies will delete any saved data.</li>"
-            + "</ul>";
-            break;
-        case "about":
-            helpTitle = "About the pay calculator";
-            helpText = "<p>A web-based calculator tool to help you check if you've been paid correctly!</p>"
-            + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
-            + "<br />If you notice any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
-            + "<ul>"
-            + "<li>Developed by Petar Stankovic</li>"
-            + "<li>Version: " + calcVersion + "</li>"
-            + "<li>Last Update: " + calcLastUpdateDate +"</li>"
-            + "</ul>";
-            break;
-        case "changelog":
-            helpTitle = "Changelog and Known Issues";
-            helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
-            + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
-            + "<ul><strong>Changelog</strong>"
-            + "<li>08/01/2020 - Version 1.00<ul>"
-            + "<li>Out of Beta and into version 1.00! ✨</li>"
-            + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
-            + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
-            + "<li>Fixed Guarantee calculation with PH-OFF shifts.</li>"
-            + "</ul></li>"
-            + "<li>01/01/2020 🎆 - Version 0.70<ul>"
-            + "<li>Adjusted results table alignment.</li>"
-            + "<li>Fixed Bonus Pay button text colour bug.</li>"
-            + "<li>Various text/phrasing adjustments and corrections.</li>"
-            + "<li>Added temporary warning for Trainee and Conversion pay-grades.</li>"
-            + "</ul></li>"
-            + "<li>20/12/2019 - Version 0.67<ul>"
-            + "<li>Added new title bar and menu with several new guides and options.</li>"
-            + "<li>Added bookmark icons.</li>"
-            + "<li>Added PH Credit leave shift option.</li>"
-            + "<li>Fixed DDO during Annual Leave calculation issue.</li>"
-            + "<li>Improved 'Hours Worked' section.</li>"
-            + "</ul></li>"
-            + "<li>18/11/2019 - Version 0.66<ul>"
-            + "<li>Adjusted rounding behaviour and fixed input validation highlighting bug when changing dates.</li>"
-            + "<li>Added 'hours worked'. The payslip's 'hours worked' does not reflect the real hours worked (it includes guarantee and annual leave for some reason??). I'll expand on this in a future update.</li>"
-            + "<li>Pay grades now save to the selected date.</li>"
-            + "<li>Fixed calculation error when working overtime on a Sunday past midnight.</li>"
-            + "<li>Added more visual time input validation.</li>"
-            + "<li>Restricted date selection to fortnightly instead of weekly.</li>"
-            + "</ul></li>"
-            + "</ul>"
-            break;
-        case "newDomainWarning":
-            helpTitle = "New Page Address";
-            helpText = "<p><i class='fas fa-exclamation-circle fa-2x' style='color: lightcoral; margin: 0 5px 5px 0; float: left;'></i>This Pay Calculator is moving to a new web address: <a href='https://hyperchicken.com/paycalc'>hyperchicken.com/paycalc</a>."
-            + " Please begin using the new web address to access this pay calculator as the one at <em>exetel.com.au</em> will <strong>no longer be updated</strong>, will pop-up with this semi-annoying message every time, and will soon be decommissioned.</p>"
-            + "<p>Please note that any saved data will not automatically transfer across to the new page. You will need to manually enter any historical shifts into the new page if you so desire."
-            + "<br /> Also remember to update any bookmarks to the new address!</p>";
-            break;
-        default:
-            console.warn("topHelpBoxPreset(): invalid preset '" + presetName + "'");
-    }
-    topHelpBox(helpTitle, helpText);
-}
-
 function fieldToShift(field) {
     switch(field) {
         case 0: case 1: return 0;
@@ -2049,4 +1951,108 @@ function showPrintView() {
     printViewDiv.appendChild(shiftBox);
     printViewDiv.appendChild(resultBox);
     document.body.appendChild(printViewDiv);
+}
+
+function topHelpBox(title, helpText) {
+    document.getElementById("helpboxTitle").textContent = title;
+    document.getElementById("helpboxContent").innerHTML = helpText;
+    $("#topHelpDiv").addClass("show-top-helpbox");
+}
+
+function topHelpBoxPreset(presetName) {
+    let helpTitle = "";
+    let helpText = "";
+    switch(presetName) {
+        case "gettingStarted":
+            helpTitle = "Help Guide";
+            helpText = "<p><strong>Fornight Commencing</strong><br />Set the <em>Fortnight Commencing</em> by clicking on the date box (with the <i class='far fa-calendar-alt'></i> icon), then use the date-picker that appears to select the first Sunday of the fortnight you wish to calculate your pay. The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
+            + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
+            + "<ul><li>To set shift options, click the shift options button (looks like this: <a class=\"button\" style=\"background-color: black; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">OFF</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a> or <a class=\"button\" style=\"background-color: #00b9e8; display: inline-block; border: none; cursor: default;\"><span style=\"font-weight: bold;\">Normal</span><i class=\"button-icon fas fa-lg fa-angle-down\"></i></a>)"
+            + ", then click the relevant options to toggle them on and off for that shift.</li>"
+            + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
+            + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
+            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the DDO shift option and enter valid sign-on and sign-off times for that shift.</p>"
+            + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."
+            + " You can also click/tap on any of the pay elements to view an explanation of that pay element.</p>";
+            break;
+        case "deleteSave":
+            helpTitle = "Delete Save Data";
+            helpText = "<p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
+            + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
+            break;
+        case "saveInfo":
+            helpTitle = "About Data Saving";
+            helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected 'Fortnight Commencing' date. In other words, the calculator will remember all the details you enter every time you use it."
+            + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the Fortnight Commencing date to load any data you entered in a different fortnight! </p>"
+            + "<p>Some extra things to know about the data saving feature:</p>"
+            + "<ul><li>There is no 'save button'. Everything is saved instantly and automatically.</li>"
+            + "<li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
+            + "<li>Saved data will <strong>not</strong> carry over to a different web browser or device.</li>"
+            + "<li>Using incognito/private browsing mode will prevent data saving.</li>"
+            + "<li>Clearing your browser's cookies will delete any saved data.</li>"
+            + "</ul>";
+            break;
+        case "about":
+            helpTitle = "About the pay calculator";
+            helpText = "<p>A web-based calculator tool to help you check if you've been paid correctly!</p>"
+            + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
+            + "<br />If you notice any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
+            + "<ul>"
+            + "<li>Developed by Petar Stankovic</li>"
+            + "<li>Version: " + calcVersion + "</li>"
+            + "<li>Last Update: " + calcLastUpdateDate +"</li>"
+            + "</ul>";
+            break;
+        case "changelog":
+            helpTitle = "Changelog and Known Issues";
+            helpText = "<ul><strong>Known Issues</strong>"
+            + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
+            + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
+            + "<ul><strong>Changelog</strong>"
+            + "<li>xx/01/2020 - Version 1.01<ul>"
+            + "<li>Added support for Part-Time/Job-Share.</li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "</ul></li>"
+            + "<li>08/01/2020 - Version 1.00<ul>"
+            + "<li>Out of Beta and into version 1.00! ✨</li>"
+            + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
+            + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
+            + "<li>Fixed Guarantee calculation with PH-OFF shifts.</li>"
+            + "</ul></li>"
+            + "<li>01/01/2020 🎆 - Version 0.70<ul>"
+            + "<li>Adjusted results table alignment.</li>"
+            + "<li>Fixed Bonus Pay button text colour bug.</li>"
+            + "<li>Various text/phrasing adjustments and corrections.</li>"
+            + "<li>Added temporary warning for Trainee and Conversion pay-grades.</li>"
+            + "</ul></li>"
+            + "<li>20/12/2019 - Version 0.67<ul>"
+            + "<li>Added new title bar and menu with several new guides and options.</li>"
+            + "<li>Added bookmark icons.</li>"
+            + "<li>Added PH Credit leave shift option.</li>"
+            + "<li>Fixed DDO during Annual Leave calculation issue.</li>"
+            + "<li>Improved 'Hours Worked' section.</li>"
+            + "</ul></li>"
+            + "<li>18/11/2019 - Version 0.66<ul>"
+            + "<li>Adjusted rounding behaviour and fixed input validation highlighting bug when changing dates.</li>"
+            + "<li>Added 'hours worked'. The payslip's 'hours worked' does not reflect the real hours worked (it includes guarantee and annual leave for some reason??). I'll expand on this in a future update.</li>"
+            + "<li>Pay grades now save to the selected date.</li>"
+            + "<li>Fixed calculation error when working overtime on a Sunday past midnight.</li>"
+            + "<li>Added more visual time input validation.</li>"
+            + "<li>Restricted date selection to fortnightly instead of weekly.</li>"
+            + "</ul></li>"
+            + "</ul>"
+            break;
+        case "newDomainWarning":
+            helpTitle = "New Page Address";
+            helpText = "<p><i class='fas fa-exclamation-circle fa-2x' style='color: lightcoral; margin: 0 5px 5px 0; float: left;'></i>This Pay Calculator is moving to a new web address: <a href='https://hyperchicken.com/paycalc'>hyperchicken.com/paycalc</a>."
+            + " Please begin using the new web address to access this pay calculator as the one at <em>exetel.com.au</em> will <strong>no longer be updated</strong>, will pop-up with this semi-annoying message every time, and will soon be decommissioned.</p>"
+            + "<p>Please note that any saved data will not automatically transfer across to the new page. You will need to manually enter any historical shifts into the new page if you so desire."
+            + "<br /> Also remember to update any bookmarks to the new address!</p>";
+            break;
+        default:
+            console.warn("topHelpBoxPreset(): invalid preset '" + presetName + "'");
+    }
+    topHelpBox(helpTitle, helpText);
 }
