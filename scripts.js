@@ -2037,7 +2037,7 @@ function topHelpBoxPreset(presetName) {
             + "<ul><strong>Changelog</strong>"
             + "<li>xx/01/2020 - Version 1.01<ul>"
             + "<li>Added support for Part-Time/Job-Share.</li>"
-            + "<li></li>"
+            + "<li>Added Sick-Part calculation.</li>"
             + "<li></li>"
             + "<li></li>"
             + "</ul></li>"
