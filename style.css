@@ -47,6 +47,7 @@ p > a {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    min-width: 70px;
   }
 
   .radio-container:first-of-type {

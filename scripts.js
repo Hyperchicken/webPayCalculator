@@ -1064,6 +1064,13 @@ function updateGrade() {
             setSaveData("paygrade", "conversion");
             $("#payClassWarning").show();
             break;
+        case "parttime":
+            selectedGradeRates = spotRates;
+            setFormColour("rgb(14, 119, 26)");
+            setSaveData("paygrade", "parttime", false);
+            setSaveData("paygrade", "parttime");
+            $("#payClassWarning").hide();
+            break;
         default: 
             selectedGradeRates = undefined;
     }
@@ -1563,7 +1570,10 @@ function updateShiftPayTable() {
     let ordinaryHours = 8;
     let alDdoDeducted = false;
     let phOffCount = 0; //count PH-OFF shifts to count towards shifts worked for guarantee calculation only
-    if(getPayGrade() == "trainee") ordinaryHours = 7.6;
+    let payGrade = getPayGrade();
+    if(payGrade == "trainee" || payGrade == "parttime") {
+        ordinaryHours = 7.6;
+    }
     shiftPay = []; //clear pay table
     additionalPayments = [];
     let weekNo = (day) => {
@@ -1656,17 +1666,9 @@ function updateShiftPayTable() {
                 }
 
                 //Guarantee
-                if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < 8) {
-                    if(getPayGrade() == "trainee") {
-                        if(s.hoursDecimal < 7.6) {
-                            let guaranteeHours = 7.6 - s.hoursDecimal;
-                            shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
-                        }
-                    }
-                    else {
-                        let guaranteeHours = 8 - s.hoursDecimal;
-                        shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
-                    }
+                if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < ordinaryHours) {
+                    let guaranteeHours = ordinaryHours - s.hoursDecimal;
+                    shiftPay[day].push(new PayElement("guarantee", guaranteeHours, s.ojt));
                 }
 
                 //Weekend Penalties
@@ -1820,7 +1822,7 @@ function updateShiftPayTable() {
     }
     
     //pay calculation: DDO. determine how to pay DDO
-    if(getPayGrade() != "trainee") {
+    if(payGrade != "trainee" && payGrade != "parttime") { //part time and trainee don't get DDO
         if(ddoWeek()) {
             additionalPayments.push(new PayElement("edo", 4));
         }
@@ -1927,11 +1929,14 @@ function loadSavedData(datePrefix = "") {
         case "level1":
             document.forms.payGradeForm.payGrade[1].checked = true;
             break;
-        case "trainee":
+        case "parttime":
             document.forms.payGradeForm.payGrade[2].checked = true;
             break;
-        case "conversion":
+        case "trainee":
             document.forms.payGradeForm.payGrade[3].checked = true;
+            break;
+        case "conversion":
+            document.forms.payGradeForm.payGrade[4].checked = true;
             break;
     }
     //shift options save data
