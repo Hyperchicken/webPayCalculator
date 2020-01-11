@@ -1607,7 +1607,7 @@ function updateShiftPayTable() {
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
-                        let penaltyTimeRemaining = ordinaryHours;
+                        let penaltyTimeRemaining = s.hoursDecimal;
                         if(todayNormalHours > 0.0) { //saturday time
                             shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
                             penaltyTimeRemaining -= todayNormalHours;
@@ -2049,6 +2049,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>12/01/2020 - Version 1.01<ul>"
             + "<li>Added support for Part-Time/Job-Share.</li>"
             + "<li>Added Sick-Part calculation.</li>"
+            + "<li>Fixed an issue with weekend penalty calculation on Saturday shifts that work into Sunday.</li>"
             + "</ul></li>"
             + "<li>08/01/2020 - Version 1.00<ul>"
             + "<li>Out of Beta and into version 1.00! ✨</li>"
