@@ -56,23 +56,23 @@
                 <label class="pay-grade-label" for="payGradeForm">Pay grade: &nbsp;</label>
                 <form name="payGradeForm" class="pay-grade-radio-container" oninput="updateGrade()">
                     <label class="radio-container">SPOT
-                            <input type="radio" name="payGrade" value="spot" checked="checked">
+                            <input type="radio" name="payGrade" value="spot" id="spot" checked="checked">
                             <span class="checkmark"></span>
                     </label>
                     <label class="radio-container">TD Lvl 1
-                            <input type="radio" name="payGrade" value="level1">
+                            <input type="radio" name="payGrade" value="level1" id="level1">
                             <span class="checkmark"></span>
                     </label>
-                    <label class="radio-container">Part-Time/Job-Share
-                        <input type="radio" name="payGrade" value="parttime">
+                    <label class="radio-container">Part-Time/Job-Share (SPOT)
+                        <input type="radio" name="payGrade" value="parttime" id="parttime">
                         <span class="checkmark"></span>
                     </label>
                     <label class="radio-container">Trainee
-                            <input type="radio" name="payGrade" value="trainee">
+                            <input type="radio" name="payGrade" value="trainee" id="trainee">
                             <span class="checkmark"></span>
                     </label>
                     <label class="radio-container">Conversion
-                            <input type="radio" name="payGrade" value="conversion">
+                            <input type="radio" name="payGrade" value="conversion" id="conversion">
                             <span class="checkmark"></span>
                     </label>
                 </form>

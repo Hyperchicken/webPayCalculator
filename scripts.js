@@ -1924,19 +1924,19 @@ function loadSavedData(datePrefix = "") {
     if(savedPayGrade == null) savedPayGrade = getSaveData("paygrade", false);
     switch(savedPayGrade) {
         case "spot":
-            document.forms.payGradeForm.payGrade[0].checked = true;
+            document.forms.payGradeForm.elements.namedItem("spot").checked = true;
             break;
         case "level1":
-            document.forms.payGradeForm.payGrade[1].checked = true;
+            document.forms.payGradeForm.elements.namedItem("level1").checked = true;
             break;
         case "parttime":
-            document.forms.payGradeForm.payGrade[2].checked = true;
+            document.forms.payGradeForm.elements.namedItem("parttime").checked = true;
             break;
         case "trainee":
-            document.forms.payGradeForm.payGrade[3].checked = true;
+            document.forms.payGradeForm.elements.namedItem("trainee").checked = true;
             break;
         case "conversion":
-            document.forms.payGradeForm.payGrade[4].checked = true;
+            document.forms.payGradeForm.elements.namedItem("conversion").checked = true;
             break;
     }
     //shift options save data
