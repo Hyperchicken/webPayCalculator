@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.01";
-const calcLastUpdateDate = "12/01/2020";
+const calcVersion = "1.02";
+const calcLastUpdateDate = "14/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1601,19 +1601,22 @@ function updateShiftPayTable() {
 
                 //Weekend Penalties
                 if(s.shiftWorkedNumber <= 10) { //not OT shift only
+                    let penaltyTime = Math.min(ordinaryHours, normalHours);
                     if(day == 5 || day == 12) { //friday shift
                         if(tomorrowNormalHours > 0.0) { //time into saturday
-                            shiftPay[day].push(new PayElement("wePen50", Math.min(tomorrowNormalHours, ordinaryHours), s.ojt));
+                            penaltyTime -= todayNormalHours;
+                            if(penaltyTime > 0.0) {
+                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
+                            }
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
-                        let penaltyTimeRemaining = s.hoursDecimal;
                         if(todayNormalHours > 0.0) { //saturday time
                             shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
-                            penaltyTimeRemaining -= todayNormalHours;
                         }
-                        if(tomorrowNormalHours > 0.0 && penaltyTimeRemaining > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", Math.min(penaltyTimeRemaining, ordinaryHours), s.ojt));
+                        penaltyTime -= todayNormalHours;
+                        if(tomorrowNormalHours > 0.0 && penaltyTime > 0.0) { //sunday time
+                            shiftPay[day].push(new PayElement("wePen100", penaltyTime, s.ojt));
                         }
                     }
                     else if(day == 0 || day == 7) { //sunday
@@ -2046,6 +2049,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>14/01/2020 - Version 1.02<ul>"
+            + "<li>Fixed another calculation issue with weekend penalty calculation when working excess hours overtime.</li>"
+            + "</ul></li>"
             + "<li>12/01/2020 - Version 1.01<ul>"
             + "<li>Added support for Part-Time/Job-Share.</li>"
             + "<li>Added Sick-Part calculation.</li>"
