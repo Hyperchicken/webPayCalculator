@@ -2049,7 +2049,7 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Conversion and Trainee calculations not yet verified. Likely to be inaccurate.</li>"
+            + "<li>Conversion and Trainee calculations not yet verified.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
             + "<ul><strong>Changelog</strong>"
             + "<li>14/01/2020 - Version 1.02<ul>"
