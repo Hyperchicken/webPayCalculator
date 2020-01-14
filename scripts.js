@@ -528,6 +528,9 @@ $(document).ready(function() {
         $("#topHelpDiv").removeClass("show-top-helpbox");
     });
 
+    //set title superscript
+    $("#titleSuperscript").text("v" + calcVersion);
+
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
         timeField[i].addEventListener("focus", function(){closeAllOptionsShelves();});
