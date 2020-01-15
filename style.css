@@ -515,6 +515,7 @@ li.topnav > a, .dropbtn, .title {
 }
 .title {
     font-size: 1.5em;
+    padding-right: 0;
 }
 .title-icon {
     margin-right: 8px;
@@ -646,5 +647,11 @@ li.helpbox-topnav > a {
 
     .container {
         margin: 7px 0px 0px 0px;
+    }
+}
+
+@media only screen and (min-device-width: 370px) { 
+    #menuButton::before {
+        content: "Menu";
     }
 }
