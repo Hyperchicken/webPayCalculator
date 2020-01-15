@@ -616,6 +616,10 @@ li.helpbox-topnav > a {
     margin: 0.5em 0 1.5em 0;
 }
 
+#printViewDiv {
+    font-family: 'Courier New', Courier, monospace;
+}
+
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
     from {opacity: 0;}

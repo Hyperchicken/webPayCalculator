@@ -1964,9 +1964,10 @@ function showPrintView() {
     $("body").css("background-color", "#FFF");
     $("body").css("color", "#000");
     $(".row").hide();
+    let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let printViewDiv = document.createElement("div");
     printViewDiv.id = "printViewDiv";
-    printViewDiv.innerHTML = "<p>Test text</p>";
+    printViewDiv.innerHTML = "<h3>Fortnight Commencing " + selectedDate.getDate() + "/" + (selectedDate.getMonth() + 1) + "/" + selectedDate.getFullYear() +  "</h3>";
     
     let shiftBox = document.createElement("div");
     let resultBox = document.createElement("div");
