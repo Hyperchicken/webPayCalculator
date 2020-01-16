@@ -82,11 +82,8 @@
                 </div>
 
                 <div class="week-commencing">
-                    <label class="week-commencing-label" for="week-commencing-date">Fortnight commencing</label>
-                    <span class="week-commencing-button" onclick="toggleDatepicker();">
-                        <i class="far fa-calendar-alt calendar-icon"></i>
-                        <input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly>
-                    </span>
+                    <label class="week-commencing-label">Fortnight start:</label>
+					<span class="calendar-nav-button"><i class="fas fa-angle-double-left fa-lg fa-fw calendar-nav-icon"></i></span><span class="week-commencing-button" onclick="toggleDatepicker();"><input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly></span><span class="calendar-nav-button"><i class="fas fa-angle-double-right fa-fw calendar-nav-icon"></i></span><span class="calendar-nav-button"><i class="far fa-calendar-alt fa-fw calendar-nav-icon"></i></span>
                 </div>
                     <div id="week-commencing-date">
                 </div>
