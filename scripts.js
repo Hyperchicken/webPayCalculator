@@ -1,7 +1,7 @@
 "use strict";
 
 const calcVersion = "1.03";
-const calcLastUpdateDate = "16/01/2020";
+const calcLastUpdateDate = "22/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -398,7 +398,7 @@ $(document).ready(function() {
     //setup datepicker
     let evenPayWeekYears = [2018, 2019, 2020];
     let oddPayWeekYears = [2021];
-    let daysSinceLastWeekCommencing = () => {
+    let startDate = () => {
         let todaysDate = new Date();
         let daysDifference = (todaysDate.getDay()) * -1;
         if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
@@ -431,7 +431,7 @@ $(document).ready(function() {
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
-        defaultDate: daysSinceLastWeekCommencing(),
+        defaultDate: startDate(),
         beforeShowDay: function(date){ //Restrict calendar date selection to only first day of the fortnight.
             if(date.getDay() == 0) { //set which week is a valid 'week commencing' week
                 if(evenPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
@@ -458,6 +458,12 @@ $(document).ready(function() {
             toggleDatepicker();
         }
     });
+    //update date to saved date if ahead of the deafult date
+    let savedFortnight = new Date(getSaveData("lastSelectedFortnight", false));
+    let datepickerDate = $("#week-commencing-date").datepicker("getDate");
+    if(datepickerDate < savedFortnight) {
+        $("#week-commencing-date").datepicker("setDate", savedFortnight);
+    }
     //update any existing data on page load
     updateDates();
     loadSavedData(); //load any save data (previously entered data, attatched to the set date)
@@ -1411,7 +1417,9 @@ function updateDates() { //updates day of week fields
     }
     let endFortnightDate = $("#week-commencing-date").datepicker("getDate");
     endFortnightDate.setDate(endFortnightDate.getDate() + 13);
-    $("#date-button").val($("#date-button").val() + "  to  " + endFortnightDate.getDate() + "/" + (endFortnightDate.getMonth() + 1) + "/" + endFortnightDate.getFullYear());
+    $("#date-button").val($("#date-button").val() + "  to  " + endFortnightDate.getDate() + "/" + (endFortnightDate.getMonth() + 1) + "/" + endFortnightDate.getFullYear()); //append fortnight end-date to datepicker field
+    
+    setSaveData("lastSelectedFortnight", $("#week-commencing-date").datepicker("getDate").toDateString(), false); 
 }
 
 function fieldToShift(field) {
@@ -2023,7 +2031,7 @@ function topHelpBoxPreset(presetName) {
     switch(presetName) {
         case "gettingStarted":
             helpTitle = "Help Guide";
-            helpText = "<p><strong>Fornight Commencing</strong><br />Set the <em>Fortnight Commencing</em> by clicking on the date box (with the <i class='far fa-calendar-alt'></i> icon), then use the date-picker that appears to select the first Sunday of the fortnight you wish to calculate your pay. The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
+            helpText = "<p><strong>Fortnight Commencing</strong><br />Set the <em>Fortnight Commencing</em> by clicking on the date box (with the <i class='far fa-calendar-alt'></i> icon), then use the date-picker that appears to select the first Sunday of the fortnight you wish to calculate your pay. The date that is selected as the <em>Fortnight Commencing</em> date is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
             + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
             + "<ul><li>To set shift options, click the shift options button (looks like this: " + dummyButton("OFF", "black", true) + " or " + dummyButton("Normal", normalColour, true) + ")"
             + ", then click the relevant options to toggle them on and off for that shift.</li>"
@@ -2069,6 +2077,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Conversion and Trainee calculations not yet verified.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>22/01/2020 - Version 1.03<ul>"
+            + "<li>Improved fortnight-commencing functionality with updated layout and new buttons to quickly change fortnight.</li>"
+            + "<li>The page will now remember the most recent fortnight-commencing date and automatically load it (but not for fortnights in the past).</li>"
+            + "<li>Title and menu bar should no longer double in height on smaller screens. Menu-button text now automatically hides on small screens.</li>"
+            + "</ul></li>"
             + "<li>14/01/2020 - Version 1.02<ul>"
             + "<li>Fixed another calculation issue with weekend penalty calculation when working excess hours overtime.</li>"
             + "</ul></li>"
