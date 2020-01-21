@@ -591,6 +591,22 @@ function toggleDatepicker() {
     $( "#week-commencing-date" ).toggle();
 }
 
+function datepickerShiftDays(shiftValue) {
+    let currentDate = $("#week-commencing-date").datepicker("getDate");
+    currentDate.setDate(currentDate.getDate() + shiftValue);
+    $("#week-commencing-date").datepicker("setDate", currentDate);
+    updateDates();
+    loadSavedData();
+    updateGrade();
+    updateShiftTable();
+    updateShiftWorkedCount();
+    printShiftHours();
+    validateTimeFields();
+    updateOptionsButtons();
+    updateShiftPayTable();
+    updateResults();
+}
+
 //Update all options buttons with the appropriate colours/text/icons based on each Shift.
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
@@ -1393,6 +1409,9 @@ function updateDates() { //updates day of week fields
             }
         }
     }
+    let endFortnightDate = $("#week-commencing-date").datepicker("getDate");
+    endFortnightDate.setDate(endFortnightDate.getDate() + 13);
+    $("#date-button").val($("#date-button").val() + "  to  " + endFortnightDate.getDate() + "/" + (endFortnightDate.getMonth() + 1) + "/" + endFortnightDate.getFullYear());
 }
 
 function fieldToShift(field) {

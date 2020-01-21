@@ -390,6 +390,7 @@ hr {
 
 .week-commencing {
     grid-column: 1 / 6;
+    text-align: center;
 }
 
 .week-commencing-label {
@@ -397,24 +398,27 @@ hr {
 }
 
 .week-commencing-button {
-    background-color: #fff;
-    cursor: pointer;
+    background-color: #0005;
     border: none;
     border-radius: 5px;
     padding: 3px;
+    margin: 0 3px;
     white-space: nowrap;
+    cursor: default;
 }
 
 #week-commencing-date {
     grid-column: 1 / 6;
     justify-self: center;
+    margin-top: 5px;
     display: none;
 }
 
 #date-button {
     cursor: inherit;
     background: none;
-    width: 120px;
+    width: 65%;
+    color: #fff;
 }
 
 .calendar-icon {
@@ -424,10 +428,11 @@ hr {
 
 .calendar-nav-button {
     padding: 3px;
-    margin: 0 2px;
+    margin: 0 3px;
     color: #414141;
     background-color: #FFF;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .calendar-nav-icon {
