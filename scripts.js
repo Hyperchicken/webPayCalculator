@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.02";
-const calcLastUpdateDate = "14/01/2020";
+const calcVersion = "1.03";
+const calcLastUpdateDate = "16/01/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -1320,9 +1320,6 @@ function updateResults() {
 
         resultArea.appendChild(document.createElement("hr"));
 
-        //hours paid
-        let hoursPaid = 0.0;
-
         //subtotal
         let totalValue = 0.0; 
         groupedElements.forEach(function(e){
@@ -1343,7 +1340,7 @@ function updateResults() {
         });
         let actualHoursWorkedElement = document.createElement("p");
         actualHoursWorkedElement.classList.add("hoursWorked")
-        actualHoursWorkedElement.textContent = "Physical Hours Worked: " + actualHoursWorked.toFixed(2);
+        actualHoursWorkedElement.innerHTML = "Physical Hours Worked:&nbsp" + actualHoursWorked.toFixed(2);
         resultArea.appendChild(actualHoursWorkedElement);
         actualHoursWorkedElement.addEventListener("click", function(){
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1361,7 +1358,7 @@ function updateResults() {
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
-        payslipHoursWorkedElement.textContent = "Payslip Hours Worked: " + payslipHoursWorked.toFixed(2);
+        payslipHoursWorkedElement.innerHTML = "Payslip Hours Worked:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights

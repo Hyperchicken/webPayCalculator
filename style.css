@@ -265,7 +265,7 @@ p > a {
     flex: 50%;  
 }
 
-.grid > h3 {
+.container > h3 {
     grid-column: 1 / 6;
     margin-top: 10px;
 }
@@ -422,6 +422,18 @@ hr {
     padding-left: 3px;
 }
 
+.calendar-nav-button {
+    padding: 3px;
+    margin: 0 2px;
+    color: #414141;
+    background-color: #FFF;
+    border-radius: 5px;
+}
+
+.calendar-nav-icon {
+    margin-top: 2px;
+}
+
 #totalElement {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
@@ -432,8 +444,10 @@ hr {
     white-space: pre-wrap;
     font-weight: bold;
     cursor: pointer;
+}
+
+.hoursWorked:hover {
     text-decoration: underline;
-    text-decoration-style: dotted;
 }
 
 .pay-elements-list > ul {
