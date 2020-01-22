@@ -2076,6 +2076,7 @@ function topHelpBoxPreset(presetName) {
             helpText = "<ul><strong>Known Issues</strong>"
             + "<li>Conversion and Trainee calculations not yet verified.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li></ul>"
+            + "<li>Still haven't worked out how payroll handles rounding...</li>"
             + "<ul><strong>Changelog</strong>"
             + "<li>22/01/2020 - Version 1.03<ul>"
             + "<li>Improved fortnight-commencing functionality with updated layout and new buttons to quickly change fortnight.</li>"
