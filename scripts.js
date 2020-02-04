@@ -2010,6 +2010,30 @@ function showPrintView() {
     document.body.appendChild(printViewDiv);
 }
 
+function checkVersion() {
+    fetch("currentVersion.txt")
+        .then(response => {
+            return response.text()
+        })
+        .then(data => {
+            console.log("Script version: " + calcVersion);
+            console.log("Text file version: " + data)
+            if(parseFloat(calcVersion) < parseFloat(data)) {
+                console.warn("Calculator update available!")
+                location.replace("index.html?update=true");
+            }
+            else if(parseFloat(calcVersion) > parseFloat(data)) {
+                console.warn("Calculator version is ahead of the server!")
+            }
+            else {
+                console.log("Calculator is up-to-date!")
+            }
+        })
+        .catch(err => {
+            console.log("checkVersion() error")
+        })
+}
+
 function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
