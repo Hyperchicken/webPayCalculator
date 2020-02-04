@@ -2020,7 +2020,7 @@ function checkVersion() {
             console.log("Text file version: " + data)
             if(parseFloat(calcVersion) < parseFloat(data)) {
                 console.warn("Calculator update available!")
-                location.replace("index.html?update=true");
+                location.reload();
             }
             else if(parseFloat(calcVersion) > parseFloat(data)) {
                 console.warn("Calculator version is ahead of the server!")
