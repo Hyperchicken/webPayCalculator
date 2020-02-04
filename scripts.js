@@ -2020,7 +2020,8 @@ function checkVersion() {
             console.log("Text file version: " + data)
             if(parseFloat(calcVersion) < parseFloat(data)) {
                 console.warn("Calculator update available!")
-                location.reload();
+                topHelpBox("Calculator Update",
+                "<p>A new version of the Pay Calculator is available! Please reload the page to update. </p> <p style='margin:'><a class='button reload-page-button' onclick='location.reload()'>Reload Page</a><p>");
             }
             else if(parseFloat(calcVersion) > parseFloat(data)) {
                 console.warn("Calculator version is ahead of the server!")

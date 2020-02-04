@@ -182,6 +182,11 @@ p > a {
     border-color: #b90000;
 }
 
+.reload-page-button {
+    background-color: #008f47;
+    border-color: #008f47;
+}
+
 .ojt-button {
     background-color: #ff7300;
     border-color: #ff7300;
