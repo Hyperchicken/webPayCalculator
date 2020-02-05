@@ -121,7 +121,9 @@ class PayElement {
     }
 
     calculateValue() {
-        return parseFloat((this.rate * parseFloat(this.hours.toFixed(4))).toFixed(2));
+        let val = parseFloat((this.rate * parseFloat(this.hours.toFixed(4))));
+        if(this.payType == "annualLeave") return parseFloat(val.toFixed(2)); //adjust precision for annual leave as payroll rounds to 2 decimal places for EACH DAY of AL.
+        else return val;
     }
     
     get sortIndex() {
@@ -163,7 +165,7 @@ class PayElement {
     }
 
     get payAmount() {
-        return this.calculateValue();
+        return this.calculateValue().toFixed(2);
     }
 
     get payClass() {
@@ -1271,7 +1273,7 @@ function updateResults() {
                         elemClass.textContent = shiftPay[i][j].payClass;
                         elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
                         elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
-                        elemAmount.textContent = "$" + shiftPay[i][j].payAmount.toFixed(2);
+                        elemAmount.textContent = "$" + shiftPay[i][j].payAmount;
                         elemClass.className = "pay-element-class";
                         payElementRow.appendChild(elemClass);
                         payElementRow.appendChild(elemRate);
@@ -1322,7 +1324,7 @@ function updateResults() {
                         elemClass.textContent = additionalPayments[j].payClass;
                         elemRate.textContent = additionalPayments[j].rate.toFixed(4);
                         elemHours.textContent = additionalPayments[j].hours.toFixed(4);
-                        elemAmount.textContent = "$" + additionalPayments[j].payAmount.toFixed(2);
+                        elemAmount.textContent = "$" + additionalPayments[j].payAmount;
                         payElementRow.appendChild(elemClass);
                         payElementRow.appendChild(elemRate);
                         payElementRow.appendChild(elemHours);
