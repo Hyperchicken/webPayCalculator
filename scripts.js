@@ -28,10 +28,6 @@ const alColour = "#1c4ab3";
 const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
 
-//setup Big.js rounding settings
-Big.RM = 0; //truncate rounding
-
-
 //define Classes
 class Shift {
     constructor(signOn, signOff) {
