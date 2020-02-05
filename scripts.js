@@ -238,7 +238,7 @@ class PayElement {
             case "phXpay": tooltipText = "<strong>PH X/Pay</strong>"
                 + "<p><em>Public Holiday Extra Pay.</em> Ordinary hours worth of additional pay at the normal rate on a public holiday where 'extra pay' was elected when signing-on, or if the public holiday falls on a Sunday.</p>"
                 + "<ul><li>Public Holidays that fall on a Sunday are automatically <em>Extra Pay</em> as opposed to <em>Extra Leave</em>.</li>"
-                + "<li>CALCULATION NOTE: The way PH Extra Pay is calculated by this calculator is different to the Enterprise Agreement. The EA states that PH Extra Pay should be paid on the PH hours worked, however payroll currently pays a full 8 hours (7.6 hours for trainee/part-time) when Extra Pay is elected. The current payroll method is generally fairer overall.</li></ul>";
+                + "<li>CALCULATION NOTE: The way PH Extra Pay is calculated by this calculator is different to the Enterprise Agreement to better reflect what payroll does in reality. The EA states that PH Extra Pay should be paid on the PH hours worked, however payroll currently pays a full 8 hours (7.6 hours for trainee/part-time) when Extra Pay is elected. The current payroll method is generally fairer overall.</li></ul>";
                 break;
             case "phWorked": tooltipText = "<strong>PH Worked</strong>"
                 + "<p><em>Public Holiday Worked.</em> Time worked on a Public Holiday, paid at <em>normal time</em>.</p>";
