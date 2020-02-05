@@ -121,6 +121,11 @@ class PayElement {
             this.payType = payType;
             this.hours = parseFloat(hours.toFixed(4));
             this.ojt = ojt;
+            this.value = this.calculateValue(); //used to keep track of the pay amount when grouping elements together
+    }
+
+    calculateValue() {
+        return parseFloat((this.rate * parseFloat(this.hours.toFixed(4))).toFixed(2));
     }
     
     get sortIndex() {
@@ -162,7 +167,7 @@ class PayElement {
     }
 
     get payAmount() {
-        return parseFloat((this.rate * parseFloat(this.hours.toFixed(4))).toFixed(2));
+        return this.calculateValue();
     }
 
     get payClass() {
@@ -1173,6 +1178,7 @@ function updateResults() {
             }
             else {
                 groupedElements[elementIndex].hours += element.hours;
+                groupedElements[elementIndex].value += element.value;
             }
         });
     });
@@ -1183,6 +1189,7 @@ function updateResults() {
             }
             else {
                 groupedElements[elementIndex].hours += element.hours;
+                groupedElements[elementIndex].value += element.value;
             }
     });
     groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
@@ -1215,7 +1222,7 @@ function updateResults() {
                 elemClass.textContent = e.payClass.padEnd(14, " ");
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
-                elemAmount.textContent = "$" + e.payAmount.toFixed(2);
+                elemAmount.textContent = "$" + e.value.toFixed(2);
                 elemClass.className = "pay-element-class";
                 payElementRow.appendChild(elemClass);
                 payElementRow.appendChild(elemRate);
@@ -1348,7 +1355,7 @@ function updateResults() {
         //subtotal
         let totalValue = 0.0; 
         groupedElements.forEach(function(e){
-            totalValue += e.payAmount;
+            totalValue += parseFloat(e.value.toFixed(2));
         });
         let totalElement = document.createElement("h3");
         totalElement.setAttribute("id", "totalElement");
