@@ -2112,7 +2112,6 @@ function topHelpBoxPreset(presetName) {
             + "<ul><strong>Changelog</strong>"
             + "<li>05/02/2020 - Version 1.05<ul>"
             + "<li>Changed PH Extra Pay calculation to give a fixed payment of 8 hours (7.6 hours for trainee/part-time) as opposed to time worked. EA says time worked but payroll pays the fixed amount (which is arguably fairer overall).</li>"
-            + "<li>Added notification to reload the calculator when a new version is available.</li>"
             + "<li>Fixed some instances where calculations were a few cents off.</li>"
             + "</ul></li>"
             + "<li>03/02/2020 - Version 1.04<ul>"
