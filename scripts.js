@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.04";
-const calcLastUpdateDate = "03/02/2020";
+const calcVersion = "1.05";
+const calcLastUpdateDate = "05/02/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -2112,7 +2112,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Added notification to reload the calculator when a new version is available.</li>"
             + "<li>Fixed some instances where calculations were a few cents off.</li>"
             + "</ul></li>"
-            + "<li>02/02/2020 - Version 1.04<ul>"
+            + "<li>03/02/2020 - Version 1.04<ul>"
             + "<li>Minor help guide text update.</li>"
             + "<li>Pushed this version to try and fix the calculator not working correctly for some people after the website went down briefly.</li>"
             + "</ul></li>"
