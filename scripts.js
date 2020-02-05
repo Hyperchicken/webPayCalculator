@@ -1610,7 +1610,8 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phWorked", phWorkedHours, s.ojt));
                     shiftPay[day].push(new PayElement("phPen50", phWorkedHours, s.ojt));
                 }
-                if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt));
+                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt)); //EA version: XPay based on hours worked
+                if(s.phExtraPay) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, s.ojt)); //payroll version: XPay based on ordinary hours
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
@@ -2106,7 +2107,12 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "<li>Still haven't worked out how payroll handles rounding...</li></ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>22/01/2020 - Version 1.04<ul>"
+            + "<li>05/02/2020 - Version 1.05<ul>"
+            + "<li>Changed PH Extra Pay calculation to give a fixed payment of 8 hours (7.6 hours for trainee/part-time) as opposed to time worked. EA says time worked but payroll pays the fixed amount (which is arguably fairer overall).</li>"
+            + "<li>Added notification to reload the calculator when a new version is available.</li>"
+            + "<li>Fixed some instances where calculations were a few cents off.</li>"
+            + "</ul></li>"
+            + "<li>02/02/2020 - Version 1.04<ul>"
             + "<li>Minor help guide text update.</li>"
             + "<li>Pushed this version to try and fix the calculator not working correctly for some people after the website went down briefly.</li>"
             + "</ul></li>"
