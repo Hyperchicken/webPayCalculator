@@ -28,6 +28,9 @@ const alColour = "#1c4ab3";
 const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
 
+//setup Big.js rounding settings
+Big.RM = 0; //truncate rounding
+
 
 //define Classes
 class Shift {
@@ -117,6 +120,7 @@ class PayElement {
     constructor(payType, hours, ojt) {
             this.payType = payType;
             this.hours = hours;
+            //this.hours = parseFloat(new Big(hours).toFixed(4));
             this.ojt = ojt;
     }
     
@@ -1633,13 +1637,13 @@ function updateShiftPayTable() {
                         if(tomorrowNormalHours > 0.0) { //time into saturday
                             penaltyTime -= todayNormalHours;
                             if(penaltyTime > 0.0) {
-                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt));
+                                shiftPay[day].push(new PayElement("wePen50", parseFloat(penaltyTime.toFixed(2)), s.ojt)); //payroll rounds WePen50 hours to 2 decimal places for some reason
                             }
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
+                            shiftPay[day].push(new PayElement("wePen50", parseFloat(Math.min(todayNormalHours, ordinaryHours).toFixed(2)), s.ojt)); //payroll rounds WePen50 hours to 2 decimal places for some reason
                         }
                         penaltyTime -= todayNormalHours;
                         if(tomorrowNormalHours > 0.0 && penaltyTime > 0.0) { //sunday time
