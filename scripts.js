@@ -119,8 +119,7 @@ class Shift {
 class PayElement { 
     constructor(payType, hours, ojt) {
             this.payType = payType;
-            this.hours = hours;
-            //this.hours = parseFloat(new Big(hours).toFixed(4));
+            this.hours = parseFloat(hours.toFixed(4));
             this.ojt = ojt;
     }
     
