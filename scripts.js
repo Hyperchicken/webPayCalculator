@@ -136,6 +136,7 @@ class PayElement {
             "phGaz",
             "phXpay",
             "phWorked",
+            "edo",
             "nonRosPH",
             "phPen50",
             "wePen50",
@@ -144,14 +145,13 @@ class PayElement {
             "ot200",
             "rost+50",
             "rost+100",
+            "phCredit",
+            "bonusPayment", 
             "earlyShift",
             "afternoonShift",
             "nightShift",
             "metroSig2",
             "mealAllowance",
-            "bonusPayment",
-            "phCredit",
-            "edo",
             "leaveLoading"
         ];
         let sortIndex = sortOrder.indexOf(this.payType);
@@ -1148,7 +1148,7 @@ function updateShiftTable() {
 function updateShiftWorkedCount() {
     let shiftsCount = 0;
     let shiftsWorkedCount = 0;
-    if(ddoWeek()) shiftsWorkedCount = 1;
+    if(ddoWeek() >= 0) shiftsWorkedCount = 1;
     for(let i = 0; i < shifts.length; i++) {
         //determine if shift
         if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].ph) {
@@ -1514,11 +1514,12 @@ function getEbaRate(date, rates) {
     return 0;
 }
 
+//returns an int of the first day that has DDO option set. returns -1 if no shifts have DDO set
 function ddoWeek() {
     for(let i = 0; i < shifts.length; i++) {
-        if(shifts[i].ddo) return true;
+        if(shifts[i].ddo) return i;
     }
-    return false;
+    return -1;
 }
 
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
@@ -1603,7 +1604,7 @@ function updateShiftPayTable() {
             else {
                 //Public Holidays
                 let phWorkedHours = 0.0;
-                let phXpayHours = 0.0;
+                let phXpayHours = 0.0; //used for EA interpretation of calculation. Not used for payroll version.
                 if(todayPhHours > 0.0) {
                     phWorkedHours += todayPhHours;
                     if(s.phExtraPay || day == 0 || day == 7) phXpayHours += todayPhHours;
@@ -1757,17 +1758,20 @@ function updateShiftPayTable() {
                 }
             }
         }
+        //bonus pay
         if(s.bonus) {
             if(s.bonusHours > 0) {
                 shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours)); 
             }
         }
-        if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) { //suburban allowance
+        //suburbal allowance
+        if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1));
         }
-        if(s.wm) { //wasted meal
+        //wasted meal
+        if(s.wm) {
             shiftPay[day].push(new PayElement("mealAllowance", 1));
-        }   
+        }
     }
 
     //pay calculation: pass 2. determine and cap which days to pay annual leave on.
@@ -1789,13 +1793,14 @@ function updateShiftPayTable() {
         }
     }
     
-    //pay calculation: DDO. determine how to pay DDO
+    //pay calculation: DDO. Check on last day of the 
     if(payGrade != "trainee" && payGrade != "parttime") { //part time and trainee don't get DDO
-        if(ddoWeek()) {
-            additionalPayments.push(new PayElement("edo", 4));
+        let day = ddoWeek();
+        if(day < 0) {
+            shiftPay[0].push(new PayElement("edo", -4));
         }
         else {
-            additionalPayments.push(new PayElement("edo", -4));
+            shiftPay[day].push(new PayElement("edo", 4));
         }
     }
 }
