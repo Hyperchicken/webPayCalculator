@@ -11,6 +11,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=1.05">
@@ -25,8 +27,6 @@
     <script src="jquery-ui.js"></script> 
     <script src="scripts.js?v=1.05"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
