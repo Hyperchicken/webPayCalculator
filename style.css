@@ -175,6 +175,8 @@ p > a {
     border-style: solid;
     word-break: keep-all;
     white-space: nowrap;
+    max-width: 100px;
+    overflow: hidden;
 }
 
 .delete-save-button {

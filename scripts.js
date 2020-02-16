@@ -667,7 +667,7 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(s.wm) {
-                setButton("Wasted&nbspMeal", wmColour);
+                setButton("W/Meal", wmColour);
                 offButton = false;
             }
             if(s.bonus && s.bonusHours > 0.0) {
@@ -696,7 +696,7 @@ function updateOptionsButtons() {
                 if(s.ojt)
                     setButton("OJT", ojtColour);
                 if(s.ddo)
-                    setButton("DDO-Worked", ddoColour);
+                    setButton("DDO-Work", ddoColour);
                 if(s.ph){
                     if(s.phExtraPay)
                         setButton("PH-XPay", phColour);
@@ -704,7 +704,7 @@ function updateOptionsButtons() {
                         setButton("PH-XLeave", phColour);
                 }
                 if(s.wm)
-                    setButton("Wasted&nbspMeal", wmColour);
+                    setButton("W/Meal", wmColour);
                 if(s.bonus && s.bonusHours > 0)
                     setButton("Bonus&nbspPay", bonusColour);
             }
