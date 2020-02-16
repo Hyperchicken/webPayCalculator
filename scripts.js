@@ -46,6 +46,7 @@ class Shift {
         this.ojt = false; //OJT shift
         this.ph = false; //public holiday
         this.phExtraPay = false; //ph extra pay. extra leave if false.
+        this.phOffRoster = false; //PH off roster (rostered OFF on a PH). 'true' indicates shift converted to PH
         this.wm = false; //wasted meal
         this.sick = false; //sick full day
         this.sickPart = false; //worked but went home sick partway through shift
@@ -897,6 +898,33 @@ function generateOptionsShelfButtons(day) {
                     xLeaveButton.style.background = "";
                     xPayButton.style.background = buttonBackgroundColour;
                 }
+            }
+        }
+        else { //if no hours
+            let offRosterButton = document.createElement("a");
+            let phRosterButton = document.createElement("a");
+            phRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
+            offRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
+            phRosterButton.textContent = "Converted to PH";
+            offRosterButton.textContent = "OFF Roster";
+            phSpan.appendChild(phRosterButton);
+            phSpan.appendChild(offRosterButton);
+            if(shifts[day].phOffRoster) {
+                phRosterButton.addEventListener("click", function() {
+                    shifts[day].phOffRoster = false;
+                    reloadPageData();
+                    //saveToStorage("phxp", "false");
+                });
+                offRosterButton.style.background = buttonBackgroundColour;
+                phRosterButton.style.background = "";
+            } else {
+                offRosterButton.addEventListener("click", function() {
+                    shifts[day].phOffRoster = true;
+                    reloadPageData();
+                    //saveToStorage("phxp", "true");
+                });
+                phRosterButton.style.background = "";
+                offRosterButton.style.background = buttonBackgroundColour;
             }
         }
     }
