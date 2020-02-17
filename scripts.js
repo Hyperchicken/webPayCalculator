@@ -138,7 +138,6 @@ class PayElement {
             "phXpay",
             "phWorked",
             "edo",
-            "nonRosPH",
             "phPen50",
             "wePen50",
             "wePen100",
@@ -146,6 +145,7 @@ class PayElement {
             "ot200",
             "rost+50",
             "rost+100",
+            "nonRosPH",
             "phCredit",
             "bonusPayment", 
             "earlyShift",
@@ -331,7 +331,7 @@ class PayElement {
             case "phGaz":
             case "phWorked":
             case "phXpay":
-            case "nonRosPH": //8 hours pay for NOT working on Easter Saturday but NOT UNDERLINED
+            case "nonRosPH": 
             case "annualLeave":
             case "phCredit":
             case "bonusPayment":
@@ -664,7 +664,12 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(s.ph) {
-                setButton("PH-OFF", phColour);
+                if(s.phOffRoster) {
+                    setButton("PH-OFF", phColour);
+                }
+                else {
+                    setButton("PH-Gazette", phColour);
+                }
                 offButton = false;
             }
             if(s.wm) {
@@ -913,15 +918,15 @@ function generateOptionsShelfButtons(day) {
                 phRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = false;
                     reloadPageData();
-                    //saveToStorage("phxp", "false");
+                    saveToStorage("phor", "false");
                 });
-                offRosterButton.style.background = buttonBackgroundColour;
-                phRosterButton.style.background = "";
+                offRosterButton.style.background = "";
+                phRosterButton.style.background = buttonBackgroundColour;
             } else {
                 offRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = true;
                     reloadPageData();
-                    //saveToStorage("phxp", "true");
+                    saveToStorage("phor", "true");
                 });
                 phRosterButton.style.background = "";
                 offRosterButton.style.background = buttonBackgroundColour;
@@ -1413,7 +1418,7 @@ function updateResults() {
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "phGaz", "nonRosPh", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
+            if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
@@ -1588,7 +1593,12 @@ function updateShiftPayTable() {
             else if(s.ph) {
                 phOffCount++;
                 deductLeaveShifts[weekNo(day)]++;
-                shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
+                if(s.phOffRoster) {
+                    shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours));
+                }
+                else {
+                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
+                }
             }
             else if(s.phc) {
                 deductLeaveShifts[weekNo(day)]++;
@@ -1948,6 +1958,7 @@ function loadSavedData(datePrefix = "") {
         let sickSave = getSaveData("day" + day + "sick");
         let phSave = getSaveData("day" + day + "ph");
         let phxpSave = getSaveData("day" + day + "phxp");
+        let phorSave = getSaveData("day" + day + "phor");
         let alSave = getSaveData("day" + day + "al");
         let phcSave = getSaveData("day" + day + "phc")
         let bonusSave = getSaveData("day" + day + "bonus");
@@ -1959,6 +1970,7 @@ function loadSavedData(datePrefix = "") {
         if(sickSave == "true") shifts[day].sick = true;
         if(phSave == "true") shifts[day].ph = true;
         if(phxpSave == "true") shifts[day].phExtraPay = true;
+        if(phorSave == "true") shifts[day].phOffRoster = true;
         if(alSave == "true") shifts[day].al = true;
         if(phcSave == "true") shifts[day].phc = true;
         if(bonusSave == "true") shifts[day].bonus = true;
@@ -1997,6 +2009,7 @@ function resetForm() {
         setSaveData("day" + day + "sick", "");
         setSaveData("day" + day + "ph", "");
         setSaveData("day" + day + "phxp", "");
+        setSaveData("day" + day + "phor", "");
         setSaveData("day" + day + "al", "");
         setSaveData("day" + day + "phc", "")
         setSaveData("day" + day + "bonus", "");
@@ -2009,6 +2022,7 @@ function resetForm() {
         shifts[day].sick = false;
         shifts[day].ph = false;
         shifts[day].phExtraPay = false;
+        shifts[day].phOffRoster = false;
         shifts[day].al = false;
         shifts[day].phc = false;
         shifts[day].bonus = false;
