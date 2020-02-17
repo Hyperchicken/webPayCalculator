@@ -871,12 +871,18 @@ function generateOptionsShelfButtons(day) {
         if(shifts[day].hoursDecimal > 0) {
             let xLeaveButton = document.createElement("a");
             let xPayButton = document.createElement("a");
+            let offRosterButton = document.createElement("a");
             xLeaveButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
             xPayButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
+            offRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
             xLeaveButton.textContent = "Extra Leave";
             xPayButton.textContent = "Extra Pay";
+            offRosterButton.textContent = "Converted to PH"
             phSpan.appendChild(xLeaveButton);
             phSpan.appendChild(xPayButton);
+            if(getPayGrade() == "parttime") {
+                phSpan.appendChild(offRosterButton);
+            }
             if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
                 xLeaveButton.addEventListener("click", function() {
                     //add tooltip functionality explaining reason you cant have extra leave on a sunday
@@ -1594,7 +1600,9 @@ function updateShiftPayTable() {
                 phOffCount++;
                 deductLeaveShifts[weekNo(day)]++;
                 if(s.phOffRoster) {
-                    shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours));
+                    if(payGrade != "parttime") {
+                        shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours));
+                    }
                 }
                 else {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours));
