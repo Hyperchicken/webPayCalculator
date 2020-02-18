@@ -89,13 +89,15 @@
                         <label class="radio-container">TSO
                             <input type="radio" name="payGrade" value="tso" id="tso">
                             <span class="checkmark"></span>
-                            <select id="tso-so">
-                                <option value="so8">SO-8</option>
-                                <option value="so9">SO-9</option>
-                                <option value="so10">SO-10</option>
-                                <option value="so11">SO-11</option>
-                                <option value="so12">SO-12</option>
-                            </select>
+                            <span class="tso-dropdown"> - 
+                                <select id="tso-so">
+                                    <option value="so8">SO-8</option>
+                                    <option value="so9">SO-9</option>
+                                    <option value="so10">SO-10</option>
+                                    <option value="so11">SO-11</option>
+                                    <option value="so12">SO-12</option>
+                                </select>
+                            </span>
                         </label>
                         
                     </div>

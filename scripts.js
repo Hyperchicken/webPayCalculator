@@ -1225,6 +1225,7 @@ function updateGrade() {
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
             setSaveData("paygrade", "spot");
+            $(".tso-dropdown").hide();
             $("#payClassWarning").hide();
             break;
         case "level1":
@@ -1232,6 +1233,7 @@ function updateGrade() {
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
             setSaveData("paygrade", "level1");
+            $(".tso-dropdown").hide();
             $("#payClassWarning").hide();
             break;
         case "trainee":
@@ -1239,6 +1241,7 @@ function updateGrade() {
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
             setSaveData("paygrade", "trainee");
+            $(".tso-dropdown").hide();
             $("#payClassWarning").show();
             break;
         case "conversion":
@@ -1246,6 +1249,7 @@ function updateGrade() {
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
             setSaveData("paygrade", "conversion");
+            $(".tso-dropdown").hide();
             $("#payClassWarning").show();
             break;
         case "parttime":
@@ -1253,6 +1257,7 @@ function updateGrade() {
             setFormColour("rgb(56, 140, 65)");
             setSaveData("paygrade", "parttime", false);
             setSaveData("paygrade", "parttime");
+            $(".tso-dropdown").hide();
             $("#payClassWarning").hide();
             break;
         case "tso":
@@ -1285,7 +1290,8 @@ function updateGrade() {
                 default:
                     selectedGradeRates = undefined;
             }
-            setFormColour("#867103");
+            setFormColour("#606060");
+            $(".tso-dropdown").show();
             $("#payClassWarning").hide();
             break;
         default: 
@@ -1798,7 +1804,7 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phPen50", phWorkedHours, s.ojt));
                 }
                 //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt)); //EA version: XPay based on hours worked
-                if(s.phExtraPay) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, s.ojt)); //payroll version: XPay based on ordinary hours
+                if(phWorkedHours > 0.0 && s.phExtraPay) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, s.ojt)); //payroll version: XPay based on ordinary hours
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
@@ -2093,6 +2099,9 @@ function loadSavedData(datePrefix = "") {
             break;
         case "so8":
         case "so9":
+        case "so10":
+        case "so11":
+        case "so12":
             document.forms.payGradeForm.elements.namedItem("tso").checked = true;
             $("#tso-so").val(savedPayGrade);
             break;
