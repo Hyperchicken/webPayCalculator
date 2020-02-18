@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.06";
-const calcLastUpdateDate = "18/02/2020";
+const calcVersion = "1.07";
+const calcLastUpdateDate = "19/02/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -186,7 +186,7 @@ class PayElement {
             case "phGaz": payClassName = "PH Gazette"; break;
             case "phXpay": payClassName = "PH X/Pay"; break;
             case "phWorked": payClassName = "PH Worked"; break;
-            case "nonRosPH": payClassName = "Non-Ros PH"; break;
+            case "nonRosPH": payClassName = "NON ROS PH"; break;
             case "phPen50": payClassName = "PhPen 50%"; break;
             case "wePen50": payClassName = "WePen 50%"; break;
             case "wePen100": payClassName = "WePen 100%"; break;
@@ -2312,10 +2312,14 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Conversion and Trainee calculations not yet verified.</li>"
+            + "<li>Conversion, Trainee and TSO grade calculations not yet verified.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
-            + "<li>Still haven't worked out how payroll handles rounding...</li></ul>"
+            + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>19/02/2020 - Version 1.07<ul>"
+            + "<li>Added TSO (PD and Training Officer) grades.</li>"
+            + "<li>Fixed PH Extra Pay persisting after unselecting Public Holiday shift option.</li>"
+            + "</ul></li>"
             + "<li>18/02/2020 - Version 1.06<ul>"
             + "<li>Added support for part-time public holiday shifts that have converted to PH-roster. Part-timers who have had a shift convert to PH should enter in the sign-on/off times of the original shift and select the shift options 'Public Holiday' and 'PH Roster'.</li>"
             + "<li>Added support for Public Holidays OFF-roster. New public holiday shift option button added.</li>"
