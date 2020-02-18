@@ -9,11 +9,11 @@ const spotRates =           [49.4054,      50.6405,      51.9065];
 const driverLevel1Rates =   [33.5339,      34.3723,      35.2316];
 const traineeRates =        [28.7277,      29.4459,      30.1820];
 const conversionRates =     [46.1015,      47.2541,      48.4354];
-const so8rates =            [59.5774,      61.0668,      62.5935];
-const so9rates =            [61.1212,      62.6493,      64.2155];
-const so10rates =           [62.6686,      64.2353,      65.8412];
-const so11rates =           [64.2108,      65.8161,      67.4615];
-const so12rates =           [65.7518,      67.3956,      69.0805];
+const so8Rates =            [59.5774,      61.0668,      62.5935];
+const so9Rates =            [61.1212,      62.6493,      64.2155];
+const so10Rates =           [62.6686,      64.2353,      65.8412];
+const so11Rates =           [64.2108,      65.8161,      67.4615];
+const so12Rates =           [65.7518,      67.3956,      69.0805];
 
 const ojtAllowanceRates =   [9.7237,       9.9668,       10.2159];
 const mealAllowanceRates =  [11.6357,      11.9266,      12.2248];
@@ -1255,6 +1255,39 @@ function updateGrade() {
             setSaveData("paygrade", "parttime");
             $("#payClassWarning").hide();
             break;
+        case "tso":
+            switch($("#tso-so").val()) {
+                case "so8":
+                    selectedGradeRates = so8Rates;
+                    setSaveData("paygrade", "so8", false);
+                    setSaveData("paygrade", "so8");
+                    break;
+                case "so9":
+                    selectedGradeRates = so9Rates;
+                    setSaveData("paygrade", "so9", false);
+                    setSaveData("paygrade", "so9");
+                    break;
+                case "so10":
+                    selectedGradeRates = so10Rates;
+                    setSaveData("paygrade", "so10", false);
+                    setSaveData("paygrade", "so10");
+                    break;
+                case "so11":
+                    selectedGradeRates = so11Rates;
+                    setSaveData("paygrade", "so11", false);
+                    setSaveData("paygrade", "so11");
+                    break;
+                case "so12":
+                    selectedGradeRates = so12Rates;
+                    setSaveData("paygrade", "so12", false);
+                    setSaveData("paygrade", "so12");
+                    break;
+                default:
+                    selectedGradeRates = undefined;
+            }
+            setFormColour("#867103");
+            $("#payClassWarning").hide();
+            break;
         default: 
             selectedGradeRates = undefined;
     }
@@ -2057,6 +2090,11 @@ function loadSavedData(datePrefix = "") {
             break;
         case "conversion":
             document.forms.payGradeForm.elements.namedItem("conversion").checked = true;
+            break;
+        case "so8":
+        case "so9":
+            document.forms.payGradeForm.elements.namedItem("tso").checked = true;
+            $("#tso-so").val(savedPayGrade);
             break;
     }
     //shift options save data
