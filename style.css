@@ -669,7 +669,8 @@ li.helpbox-topnav > a {
 }
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
-    input[type=tel]  {
+    input[type=tel],
+    select  {
         font-size: 1em;
     }
     .ui-datepicker {
