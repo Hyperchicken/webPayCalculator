@@ -9,6 +9,12 @@ const spotRates =           [49.4054,      50.6405,      51.9065];
 const driverLevel1Rates =   [33.5339,      34.3723,      35.2316];
 const traineeRates =        [28.7277,      29.4459,      30.1820];
 const conversionRates =     [46.1015,      47.2541,      48.4354];
+const so8rates =            [59.5774,      61.0668,      62.5935];
+const so9rates =            [61.1212,      62.6493,      64.2155];
+const so10rates =           [62.6686,      64.2353,      65.8412];
+const so11rates =           [64.2108,      65.8161,      67.4615];
+const so12rates =           [65.7518,      67.3956,      69.0805];
+
 const ojtAllowanceRates =   [9.7237,       9.9668,       10.2159];
 const mealAllowanceRates =  [11.6357,      11.9266,      12.2248];
 const suburbanAllowanceRates = [8.3644,    8.5736,       8.7879];
