@@ -2235,8 +2235,8 @@ function topHelpBoxPreset(presetName) {
             break;
         case "saveInfo":
             helpTitle = "About Data Saving";
-            helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected 'Fortnight Commencing' date. In other words, the calculator will remember all the details you enter every time you use it."
-            + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the Fortnight Commencing date to load any data you entered in a different fortnight! </p>"
+            helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected fortnight. In other words, the calculator will remember all the details you enter every time you use it."
+            + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the dates to load any data you entered in a different fortnight! </p>"
             + "<p>Some extra things to know about the data saving feature:</p>"
             + "<ul><li>There is no 'save button'. Everything is saved instantly and automatically.</li>"
             + "<li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
