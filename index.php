@@ -104,7 +104,7 @@
                 </form>
 
                 <div id="payClassWarning" class="grid-1-6 start-hidden">
-                    <p style="font-size: 0.8em; font-family: Verdana, sans-serif; border-style: solid; border-radius: 3px; border-width: 1px; background-color: #0005; padding: 5px;"><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Trainee and Conversion calculations not yet thoroughly tested for accuracy!</p>
+                    <p style="font-size: 0.8em; font-family: Verdana, sans-serif; border-style: solid; border-radius: 3px; border-width: 1px; background-color: #0005; padding: 5px;"><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade have not been thoroughly tested for accuracy!</p>
                 </div>
 
                 <div class="week-commencing">

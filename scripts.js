@@ -1242,7 +1242,7 @@ function updateGrade() {
             setSaveData("paygrade", "trainee", false);
             setSaveData("paygrade", "trainee");
             $(".tso-dropdown").hide();
-            $("#payClassWarning").show();
+            $("#payClassWarning").hide();
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
@@ -1292,7 +1292,7 @@ function updateGrade() {
             }
             setFormColour("#606060");
             $(".tso-dropdown").show();
-            $("#payClassWarning").hide();
+            $("#payClassWarning").show();
             break;
         default: 
             selectedGradeRates = undefined;
@@ -2312,13 +2312,14 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Conversion, Trainee and TSO grade calculations not yet verified.</li>"
+            + "<li>Conversion and TSO grade calculations not yet thoroughly tested.</li>"
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
             + "<li>19/02/2020 - Version 1.07<ul>"
             + "<li>Added TSO (PD and Training Officer) grades.</li>"
             + "<li>Fixed PH Extra Pay persisting after unselecting Public Holiday shift option.</li>"
+            + "<li>Removed calculation warning from Trainee pay grade.</li>"
             + "</ul></li>"
             + "<li>18/02/2020 - Version 1.06<ul>"
             + "<li>Added support for part-time public holiday shifts that have converted to PH-roster. Part-timers who have had a shift convert to PH should enter in the sign-on/off times of the original shift and select the shift options 'Public Holiday' and 'PH Roster'.</li>"
