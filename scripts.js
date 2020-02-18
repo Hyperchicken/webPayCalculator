@@ -2268,8 +2268,6 @@ function topHelpBoxPreset(presetName) {
             + "<li>Added support for Public Holidays OFF-roster. New public holiday shift option button added.</li>"
             + "<li>Minor text adjustments for better page-display.</li>"
             + "<li>Position of EDO pay element in 'grouped' results view better matches payslips, and is now attached to a day in 'split-view'.</li>"
-            + "<li></li>"
-            + "<li></li>"
             + "</ul></li>"
             + "<li>06/02/2020 - Version 1.05<ul>"
             + "<li>Changed PH Extra Pay calculation to give a fixed payment of 8 hours (7.6 hours for trainee/part-time) as opposed to time worked. EA says time worked but payroll pays the fixed amount (which is arguably fairer overall).</li>"
