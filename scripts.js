@@ -1,7 +1,7 @@
 "use strict";
 
 const calcVersion = "1.06";
-const calcLastUpdateDate = "xx/02/2020";
+const calcLastUpdateDate = "18/02/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -2263,7 +2263,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "<li>Still haven't worked out how payroll handles rounding...</li></ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>xx/02/2020 - Version 1.06<ul>"
+            + "<li>18/02/2020 - Version 1.06<ul>"
             + "<li>Added support for part-time public holiday shifts that have converted to PH-roster. Part-timers who have had a shift convert to PH should enter in the sign-on/off times of the original shift and select the shift options 'Public Holiday' and 'PH Roster'.</li>"
             + "<li>Added support for Public Holidays OFF-roster. New public holiday shift option button added.</li>"
             + "<li>Minor text adjustments for better page-display.</li>"
