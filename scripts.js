@@ -1,7 +1,7 @@
 "use strict";
 
-const calcVersion = "1.05";
-const calcLastUpdateDate = "06/02/2020";
+const calcVersion = "1.06";
+const calcLastUpdateDate = "xx/02/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -236,7 +236,8 @@ class PayElement {
                 + "<li>Public Holidays that occur during Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave.</li></ul>";
                 break;
             case "phGaz": tooltipText = "<strong>PH Gazette</strong>"
-                + "<p>A full day's <em>Paid leave of absence</em> for a <em>Public Holiday</em> not worked.</p>";
+                + "<p>A full day's (ordinary hours) <em>Paid leave of absence</em> for a <em>Public Holiday</em> where one was originally rostered but the shift was converted to PH.</p>"
+                + "<p>Part-time employees are paid for the hours that they were originally rostred instead of a flat 'full-day'.</p>";
                 break;
             case "phXpay": tooltipText = "<strong>PH X/Pay</strong>"
                 + "<p><em>Public Holiday Extra Pay.</em> Ordinary hours worth of additional pay at the normal rate on a public holiday where 'extra pay' was elected when signing-on, or if the public holiday falls on a Sunday.</p>"
@@ -699,20 +700,39 @@ function updateOptionsButtons() {
                         setButton("Sick-Full", sickColour);
                     }
                 }
-                if(s.ojt)
+                if(s.ojt) {
                     setButton("OJT", ojtColour);
-                if(s.ddo)
-                    setButton("DDO-Work", ddoColour);
-                if(s.ph){
-                    if(s.phExtraPay)
-                        setButton("PH-XPay", phColour);
-                    else
-                        setButton("PH-XLeave", phColour);
                 }
-                if(s.wm)
+                if(s.ddo) {
+                    setButton("DDO-Work", ddoColour);
+                }
+                if(s.ph){
+                    if(getPayGrade() == "parttime") {
+                        if(s.phExtraPay) {
+                            setButton("PH-XPay", phColour);
+                        }
+                        else if (s.phOffRoster) {
+                            setButton("PH-Gazette", phColour);
+                        }
+                        else {
+                            setButton("PH-XLeave", phColour);
+                        }
+                    }
+                    else {
+                        if(s.phExtraPay) {
+                            setButton("PH-XPay", phColour);
+                        }
+                        else {
+                            setButton("PH-XLeave", phColour);
+                        }
+                    }
+                }
+                if(s.wm) {
                     setButton("W/Meal", wmColour);
-                if(s.bonus && s.bonusHours > 0)
+                }
+                if(s.bonus && s.bonusHours > 0) {
                     setButton("Bonus&nbspPay", bonusColour);
+                }
             }
             if(buttonColours.length == 0) {
                 setButton("Normal", normalColour);
@@ -871,43 +891,113 @@ function generateOptionsShelfButtons(day) {
         if(shifts[day].hoursDecimal > 0) {
             let xLeaveButton = document.createElement("a");
             let xPayButton = document.createElement("a");
-            let offRosterButton = document.createElement("a");
+            let phRosterButton = document.createElement("a");
             xLeaveButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
             xPayButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
-            offRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
+            phRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
             xLeaveButton.textContent = "Extra Leave";
             xPayButton.textContent = "Extra Pay";
-            offRosterButton.textContent = "Converted to PH"
+            phRosterButton.textContent = "PH Roster"
             phSpan.appendChild(xLeaveButton);
             phSpan.appendChild(xPayButton);
-            if(getPayGrade() == "parttime") {
-                phSpan.appendChild(offRosterButton);
-            }
-            if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
-                xLeaveButton.addEventListener("click", function() {
-                    //add tooltip functionality explaining reason you cant have extra leave on a sunday
-                });
-                xLeaveButton.style.background = "#808080ad";
-                xLeaveButton.style.color = "black";
-                xPayButton.style.background = "";
+            if(getPayGrade() == "parttime") { //special PH options button configuration for part-time grade
+                phSpan.appendChild(phRosterButton);
+                xPayButton.classList.remove("dual-button-r");
+                xPayButton.classList.add("dual-button-m");
+                if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
+                    xLeaveButton.addEventListener("click", function() {
+                        //add tooltip functionality explaining reason you cant have extra leave on a sunday
+                    });
+                    xLeaveButton.style.background = "#808080ad";
+                    xLeaveButton.style.color = "black";
+                    xPayButton.style.background = "";
+                }
+                else {
+                    if(shifts[day].phExtraPay) {
+                        xLeaveButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                            saveToStorage("phor", "false");
+                        });
+                        phRosterButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = true;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                            saveToStorage("phor", "true");
+                        });
+                        xLeaveButton.style.background = buttonBackgroundColour;
+                        xPayButton.style.background = "";
+                        phRosterButton.style.background = buttonBackgroundColour;
+                    } else if(shifts[day].phOffRoster) {
+                        xPayButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = true;
+                            shifts[day].phOffRoster = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "true");
+                            saveToStorage("phor", "false");
+                        });
+                        xLeaveButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                            saveToStorage("phor", "false");
+                        });
+                        xLeaveButton.style.background = buttonBackgroundColour;
+                        xPayButton.style.background = buttonBackgroundColour;
+                        phRosterButton.style.background = "";
+                    }
+                    else {
+                        xPayButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = true;
+                            shifts[day].phOffRoster = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "true");
+                            saveToStorage("phor", "false");
+                        });
+                        phRosterButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = true;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                            saveToStorage("phor", "true");
+                        });
+                        xLeaveButton.style.background = "";
+                        xPayButton.style.background = buttonBackgroundColour;
+                        phRosterButton.style.background = buttonBackgroundColour;
+                    }
+                }
             }
             else {
-                if(shifts[day].phExtraPay) {
+                if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
                     xLeaveButton.addEventListener("click", function() {
-                        shifts[day].phExtraPay = false;
-                        reloadPageData();
-                        saveToStorage("phxp", "false");
+                        //add tooltip functionality explaining reason you cant have extra leave on a sunday
                     });
-                    xLeaveButton.style.background = buttonBackgroundColour;
+                    xLeaveButton.style.background = "#808080ad";
+                    xLeaveButton.style.color = "black";
                     xPayButton.style.background = "";
-                } else {
-                    xPayButton.addEventListener("click", function() {
-                        shifts[day].phExtraPay = true;
-                        reloadPageData();
-                        saveToStorage("phxp", "true");
-                    });
-                    xLeaveButton.style.background = "";
-                    xPayButton.style.background = buttonBackgroundColour;
+                }
+                else {
+                    if(shifts[day].phExtraPay) {
+                        xLeaveButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                        });
+                        xLeaveButton.style.background = buttonBackgroundColour;
+                        xPayButton.style.background = "";
+                    } else {
+                        xPayButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = true;
+                            reloadPageData();
+                            saveToStorage("phxp", "true");
+                        });
+                        xLeaveButton.style.background = "";
+                        xPayButton.style.background = buttonBackgroundColour;
+                    }
                 }
             }
         }
@@ -1162,6 +1252,7 @@ function updateGrade() {
         default: 
             selectedGradeRates = undefined;
     }
+    closeAllOptionsShelves();
     printShiftHours();
     updateOptionsButtons();
     updateShiftPayTable();
@@ -1195,7 +1286,7 @@ function updateShiftWorkedCount() {
         } else shifts[i].shiftNumber = 0;
 
         //determine if worked shift
-        if((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) {
+        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !shifts[i].phOffRoster) {
             shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
@@ -1644,7 +1735,10 @@ function updateShiftPayTable() {
             }
             normalHours = todayNormalHours + tomorrowNormalHours;
 
-            if(s.sick && s.hoursDecimal <= 4) {
+            if(getPayGrade() == "parttime" && s.phOffRoster) { //part-time PH-roster calculation
+                shiftPay[day].push(new PayElement("phGaz", shiftHours));
+            }
+            else if(s.sick && s.hoursDecimal <= 4) {
                 shiftPay[day].push(new PayElement("sickFull", ordinaryHours)); //if went of sick half-way through shift or earlier, pay sick full day.
             }
             else {
@@ -1659,6 +1753,7 @@ function updateShiftPayTable() {
                     phWorkedHours += tomorrowPhHours;
                     if(s.phExtraPay || day == 6 || day == 13) phXpayHours += tomorrowPhHours;
                 }
+                
                 if(phWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", phWorkedHours, s.ojt));
                     shiftPay[day].push(new PayElement("phPen50", phWorkedHours, s.ojt));
@@ -1810,7 +1905,7 @@ function updateShiftPayTable() {
                 shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours)); 
             }
         }
-        //suburbal allowance
+        //suburban allowance
         if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1));
         }
@@ -2168,6 +2263,14 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "<li>Still haven't worked out how payroll handles rounding...</li></ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>xx/02/2020 - Version 1.06<ul>"
+            + "<li>Added support for part-time public holiday shifts that have converted to PH-roster. Part-timers who have had a shift convert to PH should enter in the sign-on/off times of the original shift and select the shift options 'Public Holiday' and 'PH Roster'.</li>"
+            + "<li>Added support for Public Holidays OFF-roster. New public holiday shift option button added.</li>"
+            + "<li>Minor text adjustments for better page-display.</li>"
+            + "<li>Position of EDO pay element in 'grouped' results view better matches payslips, and is now attached to a day in 'split-view'.</li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "</ul></li>"
             + "<li>06/02/2020 - Version 1.05<ul>"
             + "<li>Changed PH Extra Pay calculation to give a fixed payment of 8 hours (7.6 hours for trainee/part-time) as opposed to time worked. EA says time worked but payroll pays the fixed amount (which is arguably fairer overall).</li>"
             + "<li>Fixed some instances where calculations were a few cents off.</li>"
