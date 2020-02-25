@@ -314,7 +314,7 @@ hr {
 
 .grid {
     display: grid;
-    grid-template-columns: 100px auto 50px 50px 45px;
+    grid-template-columns: 70px auto 50px 50px 45px;
     grid-gap: 3px;
     align-items: center;
 }

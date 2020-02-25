@@ -121,7 +121,7 @@
                 <div class="sign-off grid-heading">SIGN OFF</div>
                 <div class="grid-heading">HRS</div>
 
-                <label for="sun1-start" class="day-of-week">Sunday</label>
+                <p class="day-of-week">Sunday</p>
                 <div class="shift-options"><a class="button options-button">...</a></div>
                 <input type="tel" id="sun1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="timeChanged(0)">
                 <input type="tel" id="sun1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" class="time" oninput="timeChanged(1)">
