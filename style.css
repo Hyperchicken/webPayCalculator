@@ -178,9 +178,6 @@ p > a {
 }
 
 .options-button {
-    display: grid;
-    grid-template-columns: auto min-content;
-    width: min-content;
     background-color: #00b9e8;
     border-color: black;
     border-style: solid;
