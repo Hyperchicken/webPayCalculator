@@ -207,7 +207,7 @@ class PayElement {
                 payClassName = this.payType;
                 console.warn("PayElement.payClass: no pay-type name defined for \"" + this.payType + "\"");
         }
-        if(this.ojt) return payClassName + " (OJT)";
+        if(this.ojt) return payClassName + "*";
         else return payClassName;
     }
 
@@ -1342,6 +1342,7 @@ function updateResults() {
     let resultsViewFormat = document.forms.resultsViewForm.resultsView.value;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
+    let ojtFlag = false;
     //create grouped elements table for combined view
     let groupedElements = [];
     shiftPay.forEach(function(day){
@@ -1354,6 +1355,9 @@ function updateResults() {
                 groupedElements[elementIndex].hours += element.hours;
                 groupedElements[elementIndex].value += element.value;
             }
+            if(element.ojt) { //set OJT flag to trigger OJT footnote
+                ojtFlag = true;
+            }
         });
     });
     additionalPayments.forEach(function(element){
@@ -1364,6 +1368,9 @@ function updateResults() {
             else {
                 groupedElements[elementIndex].hours += element.hours;
                 groupedElements[elementIndex].value += element.value;
+            }
+            if(element.ojt) { //set OJT flag to trigger OJT footnote
+                ojtFlag = true;
             }
     });
     groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
@@ -1393,7 +1400,7 @@ function updateResults() {
                 let elemRate = document.createElement("td");
                 let elemHours = document.createElement("td");
                 let elemAmount = document.createElement("td");
-                elemClass.textContent = e.payClass.padEnd(14, " ");
+                elemClass.innerHTML = e.payClass.padEnd(14, " ");
                 elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
                 elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
                 elemAmount.textContent = "$" + e.value.toFixed(2);
@@ -1413,6 +1420,19 @@ function updateResults() {
                     });
                 }
             });
+            if(ojtFlag) {
+                let blankRow = document.createElement("tr");
+                let blankData = document.createElement("td");
+                blankData.classList.add("last-row");
+                blankData.setAttribute("colspan", "4");
+                blankRow.appendChild(blankData);
+                elementTable.appendChild(blankRow);
+                let row = document.createElement("tr");
+                let data =  document.createElement("td");
+                data.textContent = "* = OJT rate"
+                row.appendChild(data);
+                elementTable.appendChild(row);
+            }
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
         }
@@ -1445,7 +1465,7 @@ function updateResults() {
                         let elemRate = document.createElement("td");
                         let elemHours = document.createElement("td");
                         let elemAmount = document.createElement("td");
-                        elemClass.textContent = shiftPay[i][j].payClass;
+                        elemClass.innerHTML = shiftPay[i][j].payClass;
                         elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
                         elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
                         elemAmount.textContent = "$" + shiftPay[i][j].payAmount;
@@ -1496,7 +1516,7 @@ function updateResults() {
                         let elemHours = document.createElement("td");
                         let elemAmount = document.createElement("td");
                         elemClass.classList.add("pay-element-class");
-                        elemClass.textContent = additionalPayments[j].payClass;
+                        elemClass.innerHTML = additionalPayments[j].payClass;
                         elemRate.textContent = additionalPayments[j].rate.toFixed(4);
                         elemHours.textContent = additionalPayments[j].hours.toFixed(4);
                         elemAmount.textContent = "$" + additionalPayments[j].payAmount;
@@ -1515,6 +1535,13 @@ function updateResults() {
                             });
                         }
                 }
+            }
+            if(ojtFlag) {
+                let row = document.createElement("tr");
+                let data =  document.createElement("td");
+                data.textContent = "* = OJT rate"
+                row.appendChild(data);
+                elementTable.appendChild(row);
             }
             resultArea.appendChild(elementTable);
         }
