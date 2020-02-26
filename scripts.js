@@ -642,7 +642,7 @@ function updateOptionsButtons() {
         }
         let buttonText = document.createElement("span");
         optionsButtons[i].textContent = "";
-        buttonText.style.fontWeight = "bold";
+        //buttonText.style.fontWeight = "bold";
         optionsButtons[i].style.backgroundImage = "";
         let buttonColours = [];
         let setButton = (label, ...colours) => {
@@ -1594,7 +1594,7 @@ function updateDates() { //updates day of week fields
     else { //date valid, print dates
         if(inputDate.getDay() === 0){ //only update if a Sunday
             for(let i = 0; i < dayOfWeekFields.length; i++){
-                dayOfWeekFields[i].innerHTML = daysOfWeek[i%7] + " - " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
+                dayOfWeekFields[i].innerHTML = daysOfWeek[i%7] + " " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
                 inputDate.setDate(inputDate.getDate() + 1);
             }
         }

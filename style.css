@@ -3,7 +3,7 @@
 body {
     background-color: rgb(17, 95, 167);
     color: white;
-    font-family: Raleway, Arial, Helvetica, sans-serif;
+    font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
 
 p {
@@ -116,8 +116,7 @@ p > a {
 }
 
 .button {
-    font-size: 0.9em;
-    padding: 4px 6px;
+    padding: 2px 6px;
     color: white;
     border-width: 2px;
     border-radius: 5px;
@@ -132,7 +131,6 @@ p > a {
 
 .shelf-button {
     margin: 0px 5px 4px 5px;
-    height: 18px;
 }
 
 .grid-2-6 {
@@ -305,7 +303,7 @@ hr {
     border: 1px solid lightgrey;
     border-radius: 3px;
     margin: 7px 7px 0px 0px;
-    min-width: 370px;
+    min-width: 320px;
 }
 
 .input-container {
@@ -323,6 +321,11 @@ hr {
     width: 2.5em;
     margin: 2px auto;
     padding: 2px;
+}
+
+.day-of-week {
+    margin: 0;
+    font-size: 0.9em;
 }
 
 .invalid-time {
@@ -533,6 +536,7 @@ input[type=tel] {
     animation: fadeIn 0.3s
 }
 ul.topnav {
+    font-family: Raleway, Arial, Helvetica, sans-serif;
     list-style-type: none;
     margin: -8px -8px 0 -8px;
     padding: 0px;
