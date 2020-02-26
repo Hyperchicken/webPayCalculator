@@ -1951,7 +1951,7 @@ function updateShiftPayTable() {
             }
         }
         //suburban allowance
-        if(getPayGrade() != "trainee" && s.shiftWorkedNumber > 0) {
+        if(getPayGrade() != "trainee" && getPayGrade() != "tso" && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1));
         }
         //wasted meal
