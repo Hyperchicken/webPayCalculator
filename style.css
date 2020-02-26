@@ -251,6 +251,7 @@ p > a {
 
 .pay-grade-radio-container {
     grid-column: 2 / 6;
+    padding-left: 20px;
 }
 
 .shift-options-shelf {
