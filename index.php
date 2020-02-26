@@ -234,7 +234,7 @@
             <div class="container" id="results-container">
                 <h3>Results</h3>
                 <form class="radio-buttons" id="results-view-radios" name="resultsViewForm" oninput="updateResults()">
-                    <label class="radio-container">Grouped
+                    <label class="radio-container no-left-margin">Grouped
                         <input type="radio" name="resultsView" value="grouped" checked="checked">
                         <span class="checkmark"></span>
                     </label>

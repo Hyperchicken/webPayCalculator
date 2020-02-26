@@ -1,7 +1,7 @@
 "use strict";
 
 const calcVersion = "1.08";
-const calcLastUpdateDate = "xx/02/2020";
+const calcLastUpdateDate = "26/02/2020";
 
 //rates
 const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
@@ -2343,6 +2343,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>26/02/2020 - Version 1.08<ul>"
+            + "<li>Removed suburban allowance from TSO grade calculation.</li>"
+            + "<li>Adjusted font and page sizing to better fit smaller screens.</li>"
+            + "<li>Changed how OJT pay elements are displayed in the results.</li>"
+            + "</ul></li>"
             + "<li>19/02/2020 - Version 1.07<ul>"
             + "<li>Added TSO (PD and Training Officer) grades.</li>"
             + "<li>Fixed PH Extra Pay persisting after unselecting Public Holiday shift option.</li>"
