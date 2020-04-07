@@ -1881,13 +1881,13 @@ function updateShiftPayTable() {
                         if(tomorrowNormalHours > 0.0) { //time into saturday
                             penaltyTime -= todayNormalHours;
                             if(penaltyTime > 0.0) {
-                                shiftPay[day].push(new PayElement("wePen50", parseFloat(penaltyTime.toFixed(2)), s.ojt)); //payroll rounds WePen50 hours to 2 decimal places for some reason
+                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, s.ojt)); 
                             }
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", parseFloat(Math.min(todayNormalHours, ordinaryHours).toFixed(2)), s.ojt)); //payroll rounds WePen50 hours to 2 decimal places for some reason
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), s.ojt));
                         }
                         penaltyTime -= todayNormalHours;
                         if(tomorrowNormalHours > 0.0 && penaltyTime > 0.0) { //sunday time
