@@ -4,23 +4,26 @@ const calcVersion = "1.08";
 const calcLastUpdateDate = "26/02/2020";
 
 //rates
-const rateDates =           ["2018-01-01", "2018-07-01", "2019-01-01"];
-const spotRates =           [49.4054,      50.6405,      51.9065];
-const driverLevel1Rates =   [33.5339,      34.3723,      35.2316];
-const traineeRates =        [28.7277,      29.4459,      30.1820];
-const conversionRates =     [46.1015,      47.2541,      48.4354];
-const so8Rates =            [59.5774,      61.0668,      62.5935];
-const so9Rates =            [61.1212,      62.6493,      64.2155];
-const so10Rates =           [62.6686,      64.2353,      65.8412];
-const so11Rates =           [64.2108,      65.8161,      67.4615];
-const so12Rates =           [65.7518,      67.3956,      69.0805];
+const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01"];
+const spotRates =               [49.4054,      50.6405,      51.9065];
+const driverLevel1Rates =       [33.5339,      34.3723,      35.2316];
+const traineeRates =            [28.7277,      29.4459,      30.1820];
+const conversionRates =         [46.1015,      47.2541,      48.4354];
+const so8Rates =                [59.5774,      61.0668,      62.5935];
+const so9Rates =                [61.1212,      62.6493,      64.2155];
+const so10Rates =               [62.6686,      64.2353,      65.8412];
+const so11Rates =               [64.2108,      65.8161,      67.4615];
+const so12Rates =               [65.7518,      67.3956,      69.0805];
 
-const ojtAllowanceRates =   [9.7237,       9.9668,       10.2159];
-const mealAllowanceRates =  [11.6357,      11.9266,      12.2248];
-const suburbanAllowanceRates = [8.3644,    8.5736,       8.7879];
-const earlyShiftRates =     [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence at or between 0400 and 0530
-const afternoonShiftRates = [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence before 1800 and conclude at or after 1830.
-const nightShiftRates =     [3.8209,       3.9164,       4.0143]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
+const ojtAllowanceRates =       [9.7237,       9.9668,       10.2159];
+const mealAllowanceRates =      [11.6357,      11.9266,      12.2248];
+const suburbanAllowanceRates =  [8.3644,       8.5736,       8.7879];
+const earlyShiftRatesLoco =     [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence at or between 0400 and 0530
+const afternoonShiftRatesLoco = [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence before 1800 and conclude at or after 1830.
+const nightShiftRatesLoco =     [3.8209,       3.9164,       4.0143]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
+const earlyShiftRatesTPW =      [3.3453,       3.4290,       3.5147];
+const afternoonShiftRatesTPW =  [3.3453,       3.4290,       3.5147];
+const nightShiftRatesTPW =      [3.8969,       3.9943,       4.0942];
 
 //colours
 const normalColour = "#00b9e8";
@@ -360,13 +363,13 @@ class PayElement {
                 rate *= 2;
                 break;
             case "earlyShift":
-                rate += getEbaRate(selectedDate, earlyShiftRates);
+                rate += getEbaRate(selectedDate, selectedEarlyShiftRates);
                 break;
             case "afternoonShift":
-                rate += getEbaRate(selectedDate, afternoonShiftRates);
+                rate += getEbaRate(selectedDate, selectedAfternoonShiftRates);
                 break;
             case "nightShift":
-                rate += getEbaRate(selectedDate, nightShiftRates);
+                rate += getEbaRate(selectedDate, selectedNightShiftRates);
                 break;
             case "metroSig2":
                 rate += getEbaRate(selectedDate, suburbanAllowanceRates);
@@ -392,6 +395,9 @@ let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
 let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
 let selectedGradeRates;
+let selectedEarlyShiftRates;
+let selectedAfternoonShiftRates;
+let selectedNightShiftRates;
 let selectBonusTextbox; //keep track of elements to select in future
 let day14ph = false;
 for (let i = 0; i < 14; i++) shifts.push(new Shift()); //init shifts array with 0 length shifts
@@ -1222,6 +1228,9 @@ function updateGrade() {
     switch(getPayGrade()) {
         case "spot": 
             selectedGradeRates = spotRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
             setSaveData("paygrade", "spot");
@@ -1230,6 +1239,9 @@ function updateGrade() {
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
             setSaveData("paygrade", "level1");
@@ -1238,6 +1250,9 @@ function updateGrade() {
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
             setSaveData("paygrade", "trainee");
@@ -1246,6 +1261,9 @@ function updateGrade() {
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
             setSaveData("paygrade", "conversion");
@@ -1254,6 +1272,9 @@ function updateGrade() {
             break;
         case "parttime":
             selectedGradeRates = spotRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
             setFormColour("rgb(56, 140, 65)");
             setSaveData("paygrade", "parttime", false);
             setSaveData("paygrade", "parttime");
@@ -1261,6 +1282,9 @@ function updateGrade() {
             $("#payClassWarning").hide();
             break;
         case "tso":
+            selectedEarlyShiftRates = earlyShiftRatesTPW;
+            selectedAfternoonShiftRates = afternoonShiftRatesTPW;
+            selectedNightShiftRates = nightShiftRatesTPW;
             switch($("#tso-so").val()) {
                 case "so8":
                     selectedGradeRates = so8Rates;
