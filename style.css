@@ -434,6 +434,7 @@ hr {
 
 #date-button {
     cursor: inherit;
+    pointer-events: none;
     background: none;
     width: 60%;
     color: #fff;
