@@ -691,7 +691,7 @@ li.helpbox-topnav > a {
     }
 
     .container {
-        margin: 7px 0px 0px 0px;
+        margin: 7px -6px 0px -6px;
     }
 }
 
