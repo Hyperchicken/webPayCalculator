@@ -257,29 +257,31 @@ class PayElement {
                 + "<p><em>Public Holiday Worked.</em> Time worked on a Public Holiday, paid at <em>normal time</em>.</p>";
                 break;
             case "nonRosPH": tooltipText = "<strong>Non-Ros PH</strong>"
-                + "<p><em>Non-Rostered Public Holiday.</em></p>"
+                + "<p><em>Non-Rostered Public Holiday.</em> A day's paid leave of absence for a public holiday where you are not normally rostered to work on that day.</p>"
+                + "<ul><li>If you are not rostered to work and not available for duty (annual leave, sick for a continuous week or longer, accident leave with pay, etc), then paid leave of absence does not apply.</li>"
+                + "<li>For Easter Saturday, if you are OFF roster and not available to work (ie: underlined), then paid leave of absence does not apply.</li></ul>";
                 break;
             case "phPen50": tooltipText = "<strong>PhPen 50%</strong>"
-                + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>"
+                + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>";
                 break;
             case "wePen50": tooltipText = "<strong>WePen 50%</strong>"
-                + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>"
+                + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>";
                 break;
             case "wePen100": tooltipText = "<strong>WePen 100%</strong>"
-                + "<p><em>Weekend Penalty 100% (Sunday Time).</em> Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</p>"
+                + "<p><em>Weekend Penalty 100% (Sunday Time).</em> Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</p>";
                 break;
             case "ot150": tooltipText = "<strong>O/T1.5 Vol</strong>"
-                + "<p><em>Excess Shift Overtime x1.5.</em> Time worked on the 11th and 12th shifts of the fortnight, paid at <em>time and half</em>.</p>"
+                + "<p><em>Excess Shift Overtime x1.5.</em> Time worked on the 11th and 12th shifts of the fortnight, paid at <em>time and half</em>.</p>";
                 break;
             case "ot200": tooltipText = "<strong>O/T2.0 Vol</strong>"
-                + "<p><em>Excess Shift Overtime x2.</em> Time worked on the 13th and 14th shifts of the fortnight, or the 11th or 12th shift if it falls on a Saturday, paid at <em>double time</em>.</p>"
+                + "<p><em>Excess Shift Overtime x2.</em> Time worked on the 13th and 14th shifts of the fortnight, or the 11th or 12th shift if it falls on a Saturday, paid at <em>double time</em>.</p>";
                 break;
             case "rost+50": tooltipText = "<strong>Rost+50%</strong>"
-                + "<p><em>Excess Hours Overtime x1.5.</em> Time worked on an ordinary shift in excess of 8 hours, paid at <em>time and a half</em> for for the first three excess hours.</p>"
+                + "<p><em>Excess Hours Overtime x1.5.</em> Time worked on an ordinary shift in excess of 8 hours, paid at <em>time and a half</em> for for the first three excess hours.</p>";
                 break;
             case "rost+100": tooltipText = "<strong>Rost+100%</strong>"
                 + "<p><em>Excess Hours Overtime x2.</em> Time worked on an ordinary shift in excess of 11 hours, paid at <em>double time.</em></p>"
-                + "<p>Overtime worked on a Sunday is also paid at this rate.</p>"
+                + "<p>Overtime worked on a Sunday is also paid at this rate.</p>";
                 break;
             case "earlyShift": tooltipText = "<strong>E/Shift</strong>"
                 + "<p><em>Early Shift.</em> Penalty payment for a shift that commences at or between 0400 and 0530.</p>"
