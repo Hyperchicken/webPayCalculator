@@ -266,7 +266,7 @@ class PayElement {
                 + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>"
                 break;
             case "wePen100": tooltipText = "<strong>WePen 100%</strong>"
-                + "<p><em>Weekend Penalty 100% (Sunday Time). Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</em></p>"
+                + "<p><em>Weekend Penalty 100% (Sunday Time).</em> Penalty payment paid at <em>normal time</em> for time worked on a Sunday.</p>"
                 break;
             case "ot150": tooltipText = "<strong>O/T1.5 Vol</strong>"
                 + "<p><em>Excess Shift Overtime x1.5.</em> Time worked on the 11th and 12th shifts of the fortnight, paid at <em>time and half</em>.</p>"
