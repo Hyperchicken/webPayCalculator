@@ -1119,9 +1119,9 @@ function generateOptionsShelfButtons(day) {
         alButton.style.background = buttonBackgroundColour;
     }
 
-    //PH Credit button
+    //PH Credit Leave button
     let phcButton = document.createElement("a");
-    phcButton.textContent = "PH Credit";
+    phcButton.textContent = "PH Credit Leave";
     phcButton.setAttribute("class", "button phc-button shelf-button");
     if(shifts[day].phc) {//if phc
         phcButton.addEventListener("click", function(){
@@ -2369,6 +2369,12 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>07/04/2020 - Version 1.09<ul>"
+            + "<li>Updated shiftwork penalty rates for TSOs (unconfirmed if correct yet).</li>"
+            + "<li>Minor text adjustments around the place.</li>"
+            + "<li>Fixed incorrect rounding of hours for WePen50.</li>"
+            + "<li></li>"
+            + "</ul></li>"
             + "<li>26/02/2020 - Version 1.08<ul>"
             + "<li>Removed suburban allowance from TSO grade calculation.</li>"
             + "<li>Adjusted font and page sizing to better fit smaller screens.</li>"
