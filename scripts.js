@@ -1,29 +1,29 @@
 "use strict";
 
-const calcVersion = "1.09";
-const calcLastUpdateDate = "07/04/2020";
+const calcVersion = "1.10";
+const calcLastUpdateDate = "20/04/2020";
 
-//rates
-const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01"];
-const spotRates =               [49.4054,      50.6405,      51.9065];
-const driverLevel1Rates =       [33.5339,      34.3723,      35.2316];
-const traineeRates =            [28.7277,      29.4459,      30.1820];
-const conversionRates =         [46.1015,      47.2541,      48.4354];
-const so8Rates =                [59.5774,      61.0668,      62.5935];
-const so9Rates =                [61.1212,      62.6493,      64.2155];
-const so10Rates =               [62.6686,      64.2353,      65.8412];
-const so11Rates =               [64.2108,      65.8161,      67.4615];
-const so12Rates =               [65.7518,      67.3956,      69.0805];
+//rates                                                                     // \/ set to EA2019 start date
+const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-01", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"];
+const spotRates =               [49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
+const driverLevel1Rates =       [33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
+const traineeRates =            [28.7277,      29.4459,      30.1820,      31.2459,      31.5584,      32.3473,      32.6708,      33.4876,      33.8225,      34.6680];
+const conversionRates =         [46.1015,      47.2541,      48.4354,      50.1427,      50.6442,      51.9103,      52.4294,      53.7401,      54.2775,      55.6345];
+const so8Rates =                [59.5774,      61.0668,      62.5935,      64.7999,      65.4479,      67.0841,      67.7550,      69.4488,      70.1433,      71.8969];
+const so9Rates =                [61.1212,      62.6493,      64.2155,      66.4791,      67.1439,      68.8225,      69.5107,      71.2485,      71.9610,      73.7600];
+const so10Rates =               [62.6686,      64.2353,      65.8412,      68.1621,      68.8437,      70.5648,      71.2705,      73.0522,      73.7827,      75.6273];
+const so11Rates =               [64.2108,      65.8161,      67.4615,      69.8395,      70.5379,      72.3014,      73.0244,      74.8500,      75.5985,      77.4884];
+const so12Rates =               [65.7518,      67.3956,      69.0805,      71.5156,      72.2307,      74.0365,      74.7769,      76.6463,      77.4128,      79.3481];
 
-const ojtAllowanceRates =       [9.7237,       9.9668,       10.2159];
-const mealAllowanceRates =      [11.6357,      11.9266,      12.2248];
-const suburbanAllowanceRates =  [8.3644,       8.5736,       8.7879];
-const earlyShiftRatesLoco =     [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence at or between 0400 and 0530
-const afternoonShiftRatesLoco = [3.2508,       3.3321,       3.4154]; //a shift which is rostered to commence before 1800 and conclude at or after 1830.
-const nightShiftRatesLoco =     [3.8209,       3.9164,       4.0143]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
-const earlyShiftRatesTPW =      [3.3453,       3.4290,       3.5147];
-const afternoonShiftRatesTPW =  [3.3453,       3.4290,       3.5147];
-const nightShiftRatesTPW =      [3.8969,       3.9943,       4.0942];
+const ojtAllowanceRates =       [9.7237,       9.9668,       10.2159,      10.5760,      10.6818,      10.9488,      11.0583,      11.3348,      11.4481,      11.7343];
+const mealAllowanceRates =      [11.6357,      11.9266,      12.2248,      12.6557,      12.7823,      13.1018,      13.2329,      13.5637,      13.6993,      14.0418];
+const suburbanAllowanceRates =  [8.3644,       8.5736,       8.7879,       9.0977,       9.1887,       9.4184,       9.5126,       9.7504,       9.8479,       10.0941];
+const earlyShiftRatesLoco =     [3.2508,       3.3321,       3.4154,       3.5358,       3.5712,       3.6604,       3.6970,       3.7895,       3.8274,       3.9230]; //a shift which is rostered to commence at or between 0400 and 0530
+const afternoonShiftRatesLoco = [3.2508,       3.3321,       3.4154,       3.5358,       3.5712,       3.6604,       3.6970,       3.7895,       3.8274,       3.9230]; //a shift which is rostered to commence before 1800 and conclude at or after 1830.
+const nightShiftRatesLoco =     [3.8209,       3.9164,       4.0143,       4.1558,       4.1974,       4.3023,       4.3453,       4.4540,       4.4985,       4.6110]; //a shift which is rostered to commence at or between 1800 and 0359 hours.
+const earlyShiftRatesTPW =      [3.3453,       3.4290,       3.5147,       3.6386,       3.6750,       3.7669,       3.8045,       3.8996,       3.9386,       4.0371];
+const afternoonShiftRatesTPW =  [3.3453,       3.4290,       3.5147,       3.6386,       3.6750,       3.7669,       3.8045,       3.8996,       3.9386,       4.0371];
+const nightShiftRatesTPW =      [3.8969,       3.9943,       4.0942,       4.2385,       4.2809,       4.3879,       4.4318,       4.5426,       4.5880,       4.7027];
 
 //colours
 const normalColour = "#00b9e8";
