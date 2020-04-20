@@ -4,7 +4,7 @@ const calcVersion = "1.10";
 const calcLastUpdateDate = "20/04/2020";
 
 //rates                                                                     // \/ set to EA2019 start date
-const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-01", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"];
+const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-01", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"]; //the date which the corresponding rate begins
 const spotRates =               [49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
 const driverLevel1Rates =       [33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
 const traineeRates =            [28.7277,      29.4459,      30.1820,      31.2459,      31.5584,      32.3473,      32.6708,      33.4876,      33.8225,      34.6680];
@@ -157,7 +157,7 @@ class PayElement {
             "rost+100",
             "nonRosPH",
             "phCredit",
-            "bonusPayment", 
+            "bonusPayment",
             "earlyShift",
             "afternoonShift",
             "nightShift",
@@ -394,7 +394,6 @@ class PayElement {
     }
 }
 
-
 //initialise variables
 let shifts = [];
 let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
@@ -408,8 +407,6 @@ let day14ph = false;
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-
 
 //init on document load
 $(document).ready(function() { 
@@ -2373,6 +2370,13 @@ function topHelpBoxPreset(presetName) {
             + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>07/04/2020 - Version 1.10<ul>"
+            + "<li>EA 2019-2023 Update 🥈</li>"
+            + "<li>Added the new pay rates from EA 2019-2023</li>"
+            + "<li>Calculator now correctly handles a change of pay-rate within a fortnight. For example, a pay increase is due on 01-01-2021 which is mid pay-cycle; the calculator will now properly calculate the correct rate on a per-day basis instead of applying the pre-payrise rate for the whole fortnight.</li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "</ul></li>"
             + "<li>07/04/2020 - Version 1.09<ul>"
             + "<li>Updated shiftwork penalty rates for TSOs (unconfirmed if correct yet).</li>"
             + "<li>Minor text adjustments around the place.</li>"
