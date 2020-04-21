@@ -221,7 +221,7 @@ class PayElement {
             case "normal": 
                 tooltipText = "<strong>Normal</strong>"
                 + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
-                + "<ul><li>Ordinary hours are up to 8 hours per day for non-trainees and 7.6 hours for trainees.</li>"
+                + "<ul><li>Ordinary hours are up to 8 hours per day (7.6 hours for trainees and part-time).</li>"
                 + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime, public holidays, weekends, etc).</li></ul>";
                 break;
             case "guarantee": 
@@ -331,11 +331,10 @@ class PayElement {
     }
 
     get rate() {
-        let wcDate = $("#week-commencing-date").datepicker("getDate");
-        let selectedDate = new Date(wcDate.getFullYear() + "-" + (wcDate.getMonth() + 1) + "-" + wcDate.getDate());
-        selectedDate.setDate(selectedDate.getDate() + this.wcDateOffset);
+        let shiftDate = $("#week-commencing-date").datepicker("getDate").stripTime();
+        shiftDate.setDate(shiftDate.getDate() + this.wcDateOffset);
         let rate = 0;
-        if(this.ojt) rate += getEbaRate(selectedDate, ojtAllowanceRates); //apply OJT allowance
+        if(this.ojt) rate += getEbaRate(shiftDate, ojtAllowanceRates); //apply OJT allowance
         switch(this.payType) {
             case "normal": //Normal rate
             case "sickFull":
@@ -350,40 +349,40 @@ class PayElement {
             case "annualLeave":
             case "phCredit":
             case "bonusPayment":
-                rate += getEbaRate(selectedDate, selectedGradeRates); //single rate
+                rate += getEbaRate(shiftDate, selectedGradeRates); //single rate
                 break;
             case "wePen50":
             case "phPen50":
-                rate += getEbaRate(selectedDate, selectedGradeRates); //half rate
+                rate += getEbaRate(shiftDate, selectedGradeRates); //half rate
                 rate /= 2;
                 break;
             case "ot150":
             case "rost+50":
-                rate += getEbaRate(selectedDate, selectedGradeRates); //time and a half
+                rate += getEbaRate(shiftDate, selectedGradeRates); //time and a half
                 rate *= 1.5;
                 break;
             case "ot200":
             case "rost+100":
-                rate += getEbaRate(selectedDate, selectedGradeRates); //double time
+                rate += getEbaRate(shiftDate, selectedGradeRates); //double time
                 rate *= 2;
                 break;
             case "earlyShift":
-                rate += getEbaRate(selectedDate, selectedEarlyShiftRates);
+                rate += getEbaRate(shiftDate, selectedEarlyShiftRates);
                 break;
             case "afternoonShift":
-                rate += getEbaRate(selectedDate, selectedAfternoonShiftRates);
+                rate += getEbaRate(shiftDate, selectedAfternoonShiftRates);
                 break;
             case "nightShift":
-                rate += getEbaRate(selectedDate, selectedNightShiftRates);
+                rate += getEbaRate(shiftDate, selectedNightShiftRates);
                 break;
             case "metroSig2":
-                rate += getEbaRate(selectedDate, suburbanAllowanceRates);
+                rate += getEbaRate(shiftDate, suburbanAllowanceRates);
                 break;
             case "mealAllowance":
-                rate += getEbaRate(selectedDate, mealAllowanceRates);
+                rate += getEbaRate(shiftDate, mealAllowanceRates);
                 break;
             case "leaveLoading":
-                rate += getEbaRate(selectedDate, selectedGradeRates); //20%
+                rate += getEbaRate(shiftDate, selectedGradeRates); //20%
                 rate *= 0.2;
                 break;
             default:
@@ -590,14 +589,21 @@ Date.prototype.getWeek = function() {
     // Adjust to Thursday in week 1 and count number of weeks from date to week1.
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
                           - 3 + (week1.getDay() + 6) % 7) / 7);
-  }
+}
   
   // Returns the four-digit year corresponding to the ISO week of the date.
-  Date.prototype.getWeekYear = function() {
+Date.prototype.getWeekYear = function() {
     var date = new Date(this.getTime());
     date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
     return date.getFullYear();
-  }
+}
+
+//returns the date with the time set to zero.
+Date.prototype.stripTime = function() {
+    var date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
 
 //toggles if Day 14 (sunday after last day of fortnight) is a public holiday
 function toggleDay14ph() {
@@ -1733,9 +1739,9 @@ function validateTimeFields() {
 }
 
 function getEbaRate(date, rates) {
-    let shiftDate = Date.parse(date);
+    let shiftDate = date.stripTime();
     for(let i = rates.length - 1; i >= 0; i--) {
-        if(shiftDate >= Date.parse(rateDates[i])){
+        if(shiftDate >= new Date(rateDates[i]).stripTime()){
             return rates[i];
         }
     }
