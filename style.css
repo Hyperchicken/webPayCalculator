@@ -323,8 +323,8 @@ hr {
     padding: 2px;
 }
 
-.day-of-week {
-    margin: 0;
+div.day-of-week > p {
+    margin: 0.25em 0;
 }
 
 .invalid-time {
