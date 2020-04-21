@@ -1645,6 +1645,22 @@ function updateResults() {
 function updateDates() { //updates day of week fields
     let dayOfWeekFields = document.querySelectorAll(".day-of-week");
     let inputDate = $("#week-commencing-date").datepicker("getDate");
+    let checkPublicHoliday = (date) => {
+        let checkDate = date.stripTime();
+        if(publicHolidays.length > 0) {
+            for(let i = 0; i < publicHolidays.length; i++) {
+                for(let j = 0; j < publicHolidays[i].dates.length; j++) {
+                    if(checkDate.getTime() == new Date(publicHolidays[i].dates[j]).stripTime().getTime()) {
+                        return i;
+                    }
+                }
+            }
+        }
+        else {
+            console.warn("Unable to access publicHolidays");
+        }
+        return -1;
+    }
     if(!inputDate){ //if date invalid, blank the dates
         for(let i = 0; i < dayOfWeekFields.length; i++){
             dayOfWeekFields[i].innerHTML = daysOfWeek[i%7];
@@ -1653,7 +1669,11 @@ function updateDates() { //updates day of week fields
     else { //date valid, print dates
         if(inputDate.getDay() === 0){ //only update if a Sunday
             for(let i = 0; i < dayOfWeekFields.length; i++){
-                dayOfWeekFields[i].innerHTML = daysOfWeek[i%7] + " " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1);
+                dayOfWeekFields[i].innerHTML = "<p>" + daysOfWeek[i%7] + " " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1) + "</p>";
+                let phIndex = checkPublicHoliday(inputDate);
+                if(phIndex >= 0) {
+                    console.info(publicHolidays[phIndex].name); //////////////////implement PH indicator
+                }
                 inputDate.setDate(inputDate.getDate() + 1);
             }
         }
@@ -1741,7 +1761,7 @@ function validateTimeFields() {
 function getEbaRate(date, rates) {
     let shiftDate = date.stripTime();
     for(let i = rates.length - 1; i >= 0; i--) {
-        if(shiftDate >= new Date(rateDates[i]).stripTime()){
+        if(shiftDate.getTime() >= new Date(rateDates[i]).stripTime().getTime()){
             return rates[i];
         }
     }
