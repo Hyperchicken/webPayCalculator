@@ -1,7 +1,7 @@
 /*
     Database of all Victorian public holidays
 
-    Version: 1.0
+    Version: 1.00
 
     PHs from 2020 to 2023
 
