@@ -324,7 +324,13 @@ hr {
 }
 
 div.day-of-week > p {
-    margin: 0.25em 0;
+    margin: 0;
+}
+
+.subtext {
+    font-size: 0.65em;
+    margin-top: -2px !important;
+    color: #55ff25;
 }
 
 .invalid-time {

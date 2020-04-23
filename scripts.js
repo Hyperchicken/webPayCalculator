@@ -1672,7 +1672,11 @@ function updateDates() { //updates day of week fields
                 dayOfWeekFields[i].innerHTML = "<p>" + daysOfWeek[i%7] + " " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1) + "</p>";
                 let phIndex = checkPublicHoliday(inputDate);
                 if(phIndex >= 0) {
-                    console.info(publicHolidays[phIndex].name); //////////////////implement PH indicator
+                    console.info(publicHolidays[phIndex].name); 
+                    dayOfWeekFields[i].innerHTML += "<p class='subtext'>Public Holiday</p>";
+                    dayOfWeekFields[i].addEventListener("click", function(){
+                        topHelpBox(publicHolidays[phIndex].infoTitle, publicHolidays[phIndex].infoText);
+                    });
                 }
                 inputDate.setDate(inputDate.getDate() + 1);
             }
