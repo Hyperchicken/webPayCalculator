@@ -85,7 +85,7 @@ const publicHolidays = [
             "2023-04-25"
         ],
         infoTitle: "ANZAC Day Public Holiday",
-        infoText: "<ul><li>ANZAC Day public holiday is always observed on the 25th of April.</li><li>The public holiday does not move to a weekday when ANZAC Day falls on a weekend.</li><li>If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are OFF-roster.</li><li>If you are OFF roster, you should <em>not</em> select the Public Holiday shift option.</li><br>Excerpt from Metro EA 2015:<blockquote>For full-time Employees who are not rostered to work and not required to work on the Public Holiday, the provision of paid leave of absence will not be made for the Public Holiday for Easter Saturday, or Anzac Day when it falls on a Saturday or Sunday.</blockquote>"
+        infoText: "<p><i class='fas fa-exclamation-triangle fa-lg yellow-colour'></i> If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are OFF-roster.</p><ul><li>ANZAC Day public holiday is always observed on the 25th of April.</li><li>The public holiday does not move to a weekday when ANZAC Day falls on a weekend.</li><li>If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are OFF-roster.</li><li>If you are OFF roster, you should <em>not</em> select the Public Holiday shift option.</li><br>Excerpt from Metro EA 2015:<blockquote>For full-time Employees who are not rostered to work and not required to work on the Public Holiday, the provision of paid leave of absence will not be made for the Public Holiday for Easter Saturday, or Anzac Day when it falls on a Saturday or Sunday.</blockquote>"
     },
     {
         name: "Queen's Birthday",
