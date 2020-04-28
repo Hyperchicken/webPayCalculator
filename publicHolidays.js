@@ -5,7 +5,7 @@
 
     PHs from 2020 to 2023
 
-    Dates must be a date object with format YYYY-MM-DD
+    Dates must in format YYYY-MM-DD
 */
 const publicHolidays = [
     {
