@@ -656,7 +656,6 @@ function updateOptionsButtons() {
         }
         let buttonText = document.createElement("span");
         optionsButtons[i].textContent = "";
-        //buttonText.style.fontWeight = "bold";
         optionsButtons[i].style.backgroundImage = "";
         let buttonColours = [];
         let setButton = (label, ...colours) => {
@@ -1664,6 +1663,8 @@ function updateDates() { //updates day of week fields
     if(!inputDate){ //if date invalid, blank the dates
         for(let i = 0; i < dayOfWeekFields.length; i++){
             dayOfWeekFields[i].innerHTML = daysOfWeek[i%7];
+            dayOfWeekFields[i].classList.remove("day-of-week-button");
+            $(dayOfWeekFields[i]).off();
         }
     }
     else { //date valid, print dates
@@ -1673,10 +1674,16 @@ function updateDates() { //updates day of week fields
                 let phIndex = checkPublicHoliday(inputDate);
                 if(phIndex >= 0) {
                     console.info(publicHolidays[phIndex].name); 
+                    dayOfWeekFields[i].classList.add("day-of-week-button");
                     dayOfWeekFields[i].innerHTML += "<p class='subtext'>Public Holiday</p>";
-                    dayOfWeekFields[i].addEventListener("click", function(){
+                    $(dayOfWeekFields[i]).on("click", () => {
                         topHelpBox(publicHolidays[phIndex].infoTitle, publicHolidays[phIndex].infoText);
+                        window.location.replace("#topHelpDiv");
                     });
+                }
+                else {
+                    dayOfWeekFields[i].classList.remove("day-of-week-button");
+                    $(dayOfWeekFields[i]).off();
                 }
                 inputDate.setDate(inputDate.getDate() + 1);
             }

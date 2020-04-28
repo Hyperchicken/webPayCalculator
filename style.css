@@ -123,6 +123,7 @@ p > a {
     border-style:  solid;
     display: inline-block;
     cursor: pointer;
+    user-select: none;
 }
 
 .button-icon {
@@ -323,8 +324,31 @@ hr {
     padding: 2px;
 }
 
+.day-of-week {
+    user-select: none;
+}
+
 div.day-of-week > p {
     margin: 0;
+}
+
+.day-of-week-button {
+    border-style: outset;
+    border-width: 1px;
+    border-radius: 5px;
+    background-color: #0004;
+    padding: 0 1px 1px 3px;
+    margin-left: -3px;
+    cursor: pointer;
+}
+
+.day-of-week-button:hover {
+    background-color: #0008;
+}
+
+.day-of-week-button:active:hover {
+    background-color: #fff8;
+    border-style: inset;
 }
 
 .subtext {
