@@ -1,5 +1,11 @@
+/*
+    Web-based Pay Calculator by Petar Stankovic
+    scripts.js - All of the calculator logic and page interactiveness is programmed into this file.
+*/
+
 "use strict";
 
+//version
 const calcVersion = "1.10";
 const calcLastUpdateDate = "20/04/2020";
 
@@ -36,6 +42,10 @@ const bonusColour = "#e79e00";
 const alColour = "#1c4ab3";
 const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
+
+//define a fortnightly pay-cycle to start on either an odd or even week of a given year
+const evenPayWeekYears = [2018, 2019, 2020];
+const oddPayWeekYears = [2021, 2022, 2023, 2024, 2025];
 
 //define Classes
 class Shift {
@@ -418,8 +428,6 @@ $(document).ready(function() {
         });
     }
     //setup datepicker
-    let evenPayWeekYears = [2018, 2019, 2020];
-    let oddPayWeekYears = [2021, 2022, 2023, 2024, 2025];
     let startDate = () => {
         let todaysDate = new Date();
         let daysDifference = (todaysDate.getDay()) * -1;
