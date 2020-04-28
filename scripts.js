@@ -3,8 +3,8 @@
 const calcVersion = "1.10";
 const calcLastUpdateDate = "20/04/2020";
 
-//rates                                                                     // \/ set to EA2019 start date
-const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-01", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"]; //the date which the corresponding rate begins
+//rates                                                                       \/ set to EA2019 start date
+const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-20", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"]; //the date which the corresponding rate begins
 const spotRates =               [49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
 const driverLevel1Rates =       [33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
 const traineeRates =            [28.7277,      29.4459,      30.1820,      31.2459,      31.5584,      32.3473,      32.6708,      33.4876,      33.8225,      34.6680];
@@ -419,7 +419,7 @@ $(document).ready(function() {
     }
     //setup datepicker
     let evenPayWeekYears = [2018, 2019, 2020];
-    let oddPayWeekYears = [2021];
+    let oddPayWeekYears = [2021, 2022, 2023, 2024, 2025];
     let startDate = () => {
         let todaysDate = new Date();
         let daysDifference = (todaysDate.getDay()) * -1;
