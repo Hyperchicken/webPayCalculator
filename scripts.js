@@ -137,7 +137,7 @@ class PayElement {
             this.payType = payType;
             this.hours = parseFloat(hours.toFixed(4));
             this.ojt = ojt;
-            this.wcDateOffset = wcDateOffset;
+            this.wcDateOffset = wcDateOffset; //week commencing date offset. the number of days this shift is offset from the week-commencing date
             this.value = this.calculateValue(); //used to keep track of the pay amount when grouping elements together
     }
 
@@ -270,7 +270,8 @@ class PayElement {
             case "nonRosPH": tooltipText = "<strong>Non-Ros PH</strong>"
                 + "<p><em>Non-Rostered Public Holiday.</em> A day's paid leave of absence for a public holiday where you are not normally rostered to work on that day.</p>"
                 + "<ul><li>If you are not rostered to work and not available for duty (annual leave, sick for a continuous week or longer, accident leave with pay, etc), then paid leave of absence does not apply.</li>"
-                + "<li>For Easter Saturday, if you are OFF roster and not available to work (ie: underlined), then paid leave of absence does not apply.</li></ul>";
+                + "<li>For Easter Saturday, if you are OFF roster and not available to work (ie: underlined), then paid leave of absence does not apply.</li>"
+                + "<li>For ANZAC Day, if ANZAC Day falls on a Saturday or a Sunday and you are OFF roster (regardless if you're underlined/available to work or not), then paid leave of absence does not apply.</li></ul>";
                 break;
             case "phPen50": tooltipText = "<strong>PhPen 50%</strong>"
                 + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>";
@@ -1676,14 +1677,15 @@ function updateDates() { //updates day of week fields
         }
     }
     else { //date valid, print dates
-        if(inputDate.getDay() === 0){ //only update if a Sunday
+        if(inputDate.getDay() === 0){ //only update if week commencing dat is a Sunday (first day of the week)
             for(let i = 0; i < dayOfWeekFields.length; i++){
                 dayOfWeekFields[i].innerHTML = "<p>" + daysOfWeek[i%7] + " " + inputDate.getDate() + "/" + (inputDate.getMonth() + 1) + "</p>";
+                
+                //public holiday detection
                 let phIndex = checkPublicHoliday(inputDate);
                 if(phIndex >= 0) {
-                    console.info(publicHolidays[phIndex].name); 
                     dayOfWeekFields[i].classList.add("day-of-week-button");
-                    dayOfWeekFields[i].innerHTML += "<p class='subtext'>Public Holiday</p>";
+                    dayOfWeekFields[i].innerHTML += "<p class='subtext'>" + publicHolidays[phIndex].name + "</p>";
                     $(dayOfWeekFields[i]).on("click", () => {
                         topHelpBox(publicHolidays[phIndex].infoTitle, publicHolidays[phIndex].infoText);
                         window.location.replace("#topHelpDiv");
@@ -2365,7 +2367,7 @@ function topHelpBoxPreset(presetName) {
             iconCode = "<i class=\"button-icon fas fa-lg fa-angle-down\"></i>";
             boldCode = "<span style=\"font-weight: bold;\">";
         }
-        return "<a class=\"button\" style=\"background-color: " + colour + "; display: inline-block; border: none; cursor: default;\">" + boldCode + text + "</span>" + iconCode + "</a>"
+        return "<a class=\"button\" style=\"background-color: " + colour + "; display: inline-block; border: none; cursor: default;\">" + boldCode + text + "</span>" + iconCode + "</a>";
     }
     switch(presetName) {
         case "gettingStarted":

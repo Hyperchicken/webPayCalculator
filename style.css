@@ -6,6 +6,10 @@ body {
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
 
+blockquote {
+    font-style: italic;
+}
+
 p {
     margin: 0.5em 0;
 }
@@ -688,6 +692,12 @@ li.helpbox-topnav > a {
 
 #printViewDiv {
     font-family: 'Courier New', Courier, monospace;
+}
+
+.warning-text {
+    border-style: solid;
+    border-color: #ffe300;
+    padding: 5px;
 }
 
 /* Add animation (fade in the popup) */

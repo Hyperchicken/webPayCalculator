@@ -7,6 +7,10 @@
 
     Dates must in format YYYY-MM-DD
 */
+
+const phDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">Public Holiday</span></a>";
+const phDummyButtonHollow = "<a class=\"button\" style=\"background-color: #5554; display: inline-block; border: solid; border-color: #44c600; border-width: 2px; cursor: default;\">Public Holiday</span></a>";
+
 const publicHolidays = [
     {
         name: "New Year's Day",
@@ -30,7 +34,7 @@ const publicHolidays = [
             "2023-01-26"
         ],
         infoTitle: "Australia Day Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>Australia Day is celebrated on the 26th of January each year.</li><li>If Australia Day falls on a weekend, the public holiday is subtituted to the following weekday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Labour Day",
@@ -41,7 +45,7 @@ const publicHolidays = [
             "2023-03-13"
         ],
         infoTitle: "Labour Day Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Labour Day public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Good Friday",
@@ -52,7 +56,7 @@ const publicHolidays = [
             "2023-04-07"
         ],
         infoTitle: "Good Friday Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Good Friday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Easter Saturday",
@@ -63,7 +67,7 @@ const publicHolidays = [
             "2023-04-08"
         ],
         infoTitle: "Easter Saturday Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<p class='warning-text'><i class='fas fa-exclamation-triangle fa-lg yellow-colour'></i>If you are underlined on the roster or have otherwise indicated that you are not available to work on Easter Saturday, paid leave of absence does not apply.</p><ul><li>If you are rostered to work Easter Saturday, or your shift has converted to PH on the roster, set the " + phDummyButton + " shift option.</li><li>If you are rostered OFF but not underlined, you should also set the " + phDummyButton + " shift option.</li><li>If you're not rostered to work and are either underlined or have otherwise indicated that you are not availble to work on Easter Saturday, you should <strong>not</strong> set the " + phDummyButtonHollow + " shift option.</li></ul><br><br>Excerpt from Metro EA 2015:<blockquote>4.17 Easter Saturday<br><br>4.17.1 Paid leave of absence will be made for the Easter Saturday Public Holiday to Employees who are rostered to work shifts over a seven (7) day cycle and are otherwise available to work, but are booked off.<br><br>4.17.2 Payment in these circumstances shall be in accordance with the following:<br><br>(a) Paid leave of absence does not count as a shift for the purpose of calculating Excess Shift entitlements;<br><br>(b) The provision shall not apply to Employees that are unavailable for duty on the day or days preceding the Public Holiday due to them being either on Annual Leave, Personal Leave, Long Service Leave, Compassionate/Bereavement Leave, Parental Leave, leave without pay or unable to attend work due to injury;<br><br>(c) Employees undertaking alternative duties that require them to work on a Monday to Friday basis shall not be entitled to the Easter Saturday Public Holiday as it occurs on a day when they would not be expected to work.</blockquote>"
     },
     {
         name: "Easter Monday",
@@ -74,7 +78,7 @@ const publicHolidays = [
             "2023-04-10"
         ],
         infoTitle: "Easter Monday Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Easter Monday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "ANZAC Day",
@@ -85,7 +89,7 @@ const publicHolidays = [
             "2023-04-25"
         ],
         infoTitle: "ANZAC Day Public Holiday",
-        infoText: "<p><i class='fas fa-exclamation-triangle fa-lg yellow-colour'></i> If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are OFF-roster.</p><ul><li>ANZAC Day public holiday is always observed on the 25th of April.</li><li>The public holiday does not move to a weekday when ANZAC Day falls on a weekend.</li><li>If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are OFF-roster.</li><li>If you are OFF roster, you should <em>not</em> select the Public Holiday shift option.</li><br>Excerpt from Metro EA 2015:<blockquote>For full-time Employees who are not rostered to work and not required to work on the Public Holiday, the provision of paid leave of absence will not be made for the Public Holiday for Easter Saturday, or Anzac Day when it falls on a Saturday or Sunday.</blockquote>"
+        infoText: "<p class='warning-text'><i class='fas fa-exclamation-triangle fa-lg yellow-colour'></i> When ANZAC Day falls on a <strong>Saturday</strong> or a <strong>Sunday</strong>, paid leave of absence does not apply if you are not normally rostered to work on this day (ie: OFF-roster).</p><ul><li>ANZAC Day public holiday is always observed on the 25th of April.</li><li>ANZAC Day public holiday does not move to a weekday when ANZAC Day falls on a weekend.</li><li>If ANZAC Day falls on a Saturday or a Sunday, paid leave of absence does not apply if you are not normally rostered to work on this day (ie: OFF-roster).</li><li>If you are OFF roster, you should <strong>not</strong> select the " + phDummyButtonHollow + " shift option.</li><br>Excerpt from Metro EA 2015 section 2.15g:<blockquote>For full-time Employees who are not rostered to work and not required to work on the Public Holiday, the provision of paid leave of absence will not be made for the Public Holiday for Easter Saturday, or Anzac Day when it falls on a Saturday or Sunday.</blockquote>"
     },
     {
         name: "Queen's Birthday",
