@@ -1754,6 +1754,7 @@ function validateTimeFields() {
         if(!timeField[i*2].checkValidity() || !timeField[(i*2)+1].checkValidity()) {
             hoursField[i].innerHTML = "";
             hoursField[i].appendChild(errorSpan);
+            errorPopup.classList.add("show");
         }
         if(!timeField[i*2].checkValidity()) {
             timeField[i*2].style.backgroundColor = "#ffd4d4";
@@ -1773,6 +1774,7 @@ function validateTimeFields() {
             hoursField[i].innerHTML = "";
             errorPopup.textContent = "Sign-on and sign-off time cannot be the same"
             hoursField[i].appendChild(errorSpan);
+            errorPopup.classList.add("show");
         }
     }
 }
