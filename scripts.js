@@ -159,6 +159,7 @@ class PayElement {
             "phWorked",
             "edo",
             "phPen50",
+            "phPen150",
             "wePen50",
             "wePen100",
             "ot150",
@@ -202,6 +203,7 @@ class PayElement {
             case "phWorked": payClassName = "PH Worked"; break;
             case "nonRosPH": payClassName = "NON ROS PH"; break;
             case "phPen50": payClassName = "PhPen 50%"; break;
+            case "phPen150": payClassName = "PhPen 150%"; break
             case "wePen50": payClassName = "WePen 50%"; break;
             case "wePen100": payClassName = "WePen 100%"; break;
             case "ot150": payClassName = "O/T1.5 Vol"; break;
@@ -275,6 +277,9 @@ class PayElement {
                 break;
             case "phPen50": tooltipText = "<strong>PhPen 50%</strong>"
                 + "<p><em>Public Holiday Penalty +50%.</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a public holiday.</p>";
+                break;
+            case "phPen150": tooltipText = "<strong>PhPen 150%</strong>"
+                + "<p><em>Public Holiday Penalty +150%.</em> Penalty payment paid at <em>150% of normal time</em> for time worked on a public holiday that falls on a Sunday.</p>";
                 break;
             case "wePen50": tooltipText = "<strong>WePen 50%</strong>"
                 + "<p><em>Weekend Penalty 50% (Saturday Time).</em> Penalty payment paid at <em>50% of normal time</em> for time worked on a Saturday.</p>";
@@ -369,6 +374,7 @@ class PayElement {
                 break;
             case "ot150":
             case "rost+50":
+            case "phPen150":
                 rate += getEbaRate(shiftDate, selectedGradeRates); //time and a half
                 rate *= 1.5;
                 break;
