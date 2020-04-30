@@ -6,7 +6,7 @@
 "use strict";
 
 //version
-const calcVersion = "1.11";
+const calcVersion = "1.12";
 const calcLastUpdateDate = "30/04/2020";
 
 //rates                                                                       \/ set to EA2019 start date
@@ -1897,23 +1897,36 @@ function updateShiftPayTable() {
             }
             else {
                 //Public Holidays
-                let phWorkedHours = 0.0;
+                let normalPhWorkedHours = 0.0;
+                let sundayPhWorkedHours = 0.0;
                 let phXpayHours = 0.0; //used for EA interpretation of calculation. Not used for payroll version.
                 if(todayPhHours > 0.0) {
-                    phWorkedHours += todayPhHours;
-                    if(s.phExtraPay || day == 0 || day == 7) phXpayHours += todayPhHours;
+                    if (day == 0 || day == 7) {
+                        sundayPhWorkedHours += todayPhHours;
+                    }
+                    else {
+                        normalPhWorkedHours += todayPhHours;
+                    }
                 }
                 if(tomorrowPhHours > 0.0) {
-                    phWorkedHours += tomorrowPhHours;
-                    if(s.phExtraPay || day == 6 || day == 13) phXpayHours += tomorrowPhHours;
+                    if (day == 6 || day == 13) {
+                        sundayPhWorkedHours += tomorrowPhHours;
+                    }
+                    else {
+                        normalPhWorkedHours += tomorrowPhHours;
+                    }
                 }
                 
-                if(phWorkedHours > 0.0) {
-                    shiftPay[day].push(new PayElement("phWorked", phWorkedHours, day, s.ojt));
-                    shiftPay[day].push(new PayElement("phPen50", phWorkedHours, day, s.ojt));
+                if(normalPhWorkedHours > 0.0) {
+                    shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, s.ojt));
+                    shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, s.ojt));
+                }
+                if(sundayPhWorkedHours > 0.0) {
+                    shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, s.ojt));
+                    shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, s.ojt));
                 }
                 //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt)); //EA version: XPay based on hours worked
-                if(phWorkedHours > 0.0 && s.phExtraPay) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, s.ojt)); //payroll version: XPay based on ordinary hours
+                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, s.ojt)); //payroll version: XPay based on ordinary hours
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
@@ -2426,6 +2439,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>30/04/2020 - Version 1.12<ul>"
+            + "<li>Improved Sunday public holiday calculation.</li>"
+            + "</ul></li>"
             + "<li>30/04/2020 - Version 1.11<ul>"
             + "<li>Added Easter Sunday as a public holiday.</li>"
             + "</ul></li>"
