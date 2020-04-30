@@ -1,7 +1,7 @@
 /*
     Database of all Victorian public holidays
 
-    Version: 1.00
+    Version: 1.01
 
     PHs from 2020 to 2023
 
@@ -68,6 +68,17 @@ const publicHolidays = [
         ],
         infoTitle: "Easter Saturday Public Holiday",
         infoText: "<p class='warning-text'><i class='fas fa-exclamation-triangle fa-lg yellow-colour'></i>If you are underlined on the roster or have otherwise indicated that you are not available to work on Easter Saturday, paid leave of absence does not apply.</p><ul><li>If you are rostered to work Easter Saturday, or your shift has converted to PH on the roster, set the " + phDummyButton + " shift option.</li><li>If you are rostered OFF but not underlined, you should also set the " + phDummyButton + " shift option.</li><li>If you're not rostered to work and are either underlined or have otherwise indicated that you are not availble to work on Easter Saturday, you should <strong>not</strong> set the " + phDummyButtonHollow + " shift option.</li></ul><br><br>Excerpt from Metro EA 2015:<blockquote>4.17 Easter Saturday<br><br>4.17.1 Paid leave of absence will be made for the Easter Saturday Public Holiday to Employees who are rostered to work shifts over a seven (7) day cycle and are otherwise available to work, but are booked off.<br><br>4.17.2 Payment in these circumstances shall be in accordance with the following:<br><br>(a) Paid leave of absence does not count as a shift for the purpose of calculating Excess Shift entitlements;<br><br>(b) The provision shall not apply to Employees that are unavailable for duty on the day or days preceding the Public Holiday due to them being either on Annual Leave, Personal Leave, Long Service Leave, Compassionate/Bereavement Leave, Parental Leave, leave without pay or unable to attend work due to injury;<br><br>(c) Employees undertaking alternative duties that require them to work on a Monday to Friday basis shall not be entitled to the Easter Saturday Public Holiday as it occurs on a day when they would not be expected to work.</blockquote>"
+    },
+    {
+        name: "Easter Sunday",
+        dates: [
+            "2020-04-12",
+            "2021-04-04",
+            "2022-04-17",
+            "2023-04-09"
+        ],
+        infoTitle: "Easter Sunday Public Holiday",
+        infoText: "<ul><li>As this public holiday falls on a Sunday, it is always paid at double time and a half.</li><li>There is no provision for extra leave.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Easter Monday",
