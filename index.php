@@ -25,7 +25,7 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.00"></script> 
+    <script src="publicHolidays.js?v1.01"></script> 
     <script src="scripts.js?v=1.10"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
