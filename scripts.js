@@ -6,8 +6,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.10";
-const calcLastUpdateDate = "20/04/2020";
+const calcVersion = "1.11";
+const calcLastUpdateDate = "30/04/2020";
 
 //rates                                                                       \/ set to EA2019 start date
 const rateDates =               ["2018-01-01", "2018-07-01", "2019-01-01", "2020-06-20", "2020-07-01", "2021-01-01", "2021-07-01", "2022-01-01", "2022-07-01", "2023-01-01"]; //the date which the corresponding rate begins
@@ -2420,6 +2420,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>30/04/2020 - Version 1.11<ul>"
+            + "<li>Added Easter Sunday as a public holiday.</li>"
+            + "</ul></li>"
             + "<li>29/04/2020 - Version 1.10<ul>"
             + "<li>Added new pay rates from EA 2019-2023</li>"
             + "<li>Calculator now correctly handles a change of pay-rate within a fortnight. For example, a pay increase is due on 01-01-2021 which is mid pay-cycle; the calculator will now properly calculate the correct rate on a per-day basis instead of applying the pre-payrise rate for the whole fortnight.</li>"
