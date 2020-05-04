@@ -1,13 +1,17 @@
 /*
-    Database of all Victorian public holidays
+    Database of Victorian public holidays used for public holiday detection feature.
 
     Version: 1.01
+    Public holdays from 2020 up to 2023
 
-    PHs from 2020 to 2023
-
-    Dates must in format YYYY-MM-DD
+    Each entry should have the following keys:
+    name: the name of the public holiday as a String
+    dates: an array of Strings, with each string representing a date of the public holiday in the format YYYY-MM-DD
+    infoTitle: the text in the title bar of the information box popup as String
+    infoText: HTML formatted text in the body of the information box as String. Information about the public holiday, any special rules and instructions.
 */
 
+//html for visual dummy buttons
 const phDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">Public Holiday</span></a>";
 const phDummyButtonHollow = "<a class=\"button\" style=\"background-color: #5554; display: inline-block; border: solid; border-color: #44c600; border-width: 2px; cursor: default;\">Public Holiday</span></a>";
 
