@@ -48,7 +48,17 @@ const evenPayWeekYears = [2018, 2019, 2020];
 const oddPayWeekYears = [2021, 2022, 2023, 2024, 2025];
 
 //define Classes
+/**
+ * Shift class.
+ * 
+ * Holds all the information about a shift including sign/off times and any shift options.
+ */
 class Shift {
+    /**
+     * Initialise a Shift
+     * @param {string} signOn - sign-on time as 4 character string representing 24hr time between 0000-2359
+     * @param {string} signOff - sign-off time as 4 character string representing 24hr time between 0000-2359
+     */
     constructor(signOn, signOff) {
         if(signOn && signOff) {
             this.startHour = parseInt(signOn.substring(0,2));
@@ -72,16 +82,16 @@ class Shift {
         this.al = false; //annual leave
         this.phc = false; //public holiday credit day off
         this.ddo = false; //DDO
-        this.bonus = false;
+        this.bonus = false; //bonus payment
         this.bonusHours = 0.0; //bonus payment hours
-        this.shiftNumber = 0;
+        this.shiftNumber = 0; 
         this.shiftWorkedNumber = 0;
-    }
+    }    
 
-    get hoursString() {
-        return this.calcHoursString();
-    }
-
+    /**
+     * Calculate shift hours as a decimal number
+     * @returns {number} hours worked as decimal (ie 7.6 hours)
+     */
     get hoursDecimal() {
         let hoursFloat = 0.0;
         let hours = this.endHour - this.startHour;
@@ -95,6 +105,10 @@ class Shift {
         return hoursFloat;
     }
 
+    /**
+     * Get the shift-end hour in 48-hour time. Useful for when a shift works into the following day.
+     * @returns {number} end-hour in 48-hour time
+     */
     get endHour48() {
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
@@ -102,6 +116,17 @@ class Shift {
         else return this.endHour;
     }
 
+    /**
+     * getter for calcHoursString()
+     */
+    get hoursString() {
+        return this.calcHoursString();
+    }
+
+    /**
+     * Shift's work hours as a formatted string.
+     * @returns {string} shift hours in the format H:MM
+     */
     calcHoursString() {
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
@@ -114,6 +139,9 @@ class Shift {
         else return "";
     }
 
+    /**
+     * Reset the shift sign-on/off times to zero
+     */
     setNilHours() {
         this.startHour = 0;
         this.endHour = 0;
@@ -121,6 +149,11 @@ class Shift {
         this.endMinute = 0;
     }
 
+    /**
+     * Sets the sign-on and off times of the shift
+     * @param {string} signOn - sign-on time in format 0123
+     * @param {string} signOff sign-off time in format 0123
+     */
     setShiftTimes(signOn, signOff) {
         if(signOn && signOff) {
             this.startHour = parseInt(signOn.substring(0,2));
@@ -131,6 +164,7 @@ class Shift {
         else console.error("setShiftTimes(): insufficient parameters");
     }
 }
+
 
 class PayElement { 
     constructor(payType, hours, wcDateOffset, ojt) {
