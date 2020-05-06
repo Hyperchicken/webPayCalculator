@@ -165,24 +165,43 @@ class Shift {
     }
 }
 
-
+/**
+ * PayElement class.
+ * 
+ * Represents a payslip pay element
+ */
 class PayElement { 
-    constructor(payType, hours, wcDateOffset, ojt) {
+    /**
+     * 
+     * @param {string} payType - the internal name of the pay element as defined in this class's functions (for example: "wePen50")
+     * @param {number} hours - the number of hours this pay element is worth
+     * @param {number} fcDateOffset - fortnight-commencing date offset. The number of days this pay element is offset from the fortnight-commencing date 
+     * @param {boolean} ojt - apply OJT rate to pay element
+     */
+    constructor(payType, hours, fcDateOffset, ojt) {
             this.payType = payType;
             this.hours = parseFloat(hours.toFixed(4));
             this.ojt = ojt;
-            this.wcDateOffset = wcDateOffset; //week commencing date offset. the number of days this shift is offset from the week-commencing date
+            this.fcDateOffset = fcDateOffset; //week commencing date offset. the number of days this shift is offset from the week-commencing date
             this.value = this.calculateValue(); //used to keep track of the pay amount when grouping elements together
     }
 
+    /**
+     * Calculates the value of this pay element
+     * @returns {number} the element's pay value
+     */
     calculateValue() {
         let val = parseFloat((this.rate * parseFloat(this.hours.toFixed(4))));
         if(this.payType == "annualLeave") return parseFloat(val.toFixed(2)); //adjust precision for annual leave as payroll rounds to 2 decimal places for EACH DAY of AL.
         else return val;
     }
     
+    /**
+     * Get the sort index of this pay element.
+     * @returns {number} the sorting index of this element
+     */
     get sortIndex() {
-        let sortOrder = [
+        let sortOrder = [ //array to define the order in which pay elements should be sorted in the results.
             "normal",
             "guarantee",
             "sickFull",
@@ -220,10 +239,16 @@ class PayElement {
         }
     }
 
+    /**
+     * Get the pay amount rounded to two decimal places
+     */
     get payAmount() {
         return this.calculateValue().toFixed(2);
     }
 
+    /**
+     * Get the formatted name of the element's type
+     */
     get payClass() {
         let payClassName = "";
         switch(this.payType) {
@@ -261,6 +286,10 @@ class PayElement {
         else return payClassName;
     }
 
+    /**
+     * Get the pay element's information text
+     * @returns {string} HTML formatted information text
+     */
     get helpText() {
         let tooltipText = "";
         switch(this.payType) {
@@ -375,21 +404,28 @@ class PayElement {
         else return tooltipText;
     }
 
+    /**
+     * Get the internal name for the pay element
+     */
     get payClassRaw() {
         if(this.ojt) return this.payType + "_OJT";
         else return this.payType;
     }
 
+    /**
+     * Calculate the rate of the pay element based on it's payType
+     * @returns {number} the calculated pay-rate of this pay element
+     */
     get rate() {
         let shiftDate = $("#week-commencing-date").datepicker("getDate").stripTime();
-        shiftDate.setDate(shiftDate.getDate() + this.wcDateOffset);
+        shiftDate.setDate(shiftDate.getDate() + this.fcDateOffset);
         let rate = 0;
         if(this.ojt) rate += getEbaRate(shiftDate, ojtAllowanceRates); //apply OJT allowance
         switch(this.payType) {
-            case "normal": //Normal rate
+            case "normal":
             case "sickFull":
             case "sickPart":
-            case "guarantee": //pay guarantee to 8 hours
+            case "guarantee":
             case "edo":
             case "wePen100":
             case "phGaz":
@@ -444,19 +480,34 @@ class PayElement {
     }
 }
 
-//initialise variables
+
+/*-----------------------
+Calculator initialisation
+-----------------------*/
+/**
+ * @type {Shift[]} array of Shifts for the fortnight. Array index represents the day number (zero-based) of each shift
+ */
 let shifts = [];
-let shiftPay = [[]]; //multidimensional array to store pay elements per shift. first dimension is shift number (0-13), second is pay element for that shift.
-let additionalPayments = []; //an array to store non-shift-specific pay elements such as DDO or other additional payments.
-let selectedGradeRates;
+
+/**
+ * @type {PayElement[][]} array of PayElement objects. First dimension represents the day-number (0-13); second dimension represents the pay element index for that day.
+ */
+let shiftPay = [[]];
+
+/**
+ * @type {PayElement[]} array of PayElement objects that are not tied to a specific shift/date
+ */
+let additionalPayments = [];
+
+let selectedGradeRates; //stores the currently selected set of rates for the selected pay grade
 let selectedEarlyShiftRates;
 let selectedAfternoonShiftRates;
 let selectedNightShiftRates;
-let selectBonusTextbox; //keep track of elements to select in future
-let day14ph = false;
+let selectBonusTextbox; //used keep track of bonus-pay option button textbox to be selected when loading pay-options buttons.
+let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; //define shorthand names for days of the week
 
 //init on document load
 $(document).ready(function() { 
@@ -614,7 +665,10 @@ $(document).ready(function() {
     } 
 });
 
-//initialise options buttons
+/**
+ * Initialise all shift options 'dropdown' buttons.
+ * Adds click event listeners to each button, including the day 14 PH yes/no toggle
+ */
 function initButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
@@ -640,21 +694,25 @@ Date.prototype.getWeek = function() {
                           - 3 + (week1.getDay() + 6) % 7) / 7);
 }
   
-  // Returns the four-digit year corresponding to the ISO week of the date.
+// Returns the four-digit year corresponding to the ISO week of the date.
 Date.prototype.getWeekYear = function() {
     var date = new Date(this.getTime());
     date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
     return date.getFullYear();
 }
 
-//returns the date with the time set to zero.
+/**
+ * @returns {Date} the date with the time set to zero
+ */
 Date.prototype.stripTime = function() {
     var date = new Date(this.getTime());
     date.setHours(0, 0, 0, 0);
     return date;
 }
 
-//toggles if Day 14 (sunday after last day of fortnight) is a public holiday
+/**
+ * Toggle the day14ph variable, save the new result, and refresh the calculator
+ */
 function toggleDay14ph() {
     if(day14ph) {
         day14ph = false;
@@ -664,21 +722,30 @@ function toggleDay14ph() {
         day14ph = true;
         setSaveData("day14ph", "true");
     }
+    //update calculator data
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
 }
 
-//show/hide the datepicker
+/**
+ * Show/hide the jQuery datepicker
+ */
 function toggleDatepicker() {
     //$( "#week-commencing-date" ).slideToggle(300); //animated slide. looks a bit jerky on mobile
     $( "#week-commencing-date" ).toggle();
 }
 
+/**
+ * Shift the datepicker date (fortnight-commencing date) by the specified number of days
+ * @param {number} shiftValue the number of days to shift the datepicker date
+ */
 function datepickerShiftDays(shiftValue) {
     let currentDate = $("#week-commencing-date").datepicker("getDate");
     currentDate.setDate(currentDate.getDate() + shiftValue);
     $("#week-commencing-date").datepicker("setDate", currentDate);
+    
+    //load any save data from the newly set date and update all relevant calculator data
     updateDates();
     loadSavedData();
     updateGrade();
@@ -691,7 +758,9 @@ function datepickerShiftDays(shiftValue) {
     updateResults();
 }
 
-//Update all options buttons with the appropriate colours/text/icons based on each Shift.
+/**
+ * Update and refresh all shift options dropdown buttons with the appropriate colour, text and icons; based on the shift-options on each shift.
+ */
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
@@ -707,6 +776,12 @@ function updateOptionsButtons() {
         optionsButtons[i].textContent = "";
         optionsButtons[i].style.backgroundImage = "";
         let buttonColours = [];
+
+        /**
+         * Append new option label to button and add relevant colour(s) to buttonColours[]
+         * @param {string} label - text to append to the options button
+         * @param  {...string} colours - colour to add to the button
+         */
         let setButton = (label, ...colours) => {
             if(buttonColours.length > 0) buttonText.innerHTML += "<br>";
             buttonText.innerHTML += label;
@@ -806,6 +881,7 @@ function updateOptionsButtons() {
                 setButton("Normal", normalColour);
             }
         }
+
         //set gradient colour for multiple options
         optionsButtons[i].style.backgroundImage = "";
         optionsButtons[i].style.backgroundColor = "";
@@ -837,34 +913,29 @@ function updateOptionsButtons() {
     }
 }
 
+/**
+ * Toggle the state of an options shelf for a particular day between open and closed.
+ * Toggling an options shelf open will close any other open shelves first.
+ * @param {number} day - the day number of the options shelf to toggle open/close
+ */
 function toggleOptionsShelf(day) {
-    /*if($(".shift-options-shelf")[day].style.display == "block"){ //close
-        $(".shift-options-shelf")[day].style.display = "";
-        updateOptionsButtons();
-    }
-    else {                                                      //open
-        closeAllOptionsShelves();
-        $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
-        $(".shift-options-shelf")[day].style.display = "block";
-        updateOptionsButtons();
-        generateOptionsShelfButtons(day);
-    } */
     if($(".shift-options-shelf:eq("+day+")").is(":hidden")){ //open
         closeAllOptionsShelves();
         $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
         generateOptionsShelfButtons(day);
-        //$(".shift-options-shelf:eq("+day+")").slideDown(150);
         $(".shift-options-shelf:eq("+day+")").toggle();
         updateOptionsButtons();
     }
     else {                                                      //close
-        //$(".shift-options-shelf:eq("+day+")").slideUp(150, updateOptionsButtons);
         $(".shift-options-shelf:eq("+day+")").toggle();
         updateOptionsButtons();
-        //$(".options-button")[day].style.border = "none";
     }
 }
 
+/**
+ * Regenerate the contents of an already open options shelf
+ * @param {number} day - the day number of the options shelf to regenerate
+ */
 function refreshOptionsShelf(day) {
     if($(".shift-options-shelf:eq("+day+")").is(":visible")){ //if open, refresh
         $(".shift-options-shelf")[day].textContent = ""; //clear existing buttons
@@ -876,6 +947,9 @@ function refreshOptionsShelf(day) {
     }
 }
 
+/**
+ * Close any options shelves that are currently open
+ */
 function closeAllOptionsShelves() {
     for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
@@ -887,8 +961,16 @@ function closeAllOptionsShelves() {
 
 }
 
+/**
+ * Generate the options shelf buttons for the specified day.
+ * @param {number} day - the day number of the options shelf
+ */
 function generateOptionsShelfButtons(day) {
     let shelf = $(".shift-options-shelf")[day];
+
+    /**
+     * Shortcut function to reload relevant page and calculator data
+     */
     const reloadPageData = () => {
         refreshOptionsShelf(day);
         updateShiftWorkedCount();
@@ -897,6 +979,11 @@ function generateOptionsShelfButtons(day) {
         updateResults();
     }
 
+    /**
+     * Shortcut function to save data to storage with "day" + day number prepended to the key
+     * @param {string} name - name of the save data key
+     * @param {string} value - value to be saved to the key
+     */
     const saveToStorage = (name, value) => {
         setSaveData("day" + day + name, value);
     }
@@ -1257,6 +1344,11 @@ function generateOptionsShelfButtons(day) {
     }
 }
 
+/**
+ * Runs a when a time input field has been changed.
+ * This function will advance the focus to the next time field when the current field is filled, save the changed time data to storage, and then refresh calculator data.
+ * @param {number} field - the index of the time input field that has changed
+ */
 function timeChanged(field) {
     if(timeField()[field].value.length == 4) {
         if(field < 27) timeField()[field + 1].focus();
@@ -1270,17 +1362,31 @@ function timeChanged(field) {
     updateResults();
 }
 
+/**
+ * Sets the background colour of the calculator
+ * @param {string} colour - a valid CSS colour string
+ */
 function setFormColour(colour) {
     for(let i = 0; i < $(".container").length; i++) {
         $(".container")[i].style.backgroundColor = colour;
     }
 }
 
+
+/**
+ * Get the currently selected pay-grade
+ * @returns {string} the currently selected pay-grade string
+ */
 function getPayGrade() {
     return document.forms.payGradeForm.payGrade.value;
 }
 
+/**
+ * Run when the paygrade has been set or changed. Updates all pay-rates, calculator colour, save the grade to storage and refresh the calculator
+ */
 function updateGrade() {
+    $(".tso-dropdown").hide();
+    $("#payClassWarning").hide();
     switch(getPayGrade()) {
         case "spot": 
             selectedGradeRates = spotRates;
@@ -1290,8 +1396,6 @@ function updateGrade() {
             setFormColour("#4691db");
             setSaveData("paygrade", "spot", false);
             setSaveData("paygrade", "spot");
-            $(".tso-dropdown").hide();
-            $("#payClassWarning").hide();
             break;
         case "level1":
             selectedGradeRates = driverLevel1Rates;
@@ -1301,8 +1405,6 @@ function updateGrade() {
             setFormColour("rgb(114, 99, 191)");
             setSaveData("paygrade", "level1", false);
             setSaveData("paygrade", "level1");
-            $(".tso-dropdown").hide();
-            $("#payClassWarning").hide();
             break;
         case "trainee":
             selectedGradeRates = traineeRates;
@@ -1312,8 +1414,6 @@ function updateGrade() {
             setFormColour("rgb(56, 149, 149)");
             setSaveData("paygrade", "trainee", false);
             setSaveData("paygrade", "trainee");
-            $(".tso-dropdown").hide();
-            $("#payClassWarning").hide();
             break;
         case "conversion":
             selectedGradeRates = conversionRates;
@@ -1323,7 +1423,6 @@ function updateGrade() {
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
             setSaveData("paygrade", "conversion");
-            $(".tso-dropdown").hide();
             $("#payClassWarning").show();
             break;
         case "parttime":
@@ -1334,8 +1433,6 @@ function updateGrade() {
             setFormColour("rgb(56, 140, 65)");
             setSaveData("paygrade", "parttime", false);
             setSaveData("paygrade", "parttime");
-            $(".tso-dropdown").hide();
-            $("#payClassWarning").hide();
             break;
         case "tso":
             selectedEarlyShiftRates = earlyShiftRatesTPW;
@@ -1384,6 +1481,7 @@ function updateGrade() {
     updateResults();
 }
 
+
 function updateShiftTable() {
     let times = timeField();
     for(let i = 0; i < times.length; i += 2) {
@@ -1429,7 +1527,7 @@ function updateResults() {
         day.forEach(function(element){
             let elementIndex = groupedElements.findIndex(function(elem){return (element.payClass == elem.payClass) && (element.rate == elem.rate);});
             if(elementIndex == -1) {
-                groupedElements.push(new PayElement(element.payType, element.hours, element.wcDateOffset, element.ojt));
+                groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.ojt));
             }
             else {
                 groupedElements[elementIndex].hours += element.hours;
@@ -1443,7 +1541,7 @@ function updateResults() {
     additionalPayments.forEach(function(element){
         let elementIndex = groupedElements.findIndex(function(elem){return (element.payClass == elem.payClass) && (element.rate == elem.rate);});
             if(elementIndex == -1) {
-                groupedElements.push(new PayElement(element.payType, element.hours, element.wcDateOffset, element.ojt));
+                groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.ojt));
             }
             else {
                 groupedElements[elementIndex].hours += element.hours;
