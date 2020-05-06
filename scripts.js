@@ -172,7 +172,7 @@ class Shift {
  */
 class PayElement { 
     /**
-     * 
+     * Create a PayElement
      * @param {string} payType - the internal name of the pay element as defined in this class's functions (for example: "wePen50")
      * @param {number} hours - the number of hours this pay element is worth
      * @param {number} fcDateOffset - fortnight-commencing date offset. The number of days this pay element is offset from the fortnight-commencing date 
@@ -1481,9 +1481,34 @@ function updateGrade() {
     updateResults();
 }
 
-
+/**
+ * Update each shift in the shift array with the values from the time input fields. Invlid shift times will set the shift to have zero hours.
+ */
 function updateShiftTable() {
     let times = timeField();
+    /**
+     * Converts a field index to a shift index
+     * @param {number} field - field index
+     */
+    let fieldToShift = (field) => {
+        switch(field) {
+            case 0: case 1: return 0;
+            case 2: case 3: return 1;
+            case 4: case 5: return 2;
+            case 6: case 7: return 3;
+            case 8: case 9: return 4;
+            case 10: case 11: return 5;
+            case 12: case 13: return 6;
+            case 14: case 15: return 7;
+            case 16: case 17: return 8;
+            case 18: case 19: return 9;
+            case 20: case 21: return 10;
+            case 22: case 23: return 11;
+            case 24: case 25: return 12;
+            case 26: case 27: return 13;
+            default: return NaN;
+        }
+    }
     for(let i = 0; i < times.length; i += 2) {
         let currentShift = fieldToShift(i);
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
@@ -1498,6 +1523,9 @@ function updateShiftTable() {
     updateShiftWorkedCount();
 }
 
+/**
+ * Calculate and update the shiftNumber and shiftWorkedNumber for each shift in the shifts table. Non-shifts are set to 0. 
+ */
 function updateShiftWorkedCount() {
     let shiftsCount = 0;
     let shiftsWorkedCount = 0;
@@ -1515,13 +1543,17 @@ function updateShiftWorkedCount() {
     }
 }
 
+/**
+ * Update the results area of the calculator with any pay element data in the shiftPay and additionalPayments tables.
+ */
 function updateResults() {
     let resultArea = document.getElementById("result-area");
     let resultsViewFormat = document.forms.resultsViewForm.resultsView.value;
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
     let ojtFlag = false;
-    //create grouped elements table for combined view
+
+    //create grouped elements table for combined view, combining any elements that share the same payClass and rate
     let groupedElements = [];
     shiftPay.forEach(function(day){
         day.forEach(function(element){
@@ -1554,17 +1586,50 @@ function updateResults() {
     groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
 
     resultArea.innerHTML = ""; //clear existing results
-    if(!selectedDate) {
+
+    /**
+     * Add a pay element to the specified results table
+     * @param {PayElement} payElement - pay element to add to the results table
+     * @param {HTMLTableElement} table - results table
+     */
+    let addPayElementToResultsTable = (payElement, table) => {
+        let payElementRow = document.createElement("tr");
+        let elemClass = document.createElement("td");
+        let elemRate = document.createElement("td");
+        let elemHours = document.createElement("td");
+        let elemAmount = document.createElement("td");
+        elemClass.innerHTML = payElement.payClass;
+        elemRate.textContent = payElement.rate.toFixed(4);
+        elemHours.textContent = payElement.hours.toFixed(4);
+        elemAmount.textContent = "$" + payElement.value.toFixed(2);
+        elemClass.className = "pay-element-class";
+        payElementRow.appendChild(elemClass);
+        payElementRow.appendChild(elemRate);
+        payElementRow.appendChild(elemHours);
+        payElementRow.appendChild(elemAmount);
+        table.appendChild(payElementRow);
+        if(payElement.helpText) {
+            elemClass.addEventListener("click", function(){
+                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
+                $(".hoursWorked").css("background-color", "");
+                document.getElementById("resultsHelpDiv").innerHTML = payElement.helpText;
+                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
+                window.location.replace("#resultsHelpDiv"); //scroll to help box
+            });
+        }
+    }
+
+    if(!selectedDate) { //if no selected date
         dateDiv.style.borderStyle = "solid";
         dateDiv.style.background = "";
         let dateErrorElement = document.createElement("h3");
         dateErrorElement.textContent = "Please set Week Commencing date!";
         resultArea.appendChild(dateErrorElement);
     }
-    else {
+    else { //valid date
         dateDiv.style.borderStyle = "none";
         dateDiv.style.background = "none";
-        if(resultsViewFormat == "grouped"){
+        if(resultsViewFormat == "grouped"){ //grouped results view
             let listDiv = document.createElement("div");
             let elementTable = document.createElement("table");
             elementTable.className = "pay-element-table";
@@ -1572,31 +1637,7 @@ function updateResults() {
             headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
             elementTable.appendChild(headerRow);
             groupedElements.forEach(function(e){
-                let payElementRow = document.createElement("tr");
-                //payElement.textContent = e.payClass.padEnd(14, " ") + " | Rate: " + e.rate.toFixed(4).padEnd(8, " ") + " | Hours: " + e.hours.toFixed(4).padEnd(8, " ") + " | $" + e.payAmount.toFixed(2);
-                let elemClass = document.createElement("td");
-                let elemRate = document.createElement("td");
-                let elemHours = document.createElement("td");
-                let elemAmount = document.createElement("td");
-                elemClass.innerHTML = e.payClass.padEnd(14, " ");
-                elemRate.textContent = e.rate.toFixed(4).padEnd(8, " ");
-                elemHours.textContent = e.hours.toFixed(4).padEnd(8, " ");
-                elemAmount.textContent = "$" + e.value.toFixed(2);
-                elemClass.className = "pay-element-class";
-                payElementRow.appendChild(elemClass);
-                payElementRow.appendChild(elemRate);
-                payElementRow.appendChild(elemHours);
-                payElementRow.appendChild(elemAmount);
-                elementTable.appendChild(payElementRow);
-                if(e.helpText) {
-                    elemClass.addEventListener("click", function(){
-                        $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                        $(".hoursWorked").css("background-color", "");
-                        document.getElementById("resultsHelpDiv").innerHTML = e.helpText;
-                        payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                        window.location.replace("#resultsHelpDiv"); //scroll to help box
-                    });
-                }
+                addPayElementToResultsTable(e, elementTable);
             });
             if(ojtFlag) {
                 let blankRow = document.createElement("tr");
@@ -1607,14 +1648,14 @@ function updateResults() {
                 elementTable.appendChild(blankRow);
                 let row = document.createElement("tr");
                 let data =  document.createElement("td");
-                data.textContent = "* = OJT rate"
+                data.textContent = "* = OJT rate";
                 row.appendChild(data);
                 elementTable.appendChild(row);
             }
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
         }
-        else if(resultsViewFormat == "split") {
+        else if(resultsViewFormat == "split") { //split results view
             let elementTable = document.createElement("table");
             elementTable.className = "pay-element-table";
             let firstDay = true;
@@ -1626,7 +1667,6 @@ function updateResults() {
                     shiftHeaderRow.className = "splitview-title";
                     shiftTitle.className = "splitview-title-data";
                     shiftTitle.textContent = $(".day-of-week")[i].textContent;
-                    //shiftTitle.textContent += " | Shift " + shifts[i].shiftNumber + " | Shift Worked: " + shifts[i].shiftWorkedNumber;
                     shiftTitle.colSpan = 4;
                     shiftHeaderRow.appendChild(shiftTitle);
                     elementTable.appendChild(shiftHeaderRow);
@@ -1638,30 +1678,7 @@ function updateResults() {
                         elementTable.appendChild(payHeaderRow);
                     }
                     for(let j = 0; j < shiftPay[i].length; j++) {
-                        let payElementRow = document.createElement("tr");
-                        let elemClass = document.createElement("td");
-                        let elemRate = document.createElement("td");
-                        let elemHours = document.createElement("td");
-                        let elemAmount = document.createElement("td");
-                        elemClass.innerHTML = shiftPay[i][j].payClass;
-                        elemRate.textContent = shiftPay[i][j].rate.toFixed(4);
-                        elemHours.textContent = shiftPay[i][j].hours.toFixed(4);
-                        elemAmount.textContent = "$" + shiftPay[i][j].payAmount;
-                        elemClass.className = "pay-element-class";
-                        payElementRow.appendChild(elemClass);
-                        payElementRow.appendChild(elemRate);
-                        payElementRow.appendChild(elemHours);
-                        payElementRow.appendChild(elemAmount);
-                        elementTable.appendChild(payElementRow);
-                        if(shiftPay[i][j].helpText) {
-                            elemClass.addEventListener("click", function(){
-                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                                $(".hoursWorked").css("background-color", "");
-                                document.getElementById("resultsHelpDiv").innerHTML = shiftPay[i][j].helpText;
-                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                                window.location.replace("#resultsHelpDiv"); //scroll to help box
-                            });
-                        }
+                        addPayElementToResultsTable(shiftPay[i][j], elementTable);
                     }
                     let lastRow = document.createElement("tr");
                     let lastRowData = document.createElement("td");
@@ -1688,30 +1705,7 @@ function updateResults() {
                     elementTable.appendChild(payHeaderRow);
                 }
                 for(let j = 0; j < additionalPayments.length; j++) {
-                    let payElementRow = document.createElement("tr");
-                        let elemClass = document.createElement("td");
-                        let elemRate = document.createElement("td");
-                        let elemHours = document.createElement("td");
-                        let elemAmount = document.createElement("td");
-                        elemClass.classList.add("pay-element-class");
-                        elemClass.innerHTML = additionalPayments[j].payClass;
-                        elemRate.textContent = additionalPayments[j].rate.toFixed(4);
-                        elemHours.textContent = additionalPayments[j].hours.toFixed(4);
-                        elemAmount.textContent = "$" + additionalPayments[j].payAmount;
-                        payElementRow.appendChild(elemClass);
-                        payElementRow.appendChild(elemRate);
-                        payElementRow.appendChild(elemHours);
-                        payElementRow.appendChild(elemAmount);
-                        elementTable.appendChild(payElementRow);
-                        if(additionalPayments[j].helpText) {
-                            elemClass.addEventListener("click", function(){
-                                $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                                $(".hoursWorked").css("background-color", "");
-                                document.getElementById("resultsHelpDiv").innerHTML = additionalPayments[j].helpText;
-                                payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
-                                window.location.replace("#resultsHelpDiv"); //scroll to help box
-                            });
-                        }
+                    addPayElementToResultsTable(additionalPayments[j], elementTable);
                 }
             }
             if(ojtFlag) {
@@ -1753,7 +1747,7 @@ function updateResults() {
         actualHoursWorkedElement.classList.add("hoursWorked")
         actualHoursWorkedElement.innerHTML = "Physical Hours Worked:&nbsp" + actualHoursWorked.toFixed(2);
         resultArea.appendChild(actualHoursWorkedElement);
-        actualHoursWorkedElement.addEventListener("click", function(){
+        actualHoursWorkedElement.addEventListener("click", function(){ //help text
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
             $(".hoursWorked").css("background-color", "");
             actualHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
@@ -1764,7 +1758,7 @@ function updateResults() {
 
         //payslip hours worked
         let payslipHoursWorked = 0.0;
-        groupedElements.forEach(function(e){
+        groupedElements.forEach(function(e){ //the elements which to sum together their hours
             if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
@@ -1788,12 +1782,15 @@ function updateResults() {
     }
 }
 
-function updateDates() { //updates day of week fields
+/**
+ * Update the day-of-week column with the days and dates of the fortnight based on the datepicker date, append fortnight-end date to datepicker and save the lastSelectedFortnight date to storage. Public Holidays that are detected will generate a button and public holiday indication.
+ */
+function updateDates() {
     let dayOfWeekFields = document.querySelectorAll(".day-of-week");
     let inputDate = $("#week-commencing-date").datepicker("getDate");
     let checkPublicHoliday = (date) => {
         let checkDate = date.stripTime();
-        if(publicHolidays.length > 0) {
+        if(publicHolidays.length > 0) { //public holidays file found in publicHolidays.js
             for(let i = 0; i < publicHolidays.length; i++) {
                 for(let j = 0; j < publicHolidays[i].dates.length; j++) {
                     if(checkDate.getTime() == new Date(publicHolidays[i].dates[j]).stripTime().getTime()) {
@@ -1841,30 +1838,12 @@ function updateDates() { //updates day of week fields
     let endFortnightDate = $("#week-commencing-date").datepicker("getDate");
     endFortnightDate.setDate(endFortnightDate.getDate() + 13);
     $("#date-button").val($("#date-button").val() + "  to  " + endFortnightDate.getDate() + "/" + (endFortnightDate.getMonth() + 1) + "/" + endFortnightDate.getFullYear()); //append fortnight end-date to datepicker field
-    
-    setSaveData("lastSelectedFortnight", $("#week-commencing-date").datepicker("getDate").toDateString(), false); 
+    setSaveData("lastSelectedFortnight", $("#week-commencing-date").datepicker("getDate").toDateString(), false); //save last selected fortnight to storage.
 }
 
-function fieldToShift(field) {
-    switch(field) {
-        case 0: case 1: return 0;
-        case 2: case 3: return 1;
-        case 4: case 5: return 2;
-        case 6: case 7: return 3;
-        case 8: case 9: return 4;
-        case 10: case 11: return 5;
-        case 12: case 13: return 6;
-        case 14: case 15: return 7;
-        case 16: case 17: return 8;
-        case 18: case 19: return 9;
-        case 20: case 21: return 10;
-        case 22: case 23: return 11;
-        case 24: case 25: return 12;
-        case 26: case 27: return 13;
-        default: return NaN;
-    }
-}
-
+/**
+ * Print the hours worked to the 'hours' column for each shift in the shift table
+ */
 function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
     let timeField = document.querySelectorAll(".time");
@@ -1875,7 +1854,11 @@ function printShiftHours() {
     }
 }
 
+/**
+ * Perform input validation on each time input field and display an error pop-up and icon if validation fails.
+ */
 function validateTimeFields() {
+    const textboxErrorColour = "#ffd4d4";
     let hoursField = document.querySelectorAll(".shift-hours");
     let timeField = document.querySelectorAll(".time");
     for(let i = 0; i < shifts.length; i++) {
@@ -1883,7 +1866,7 @@ function validateTimeFields() {
         let errorIcon = document.createElement("i");
         let errorPopup = document.createElement("span");
         errorSpan.className = "popup";
-        errorIcon.className = "fas fa-exclamation-triangle fa-lg yellow-colour";
+        errorIcon.className = "fas fa-exclamation-triangle fa-lg yellow-colour"; //icon
         errorSpan.addEventListener("click", function(){
             errorPopup.classList.toggle("show");
         });
@@ -1897,20 +1880,20 @@ function validateTimeFields() {
             errorPopup.classList.add("show");
         }
         if(!timeField[i*2].checkValidity()) {
-            timeField[i*2].style.backgroundColor = "#ffd4d4";
+            timeField[i*2].style.backgroundColor = textboxErrorColour;
         } 
         else {
             timeField[i*2].style.backgroundColor = "";
         }
         if(!timeField[(i*2)+1].checkValidity()) {
-            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+            timeField[(i*2)+1].style.backgroundColor = textboxErrorColour;
         } 
         else {
             timeField[(i*2)+1].style.backgroundColor = "";
         }
         if(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "") {
-            timeField[i*2].style.backgroundColor = "#ffd4d4";
-            timeField[(i*2)+1].style.backgroundColor = "#ffd4d4";
+            timeField[i*2].style.backgroundColor = textboxErrorColour;
+            timeField[(i*2)+1].style.backgroundColor = textboxErrorColour;
             hoursField[i].innerHTML = "";
             errorPopup.textContent = "Sign-on and sign-off time cannot be the same"
             hoursField[i].appendChild(errorSpan);
@@ -1919,6 +1902,12 @@ function validateTimeFields() {
     }
 }
 
+/**
+ * Get the pay rate based on a given date from an array of rates. The rates array indicies should match those of the rateDates array
+ * @param {Date} date - date of the shift
+ * @param {number[]} rates - array of rates to check against the rateDates[] array
+ * @returns {number} EBA pay rate
+ */
 function getEbaRate(date, rates) {
     let shiftDate = date.stripTime();
     for(let i = rates.length - 1; i >= 0; i--) {
@@ -1930,7 +1919,10 @@ function getEbaRate(date, rates) {
     return 0;
 }
 
-//returns an int of the first day that has DDO option set. returns -1 if no shifts have DDO set
+/**
+ * Check for a DDO in shifts[] and returns the day index of the first shift that has a DDO shift-option set to true. Returns -1 if no DDO is found.
+ * @returns {number} day index of the first shift that has a DDO or -1 if no DDO is found
+ */
 function ddoWeek() {
     for(let i = 0; i < shifts.length; i++) {
         if(shifts[i].ddo) return i;
@@ -1939,11 +1931,15 @@ function ddoWeek() {
 }
 
 //calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
+/**
+ * Calculates the pay elements for each shift in the shift table (shifts[]) and adds the pay elements into the pay table (shiftPay[]).
+ * This is where all the pay calculation logic lives.
+ */
 function updateShiftPayTable() {
     let alShifts = [0, 0]; //[week1, week2]  //shifts counted as annual leave. designed to avoid using annual leave when sick or ph.
     let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
-    let ordinaryHours = 8;
-    let alDdoDeducted = false;
+    let ordinaryHours = 8; //default ordinary hours of 8
+    let alDdoDeducted = false; //annual leave DDO deducted
     let phOffCount = 0; //count PH-OFF shifts to count towards shifts worked for guarantee calculation only
     let payGrade = getPayGrade();
     if(payGrade == "trainee" || payGrade == "parttime") {
@@ -1961,7 +1957,7 @@ function updateShiftPayTable() {
         shiftPay.push([]);
         let shiftHours = s.hoursDecimal;
         if(shiftHours <= 0) { //if shift has zero hours
-            if(s.al) {
+            if(s.al) { //annual leave
                 alShifts[weekNo(day)]++;
             }
             if(s.sick) {
@@ -1973,7 +1969,7 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day));
                 }
             }
-            else if(s.ph) {
+            else if(s.ph) { //public holiday
                 phOffCount++;
                 deductLeaveShifts[weekNo(day)]++;
                 if(s.phOffRoster) {
@@ -1985,7 +1981,7 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day));
                 }
             }
-            else if(s.phc) {
+            else if(s.phc) { //public holiday credit leave
                 deductLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day));
             }
@@ -1995,14 +1991,13 @@ function updateShiftPayTable() {
             }
         }
         else { //if shift has hours
+            //categorise hours into today/tomorrow and ph/nonPh
             let todayNormalHours = 0.0;
             let tomorrowNormalHours = 0.0;
             let normalHours;
             let todayPhHours = 0.0;
             let tomorrowPhHours = 0.0;
             let tomorrowPh;
-
-            //categorise hours into today/tomorrow and ph/nonPh
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
             if(s.endHour48 > 23) {
@@ -2021,7 +2016,8 @@ function updateShiftPayTable() {
             }
             normalHours = todayNormalHours + tomorrowNormalHours;
 
-            if(getPayGrade() == "parttime" && s.phOffRoster) { //part-time PH-roster calculation
+            //part-time PH-roster calculation
+            if(getPayGrade() == "parttime" && s.phOffRoster) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day));
             }
             else if(s.sick && s.hoursDecimal <= 4) {
@@ -2031,7 +2027,7 @@ function updateShiftPayTable() {
                 //Public Holidays
                 let normalPhWorkedHours = 0.0;
                 let sundayPhWorkedHours = 0.0;
-                let phXpayHours = 0.0; //used for EA interpretation of calculation. Not used for payroll version.
+                let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll version. Keep variable for future reference
                 if(todayPhHours > 0.0) {
                     if (day == 0 || day == 7) {
                         sundayPhWorkedHours += todayPhHours;
@@ -2048,7 +2044,6 @@ function updateShiftPayTable() {
                         normalPhWorkedHours += tomorrowPhHours;
                     }
                 }
-                
                 if(normalPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, s.ojt));
                     shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, s.ojt));
@@ -2057,7 +2052,7 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, s.ojt));
                     shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, s.ojt));
                 }
-                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt)); //EA version: XPay based on hours worked
+                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojt)); //EA version: XPay based on hours worked. Keep for future reference
                 if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, s.ojt)); //payroll version: XPay based on ordinary hours
 
                 //Normal hours
@@ -2170,8 +2165,6 @@ function updateShiftPayTable() {
                 }
 
                 //Shiftwork Allowances
-                
-                //calculate shiftwork allowances
                 if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
@@ -2233,7 +2226,7 @@ function updateShiftPayTable() {
         }
     }
     
-    //pay calculation: DDO. Check on last day of the 
+    //pay calculation: DDO.
     if(payGrade != "trainee" && payGrade != "parttime") { //part time and trainee don't get DDO
         let day = ddoWeek();
         if(day < 0) {
@@ -2245,20 +2238,12 @@ function updateShiftPayTable() {
     }
 }
 
-function isWeekday(day) { //only for values 0-13. returns True outside of this range.
-    switch(day) {
-        case 0:
-        case 6:
-        case 7:
-        case 13:
-            return false;
-        default:
-            return true;
-    }
-}
-
-//data storage
-//function to check if browser storage is available
+//Data storage
+/**
+ * Test the brower for storage availablilty of a specified type
+ * @param {string} type storage type
+ * @returns {boolean} storage available true/false
+ */
 function storageAvailable(type) {
     var storage;
     try {
@@ -2285,6 +2270,12 @@ function storageAvailable(type) {
 }
 
 //save a single data to local storage, automatically appending the week commencing prefix.
+/**
+ * 
+ * @param {*} field 
+ * @param {*} value 
+ * @param {*} prefixDate 
+ */
 function setSaveData(field, value, prefixDate = true) {
     if(!storageAvailable('localStorage')) {
         console.alert("setSaveData: no local storage available!");
