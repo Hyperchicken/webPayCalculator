@@ -2269,14 +2269,13 @@ function storageAvailable(type) {
     }
 }
 
-//save a single data to local storage, automatically appending the week commencing prefix.
 /**
- * 
- * @param {*} field 
- * @param {*} value 
- * @param {*} prefixDate 
+ * Save a key-value pair to the browser's localStorage. By default, the fortnight-commencing date is prepended to the key to associate the save data with a particular fortnight. Saving to the same key+value+datePrefix will overwrite any existing data, or create new localStorage data if non-existant.
+ * @param {string} key - the name of the key to be saved (ie: "day4ph")
+ * @param {string} value - the data to be saved to the key (ie: "true")
+ * @param {boolean} [prefixDate=true] - (Optional. Default = true) Prefixes the fortnight-commencing date (YYYYMMDD format) to the key if set to true. If false, nothing is prepended to the key.
  */
-function setSaveData(field, value, prefixDate = true) {
+function setSaveData(key, value, prefixDate = true) {
     if(!storageAvailable('localStorage')) {
         console.alert("setSaveData: no local storage available!");
     }
@@ -2287,13 +2286,11 @@ function setSaveData(field, value, prefixDate = true) {
             datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
         }
         if(value === "" || value === "false") {
-            localStorage.removeItem(datePrefix + field);
-            //console.debug("setSaveData(): Data deleted! " + datePrefix + field);
+            localStorage.removeItem(datePrefix + key);
         }
         else {
             try {
-                localStorage.setItem((datePrefix + field), value);
-                //console.debug("setSaveData(): Data saved! " + datePrefix + field + ":" + value);
+                localStorage.setItem((datePrefix + key), value);
             }
             catch(ex) {
                 console.warn("setSaveData(): unable to save data. exception thrown:");
@@ -2303,17 +2300,26 @@ function setSaveData(field, value, prefixDate = true) {
     }
 }
 
-function getSaveData(field, prefixDate = true) {
+/**
+ * Retrieve a value from localStorage with the specified key/key. By default, the currently selected fortnight-commencing date (YYYYMMDD format) is prefixed to the key. For keys that aren't associated to a particular f/c date, set prefixDate to false.
+ * @param {string} key - the name of the key to retrieve data from.
+ * @param {boolean} [prefixDate=true] - (Optional. Default = true) Prefixes the fortnight-commencing date (YYYYMMDD format) to the key if set to true. If false, nothing is prepended to the key.
+ * @returns {string} the value in localStorage associated with the provided key.
+ */
+function getSaveData(key, prefixDate = true) {
     let weekCommencingDate = $("#week-commencing-date").datepicker("getDate");
     let datePrefix = "";
     if(prefixDate){ //date will be automatically prefixed to save key unless specified in parameters. date prefix binds the save data to the currently set date.
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
-    //console.debug("getSaveData(): getting save data: " + datePrefix + field + ":" + localStorage.getItem((datePrefix + field)));
-    return localStorage.getItem((datePrefix + field));
+    return localStorage.getItem((datePrefix + key));
 }
 
 //populates fields with any saved data on the selected date. using no date parameter will load from the current date.
+/**
+ * Get all saved data from localStorage for a given fortnight-commencing date and populate any relevant calculator fields with the retrieved data. If no datePrefix is given, the currently selected fortnight-commencing date is used by default.
+ * @param {string} [datePrefix=""] - (Optional) The fortnight-commencing date prefix (YYYYMMDD format) to use when retrieving data from localStorage. 
+ */
 function loadSavedData(datePrefix = "") {
     closeAllOptionsShelves();
     //first reset all shifts
@@ -2390,6 +2396,9 @@ function loadSavedData(datePrefix = "") {
     else day14ph = false;
 }
 
+/**
+ * Prompt the user with a dialog box asking if they'd like to delete all saved data. If the user clicks 'OK' then localStorage will be cleared and the page reloaded.
+ */
 function confirmDeleteData() {
     if(confirm("Are you sure you want to delete ALL of your saved data from ALL dates?")){
         localStorage.clear();
@@ -2398,6 +2407,9 @@ function confirmDeleteData() {
     }
 }
 
+/**
+ * Clear all input fields and shift-options for the current fortnight and recalculate based on the cleared data.
+ */
 function resetForm() {
     for(let field = 0; field < 28; field++) {
         timeField()[field].value = "";
@@ -2442,6 +2454,9 @@ function resetForm() {
     closeAllOptionsShelves();
 }
 
+/**
+ * **INCOMPLETE** Display a printable version of the calculator page.
+ */
 function showPrintView() {
     $("body").css("background-color", "#FFF");
     $("body").css("color", "#000");
@@ -2466,31 +2481,6 @@ function showPrintView() {
     printViewDiv.appendChild(shiftBox);
     printViewDiv.appendChild(resultBox);
     document.body.appendChild(printViewDiv);
-}
-
-function checkVersion() {
-    fetch("currentVersion.txt")
-        .then(response => {
-            return response.text()
-        })
-        .then(data => {
-            console.log("Script version: " + calcVersion);
-            console.log("Text file version: " + data)
-            if(parseFloat(calcVersion) < parseFloat(data)) {
-                console.warn("Calculator update available!")
-                topHelpBox("Calculator Update",
-                "<p>A new version of the Pay Calculator is available! Please reload the page to update. </p> <p style='margin:'><a class='button reload-page-button' onclick='location.reload()'>Reload Page</a><p>");
-            }
-            else if(parseFloat(calcVersion) > parseFloat(data)) {
-                console.warn("Calculator version is ahead of the server!")
-            }
-            else {
-                console.log("Calculator is up-to-date!")
-            }
-        })
-        .catch(err => {
-            console.log("checkVersion() error")
-        })
 }
 
 function topHelpBox(title, helpText) {
