@@ -2563,7 +2563,7 @@ function topHelpBoxPreset(presetName) {
             + "</ul></li>"
             + "<li>29/04/2020 - Version 1.10<ul>"
             + "<li>Added new pay rates from EA 2019-2023</li>"
-            + "<li>Calculator now correctly handles a change of pay-rate within a fortnight. For example, a pay increase is due on 01-01-2021 which is mid pay-cycle; the calculator will now properly calculate the correct rate on a per-day basis instead of applying the pre-payrise rate for the whole fortnight.</li>"
+            + "<li>Rates of pay are now applied on a per-day basis instead of the same pay-rates for the whole fortnight.</li>"
             + "<li>Added public holiday detection. A new indication and button will now display on days that are observed to be public holidays. Clicking the button will show information about that public holiday.</li>"
             + "<li>Time input error message will now automatically pop-up.</li>"
             + "</ul></li>"
