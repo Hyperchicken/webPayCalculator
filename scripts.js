@@ -2483,12 +2483,21 @@ function showPrintView() {
     document.body.appendChild(printViewDiv);
 }
 
+/**
+ * Display the information box at the top of the page with a given title and body text
+ * @param {string} title - the title-bar text (text only)
+ * @param {string} helpText - information box body text (HTML formatting OK)
+ */
 function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
     $("#topHelpDiv").addClass("show-top-helpbox");
 }
 
+/**
+ * Display the information box at the top of the page with preset content
+ * @param {string} presetName - the name of the preset (see switch statement)
+ */
 function topHelpBoxPreset(presetName) {
     let helpTitle = "";
     let helpText = "";
