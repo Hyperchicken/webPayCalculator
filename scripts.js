@@ -1599,7 +1599,12 @@ function updateResults() {
         let elemHours = document.createElement("td");
         let elemAmount = document.createElement("td");
         elemClass.innerHTML = payElement.payClass;
-        elemRate.textContent = payElement.rate.toFixed(4);
+        if(payElement.rate > -1 && payElement.rate < 1) {
+            elemRate.textContent = payElement.rate.toFixed(4).substr(1);
+        }
+        else {
+            elemRate.textContent = payElement.rate.toFixed(4);
+        }
         elemHours.textContent = payElement.hours.toFixed(4);
         elemAmount.textContent = "$" + payElement.value.toFixed(2);
         elemClass.className = "pay-element-class";
