@@ -6,8 +6,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.13";
-const calcLastUpdateDate = "11/05/2020";
+const calcVersion = "1.14";
+const calcLastUpdateDate = "14/05/2020";
 
 //rates                                                                                                                                                           \/ set to EA2019 start date
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-20", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
@@ -30,6 +30,9 @@ const nightShiftRatesLoco =     [3.4944,       3.5468,       3.6000,       3.654
 const earlyShiftRatesTPW =      [3.0595,       3.1054,       3.1519,       3.1992,       3.2472,       3.2959,       3.3453,       3.4290,       3.5147,       3.6386,       3.6750,       3.7669,       3.8045,       3.8996,       3.9386,       4.0371];
 const afternoonShiftRatesTPW =  [3.0595,       3.1054,       3.1519,       3.1992,       3.2472,       3.2959,       3.3453,       3.4290,       3.5147,       3.6386,       3.6750,       3.7669,       3.8045,       3.8996,       3.9386,       4.0371];
 const nightShiftRatesTPW =      [3.5639,       3.6173,       3.6716,       3.7266,       3.7825,       3.8393,       3.8969,       3.9943,       4.0942,       4.2385,       4.2809,       4.3879,       4.4318,       4.5426,       4.5880,       4.7027];
+const earlyShiftRatesSal =      [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
+const afternoonShiftRatesSal =  [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
+const nightShiftRatesSal =      [3.5988,       3.6528,       3.7076,       3.7632,       3.8196,       3.8769,       3.9351,       4.0335,       4.1343,       4.2800,       4.3228,       4.4309,       4.4752,       4.5871,       4.6330,       4.7488];
 
 //colours
 const normalColour = "#00b9e8";
@@ -1435,9 +1438,9 @@ function updateGrade() {
             setSaveData("paygrade", "parttime");
             break;
         case "tso":
-            selectedEarlyShiftRates = earlyShiftRatesTPW;
-            selectedAfternoonShiftRates = afternoonShiftRatesTPW;
-            selectedNightShiftRates = nightShiftRatesTPW;
+            selectedEarlyShiftRates = earlyShiftRatesSal;
+            selectedAfternoonShiftRates = afternoonShiftRatesSal;
+            selectedNightShiftRates = nightShiftRatesSal;
             switch($("#tso-so").val()) {
                 case "so8":
                     selectedGradeRates = so8Rates;
@@ -2105,7 +2108,7 @@ function updateShiftPayTable() {
                 }
 
                 //Excess Hours Overtime
-                if(normalHours > ordinaryHours) {
+                if(normalHours > ordinaryHours && s.shiftWorkedNumber < 11) {
                     let overtimeHours = normalHours - ordinaryHours;
                     let todayOvertimeHours = 0.0;
                     let tomorrowOvertimeHours = 0.0;
@@ -2165,8 +2168,8 @@ function updateShiftPayTable() {
                     else { //all other excess shifts
                         ot150Hours += normalHours;
                     }
-                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", Math.min(ot150Hours, ordinaryHours), day, s.ojt));
-                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", Math.min(ot200Hours, ordinaryHours), day, s.ojt));
+                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", ot150Hours, day, s.ojt));
+                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", ot200Hours, day, s.ojt));
                 }
 
                 //Shiftwork Allowances
@@ -2566,6 +2569,10 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>14/05/2020 - Version 1.14<ul>"
+            + "<li>Fixed TSO shiftwork rates.</li>"
+            + "<li>Fixed calculation issue where excess hours would be paid at time and a half on a double-time shift.</li>"
+            + "</ul></li>"
             + "<li>11/05/2020 - Version 1.13<ul>"
             + "<li>Added rates from 2015-2017. Previously the calculator only had rates from 2018 onwards.</li>"
             + "</ul></li>"
