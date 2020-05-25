@@ -1,5 +1,6 @@
 /*
     Web-based Pay Calculator by Petar Stankovic
+    Github Respository - https://github.com/Hyperchicken/webPayCalculator
     scripts.js - All of the calculator logic and page interactiveness is programmed into this file.
 */
 
