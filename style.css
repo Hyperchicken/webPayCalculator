@@ -140,6 +140,11 @@ p > a {
     grid-column: 2 / 6;
 }
 
+.total-hours-text {
+    grid-column: 3 / 5;
+    justify-self: center;
+}
+
 .last-sunday > p {
     display: inline;
 }

@@ -1744,27 +1744,6 @@ function updateResults() {
         totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
         resultArea.appendChild(totalElement);
 
-        //actual hours worked
-        let actualHoursWorked = 0.0;
-        groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) actualHoursWorked += e.hours;
-        });
-        shifts.forEach(function(e){ //count hours worked for sick-part shifts where less than 4 hours was worked.
-            if(e.sick && e.hoursDecimal <= 4.0) actualHoursWorked += e.hoursDecimal;
-        });
-        let actualHoursWorkedElement = document.createElement("p");
-        actualHoursWorkedElement.classList.add("hoursWorked")
-        actualHoursWorkedElement.innerHTML = "Physical Hours Worked:&nbsp" + actualHoursWorked.toFixed(2);
-        resultArea.appendChild(actualHoursWorkedElement);
-        actualHoursWorkedElement.addEventListener("click", function(){ //help text
-            $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-            $(".hoursWorked").css("background-color", "");
-            actualHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
-            document.getElementById("resultsHelpDiv").innerHTML = "<strong>Physical Hours Worked</strong><p>Reflects the hours spent physically at work and NOT what is displayed on the payslip's 'Hours worked' section." 
-            + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
-            window.location.replace("#resultsHelpDiv"); //scroll to help box
-        });
-
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
@@ -1772,7 +1751,7 @@ function updateResults() {
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
-        payslipHoursWorkedElement.innerHTML = "Payslip Hours Worked:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
+        payslipHoursWorkedElement.innerHTML = "Hours Worked on payslip:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1856,11 +1835,15 @@ function updateDates() {
 function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
     let timeField = document.querySelectorAll(".time");
+    let totalField = document.querySelector(".total-hours");
+    let totalHours = 0.0;
     for(let i = 0; i < shifts.length; i++) {
         if(timeField[i*2].checkValidity() && timeField[(i*2)+1].checkValidity() && !(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "")) {
             hoursField[i].innerHTML = shifts[i].hoursString;
+            totalHours += shifts[i].hoursDecimal;
         }
     }
+    totalField.textContent = Math.floor(totalHours) + ":" + parseInt((totalHours % 1) * 60).toString().padStart(2, "0");
 }
 
 /**

@@ -225,6 +225,9 @@
                     <a id="lastSunPhYes" class="button yes-no-button dual-button-r">Yes</a>
                     <p>Public Holiday?</p>
                 </div>
+
+                <div class="total-hours-text">Total Hours:</div>
+                <div class="shift-hours total-hours"></div>
             </div>
         </div> 
         
