@@ -523,6 +523,14 @@ $(document).ready(function() {
             validateTimeFields();
         });
     }
+
+    //helpbox scroll listener to detect scrollable indicator
+    helpboxContent.onscroll = function() {
+        if(helpboxContent.scrollTop >= helpboxContent.scrollTopMax) {
+            console.log("bottom"); //placeholder
+        }
+    };
+    
     //setup datepicker
     let startDate = () => {
         let todaysDate = new Date();
@@ -552,7 +560,7 @@ $(document).ready(function() {
             return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
         }
     }
-    //((new Date().getDay()) * -1) -14
+    
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
