@@ -1604,12 +1604,17 @@ function updateResults() {
         let elemAmount = document.createElement("td");
         elemClass.innerHTML = payElement.payClass;
         if(payElement.rate > -1 && payElement.rate < 1) {
-            elemRate.textContent = payElement.rate.toFixed(4).substr(1);
+            elemRate.textContent = payElement.rate.toFixed(4).substr(1); //omit leading zero
         }
         else {
             elemRate.textContent = payElement.rate.toFixed(4);
         }
-        elemHours.textContent = payElement.hours.toFixed(4);
+        if(payElement.hours > -1 && payElement.hours < 1) {
+            elemHours.textContent = payElement.hours.toFixed(4).substr(1); //omit leading zero
+        }
+        else {
+            elemHours.textContent = payElement.hours.toFixed(4);
+        }
         elemAmount.textContent = "$" + payElement.value.toFixed(2);
         elemClass.className = "pay-element-class";
         payElementRow.appendChild(elemClass);
