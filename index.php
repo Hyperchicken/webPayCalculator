@@ -52,6 +52,7 @@
             <li class="helpbox-topnav dropdown helpbox-close-button"><i class="fas fa-times fa-fw fa-lg helpbox-close-button-icon"></i></a></li>
         </ul>
         <div id="helpboxContent"></div>
+        <div id="helpboxScroll" class="scroll-indicator">Scroll <i class="fas fa-arrow-circle-down"></i></div>
     </div>
 
     <span style="margin-bottom: 8px"></span>

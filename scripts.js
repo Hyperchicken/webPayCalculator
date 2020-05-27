@@ -527,7 +527,10 @@ $(document).ready(function() {
     //helpbox scroll listener to detect scrollable indicator
     helpboxContent.onscroll = function() {
         if(helpboxContent.scrollTop >= helpboxContent.scrollTopMax) {
-            console.log("bottom"); //placeholder
+            $(".scroll-indicator").hide();
+        }
+        else {
+            $(".scroll-indicator").show();
         }
     };
     
@@ -2497,6 +2500,12 @@ function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
     $("#topHelpDiv").addClass("show-top-helpbox");
+    if(helpboxContent.scrollHeight > 268) {
+        $(".scroll-indicator").show()
+    }
+    else {
+        $(".scroll-indicator").hide()
+    }
 }
 
 /**

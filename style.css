@@ -693,6 +693,17 @@ li.helpbox-topnav > a {
     margin: 0.5em 0 1.5em 0;
 }
 
+.scroll-indicator {
+    display: block;
+    position: relative;
+    background-color: #000c;
+    padding: 2px 5px;
+    border-radius: 5px;
+    float: right;
+    bottom: 30px;
+    right: 20px;
+}
+
 #printViewDiv {
     font-family: 'Courier New', Courier, monospace;
 }
