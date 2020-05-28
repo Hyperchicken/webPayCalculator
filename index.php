@@ -29,7 +29,7 @@
 
 <body>
     <ul class="topnav">
-        <li class="topnav title"><i class="fas fa-money-check-alt title-icon"></i>Pay Calculator<sup id="titleSuperscript"></sup></li>
+        <li class="topnav title"><i class="fas fa-search-dollar title-icon"></i>Pay Calculator<sup id="titleSuperscript"></sup></li>
         <li class="topnav dropdown">
             <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
