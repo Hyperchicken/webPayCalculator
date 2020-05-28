@@ -48,8 +48,8 @@
         <div class="col-shift">
             <div class="container grid input-container" id="shift-details">
                 <h3>Data Entry</h3>
-                <div class="grid-heading">FORTNIGHT</div>
-                <div class="shift-options-heading grid-heading">TOTAL GROSS</div>
+                <div class="grid-heading grid-1-4">FORTNIGHT</div>
+                <div class="shift-options-heading grid-heading grid-4-6">TOTAL GROSS</div>
 
                 <div class="day-of-week">Sunday</div>
                 <div class="shift-options"><a class="button options-button">...</a></div>
