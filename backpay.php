@@ -10,9 +10,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Calculator</title>
+    <title>Backpay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.14">
+    <link rel="stylesheet" href="style.css?v=1.0">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -22,26 +22,13 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.01"></script> 
-    <script src="scripts.js?v=1.14"></script> 
+    <script src="scripts.js?v=1.0"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
 <body>
     <ul class="topnav">
-        <li class="topnav title"><i class="fas fa-money-check-alt title-icon"></i>Pay Calculator<sup id="titleSuperscript"></sup></li>
-        <li class="topnav dropdown">
-            <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
-            <div class="dropdown-content">
-                <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
-                <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
-                <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
-                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>About Data Saving</a>
-                <a id="deleteSaveMenuButton"><i class="fas fa-trash-alt fa-fw menu-icon"></i>Delete Save Data</a>
-                <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
-                <a id="aboutMenuButton"><i class="fas fa-info-circle fa-fw menu-icon"></i>About</a>
-            </div>
-        </li>
+        <li class="topnav title"><i class="fas fa-money-check-alt title-icon"></i>Backpay<sup id="titleSuperscript"></sup></li>
     </ul>
     
     <noscript>Sorry, your browser does not support JavaScript or it is disabled! Please enable JavaScript to use the calculator!</noscript>
@@ -61,64 +48,8 @@
         <div class="col-shift">
             <div class="container grid input-container" id="shift-details">
                 <h3>Data Entry</h3>
-
-                <label class="pay-grade-label" for="payGradeForm">Pay grade: &nbsp;</label>
-                <form name="payGradeForm" class="pay-grade-radio-container" oninput="updateGrade()">
-                    <label class="radio-container">SPOT
-                            <input type="radio" name="payGrade" value="spot" id="spot" checked="checked">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">TD Lvl 1
-                            <input type="radio" name="payGrade" value="level1" id="level1">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Trainee
-                            <input type="radio" name="payGrade" value="trainee" id="trainee">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Conversion
-                            <input type="radio" name="payGrade" value="conversion" id="conversion">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Part-Time/Job-Share (SPOT)
-                        <input type="radio" name="payGrade" value="parttime" id="parttime">
-                        <span class="checkmark"></span>
-                    </label>
-                    <div>
-                        <label class="radio-container">TSO
-                            <input type="radio" name="payGrade" value="tso" id="tso">
-                            <span class="checkmark"></span>
-                            <span class="tso-dropdown"> - 
-                                <select id="tso-so">
-                                    <option value="so8">SO-8</option>
-                                    <option value="so9">SO-9</option>
-                                    <option value="so10">SO-10</option>
-                                    <option value="so11">SO-11</option>
-                                    <option value="so12">SO-12</option>
-                                </select>
-                            </span>
-                        </label>
-                        
-                    </div>
-                </form>
-
-                <div id="payClassWarning" class="grid-1-6 start-hidden">
-                    <p style="font-size: 0.8em; font-family: Verdana, sans-serif; border-style: solid; border-radius: 3px; border-width: 1px; background-color: #0005; padding: 5px;"><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade have not been thoroughly tested for accuracy!</p>
-                </div>
-
-                <div class="week-commencing">
-					<span class="calendar-nav-button" onclick="datepickerShiftDays(-14)"><i class="fas fa-angle-double-left fa-fw calendar-nav-icon"></i></span><span class="week-commencing-button"><input type="text" id="date-button" placeholder="Select date" onchange="updateDates()" readonly="readonly"></span><span class="calendar-nav-button" onclick="datepickerShiftDays(14);"><i class="fas fa-angle-double-right fa-fw calendar-nav-icon"></i></span><span class="calendar-nav-button" onclick="toggleDatepicker();"><i class="far fa-calendar-alt fa-fw calendar-nav-icon"></i></span>
-                </div>
-                <div id="week-commencing-date">
-                </div>
-                
-                <div class="hr"></div>
-
-                <div class="grid-heading">DAY OF WEEK</div>
-                <div class="shift-options-heading grid-heading">SHIFT OPTIONS</div>
-                <div class="sign-on grid-heading">SIGN<br>ON</div>
-                <div class="sign-off grid-heading">SIGN<br>OFF</div>
-                <div class="grid-heading">HRS</div>
+                <div class="grid-heading">FORTNIGHT</div>
+                <div class="shift-options-heading grid-heading">TOTAL GROSS</div>
 
                 <div class="day-of-week">Sunday</div>
                 <div class="shift-options"><a class="button options-button">...</a></div>

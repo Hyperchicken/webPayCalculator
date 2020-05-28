@@ -2579,7 +2579,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Set new EA payrates to start from .................</li>"
             + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
             + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
-            + "<li>The Javascript code now has better documentation and added GitHub repository link.</li>"
+            + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
             + "</ul></li>"
             + "<li>14/05/2020 - Version 1.14<ul>"
             + "<li>Fixed TSO shiftwork rates.</li>"
