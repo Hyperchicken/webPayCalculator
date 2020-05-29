@@ -152,7 +152,6 @@ p > a {
     grid-column: 3 / 5;
 }
 
-
 .total-hours-text {
     grid-column: 3 / 5;
     justify-self: center;
@@ -715,6 +714,7 @@ li.helpbox-topnav > a {
     float: right;
     bottom: 30px;
     right: 20px;
+    margin-bottom: -30px;
 }
 
 #printViewDiv {
