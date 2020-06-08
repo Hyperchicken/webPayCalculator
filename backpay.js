@@ -2,6 +2,10 @@ $(document).ready(function() {
     loadSavedData();
     calculateBackpay();
 
+    let closeMenu = () => {
+        $(".dropdown-content").removeClass("show-dropdown")
+        $(".dropbtn").removeClass("active");
+    }
     $("#menuButton").on("click", function(){
         $(".dropdown-content").toggleClass("show-dropdown");
         if($(".dropdown-content").is(":hidden")) {
@@ -14,6 +18,13 @@ $(document).ready(function() {
     $("#paycalcMenuButton").on("click", function(){
         window.location = "index.php";
     });
+    
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn-icon')) {
+            closeMenu();
+        }
+    } 
 });
 
 function calculateBackpay() {
