@@ -1169,6 +1169,7 @@ function generateOptionsShelfButtons(day) {
                     if(shifts[day].phExtraPay) {
                         xLeaveButton.addEventListener("click", function() {
                             shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = false;
                             reloadPageData();
                             saveToStorage("phxp", "false");
                         });
@@ -1177,6 +1178,7 @@ function generateOptionsShelfButtons(day) {
                     } else {
                         xPayButton.addEventListener("click", function() {
                             shifts[day].phExtraPay = true;
+                            shifts[day].phOffRoster = false;
                             reloadPageData();
                             saveToStorage("phxp", "true");
                         });
@@ -1504,6 +1506,8 @@ function updateGrade() {
         default: 
             selectedGradeRates = undefined;
     }
+
+    updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
     closeAllOptionsShelves();
     printShiftHours();
     updateOptionsButtons();
@@ -1567,7 +1571,7 @@ function updateShiftWorkedCount() {
         } else shifts[i].shiftNumber = 0;
 
         //determine if worked shift
-        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !shifts[i].phOffRoster) {
+        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
             shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
@@ -2591,13 +2595,14 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>/05/2020 - Version 1.15<ul>"
+            + "<li>10/05/2020 - Version 1.15<ul>"
             + "<li>EA2019 payrates to start from 7/6/20</li>"
             + "<li>Created a backpay calculator for EA 2019. Accessed from the menu.</li>"
             + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
             + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
             + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
             + "<li>Scroll indicator added to these information boxes.</li>"
+            + "<li>Fixed bug where setting PH-Roster shift option as part-time, then switching paygrade would cause a miscalculation.</li>"
             + "</ul></li>"
             + "<li>14/05/2020 - Version 1.14<ul>"
             + "<li>Fixed TSO shiftwork rates.</li>"
