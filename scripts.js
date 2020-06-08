@@ -7,11 +7,13 @@
 "use strict";
 
 //version
-const calcVersion = "1.14";
-const calcLastUpdateDate = "14/05/2020";
+const calcVersion = "1.15";
+const calcLastUpdateDate = "10/06/2020";
 
-//message of the day. HTML message that appears once per version.
-const motd = "";
+//message of the day. topHelpBox message that appears once per calcVersion.
+//set to blank string to disable message of the day
+var motd = "Calculator updated to version " + calcVersion
++ "<ul><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
 
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
@@ -679,6 +681,13 @@ $(document).ready(function() {
 
     //set title superscript
     $("#titleSuperscript").text("v" + calcVersion);
+
+    //check and display message of the day
+    let lastVersion = getSaveData("lastCalcVersion");
+    if(lastVersion != calcVersion && motd != "") {
+        topHelpBox("Calculator Update", motd);
+    }
+    setSaveData("lastCalcVersion", calcVersion);
 
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
@@ -2583,10 +2592,12 @@ function topHelpBoxPreset(presetName) {
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
             + "<li>/05/2020 - Version 1.15<ul>"
-            + "<li>EA2019 payrates to start from 7/6/20<li>"
+            + "<li>EA2019 payrates to start from 7/6/20</li>"
+            + "<li>Created a backpay calculator for EA 2019. Accessed from the menu.</li>"
             + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
             + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
             + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
+            + "<li>Scroll indicator added to these information boxes.</li>"
             + "</ul></li>"
             + "<li>14/05/2020 - Version 1.14<ul>"
             + "<li>Fixed TSO shiftwork rates.</li>"
