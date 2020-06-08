@@ -16,6 +16,10 @@ p > a {
     color: #83b9ff
 }
 
+a:visited {
+    color: #fff;
+}
+
 .a {
     text-decoration: underline;
     cursor: pointer;

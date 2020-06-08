@@ -10,6 +10,9 @@
 const calcVersion = "1.14";
 const calcLastUpdateDate = "14/05/2020";
 
+//message of the day. HTML message that appears once per version.
+const motd = "";
+
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
 const spotRates =               [45.1833,      45.8611,      46.5490,      47.2472,      47.9559,      48.6752,      49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
@@ -2563,9 +2566,10 @@ function topHelpBoxPreset(presetName) {
             helpTitle = "About the pay calculator";
             helpText = "<p>A web-based calculator tool to help you check if you've been paid correctly!</p>"
             + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
-            + "<br />If you notice any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
+            + "<br />If you find any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
             + "<ul>"
             + "<li>Developed by Petar Stankovic</li>"
+            + "<li><a href='https://github.com/Hyperchicken/webPayCalculator'>GitHub Respository</a></li>"
             + "<li>Version: " + calcVersion + "</li>"
             + "<li>Last Update: " + calcLastUpdateDate +"</li>"
             + "</ul>";
