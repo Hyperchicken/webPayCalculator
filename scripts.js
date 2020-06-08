@@ -632,6 +632,9 @@ $(document).ready(function() {
         closeMenu();
         $(".dropbtn").removeClass("active");
     });
+    $("#backpayMenuButton").on("click", function(){
+        window.location = "backpay.php";
+    });
     $("#printViewMenuButton").on("click", function(){
         showPrintView();
         closeMenu();
