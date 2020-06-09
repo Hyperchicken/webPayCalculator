@@ -531,7 +531,7 @@ $(document).ready(function() {
 
     //helpbox scroll listener to detect scrollable indicator
     helpboxContent.onscroll = function() {
-        if(helpboxContent.scrollTop >= helpboxContent.scrollTopMax) {
+        if(helpboxContent.scrollTop > 0) {
             $(".scroll-indicator").hide();
         }
         else {
@@ -638,7 +638,7 @@ $(document).ready(function() {
         $(".dropbtn").removeClass("active");
     });
     $("#backpayMenuButton").on("click", function(){
-        window.location = "backpay.php";
+        location.replace("backpay.php");
     });
     $("#printViewMenuButton").on("click", function(){
         showPrintView();
@@ -2519,7 +2519,7 @@ function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
     $("#topHelpDiv").addClass("show-top-helpbox");
-    if(helpboxContent.scrollHeight > 268) {
+    if(helpboxContent.clientHeight > 300) {
         $(".scroll-indicator").show()
     }
     else {
@@ -2601,7 +2601,8 @@ function topHelpBoxPreset(presetName) {
             + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
             + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
             + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
-            + "<li>Scroll indicator added to these information boxes.</li>"
+            + "<li>Scrollable indicator added to these information boxes.</li>"
+            + "<li>Changed the input mode on sign-on/off fields to have iOS devices show a decimal keypad instead of a telephone dialpad.</li>"
             + "<li>Fixed bug where setting PH-Roster shift option as part-time, then switching paygrade would cause a miscalculation.</li>"
             + "</ul></li>"
             + "<li>14/05/2020 - Version 1.14<ul>"
