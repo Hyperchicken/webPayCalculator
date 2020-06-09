@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.01
+    Version: 1.02
     Public holdays from 2020 up to 2023
 
     Each entry should have the following keys:
@@ -115,7 +115,7 @@ const publicHolidays = [
             "2023-06-12"
         ],
         infoTitle: "Queen's Birthday Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Queen's Birthday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Friday before the AFL Grand Final",

@@ -22,7 +22,7 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.01"></script> 
+    <script src="publicHolidays.js?v1.02"></script> 
     <script src="scripts.js?v=1.14"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
@@ -34,6 +34,7 @@
             <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
+                <a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>
                 <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>About Data Saving</a>
@@ -52,6 +53,7 @@
             <li class="helpbox-topnav dropdown helpbox-close-button"><i class="fas fa-times fa-fw fa-lg helpbox-close-button-icon"></i></a></li>
         </ul>
         <div id="helpboxContent"></div>
+        <div id="helpboxScroll" class="scroll-indicator">Scroll <i class="fas fa-arrow-circle-down"></i></div>
     </div>
 
     <span style="margin-bottom: 8px"></span>
@@ -225,6 +227,9 @@
                     <a id="lastSunPhYes" class="button yes-no-button dual-button-r">Yes</a>
                     <p>Public Holiday?</p>
                 </div>
+
+                <div class="total-hours-text">Total Hours:</div>
+                <div class="shift-hours total-hours"></div>
             </div>
         </div> 
         

@@ -1,16 +1,22 @@
 /*
     Web-based Pay Calculator by Petar Stankovic
+    Github Respository - https://github.com/Hyperchicken/webPayCalculator
     scripts.js - All of the calculator logic and page interactiveness is programmed into this file.
 */
 
 "use strict";
 
 //version
-const calcVersion = "1.14";
-const calcLastUpdateDate = "14/05/2020";
+const calcVersion = "1.15";
+const calcLastUpdateDate = "10/06/2020";
 
-//rates                                                                                                                                                           \/ set to EA2019 start date
-const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-08", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
+//message of the day. topHelpBox message that appears once per calcVersion.
+//set to blank string to disable message of the day
+var motd = "Calculator updated to version " + calcVersion
++ "<ul><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
+
+//rates
+const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
 const spotRates =               [45.1833,      45.8611,      46.5490,      47.2472,      47.9559,      48.6752,      49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
 const driverLevel1Rates =       [30.6682,      31.1282,      31.5951,      32.0691,      32.5501,      33.0383,      33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
 const traineeRates =            [26.2727,      26.6668,      27.0668,      27.4728,      27.8849,      28.3031,      28.7277,      29.4459,      30.1820,      31.2459,      31.5584,      32.3473,      32.6708,      33.4876,      33.8225,      34.6680];
@@ -522,6 +528,17 @@ $(document).ready(function() {
             validateTimeFields();
         });
     }
+
+    //helpbox scroll listener to detect scrollable indicator
+    helpboxContent.onscroll = function() {
+        if(helpboxContent.scrollTop >= helpboxContent.scrollTopMax) {
+            $(".scroll-indicator").hide();
+        }
+        else {
+            $(".scroll-indicator").show();
+        }
+    };
+    
     //setup datepicker
     let startDate = () => {
         let todaysDate = new Date();
@@ -551,7 +568,7 @@ $(document).ready(function() {
             return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
         }
     }
-    //((new Date().getDay()) * -1) -14
+    
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
@@ -620,6 +637,9 @@ $(document).ready(function() {
         closeMenu();
         $(".dropbtn").removeClass("active");
     });
+    $("#backpayMenuButton").on("click", function(){
+        window.location = "backpay.php";
+    });
     $("#printViewMenuButton").on("click", function(){
         showPrintView();
         closeMenu();
@@ -661,6 +681,13 @@ $(document).ready(function() {
 
     //set title superscript
     $("#titleSuperscript").text("v" + calcVersion);
+
+    //check and display message of the day
+    let lastVersion = getSaveData("lastCalcVersion");
+    if(lastVersion != calcVersion && motd != "") {
+        topHelpBox("Calculator Update", motd);
+    }
+    setSaveData("lastCalcVersion", calcVersion);
 
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
@@ -1142,6 +1169,7 @@ function generateOptionsShelfButtons(day) {
                     if(shifts[day].phExtraPay) {
                         xLeaveButton.addEventListener("click", function() {
                             shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = false;
                             reloadPageData();
                             saveToStorage("phxp", "false");
                         });
@@ -1150,6 +1178,7 @@ function generateOptionsShelfButtons(day) {
                     } else {
                         xPayButton.addEventListener("click", function() {
                             shifts[day].phExtraPay = true;
+                            shifts[day].phOffRoster = false;
                             reloadPageData();
                             saveToStorage("phxp", "true");
                         });
@@ -1477,6 +1506,8 @@ function updateGrade() {
         default: 
             selectedGradeRates = undefined;
     }
+
+    updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
     closeAllOptionsShelves();
     printShiftHours();
     updateOptionsButtons();
@@ -1540,7 +1571,7 @@ function updateShiftWorkedCount() {
         } else shifts[i].shiftNumber = 0;
 
         //determine if worked shift
-        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !shifts[i].phOffRoster) {
+        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
             shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
@@ -1603,12 +1634,17 @@ function updateResults() {
         let elemAmount = document.createElement("td");
         elemClass.innerHTML = payElement.payClass;
         if(payElement.rate > -1 && payElement.rate < 1) {
-            elemRate.textContent = payElement.rate.toFixed(4).substr(1);
+            elemRate.textContent = payElement.rate.toFixed(4).substr(1); //omit leading zero
         }
         else {
             elemRate.textContent = payElement.rate.toFixed(4);
         }
-        elemHours.textContent = payElement.hours.toFixed(4);
+        if(payElement.hours > -1 && payElement.hours < 1) {
+            elemHours.textContent = payElement.hours.toFixed(4).substr(1); //omit leading zero
+        }
+        else {
+            elemHours.textContent = payElement.hours.toFixed(4);
+        }
         elemAmount.textContent = "$" + payElement.value.toFixed(2);
         elemClass.className = "pay-element-class";
         payElementRow.appendChild(elemClass);
@@ -1743,27 +1779,6 @@ function updateResults() {
         totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
         resultArea.appendChild(totalElement);
 
-        //actual hours worked
-        let actualHoursWorked = 0.0;
-        groupedElements.forEach(function(e){
-            if(["normal", "phWorked", "ot150", "ot200", "rost+50", "rost+100"].includes(e.payType)) actualHoursWorked += e.hours;
-        });
-        shifts.forEach(function(e){ //count hours worked for sick-part shifts where less than 4 hours was worked.
-            if(e.sick && e.hoursDecimal <= 4.0) actualHoursWorked += e.hoursDecimal;
-        });
-        let actualHoursWorkedElement = document.createElement("p");
-        actualHoursWorkedElement.classList.add("hoursWorked")
-        actualHoursWorkedElement.innerHTML = "Physical Hours Worked:&nbsp" + actualHoursWorked.toFixed(2);
-        resultArea.appendChild(actualHoursWorkedElement);
-        actualHoursWorkedElement.addEventListener("click", function(){ //help text
-            $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-            $(".hoursWorked").css("background-color", "");
-            actualHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
-            document.getElementById("resultsHelpDiv").innerHTML = "<strong>Physical Hours Worked</strong><p>Reflects the hours spent physically at work and NOT what is displayed on the payslip's 'Hours worked' section." 
-            + " The payslip includes time that wasn't really worked, including Guarantee and A/Leave.</p>";
-            window.location.replace("#resultsHelpDiv"); //scroll to help box
-        });
-
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
@@ -1771,7 +1786,7 @@ function updateResults() {
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hoursWorked");
-        payslipHoursWorkedElement.innerHTML = "Payslip Hours Worked:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
+        payslipHoursWorkedElement.innerHTML = "Hours Worked on payslip:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
@@ -1855,11 +1870,15 @@ function updateDates() {
 function printShiftHours() {
     let hoursField = document.querySelectorAll(".shift-hours");
     let timeField = document.querySelectorAll(".time");
+    let totalField = document.querySelector(".total-hours");
+    let totalHours = 0.0;
     for(let i = 0; i < shifts.length; i++) {
         if(timeField[i*2].checkValidity() && timeField[(i*2)+1].checkValidity() && !(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "")) {
             hoursField[i].innerHTML = shifts[i].hoursString;
+            totalHours += shifts[i].hoursDecimal;
         }
     }
+    totalField.textContent = Math.floor(totalHours) + ":" + parseInt((totalHours % 1) * 60).toString().padStart(2, "0");
 }
 
 /**
@@ -2500,6 +2519,12 @@ function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
     $("#topHelpDiv").addClass("show-top-helpbox");
+    if(helpboxContent.scrollHeight > 268) {
+        $(".scroll-indicator").show()
+    }
+    else {
+        $(".scroll-indicator").hide()
+    }
 }
 
 /**
@@ -2554,9 +2579,10 @@ function topHelpBoxPreset(presetName) {
             helpTitle = "About the pay calculator";
             helpText = "<p>A web-based calculator tool to help you check if you've been paid correctly!</p>"
             + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
-            + "<br />If you notice any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
+            + "<br />If you find any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
             + "<ul>"
             + "<li>Developed by Petar Stankovic</li>"
+            + "<li><a href='https://github.com/Hyperchicken/webPayCalculator'>GitHub Respository</a></li>"
             + "<li>Version: " + calcVersion + "</li>"
             + "<li>Last Update: " + calcLastUpdateDate +"</li>"
             + "</ul>";
@@ -2569,6 +2595,15 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>10/05/2020 - Version 1.15<ul>"
+            + "<li>EA2019 payrates to start from 7/6/20</li>"
+            + "<li>Created a backpay calculator for EA 2019. Accessed from the menu.</li>"
+            + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
+            + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
+            + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
+            + "<li>Scroll indicator added to these information boxes.</li>"
+            + "<li>Fixed bug where setting PH-Roster shift option as part-time, then switching paygrade would cause a miscalculation.</li>"
+            + "</ul></li>"
             + "<li>14/05/2020 - Version 1.14<ul>"
             + "<li>Fixed TSO shiftwork rates.</li>"
             + "<li>Fixed calculation issue where excess hours would be paid at time and a half on a double-time shift.</li>"
