@@ -59,78 +59,78 @@
                 <div class="shift-options-heading grid-heading grid-3-5">TOTAL GROSS</div>
 
                 <div class="day-of-week centre-text grid-1-3">7/7/19 <i class="fas fa-long-arrow-alt-right"></i> 20/7/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
             
                 <div class="day-of-week centre-text grid-1-3">21/7/19 <i class="fas fa-long-arrow-alt-right"></i> 3/8/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">4/8/19 <i class="fas fa-long-arrow-alt-right"></i> 17/8/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">18/8/19 <i class="fas fa-long-arrow-alt-right"></i> 31/8/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">1/9/19 <i class="fas fa-long-arrow-alt-right"></i> 14/9/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">15/9/19 <i class="fas fa-long-arrow-alt-right"></i> 28/9/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">29/9/19 <i class="fas fa-long-arrow-alt-right"></i> 12/10/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">13/10/19 <i class="fas fa-long-arrow-alt-right"></i> 26/10/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">27/10/19 <i class="fas fa-long-arrow-alt-right"></i> 9/11/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">10/11/19 <i class="fas fa-long-arrow-alt-right"></i> 23/11/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">24/11/19 <i class="fas fa-long-arrow-alt-right"></i> 7/12/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">8/12/19 <i class="fas fa-long-arrow-alt-right"></i> 21/12/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">22/12/19 <i class="fas fa-long-arrow-alt-right"></i> 4/1/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="hr"></div>
 
                 <div class="day-of-week centre-text grid-1-3">5/1/20 <i class="fas fa-long-arrow-alt-right"></i> 18/1/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">19/1/20 <i class="fas fa-long-arrow-alt-right"></i> 1/2/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">2/2/20 <i class="fas fa-long-arrow-alt-right"></i> 15/2/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">16/2/20 <i class="fas fa-long-arrow-alt-right"></i> 29/2/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">1/3/20 <i class="fas fa-long-arrow-alt-right"></i> 14/3/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
                 
                 <div class="day-of-week centre-text grid-1-3">15/3/20 <i class="fas fa-long-arrow-alt-right"></i> 28/3/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">29/3/20 <i class="fas fa-long-arrow-alt-right"></i> 11/4/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">12/4/20 <i class="fas fa-long-arrow-alt-right"></i> 25/4/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">26/4/20 <i class="fas fa-long-arrow-alt-right"></i> 9/5/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">10/5/20 <i class="fas fa-long-arrow-alt-right"></i> 23/5/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">24/5/20 <i class="fas fa-long-arrow-alt-right"></i> 6/6/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="tel" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
             </div>
         </div> 
         
