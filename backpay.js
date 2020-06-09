@@ -16,7 +16,7 @@ $(document).ready(function() {
         }
     });
     $("#paycalcMenuButton").on("click", function(){
-        window.location = "index.php";
+        location.replace("index.php");
     });
     
     // Close the dropdown menu if the user clicks outside of it
