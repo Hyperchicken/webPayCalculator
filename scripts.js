@@ -11,7 +11,7 @@ const calcVersion = "1.15";
 const calcLastUpdateDate = "10/06/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
-//set to blank string to disable message of the day
+//set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion
 + "<ul><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
 
