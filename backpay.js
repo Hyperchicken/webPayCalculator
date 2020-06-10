@@ -62,8 +62,8 @@ function calculateBackpay() {
     let secondIncreaseTotalElement = document.createElement("p");
     let combinedTotalElement = document.createElement("p");
     
-    firstIncreaseTotalElement.textContent = "First increase (1%) backpay: $" + firstIncreaseTotal.toFixed(2);
-    secondIncreaseTotalElement.textContent = "Second increase (2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
+    firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
+    secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
     combinedTotalElement.textContent = "Total backpay: $" + combinedTotal.toFixed(2);
 
     resultArea.innerHTML = ""; //clear existing results

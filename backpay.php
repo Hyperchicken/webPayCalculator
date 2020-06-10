@@ -54,7 +54,7 @@
         <div class="col-shift">
             <div class="container grid input-container" id="shift-details">
                 <h3 style="margin-bottom: 0;">Data Entry</h3>
-                <p class="grid-1-6" style="font-size: 0.9em;">Enter in the GROSS pay amount from each payslip between 7/7/19 and 6/6/20 to calculate the backpay amount.<br>The calculator simply applies 1% to the total of the payslips up to 4/1/20, then 2.5% to 6/6/20</p>
+                <p class="grid-1-6" style="font-size: 0.9em;">Enter in the GROSS pay amount from each payslip between 7/7/19 and 6/6/20 to calculate the backpay amount.<br>The calculator simply applies 1% to the total of the payslips up to 4/1/20, then 3.5% (+2.5%) to 6/6/20</p>
                 <div class="grid-heading grid-1-3">FORTNIGHT</div>
                 <div class="shift-options-heading grid-heading grid-3-5">TOTAL GROSS</div>
 
