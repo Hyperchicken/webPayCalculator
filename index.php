@@ -23,7 +23,7 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.02"></script> 
-    <script src="scripts.js?v=1.15"></script> 
+    <script src="scripts.js?v=1.15a"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
