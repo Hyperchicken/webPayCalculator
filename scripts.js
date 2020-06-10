@@ -1319,7 +1319,8 @@ function generateOptionsShelfButtons(day) {
     let bonusTextbox = document.createElement("input");
     bonusButtonText.textContent = "Bonus Payment";
     bonusButton.setAttribute("class", "button bonus-button shelf-button");
-    bonusTextbox.setAttribute("type", "tel");
+    bonusTextbox.setAttribute("type", "text");
+    bonusTextbox.setAttribute("inputmode", "decimal");
     bonusTextbox.pattern = "\\d{1,2}(\\.\\d{0,2})?";
     bonusTextbox.maxLength = "5";
     bonusButton.appendChild(bonusButtonText);
