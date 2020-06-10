@@ -52,7 +52,7 @@ function calculateBackpay() {
         firstIncreaseTotal += firstIncreaseTotals[i] * 0.01;
     }
     for(let i = 0; i < secondIncreaseTotals.length; i++) {
-        secondIncreaseTotal += secondIncreaseTotals[i] * 0.025;
+        secondIncreaseTotal += secondIncreaseTotals[i] * 0.035;
     }
 
     let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
