@@ -12,12 +12,12 @@ p {
     margin: 0.5em 0;
 }
 
-p > a {
-    color: #83b9ff
+p > a, li > a {
+    color: #83b9ff;
 }
 
 a:visited {
-    color: #fff;
+    color: #83b9ff;
 }
 
 .a {
