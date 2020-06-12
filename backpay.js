@@ -63,6 +63,12 @@ function calculateBackpay() {
         resultArea.appendChild(firstIncreaseTotalElement);
         resultArea.appendChild(secondIncreaseTotalElement);
         resultArea.appendChild(combinedTotalElement);
+
+        if(ytd2 < ytd1 || ytd3 < ytd2) {
+            let e = document.createElement("em");
+            e.textContent = "YTD gross values must be greater than or equal to the value above it.";
+            resultArea.appendChild(e);
+        }
     }
 }
 
