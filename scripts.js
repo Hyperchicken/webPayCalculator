@@ -7,13 +7,13 @@
 "use strict";
 
 //version
-const calcVersion = "1.15";
-const calcLastUpdateDate = "10/06/2020";
+const calcVersion = "1.16";
+const calcLastUpdateDate = "12/06/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion
-+ "<ul><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
++ "<ul><li>Backpay Calculator updated to require far fewer payslips and inputs. Thanks Rob!</li><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
 
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
@@ -2596,7 +2596,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>10/05/2020 - Version 1.15<ul>"
+            + "<li>12/06/2020 - Version 1.16<ul>"
+            + "<li>EA2019 payrates to start from 7/6/20</li>"
+            + "<li>Updated backpay calculator to require only 3 payslips to calculate instead of the previous 24.</li>"
+            + "</ul></li>"
+            + "<li>10/06/2020 - Version 1.15<ul>"
             + "<li>EA2019 payrates to start from 7/6/20</li>"
             + "<li>Created a backpay calculator for EA 2019. Accessed from the menu.</li>"
             + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
