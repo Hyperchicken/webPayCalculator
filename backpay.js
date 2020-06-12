@@ -1,6 +1,6 @@
 $(document).ready(function() { 
     loadSavedData();
-    calculateBackpay2();
+    calculateBackpay();
 
     let closeMenu = () => {
         $(".dropdown-content").removeClass("show-dropdown")
@@ -28,76 +28,42 @@ $(document).ready(function() {
 });
 
 function calculateBackpay() {
-    let firstIncreaseTotals = [];
-    let secondIncreaseTotals = [];
-    for(let i = 0; i < 13; i++) {
-        let currentValue = parseFloat($(".fortnight-value")[i].value);
-        setSaveData("field" + i, $(".fortnight-value")[i].value);
-        if(isNaN(currentValue)) {
-            currentValue = 0;
-        }
-        firstIncreaseTotals.push(currentValue);
-    }
-    for(let i = 13; i < 24; i++) {
-        let currentValue = parseFloat($(".fortnight-value")[i].value);
-        setSaveData("field" + i, $(".fortnight-value")[i].value);
-        if(isNaN(currentValue)) {
-            currentValue = 0;
-        }
-        secondIncreaseTotals.push(currentValue);
-    }
-    let firstIncreaseTotal = 0.0;
-    let secondIncreaseTotal = 0.0;
-    for(let i = 0; i < firstIncreaseTotals.length; i++) {
-        firstIncreaseTotal += firstIncreaseTotals[i] * 0.01;
-    }
-    for(let i = 0; i < secondIncreaseTotals.length; i++) {
-        secondIncreaseTotal += secondIncreaseTotals[i] * 0.035;
-    }
+    let field1 = $(".fortnight-value")[0];
+    let field2 = $(".fortnight-value")[1];
+    let field3 = $(".fortnight-value")[2];
+    let ytd1 = parseFloat(field1.value);
+    let ytd2 = parseFloat(field2.value);
+    let ytd3 = parseFloat(field3.value);
+    if(isNaN(ytd1)) ytd1 = 0;
+    if(isNaN(ytd2)) ytd2 = 0;
+    if(isNaN(ytd3)) ytd3 = 0;
+    setSaveData("ytd0", field1.value);
+    setSaveData("ytd1", field2.value);
+    setSaveData("ytd2", field3.value);
 
-    let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
-    
     let resultArea = document.getElementById("result-area");
-    let firstIncreaseTotalElement = document.createElement("p");
-    let secondIncreaseTotalElement = document.createElement("p");
-    let combinedTotalElement = document.createElement("p");
-    
-    firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
-    secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
-    combinedTotalElement.textContent = "Total backpay: $" + combinedTotal.toFixed(2);
-
     resultArea.innerHTML = ""; //clear existing results
-    resultArea.appendChild(firstIncreaseTotalElement);
-    resultArea.appendChild(secondIncreaseTotalElement);
-    resultArea.appendChild(combinedTotalElement);
-}
-
-function calculateBackpay2() {
-    let ytd1 = parseFloat($(".fortnight-value")[0].value);
-    let ytd2 = parseFloat($(".fortnight-value")[1].value);
-    let ytd3 = parseFloat($(".fortnight-value")[2].value);
-    setSaveData("field0", $(".fortnight-value")[0].value);
-    setSaveData("field1", $(".fortnight-value")[1].value);
-    setSaveData("field2", $(".fortnight-value")[2].value);
-
-    let firstIncreaseTotal = (ytd2 - ytd1) * 0.01;
-    let secondIncreaseTotal = (ytd3 - ytd2) * 0.035;
-
-    let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
+    if(!field1.checkValidity() || !field2.checkValidity() || !field3.checkValidity()) {
+        resultArea.innerHTML = "<p>Invalid data in at least one field.</p>";
+    }
+    else {
+        let firstIncreaseTotal = (ytd2 - ytd1) * 0.01;
+        let secondIncreaseTotal = (ytd3 - ytd2) * 0.035;
     
-    let resultArea = document.getElementById("result-area");
-    let firstIncreaseTotalElement = document.createElement("p");
-    let secondIncreaseTotalElement = document.createElement("p");
-    let combinedTotalElement = document.createElement("p");
+        let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
+        
+        let firstIncreaseTotalElement = document.createElement("p");
+        let secondIncreaseTotalElement = document.createElement("p");
+        let combinedTotalElement = document.createElement("p");
+        
+        firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
+        secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
+        combinedTotalElement.textContent = "Total backpay: $" + combinedTotal.toFixed(2);
     
-    firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
-    secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
-    combinedTotalElement.textContent = "Total backpay: $" + combinedTotal.toFixed(2);
-
-    resultArea.innerHTML = ""; //clear existing results
-    resultArea.appendChild(firstIncreaseTotalElement);
-    resultArea.appendChild(secondIncreaseTotalElement);
-    resultArea.appendChild(combinedTotalElement);
+        resultArea.appendChild(firstIncreaseTotalElement);
+        resultArea.appendChild(secondIncreaseTotalElement);
+        resultArea.appendChild(combinedTotalElement);
+    }
 }
 
 //Data storage
@@ -152,7 +118,7 @@ function getSaveData(key) {
 
 function loadSavedData() {
     for(let field = 0; field < 3; field++) {
-        let saveData = getSaveData("field" + field);
+        let saveData = getSaveData("ytd" + field);
         if(saveData) $(".fortnight-value")[field].value = saveData;
         else $(".fortnight-value")[field].value = "";
     }

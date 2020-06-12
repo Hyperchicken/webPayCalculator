@@ -59,13 +59,13 @@
                 <div class="shift-options-heading grid-heading grid-3-5">YTD GROSS</div>
 
                 <div class="day-of-week centre-text grid-1-3">23/6/19 <i class="fas fa-long-arrow-alt-right"></i> 6/7/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay2()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
             
                 <div class="day-of-week centre-text grid-1-3">22/12/19 <i class="fas fa-long-arrow-alt-right"></i> 4/1/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay2()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
 
                 <div class="day-of-week centre-text grid-1-3">24/5/20 <i class="fas fa-long-arrow-alt-right"></i> 6/6/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay2()"></div>
+                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
             </div>
         </div> 
         
