@@ -52,20 +52,20 @@
 
     <div class="row">
         <div class="col-shift">
-            <div class="container grid input-container" id="shift-details">
+            <div class="container grid-backpay input-container" id="shift-details">
                 <h3 style="margin-bottom: 0;">Data Entry</h3>
                 <p class="grid-1-6" style="font-size: 0.9em;">Enter in the Year To Date Gross (YTD GROSS) amount from the following three payslips.</p>
-                <div class="grid-heading grid-1-3">PAYSLIP</div>
-                <div class="shift-options-heading grid-heading grid-3-5">YTD GROSS</div>
+                <div class="grid-heading grid-2-3">PAYSLIP</div>
+                <div class="shift-options-heading grid-heading grid-4-5">YTD GROSS</div>
 
-                <div class="day-of-week centre-text grid-1-3">23/6/19 <i class="fas fa-long-arrow-alt-right"></i> 6/7/19</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="day-of-week centre-text grid-2-3">23/6/19 <i class="fas fa-long-arrow-alt-right"></i> 6/7/19</div>
+                <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
             
-                <div class="day-of-week centre-text grid-1-3">22/12/19 <i class="fas fa-long-arrow-alt-right"></i> 4/1/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="day-of-week centre-text grid-2-3">22/12/19 <i class="fas fa-long-arrow-alt-right"></i> 4/1/20</div>
+                <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
 
-                <div class="day-of-week centre-text grid-1-3">24/5/20 <i class="fas fa-long-arrow-alt-right"></i> 6/6/20</div>
-                <div class="grid-3-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 70%" oninput="calculateBackpay()"></div>
+                <div class="day-of-week centre-text grid-2-3">24/5/20 <i class="fas fa-long-arrow-alt-right"></i> 6/6/20</div>
+                <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
             </div>
         </div> 
         
