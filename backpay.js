@@ -1,6 +1,6 @@
 $(document).ready(function() { 
     loadSavedData();
-    calculateBackpay();
+    calculateBackpay2();
 
     let closeMenu = () => {
         $(".dropdown-content").removeClass("show-dropdown")
@@ -72,6 +72,34 @@ function calculateBackpay() {
     resultArea.appendChild(combinedTotalElement);
 }
 
+function calculateBackpay2() {
+    let ytd1 = parseFloat($(".fortnight-value")[0].value);
+    let ytd2 = parseFloat($(".fortnight-value")[1].value);
+    let ytd3 = parseFloat($(".fortnight-value")[2].value);
+    setSaveData("field0", $(".fortnight-value")[0].value);
+    setSaveData("field1", $(".fortnight-value")[1].value);
+    setSaveData("field2", $(".fortnight-value")[2].value);
+
+    let firstIncreaseTotal = (ytd2 - ytd1) * 0.01;
+    let secondIncreaseTotal = (ytd3 - ytd2) * 0.035;
+
+    let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
+    
+    let resultArea = document.getElementById("result-area");
+    let firstIncreaseTotalElement = document.createElement("p");
+    let secondIncreaseTotalElement = document.createElement("p");
+    let combinedTotalElement = document.createElement("p");
+    
+    firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
+    secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
+    combinedTotalElement.textContent = "Total backpay: $" + combinedTotal.toFixed(2);
+
+    resultArea.innerHTML = ""; //clear existing results
+    resultArea.appendChild(firstIncreaseTotalElement);
+    resultArea.appendChild(secondIncreaseTotalElement);
+    resultArea.appendChild(combinedTotalElement);
+}
+
 //Data storage
 /**
  * Test the brower for storage availablilty of a specified type
@@ -123,7 +151,7 @@ function getSaveData(key) {
 }
 
 function loadSavedData() {
-    for(let field = 0; field < 24; field++) {
+    for(let field = 0; field < 3; field++) {
         let saveData = getSaveData("field" + field);
         if(saveData) $(".fortnight-value")[field].value = saveData;
         else $(".fortnight-value")[field].value = "";
