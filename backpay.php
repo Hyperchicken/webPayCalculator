@@ -22,7 +22,7 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="backpay.js?v=1.02"></script> 
+    <script src="backpay.js?v=1.03"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
