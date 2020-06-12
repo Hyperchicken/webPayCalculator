@@ -659,6 +659,10 @@ $(document).ready(function() {
         topHelpBoxPreset("deleteSave");
         closeMenu();
     });
+    $("#taxConfigurationMenuButton").on("click", function(){
+        taxConfigurator();
+        closeMenu();
+    });
     $("#changelogMenuButton").on("click", function(){
         topHelpBoxPreset("changelog");
         closeMenu();
@@ -2509,6 +2513,58 @@ function showPrintView() {
     printViewDiv.appendChild(shiftBox);
     printViewDiv.appendChild(resultBox);
     document.body.appendChild(printViewDiv);
+}
+
+/**
+ * Creates a help box window with settings to confugure tax and net pay
+ */
+function taxConfigurator() {
+    document.getElementById("helpboxTitle").textContent = "Tax Configuration";
+    let formHeader = document.createElement("div");
+    formHeader.classList.add("grid-1-3")
+    formHeader.innerHTML = "<p>Configuration settings for tax and net calculation.<br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+
+    let formArea = document.createElement("div");
+    formArea.classList.add("grid-taxform")
+
+    //enable checkbox
+    let enableCheckboxLabel = document.createElement("span");
+    enableCheckboxLabel.textContent = "Enable Tax Calculation";
+    let enableCheckboxInput = document.createElement("input");
+    enableCheckboxInput.id = "enableTaxCalc";
+    enableCheckboxInput.setAttribute("type", "checkbox");
+    formArea.appendChild(enableCheckboxLabel);
+    formArea.appendChild(enableCheckboxInput);
+
+    //etdsc membership
+    let etdscLabel = document.createElement("span");
+    etdscLabel.textContent = "ETDSC Membership";
+    let etdscInput = document.createElement("select");
+    etdscInput.id = "etdscTaxDropdown";
+    let etdscInputOptionNone = document.createElement("option");
+    etdscInputOptionNone.textContent = "None";
+    etdscInputOptionNone.setAttribute("value", "none")
+    let etdscInputOptionFull = document.createElement("option");
+    etdscInputOptionFull.textContent = "Full-Time";
+    etdscInputOptionFull.setAttribute("value", "full")
+    let etdscInputOptionHalf = document.createElement("option");
+    etdscInputOptionHalf.textContent = "Part-Time/Job-Share";
+    etdscInputOptionHalf.setAttribute("value", "half")
+    etdscInput.appendChild(etdscInputOptionNone);
+    etdscInput.appendChild(etdscInputOptionFull);
+    etdscInput.appendChild(etdscInputOptionHalf);
+    formArea.appendChild(etdscLabel);
+    formArea.appendChild(etdscInput);
+
+    document.getElementById("helpboxContent").appendChild(formHeader);
+    document.getElementById("helpboxContent").appendChild(formArea);
+    $("#topHelpDiv").addClass("show-top-helpbox");
+    if(helpboxContent.clientHeight > 300) {
+        $(".scroll-indicator").show()
+    }
+    else {
+        $(".scroll-indicator").hide()
+    }
 }
 
 /**
