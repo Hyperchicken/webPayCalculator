@@ -48,6 +48,21 @@ a:visited {
     margin-left: 0 !important;
 }
 
+.dollar-percent-input {
+    color: #000;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.dollar-percent-input > label {
+    padding: 4px 5px;
+}
+
+.dollar-percent-input > input {
+    width: 80%;
+    background: none;
+}
+
 /* Customize the label (the container) */
 .radio-container {
     float: left;

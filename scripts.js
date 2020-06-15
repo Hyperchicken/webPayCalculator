@@ -2520,9 +2520,17 @@ function showPrintView() {
  */
 function taxConfigurator() {
     document.getElementById("helpboxTitle").textContent = "Tax Configuration";
+    let contentElement = document.getElementById("helpboxContent");
+    contentElement.innerHTML = ""; //clear any existing content
     let formHeader = document.createElement("div");
     formHeader.classList.add("grid-1-3")
-    formHeader.innerHTML = "<p>Configuration settings for tax and net calculation.<br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+    formHeader.innerHTML = "<p>Configure options for tax and net calculation.<br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+
+    let dollarLabel = document.createElement("label");
+    dollarLabel.textContent = "$";
+    let percentLabel = document.createElement("label");
+    percentLabel.textContent = "%";
+
 
     let formArea = document.createElement("div");
     formArea.classList.add("grid-taxform")
@@ -2556,8 +2564,34 @@ function taxConfigurator() {
     formArea.appendChild(etdscLabel);
     formArea.appendChild(etdscInput);
 
-    document.getElementById("helpboxContent").appendChild(formHeader);
-    document.getElementById("helpboxContent").appendChild(formArea);
+    //super salary sacrifice
+    let superSalSacLabel = document.createElement("span");
+    superSalSacLabel.textContent = "Super Salary Sacrifice";
+    let superSalSacInputDiv = document.createElement("div");
+    superSalSacInputDiv.classList.add("dollar-percent-input");
+    let superSalSacInput = document.createElement("input");
+    superSalSacInput.id = "superSalSac";
+    superSalSacInput.setAttribute("type", "text");
+    superSalSacInput.setAttribute("inputmode", "decimal");
+    superSalSacInputDiv.appendChild(dollarLabel);
+    superSalSacInputDiv.appendChild(superSalSacInput);
+    superSalSacInputDiv.appendChild(percentLabel);
+    formArea.appendChild(superSalSacLabel);
+    formArea.appendChild(superSalSacInputDiv);
+
+    //novated lease
+    let novatedLeaseLabel = document.createElement("span");
+    novatedLeaseLabel.textContent = "Novated Lease";
+    let novatedLeaseInput = document.createElement("input");
+    novatedLeaseInput.id = "novatedLease";
+    novatedLeaseInput.setAttribute("type", "text");
+    novatedLeaseInput.setAttribute("inputmode", "decimal");
+    formArea.appendChild(novatedLeaseLabel);
+    formArea.appendChild(novatedLeaseInput);
+
+
+    contentElement.appendChild(formHeader);
+    contentElement.appendChild(formArea);
     $("#topHelpDiv").addClass("show-top-helpbox");
     if(helpboxContent.clientHeight > 300) {
         $(".scroll-indicator").show()
