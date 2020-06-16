@@ -52,14 +52,14 @@ a:visited {
     color: #000;
     background-color: #fff;
     border-radius: 5px;
-}
-
-.dollar-percent-input > label {
-    padding: 4px 5px;
+    display: grid;
+    grid-template-columns: 20px auto 20px;
+    align-items: center;
+    justify-items: center;
 }
 
 .dollar-percent-input > input {
-    width: 80%;
+    width: 100%;
     background: none;
 }
 
@@ -380,6 +380,7 @@ hr {
     grid-template-columns: 250px auto;
     grid-gap: 3px;
     max-width: 400px;
+    align-items: center;
 }
 
 .time {
