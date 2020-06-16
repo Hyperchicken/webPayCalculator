@@ -504,9 +504,9 @@ let shifts = [];
 let shiftPay = [[]];
 
 /**
- * @type {PayElement[]} array of PayElement objects that are not tied to a specific shift/date
+ * @type {TaxElement[]} array of PayElement objects that are not tied to a specific shift/date
  */
-let additionalPayments = [];
+let taxPay = [];
 
 let selectedGradeRates; //stores the currently selected set of rates for the selected pay grade
 let selectedEarlyShiftRates;
@@ -1583,7 +1583,7 @@ function updateShiftWorkedCount() {
 }
 
 /**
- * Update the results area of the calculator with any pay element data in the shiftPay and additionalPayments tables.
+ * Update the results area of the calculator with any pay element data in the shiftPay and taxPay tables.
  */
 function updateResults() {
     let resultArea = document.getElementById("result-area");
@@ -1609,7 +1609,7 @@ function updateResults() {
             }
         });
     });
-    additionalPayments.forEach(function(element){
+    taxPay.forEach(function(element){
         let elementIndex = groupedElements.findIndex(function(elem){return (element.payClass == elem.payClass) && (element.rate == elem.rate);});
             if(elementIndex == -1) {
                 groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.ojt));
@@ -1737,7 +1737,7 @@ function updateResults() {
                     elementTable.appendChild(lastRow);
                 }
             }
-            if(additionalPayments.length > 0) {
+            if(taxPay.length > 0) {
                 let shiftHeaderRow = document.createElement("tr");
                 let shiftTitle = document.createElement("td");
                 shiftHeaderRow.className = "splitview-title";
@@ -1753,8 +1753,8 @@ function updateResults() {
                     payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
                     elementTable.appendChild(payHeaderRow);
                 }
-                for(let j = 0; j < additionalPayments.length; j++) {
-                    addPayElementToResultsTable(additionalPayments[j], elementTable);
+                for(let j = 0; j < taxPay.length; j++) {
+                    addPayElementToResultsTable(taxPay[j], elementTable);
                 }
             }
             if(ojtFlag) {
@@ -1978,7 +1978,7 @@ function updateShiftPayTable() {
         ordinaryHours = 7.6;
     }
     shiftPay = []; //clear pay table
-    additionalPayments = [];
+    taxPay = [];
     let weekNo = (day) => {
         if(day < 7) return 0;
         else return 1;
@@ -2526,10 +2526,23 @@ function taxConfigurator() {
     formHeader.classList.add("grid-1-3")
     formHeader.innerHTML = "<p>Configure options for tax and net calculation.<br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
 
-    let dollarLabel = document.createElement("label");
-    dollarLabel.textContent = "$";
-    let percentLabel = document.createElement("label");
-    percentLabel.textContent = "%";
+    let createDollarPercentInput = (id) => {
+        let dollarLabel = document.createElement("label");
+        dollarLabel.textContent = "$";
+        let percentLabel = document.createElement("label");
+        percentLabel.textContent = "%";
+        let inputDiv = document.createElement("div");
+        inputDiv.classList.add("dollar-percent-input");
+        let inputElement = document.createElement("input");
+        inputElement.id = id;
+        inputElement.setAttribute("type", "text");
+        inputElement.setAttribute("inputmode", "decimal");
+        inputDiv.appendChild(dollarLabel);
+        inputDiv.appendChild(inputElement);
+        inputDiv.appendChild(percentLabel);
+        return inputDiv;
+    }
+   
 
 
     let formArea = document.createElement("div");
@@ -2564,30 +2577,31 @@ function taxConfigurator() {
     formArea.appendChild(etdscLabel);
     formArea.appendChild(etdscInput);
 
+    //HECS/STSL
+    let stslLabel = document.createElement("span");
+    stslLabel.textContent = "HECS/STSL";
+    let stslInput = document.createElement("input");
+    stslInput.id = "stsl";
+    stslInput.setAttribute("type", "checkbox");
+    formArea.appendChild(stslLabel);
+    formArea.appendChild(stslInput);
+
     //super salary sacrifice
     let superSalSacLabel = document.createElement("span");
     superSalSacLabel.textContent = "Super Salary Sacrifice";
-    let superSalSacInputDiv = document.createElement("div");
-    superSalSacInputDiv.classList.add("dollar-percent-input");
-    let superSalSacInput = document.createElement("input");
-    superSalSacInput.id = "superSalSac";
-    superSalSacInput.setAttribute("type", "text");
-    superSalSacInput.setAttribute("inputmode", "decimal");
-    superSalSacInputDiv.appendChild(dollarLabel);
-    superSalSacInputDiv.appendChild(superSalSacInput);
-    superSalSacInputDiv.appendChild(percentLabel);
     formArea.appendChild(superSalSacLabel);
-    formArea.appendChild(superSalSacInputDiv);
+    formArea.appendChild(createDollarPercentInput("superSalSac"));
 
     //novated lease
-    let novatedLeaseLabel = document.createElement("span");
-    novatedLeaseLabel.textContent = "Novated Lease";
-    let novatedLeaseInput = document.createElement("input");
-    novatedLeaseInput.id = "novatedLease";
-    novatedLeaseInput.setAttribute("type", "text");
-    novatedLeaseInput.setAttribute("inputmode", "decimal");
-    formArea.appendChild(novatedLeaseLabel);
-    formArea.appendChild(novatedLeaseInput);
+    let novatedLeasePreLabel = document.createElement("span");
+    novatedLeasePreLabel.textContent = "Novated Lease Pre-Tax";
+    formArea.appendChild(novatedLeasePreLabel);
+    formArea.appendChild(createDollarPercentInput("novatedLeasePre"));
+
+    let novatedLeasePostLabel = document.createElement("span");
+    novatedLeasePostLabel.textContent = "Novated Lease Post-Tax";
+    formArea.appendChild(novatedLeasePostLabel);
+    formArea.appendChild(createDollarPercentInput("novatedLeasePost"));
 
 
     contentElement.appendChild(formHeader);
