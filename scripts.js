@@ -489,6 +489,14 @@ class PayElement {
     }
 }
 
+/**
+ * TaxElement class.
+ * 
+ * Represents a payslip tax element
+ */
+class TaxElement { 
+    
+}
 
 /*-----------------------
 Calculator initialisation
