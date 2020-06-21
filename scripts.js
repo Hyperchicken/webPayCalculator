@@ -683,11 +683,11 @@ $(document).ready(function() {
     $("#titleSuperscript").text("v" + calcVersion);
 
     //check and display message of the day
-    let lastVersion = getSaveData("lastCalcVersion");
+    let lastVersion = getSaveData("lastCalcVersion", false);
     if(lastVersion != calcVersion && motd != "") {
         topHelpBox("Calculator Update", motd);
     }
-    setSaveData("lastCalcVersion", calcVersion);
+    setSaveData("lastCalcVersion", calcVersion, false);
 
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
@@ -2596,8 +2596,10 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>12/06/2020 - Version 1.16a<ul>"
+            + "<li>Fixed bug where calculator update notification would sometimes re-appear when there was no new version.</li>"
+            + "</ul></li>"
             + "<li>12/06/2020 - Version 1.16<ul>"
-            + "<li>EA2019 payrates to start from 7/6/20</li>"
             + "<li>Updated backpay calculator to require only 3 payslips to calculate instead of the previous 24.</li>"
             + "</ul></li>"
             + "<li>10/06/2020 - Version 1.15<ul>"
