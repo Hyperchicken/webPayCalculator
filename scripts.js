@@ -539,7 +539,7 @@ $(document).ready(function() {
 
     //helpbox scroll listener to detect scrollable indicator
     helpboxContent.onscroll = function() {
-        if(helpboxContent.scrollTop > 0) {
+        if(helpboxContent.scrollTop >= (helpboxContent.scrollHeight - helpboxContent.clientHeight)) {
             $(".scroll-indicator").hide();
         }
         else {
@@ -1970,7 +1970,6 @@ function ddoWeek() {
     return -1;
 }
 
-//calculates pay elements for each shift in the shift table and places them into the pay table (shiftPay[])
 /**
  * Calculates the pay elements for each shift in the shift table (shifts[]) and adds the pay elements into the pay table (shiftPay[]).
  * This is where all the pay calculation logic lives.
@@ -2278,6 +2277,14 @@ function updateShiftPayTable() {
     }
 }
 
+/**
+ * 
+ * 
+ */
+function updateTaxPayTable() {
+    
+}
+
 //Data storage
 /**
  * Test the brower for storage availablilty of a specified type
@@ -2571,6 +2578,34 @@ function taxConfigurator() {
     formArea.appendChild(enableCheckboxLabel);
     formArea.appendChild(enableCheckboxInput);
 
+    //tax-free threshold
+    let taxFreeThresholdId = "taxFreeThreshold";
+    let taxFreeThresholdLabel = document.createElement("span");
+    taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
+    let taxFreeThresholdInput = document.createElement("input");
+    taxFreeThresholdInput.id = taxFreeThresholdId;
+    taxFreeThresholdInput.setAttribute("type", "checkbox");
+    taxFreeThresholdInput.addEventListener("input", function(){
+        if(this.checked) setSaveData(taxFreeThresholdId, "true", false);
+        else setSaveData(taxFreeThresholdId, "", false);
+    });
+    formArea.appendChild(taxFreeThresholdLabel);
+    formArea.appendChild(taxFreeThresholdInput);
+
+    //HECS/STSL
+    let stslId = "stsl";
+    let stslLabel = document.createElement("span");
+    stslLabel.textContent = "STSL/HECS";
+    let stslInput = document.createElement("input");
+    stslInput.id = stslId;
+    stslInput.setAttribute("type", "checkbox");
+    stslInput.addEventListener("input", function(){
+        if(this.checked) setSaveData(stslId, "true", false);
+        else setSaveData(stslId, "", false);
+    });
+    formArea.appendChild(stslLabel);
+    formArea.appendChild(stslInput);
+
     //etdsc membership
     let etdscId = "etdscMembership";
     let etdscLabel = document.createElement("span");
@@ -2596,20 +2631,6 @@ function taxConfigurator() {
     etdscInput.appendChild(etdscInputOptionHalf);
     formArea.appendChild(etdscLabel);
     formArea.appendChild(etdscInput);
-
-    //HECS/STSL
-    let stslId = "stsl";
-    let stslLabel = document.createElement("span");
-    stslLabel.textContent = "STSL/HECS";
-    let stslInput = document.createElement("input");
-    stslInput.id = stslId;
-    stslInput.setAttribute("type", "checkbox");
-    stslInput.addEventListener("input", function(){
-        if(this.checked) setSaveData(stslId, "true", false);
-        else setSaveData(stslId, "", false);
-    });
-    formArea.appendChild(stslLabel);
-    formArea.appendChild(stslInput);
 
     //super salary sacrifice
     let superSalSacId = "superSalSac";
@@ -2658,7 +2679,7 @@ function taxConfigurator() {
     contentElement.appendChild(formHeader);
     contentElement.appendChild(formArea);
     $("#topHelpDiv").addClass("show-top-helpbox");
-    if(helpboxContent.clientHeight > 300) {
+    if(helpboxContent.scrollHeight > helpboxContent.clientHeight) {
         $(".scroll-indicator").show()
     }
     else {
@@ -2667,12 +2688,13 @@ function taxConfigurator() {
 
     //check and load saved tax config data
     if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
+    if(getSaveData(taxFreeThresholdId, false) == "true") taxFreeThresholdInput.checked = true;
+    if(getSaveData(stslId, false) == "true") stslInput.checked = true;
     switch(getSaveData(etdscId, false)) {
         case "full": etdscInput.value = "full"; break;
         case "half": etdscInput.value = "half"; break;
         default: etdscInput.value = "none";
     }
-    if(getSaveData(stslId, false) == "true") stslInput.checked = true;
     let superSalSacSave = getSaveData(superSalSacId, false);
     let novatedLeasePreSave = getSaveData(novatedLeasePreId, false);
     let novatedLeasePostSave = getSaveData(novatedLeasePostId, false);
@@ -2681,8 +2703,6 @@ function taxConfigurator() {
     if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
     if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
     if(withholdExtraSave) document.forms.taxSettings.elements.namedItem(withholdExtraId).value = withholdExtraSave;
-
-    
 }
 
 /**
@@ -2694,7 +2714,7 @@ function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
     $("#topHelpDiv").addClass("show-top-helpbox");
-    if(helpboxContent.clientHeight > 300) {
+    if(helpboxContent.scrollHeight > helpboxContent.clientHeight) {
         $(".scroll-indicator").show()
     }
     else {
