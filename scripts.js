@@ -2553,23 +2553,30 @@ function taxConfigurator() {
    
 
 
-    let formArea = document.createElement("div");
+    let formArea = document.createElement("form");
+    formArea.id = "taxSettings";
     formArea.classList.add("grid-taxform")
 
     //enable checkbox
+    let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
     enableCheckboxLabel.textContent = "Enable Tax Calculation";
     let enableCheckboxInput = document.createElement("input");
-    enableCheckboxInput.id = "enableTaxCalc";
+    enableCheckboxInput.id = enableTaxCalcId;
     enableCheckboxInput.setAttribute("type", "checkbox");
+    enableCheckboxInput.addEventListener("input", function(){
+        if(this.checked) setSaveData(enableTaxCalcId, "true", false);
+        else setSaveData(enableTaxCalcId, "", false);
+    });
     formArea.appendChild(enableCheckboxLabel);
     formArea.appendChild(enableCheckboxInput);
 
     //etdsc membership
+    let etdscId = "etdscMembership";
     let etdscLabel = document.createElement("span");
     etdscLabel.textContent = "ETDSC Membership";
     let etdscInput = document.createElement("select");
-    etdscInput.id = "etdscTaxDropdown";
+    etdscInput.id = etdscId;
     let etdscInputOptionNone = document.createElement("option");
     etdscInputOptionNone.textContent = "None";
     etdscInputOptionNone.setAttribute("value", "none")
@@ -2579,6 +2586,11 @@ function taxConfigurator() {
     let etdscInputOptionHalf = document.createElement("option");
     etdscInputOptionHalf.textContent = "Part-Time/Job-Share";
     etdscInputOptionHalf.setAttribute("value", "half")
+    etdscInput.addEventListener("input", function(){
+        if(this.value == "full") setSaveData(etdscId, "full", false);
+        else if(this.value == "half") setSaveData(etdscId, "half", false);
+        else setSaveData(etdscId, "", false);
+    });
     etdscInput.appendChild(etdscInputOptionNone);
     etdscInput.appendChild(etdscInputOptionFull);
     etdscInput.appendChild(etdscInputOptionHalf);
@@ -2586,32 +2598,63 @@ function taxConfigurator() {
     formArea.appendChild(etdscInput);
 
     //HECS/STSL
+    let stslId = "stsl";
     let stslLabel = document.createElement("span");
-    stslLabel.textContent = "HECS/STSL";
+    stslLabel.textContent = "STSL/HECS";
     let stslInput = document.createElement("input");
-    stslInput.id = "stsl";
+    stslInput.id = stslId;
     stslInput.setAttribute("type", "checkbox");
+    stslInput.addEventListener("input", function(){
+        if(this.checked) setSaveData(stslId, "true", false);
+        else setSaveData(stslId, "", false);
+    });
     formArea.appendChild(stslLabel);
     formArea.appendChild(stslInput);
 
     //super salary sacrifice
+    let superSalSacId = "superSalSac";
     let superSalSacLabel = document.createElement("span");
     superSalSacLabel.textContent = "Super Salary Sacrifice";
+    let superSalSacInput = createDollarPercentInput(superSalSacId);
+    superSalSacInput.addEventListener("input", function(){
+        setSaveData(superSalSacId, document.forms.taxSettings.elements.namedItem(superSalSacId).value, false);
+    });
     formArea.appendChild(superSalSacLabel);
-    formArea.appendChild(createDollarPercentInput("superSalSac"));
+    formArea.appendChild(superSalSacInput);
 
     //novated lease
+    let novatedLeasePreId = "novatedLeasePre";
     let novatedLeasePreLabel = document.createElement("span");
     novatedLeasePreLabel.textContent = "Novated Lease Pre-Tax";
+    let novatedLeasePreInput = createDollarPercentInput(novatedLeasePreId);
+    novatedLeasePreInput.addEventListener("input", function(){
+        setSaveData(novatedLeasePreId, document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value, false);
+    });
     formArea.appendChild(novatedLeasePreLabel);
-    formArea.appendChild(createDollarPercentInput("novatedLeasePre"));
+    formArea.appendChild(novatedLeasePreInput);
 
+    let novatedLeasePostId = "novatedLeasePost";
     let novatedLeasePostLabel = document.createElement("span");
     novatedLeasePostLabel.textContent = "Novated Lease Post-Tax";
+    let novatedLeasePostInput = createDollarPercentInput(novatedLeasePostId);
+    novatedLeasePostInput.addEventListener("input", function(){
+        setSaveData(novatedLeasePostId, document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value, false);
+    });
     formArea.appendChild(novatedLeasePostLabel);
-    formArea.appendChild(createDollarPercentInput("novatedLeasePost"));
+    formArea.appendChild(novatedLeasePostInput);
 
+    //additional tax withheld
+    let withholdExtraId = "withholdExtra";
+    let withholdExtraLabel = document.createElement("span");
+    withholdExtraLabel.textContent = "Additional Tax Withheld";
+    let withholdExtraInput = createDollarPercentInput(withholdExtraId);
+    withholdExtraInput.addEventListener("input", function(){
+        setSaveData(withholdExtraId, document.forms.taxSettings.elements.namedItem(withholdExtraId).value, false);
+    });
+    formArea.appendChild(withholdExtraLabel);
+    formArea.appendChild(withholdExtraInput);
 
+    //show helpbox
     contentElement.appendChild(formHeader);
     contentElement.appendChild(formArea);
     $("#topHelpDiv").addClass("show-top-helpbox");
@@ -2621,6 +2664,25 @@ function taxConfigurator() {
     else {
         $(".scroll-indicator").hide()
     }
+
+    //check and load saved tax config data
+    if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
+    switch(getSaveData(etdscId, false)) {
+        case "full": etdscInput.value = "full"; break;
+        case "half": etdscInput.value = "half"; break;
+        default: etdscInput.value = "none";
+    }
+    if(getSaveData(stslId, false) == "true") stslInput.checked = true;
+    let superSalSacSave = getSaveData(superSalSacId, false);
+    let novatedLeasePreSave = getSaveData(novatedLeasePreId, false);
+    let novatedLeasePostSave = getSaveData(novatedLeasePostId, false);
+    let withholdExtraSave = getSaveData(withholdExtraId, false);
+    if(superSalSacSave) document.forms.taxSettings.elements.namedItem(superSalSacId).value = superSalSacSave;
+    if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
+    if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
+    if(withholdExtraSave) document.forms.taxSettings.elements.namedItem(withholdExtraId).value = withholdExtraSave;
+
+    
 }
 
 /**
