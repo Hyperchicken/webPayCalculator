@@ -738,6 +738,10 @@ li.helpbox-topnav > a {
     cursor: pointer;
 }
 
+.helpbox-close-button:hover {
+    background-color: #e65959aa;
+}
+
 #helpboxContent {
     padding: 8px;
     margin: 0;
