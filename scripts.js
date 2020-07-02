@@ -495,7 +495,17 @@ class PayElement {
  * Represents a payslip tax element
  */
 class TaxElement { 
-    
+    /**
+     * 
+     * @param {string} elementName 
+     * @param {number} value 
+     * @param {boolean} postTaxDeduction 
+     */
+    constructor(elementName, value, postTaxDeduction = false) {
+        this.elementName = elementName;
+        this.value = parseFloat(value.toFixed(2));
+        this.postTaxDeduction = postTaxDeduction;
+    }
 }
 
 /*-----------------------
@@ -1985,7 +1995,6 @@ function updateShiftPayTable() {
         ordinaryHours = 7.6;
     }
     shiftPay = []; //clear pay table
-    taxPay = [];
     let weekNo = (day) => {
         if(day < 7) return 0;
         else return 1;
@@ -2281,8 +2290,9 @@ function updateShiftPayTable() {
  * 
  * 
  */
-function updateTaxPayTable() {
-    
+function updateTaxPayTable(taxableIncome) {
+    taxPay = [];
+    if(!getSaveData("enableTaxCalc", false)) return;
 }
 
 //Data storage
