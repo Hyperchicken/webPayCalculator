@@ -16,7 +16,7 @@ var motd = "Calculator updated to version " + calcVersion
 + "<ul><li>Backpay Calculator updated to require far fewer payslips and inputs. Thanks Rob!</li><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
 
 //rates
-const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins
+const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins. MUST BE IN CHRONOLOGICAL ORDER (left to right)
 const spotRates =               [45.1833,      45.8611,      46.5490,      47.2472,      47.9559,      48.6752,      49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
 const driverLevel1Rates =       [30.6682,      31.1282,      31.5951,      32.0691,      32.5501,      33.0383,      33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
 const traineeRates =            [26.2727,      26.6668,      27.0668,      27.4728,      27.8849,      28.3031,      28.7277,      29.4459,      30.1820,      31.2459,      31.5584,      32.3473,      32.6708,      33.4876,      33.8225,      34.6680];
@@ -39,6 +39,168 @@ const nightShiftRatesTPW =      [3.5639,       3.6173,       3.6716,       3.726
 const earlyShiftRatesSal =      [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
 const afternoonShiftRatesSal =  [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
 const nightShiftRatesSal =      [3.5988,       3.6528,       3.7076,       3.7632,       3.8196,       3.8769,       3.9351,       4.0335,       4.1343,       4.2800,       4.3228,       4.4309,       4.4752,       4.5871,       4.6330,       4.7488];
+
+//ETDSC fortnightly membership rates
+const etdscFullMemberRate = 6;
+const etdscHalfMemberRate = 3;
+
+//tax scales
+//the dates of each set of scales must be in chronological order (earliest date first/top)
+//data from Australian Tax Office - Statement of formulas for calculating amounts to be withheld
+const taxScales = [
+    {
+        startDate: "2018-07-01",
+        // [weekly earning less than, 'a' coefficient, 'b' coefficient]
+        scale1: [ //Where the tax-free threshold is not claimed
+            [72, 0.1900, 0.1900],
+            [361, 0.2342, 3.2130],
+            [932, 0.3477, 44.2476],
+            [1380, 0.3450, 41.7311],
+            [3111, 0.3900, 103.8657],
+            [Infinity, 0.4700, 352.7888]
+        ],
+        scale2: [ //Where the employee claimed the tax‑free threshold
+            [355, 0, 0],
+            [422, 0.1900, 67.4635],
+            [528, 0.2900, 109.7327],
+            [711, 0.2100, 67.4635],
+            [1282, 0.3477, 165.4423],
+            [1730, 0.3450, 161.9808],
+            [3461, 0.3900, 239.8654],
+            [Infinity,  0.4700, 516.7885]
+        ]
+    }
+];
+
+//study and training support loans (STSL)/HECS
+//the dates of each set of rates must be in chronological order (earliest date first/top).
+const stslScales = [
+    {
+        startDate: "2018-07-01",
+        scale1: [ //tax-free threshold NOT claimed
+            // [weekly earnings less than, rate]
+                [649, 0],
+                [760, 0.02],
+                [886, 0.04],
+                [1013, 0.045],
+                [1084, 0.05],
+                [1192, 0.055],
+                [1320, 0.06],
+                [1408, 0.065],
+                [1584, 0.07],
+                [1711, 0.075],
+                [Infinity, 0.08]
+            ],
+        scale2: [ //tax-free threshold CLAIMED
+            // [weekly earnings less than, rate]
+                [999, 0],
+                [1110, 0.02],
+                [1236, 0.04],
+                [1363, 0.045],
+                [1434, 0.05],
+                [1542, 0.055],
+                [1670, 0.06],
+                [1758, 0.065],
+                [1934, 0.07],
+                [2061, 0.075],
+                [Infinity, 0.08]
+            ]
+    },
+    {
+        startDate: "2019-07-01",
+        scale1: [ //tax-free threshold NOT claimed
+            // [weekly earnings less than, rate]
+                [532, 0],
+                [668, 0.01],
+                [729, 0.02],
+                [794, 0.025],
+                [863, 0.03],
+                [936, 0.035],
+                [1013, 0.04],
+                [1095, 0.045],
+                [1181, 0.05],
+                [1273, 0.055],
+                [1371, 0.06],
+                [1474, 0.065],
+                [1583, 0.07],
+                [1699, 0.075],
+                [1822, 0.08],
+                [1953, 0.085],
+                [2091, 0.09],
+                [2237, 0.095],
+                [Infinity, 0.1]
+            ],
+        scale2: [ //tax-free threshold CLAIMED
+            // [weekly earnings less than, rate]
+                [882, 0],
+                [1018, 0.01],
+                [1079, 0.02],
+                [1144, 0.025],
+                [1213, 0.03],
+                [1286, 0.035],
+                [1363, 0.04],
+                [1445, 0.045],
+                [1531, 0.05],
+                [1623, 0.055],
+                [1721, 0.06],
+                [1824, 0.065],
+                [1933, 0.07],
+                [2049, 0.075],
+                [2172, 0.08],
+                [2303, 0.085],
+                [2441, 0.09],
+                [2587, 0.095],
+                [Infinity, 0.1]
+            ]
+    },
+    {
+        startDate: "2020-07-01",
+        scale1: [ //tax-free threshold NOT claimed
+            // [weekly earnings less than, rate]
+                [546, 0],
+                [685, 0.01],
+                [747, 0.02],
+                [813, 0.025],
+                [882, 0.03],
+                [956, 0.035],
+                [1035, 0.04],
+                [1118, 0.045],
+                [1206, 0.05],
+                [1299, 0.055],
+                [1398, 0.06],
+                [1503, 0.065],
+                [1615, 0.07],
+                [1732, 0.075],
+                [1855, 0.08],
+                [1990, 0.085],
+                [2130, 0.09],
+                [2279, 0.095],
+                [Infinity, 0.1]
+            ],
+        scale2: [ //tax-free threshold CLAIMED
+            // [weekly earnings less than, rate]
+                [896, 0],
+                [1035, 0.01],
+                [1097, 0.02],
+                [1163, 0.025],
+                [1232, 0.03],
+                [1306, 0.035],
+                [1385, 0.04],
+                [1468, 0.045],
+                [1556, 0.05],
+                [1649, 0.055],
+                [1748, 0.06],
+                [1853, 0.065],
+                [1956, 0.07],
+                [2082, 0.075],
+                [2205, 0.08],
+                [2340, 0.085],
+                [2480, 0.09],
+                [2629, 0.095],
+                [Infinity, 0.1]
+            ]
+    }
+];
 
 //colours
 const normalColour = "#00b9e8";
@@ -497,12 +659,12 @@ class PayElement {
 class TaxElement { 
     /**
      * 
-     * @param {string} elementName 
+     * @param {string} description 
      * @param {number} value 
      * @param {boolean} postTaxDeduction 
      */
-    constructor(elementName, value, postTaxDeduction = false) {
-        this.elementName = elementName;
+    constructor(description, value, postTaxDeduction = false) {
+        this.description = description;
         this.value = parseFloat(value.toFixed(2));
         this.postTaxDeduction = postTaxDeduction;
     }
@@ -705,11 +867,11 @@ $(document).ready(function() {
     $("#titleSuperscript").text("v" + calcVersion);
 
     //check and display message of the day
-    let lastVersion = getSaveData("lastCalcVersion");
+    let lastVersion = getSaveData("lastCalcVersion", false);
     if(lastVersion != calcVersion && motd != "") {
         topHelpBox("Calculator Update", motd);
     }
-    setSaveData("lastCalcVersion", calcVersion);
+    setSaveData("lastCalcVersion", calcVersion, false);
 
     let timeField = $(".time");
     for(let i = 0; i < timeField.length; i++) { //close shelves on time field focus
@@ -760,6 +922,11 @@ Date.prototype.stripTime = function() {
     var date = new Date(this.getTime());
     date.setHours(0, 0, 0, 0);
     return date;
+}
+
+Date.prototype.toDDMMYYYY = function() {
+    var date = new Date(this.getTime());
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 }
 
 /**
@@ -1627,19 +1794,6 @@ function updateResults() {
             }
         });
     });
-    taxPay.forEach(function(element){
-        let elementIndex = groupedElements.findIndex(function(elem){return (element.payClass == elem.payClass) && (element.rate == elem.rate);});
-            if(elementIndex == -1) {
-                groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.ojt));
-            }
-            else {
-                groupedElements[elementIndex].hours += element.hours;
-                groupedElements[elementIndex].value += element.value;
-            }
-            if(element.ojt) { //set OJT flag to trigger OJT footnote
-                ojtFlag = true;
-            }
-    });
     groupedElements.sort(function(a,b){return a.sortIndex - b.sortIndex}); //sort pay elements according to defined sort order (defined in Pay Elements class)
 
     resultArea.innerHTML = ""; //clear existing results
@@ -1701,7 +1855,7 @@ function updateResults() {
             let elementTable = document.createElement("table");
             elementTable.className = "pay-element-table";
             let headerRow = document.createElement("tr");
-            headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
+            headerRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Value</th>";
             elementTable.appendChild(headerRow);
             groupedElements.forEach(function(e){
                 addPayElementToResultsTable(e, elementTable);
@@ -1741,7 +1895,7 @@ function updateResults() {
                         firstDay = false;
                         shiftTitle.className += " first";
                         let payHeaderRow = document.createElement("tr");
-                        payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
+                        payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Value</th>";
                         elementTable.appendChild(payHeaderRow);
                     }
                     for(let j = 0; j < shiftPay[i].length; j++) {
@@ -1753,26 +1907,6 @@ function updateResults() {
                     lastRowData.className = "last-row";
                     lastRow.appendChild(lastRowData);
                     elementTable.appendChild(lastRow);
-                }
-            }
-            if(taxPay.length > 0) {
-                let shiftHeaderRow = document.createElement("tr");
-                let shiftTitle = document.createElement("td");
-                shiftHeaderRow.className = "splitview-title";
-                shiftTitle.className = "splitview-title-data";
-                shiftTitle.textContent = "Other Payments";
-                shiftTitle.colSpan = 4;
-                shiftHeaderRow.appendChild(shiftTitle);
-                elementTable.appendChild(shiftHeaderRow);
-                if(firstDay) {
-                    firstDay = false;
-                    shiftTitle.className += " first";
-                    let payHeaderRow = document.createElement("tr");
-                    payHeaderRow.innerHTML = "<th>Pay Class</th><th>Rate</th><th>Hours</th><th>Amount</th>";
-                    elementTable.appendChild(payHeaderRow);
-                }
-                for(let j = 0; j < taxPay.length; j++) {
-                    addPayElementToResultsTable(taxPay[j], elementTable);
                 }
             }
             if(ojtFlag) {
@@ -1790,17 +1924,62 @@ function updateResults() {
             resultArea.appendChild(shiftTitle);
         }
 
+        //calculate gross
+        let totalGross = 0.0; 
+        groupedElements.forEach(function(e){
+            totalGross += parseFloat(e.value.toFixed(2));
+        });
+
+
+        //calculate tax
+        let taxTotals;
+        let taxCalculationEnabled = getSaveData("enableTaxCalc", false);
+        if(taxCalculationEnabled) {
+            taxTotals = calculateTax(totalGross); //array
+            if(taxPay.length > 0) {
+                resultArea.appendChild(document.createElement("hr"));
+                let listDiv = document.createElement("div");
+                let taxTable = document.createElement("table");
+                taxTable.classList.add("pay-element-table");
+                let headerRow = document.createElement("tr");
+                headerRow.innerHTML = "<th>Description</th><th>Value</th>";
+                taxTable.appendChild(headerRow);
+                taxPay.forEach(function(e){
+                    let taxElementRow = document.createElement("tr");
+                    let elemDescription = document.createElement("td");
+                    let elemValue = document.createElement("td");
+                    elemDescription.innerHTML = e.description;
+                    elemValue.textContent = "$" + e.value.toFixed(2);
+                    elemDescription.className = "pay-element-class";
+                    taxElementRow.appendChild(elemDescription);
+                    taxElementRow.appendChild(elemValue);
+                    taxTable.appendChild(taxElementRow);
+                });
+                listDiv.appendChild(taxTable);
+                resultArea.appendChild(listDiv);
+            }
+        }
+
         resultArea.appendChild(document.createElement("hr"));
 
-        //subtotal
-        let totalValue = 0.0; 
-        groupedElements.forEach(function(e){
-            totalValue += parseFloat(e.value.toFixed(2));
-        });
-        let totalElement = document.createElement("h3");
-        totalElement.setAttribute("id", "totalElement");
-        totalElement.textContent = "Total Gross: $" + totalValue.toFixed(2);
-        resultArea.appendChild(totalElement);
+        //total gross element
+        let totalGrossElement = document.createElement("h3");
+        totalGrossElement.classList.add("total-element");
+        totalGrossElement.textContent = "Total Gross: $" + totalGross.toFixed(2);
+        resultArea.appendChild(totalGrossElement);
+
+        //tax total elements
+        if(taxCalculationEnabled) {
+            let totalTaxElement = document.createElement("p");
+            totalTaxElement.classList.add("hours-worked");
+            totalTaxElement.textContent = "Tax: $" + taxTotals.taxBalance.toFixed(2);
+            resultArea.appendChild(totalTaxElement);
+    
+            let totalNetElement = document.createElement("h3");
+            totalNetElement.classList.add("total-element");
+            totalNetElement.textContent = "Net Income: $" + taxTotals.netIncome.toFixed(2);
+            resultArea.appendChild(totalNetElement);
+        }
 
         //payslip hours worked
         let payslipHoursWorked = 0.0;
@@ -1808,12 +1987,12 @@ function updateResults() {
             if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
-        payslipHoursWorkedElement.classList.add("hoursWorked");
+        payslipHoursWorkedElement.classList.add("hours-worked");
         payslipHoursWorkedElement.innerHTML = "Hours Worked on payslip:&nbsp&nbsp" + payslipHoursWorked.toFixed(2);
         resultArea.appendChild(payslipHoursWorkedElement);
         payslipHoursWorkedElement.addEventListener("click", function(){
             $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-            $(".hoursWorked").css("background-color", "");
+            $(".hours-worked").css("background-color", "");
             payslipHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
             document.getElementById("resultsHelpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
             + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -)!.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
@@ -2287,19 +2466,97 @@ function updateShiftPayTable() {
 }
 
 /**
- * 
- * 
+ * Calculate tax and and any tax related elements based on the settings found in the configuration menu.
+ * Tax elements are added to the taxPay[] array.
+ * @param {number} taxableIncome - the taxable income to calculate tax amount on
+ * @returns {number[]} number array with the following calculated values [post tax deduction, tax amount, net amount]
  */
-function updateTaxPayTable(taxableIncome) {
+function calculateTax(taxableIncome) {
     taxPay = [];
-    if(!getSaveData("enableTaxCalc", false)) return;
+    let taxBalance = 0;
+    let postTaxDeduction = 0;
+    let weeklyIncome = Math.floor(taxableIncome / 2) + 0.99; //weekly income calculated as per ATO tax formula
+    let taxFreeThreshold = false, stsl = false, etdscMembership, superSalSac = 0, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0;
+    if(getSaveData("taxFreeThreshold", false) == "true") taxFreeThreshold = true;
+    if(getSaveData("stsl", false)) stsl = true;
+    if(getSaveData("etdscMembership", false)) etdscMembership = getSaveData("etdscMembership", false);
+    if(getSaveData("superSalSac", false)) superSalSac = getSaveData("superSalSac", false);
+    if(getSaveData("novatedLeasePre", false)) novatedLeasePreTax = getSaveData("novatedLeasePre", false);
+    if(getSaveData("novatedLeasePost", false)) novatedLeasePostTax = getSaveData("novatedLeasePost", false);
+    if(getSaveData("withholdExtra", false)) additionalTaxWithheld = getSaveData("withholdExtra", false);
+
+    let fortnightEndDate = $("#week-commencing-date").datepicker("getDate"); //date for finding relevant tax tables
+    fortnightEndDate.setDate(fortnightEndDate.getDate() + 13);
+
+    //income tax
+    //find correct scale and rates
+    let taxScale, taxScaleIndex = 0;
+    for(let i = taxScales.length - 1; i >= 0; i--) {
+        if(fortnightEndDate.stripTime().getTime() >= new Date(taxScales[i].startDate).stripTime().getTime()){
+            if(taxFreeThreshold) taxScale = taxScales[i].scale2;
+                else taxScale = taxScales[i].scale1;
+            while(weeklyIncome > taxScale[taxScaleIndex][0]) {
+                taxScaleIndex++;
+            }
+            break;
+        } 
+    }
+    if(!taxScale) {
+        console.warn("Tax rates not found for fortnight ending " + fortnightEndDate.toDDMMYYYY());
+        return;
+    };
+    //calculate income tax and add element to tax table
+    let incomeTax = Math.round((weeklyIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
+    if(incomeTax > 0) {
+        taxPay.push(new TaxElement("Income Tax", incomeTax));
+        taxBalance += incomeTax;
+    }
+
+    //etdsc membership
+    if(etdscMembership == "full") {
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", etdscFullMemberRate));
+        postTaxDeduction += etdscFullMemberRate;
+    }
+    else if(etdscMembership == "half") {
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", etdscHalfMemberRate));
+        postTaxDeduction += etdscHalfMemberRate;
+    }
+
+    //student loan
+    if(stsl) {
+        let stslScale, stslScaleIndex = 0;
+        for(let i = stslScales.length - 1; i >= 0; i--) {
+            if(fortnightEndDate.stripTime().getTime() >= new Date(stslScales[i].startDate).stripTime().getTime()){
+                if(taxFreeThreshold) stslScale = stslScales[i].scale2;
+                    else stslScale = stslScales[i].scale1;
+                while(weeklyIncome > stslScale[stslScaleIndex][0]) {
+                    stslScaleIndex++;
+                }
+                break;
+            } 
+        }
+        if(!stslScale) {
+            console.warn("STSL rates not found for fortnight ending " + fortnightEndDate.toDDMMYYYY());
+            return;
+        };
+        let studentLoanRepayment = Math.round(weeklyIncome * stslScale[stslScaleIndex][1]) * 2;
+        if(studentLoanRepayment > 0) {
+            taxPay.push(new TaxElement("Study & Training Support Loan", studentLoanRepayment));
+            taxBalance += studentLoanRepayment; 
+        }
+    }
+
+    let netIncome = taxableIncome - taxBalance - postTaxDeduction;
+    
+    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome}
+    //return [postTaxDeduction, taxBalance, netIncome];
 }
 
 //Data storage
 /**
  * Test the brower for storage availablilty of a specified type
- * @param {string} type storage type
- * @returns {boolean} storage available true/false
+ * @param {string} type - storage type
+ * @returns {boolean} - storage available true/false
  */
 function storageAvailable(type) {
     var storage;
@@ -2584,6 +2841,7 @@ function taxConfigurator() {
     enableCheckboxInput.addEventListener("input", function(){
         if(this.checked) setSaveData(enableTaxCalcId, "true", false);
         else setSaveData(enableTaxCalcId, "", false);
+        updateResults();
     });
     formArea.appendChild(enableCheckboxLabel);
     formArea.appendChild(enableCheckboxInput);
@@ -2598,6 +2856,7 @@ function taxConfigurator() {
     taxFreeThresholdInput.addEventListener("input", function(){
         if(this.checked) setSaveData(taxFreeThresholdId, "true", false);
         else setSaveData(taxFreeThresholdId, "", false);
+        updateResults();
     });
     formArea.appendChild(taxFreeThresholdLabel);
     formArea.appendChild(taxFreeThresholdInput);
@@ -2605,13 +2864,14 @@ function taxConfigurator() {
     //HECS/STSL
     let stslId = "stsl";
     let stslLabel = document.createElement("span");
-    stslLabel.textContent = "STSL/HECS";
+    stslLabel.textContent = "STSL/HELP";
     let stslInput = document.createElement("input");
     stslInput.id = stslId;
     stslInput.setAttribute("type", "checkbox");
     stslInput.addEventListener("input", function(){
         if(this.checked) setSaveData(stslId, "true", false);
         else setSaveData(stslId, "", false);
+        updateResults();
     });
     formArea.appendChild(stslLabel);
     formArea.appendChild(stslInput);
@@ -2635,6 +2895,7 @@ function taxConfigurator() {
         if(this.value == "full") setSaveData(etdscId, "full", false);
         else if(this.value == "half") setSaveData(etdscId, "half", false);
         else setSaveData(etdscId, "", false);
+        updateResults();
     });
     etdscInput.appendChild(etdscInputOptionNone);
     etdscInput.appendChild(etdscInputOptionFull);
@@ -2649,6 +2910,7 @@ function taxConfigurator() {
     let superSalSacInput = createDollarPercentInput(superSalSacId);
     superSalSacInput.addEventListener("input", function(){
         setSaveData(superSalSacId, document.forms.taxSettings.elements.namedItem(superSalSacId).value, false);
+        updateResults();
     });
     formArea.appendChild(superSalSacLabel);
     formArea.appendChild(superSalSacInput);
@@ -2660,6 +2922,7 @@ function taxConfigurator() {
     let novatedLeasePreInput = createDollarPercentInput(novatedLeasePreId);
     novatedLeasePreInput.addEventListener("input", function(){
         setSaveData(novatedLeasePreId, document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value, false);
+        updateResults();
     });
     formArea.appendChild(novatedLeasePreLabel);
     formArea.appendChild(novatedLeasePreInput);
@@ -2670,6 +2933,7 @@ function taxConfigurator() {
     let novatedLeasePostInput = createDollarPercentInput(novatedLeasePostId);
     novatedLeasePostInput.addEventListener("input", function(){
         setSaveData(novatedLeasePostId, document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value, false);
+        updateResults();
     });
     formArea.appendChild(novatedLeasePostLabel);
     formArea.appendChild(novatedLeasePostInput);
@@ -2681,6 +2945,7 @@ function taxConfigurator() {
     let withholdExtraInput = createDollarPercentInput(withholdExtraId);
     withholdExtraInput.addEventListener("input", function(){
         setSaveData(withholdExtraId, document.forms.taxSettings.elements.namedItem(withholdExtraId).value, false);
+        updateResults();
     });
     formArea.appendChild(withholdExtraLabel);
     formArea.appendChild(withholdExtraInput);

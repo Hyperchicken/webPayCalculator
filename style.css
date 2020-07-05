@@ -554,19 +554,19 @@ div.day-of-week > p {
     margin-top: 2px;
 }
 
-#totalElement {
+.total-element {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
 }
 
-.hoursWorked {
+.hours-worked {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
     font-weight: bold;
     cursor: pointer;
 }
 
-.hoursWorked:hover {
+.hours-worked:hover {
     text-decoration: underline;
 }
 
@@ -803,7 +803,7 @@ li.helpbox-topnav > a {
     .pay-element-table {
         font-size: 3.5vw;
     }
-    #totalElement { 
+    .total-element { 
         font-size: 4.5vw;
     }
 
