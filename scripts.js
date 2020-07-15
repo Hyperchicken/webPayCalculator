@@ -1940,7 +1940,7 @@ function updateResults() {
             //calculate compulsary super contribution
             let nonOvertimePay = 0.0;
             groupedElements.forEach(function(e){ 
-                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "bonusPayment", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance"].includes(e.payType)) nonOvertimePay += e.value;
+                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
                 taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1));
