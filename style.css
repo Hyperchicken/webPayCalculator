@@ -474,6 +474,10 @@ hr {
     height: 30px;
 }
 
+.width100 {
+    width: 100%;
+}
+
 .input-group input, .input-group-addon {
     display: table-cell;
 }
@@ -516,6 +520,14 @@ hr {
     color: #acf7ff;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.taxform-text-input {
+    height: 30px;
+    border-style: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    padding: 0 5px;
 }
 
 .time {
@@ -696,7 +708,6 @@ div.day-of-week > p {
 .hours-worked {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
-    font-weight: bold;
     cursor: pointer;
 }
 
@@ -822,6 +833,10 @@ li.dropdown {
 }
 .menu-icon {
     margin-right: 10px;
+}
+
+.bold {
+    font-weight: bold;
 }
   
 .dropdown-content a:hover, .dropdown-content a.active {background-color: #f1f1f1;}

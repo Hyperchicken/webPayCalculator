@@ -8,7 +8,7 @@
 
 //version
 const calcVersion = "1.17 beta";
-const calcLastUpdateDate = "12/06/2020";
+const calcLastUpdateDate = "15/07/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -699,6 +699,7 @@ let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; //define shorthand names for days of the week
+let numberOfCustomPostTaxFields = 4;
 
 //init on document load
 $(document).ready(function() { 
@@ -1647,7 +1648,6 @@ function updateGrade() {
             setFormColour("rgb(207, 133, 50)");
             setSaveData("paygrade", "conversion", false);
             setSaveData("paygrade", "conversion");
-            $("#payClassWarning").show();
             break;
         case "parttime":
             selectedGradeRates = spotRates;
@@ -1693,7 +1693,6 @@ function updateGrade() {
             }
             setFormColour("#606060");
             $(".tso-dropdown").show();
-            $("#payClassWarning").show();
             break;
         default: 
             selectedGradeRates = undefined;
@@ -2613,8 +2612,6 @@ function calculateTax(grossIncome) {
         }
     }
 
-    
-
     //novated lease post-tax
     if(!isNaN(novatedLeasePostTax)) {
         novatedLeasePostTax *= -1;
@@ -2623,8 +2620,6 @@ function calculateTax(grossIncome) {
             postTaxDeduction += novatedLeasePostTax;
         }
     }
-
-    
 
     //extra tax
     if(!isNaN(additionalTaxWithheld)) {
@@ -2635,6 +2630,20 @@ function calculateTax(grossIncome) {
         if(additionalTaxWithheld != 0) {
             taxPay.push(new TaxElement("Extra Tax", additionalTaxWithheld, 1));
             taxBalance += additionalTaxWithheld;
+        }
+    }
+
+    //custom post-tax deductions
+    for(let i = 0; i < numberOfCustomPostTaxFields; i++) {
+        let descriptionId = "customPostTaxDescription" + i.toString();
+        let valueId = "customPostTaxValue" + i.toString();
+        let description = getSaveData(descriptionId, false);
+        if(description) description = description.trim();
+        let value = parseFloat(getSaveData(valueId, false));
+        if(description && !isNaN(value) && value != 0) { //if both fields populated and valid
+            value *= -1;
+            taxPay.push(new TaxElement(description, value, 5));
+            postTaxDeduction += value;
         }
     }
 
@@ -3071,6 +3080,43 @@ function taxConfigurator() {
     formArea.appendChild(novatedLeasePostInput);
 
 
+    //custom post-tax
+    let formHr = document.createElement("hr");
+    formHr.classList.add("grid-1-3", "width100");
+    formArea.appendChild(formHr);
+    let customPostTaxHeader = document.createElement("span");
+    customPostTaxHeader.textContent = "Other Post-Tax Deductions"
+    customPostTaxHeader.classList.add("grid-1-3", "bold");
+    formArea.appendChild(customPostTaxHeader);
+
+    let customPostTaxDescriptionLabel = document.createElement("span");
+    customPostTaxDescriptionLabel.textContent = "Description";
+    let customPostTaxInputLabel = document.createElement("span");
+    customPostTaxInputLabel.textContent = "Value";
+    formArea.append(customPostTaxDescriptionLabel, customPostTaxInputLabel);
+
+
+    //create multiple custom post-tax fields
+    let customPostTaxValueId = "customPostTaxValue";
+    let customPostTaxDescriptionId = "customPostTaxDescription";
+    for (let i = 0; i < numberOfCustomPostTaxFields; i++) {
+        let descriptionId = customPostTaxDescriptionId + i.toString();
+        let valueId = customPostTaxValueId + i.toString();
+        let customPostTaxDescriptionInput = document.createElement("input");
+        customPostTaxDescriptionInput.classList.add("taxform-text-input")
+        customPostTaxDescriptionInput.setAttribute("maxlength", "50")
+        customPostTaxDescriptionInput.id = descriptionId;
+        customPostTaxDescriptionInput.addEventListener("input", function(){
+            setSaveData(descriptionId, document.forms.taxSettings.elements.namedItem(descriptionId).value, false);
+            updateResults();
+        });
+        let customPostTaxValueInput = createDollarPercentInput(valueId, true, false);
+        customPostTaxValueInput.addEventListener("input", function(){
+            setSaveData(valueId, document.forms.taxSettings.elements.namedItem(valueId).value, false);
+            updateResults();
+        });
+        formArea.append(customPostTaxDescriptionInput, customPostTaxValueInput);
+    }
     
 
     //show helpbox
@@ -3099,6 +3145,12 @@ function taxConfigurator() {
     if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
     if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
     if(withholdExtraSave) document.forms.taxSettings.elements.namedItem(withholdExtraId).value = withholdExtraSave;
+    for (let i = 0; i < numberOfCustomPostTaxFields; i++) {
+        let customPostTaxDescriptionSave = getSaveData(customPostTaxDescriptionId + i.toString(), false);
+        let customPostTaxValueSave = getSaveData(customPostTaxValueId + i.toString(), false);
+        if(customPostTaxDescriptionSave) document.forms.taxSettings.elements.namedItem(customPostTaxDescriptionId + i.toString()).value = customPostTaxDescriptionSave;
+        if(customPostTaxValueSave) document.forms.taxSettings.elements.namedItem(customPostTaxValueId + i.toString()).value = customPostTaxValueSave;
+    }
 }
 
 /**
