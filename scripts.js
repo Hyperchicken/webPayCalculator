@@ -2639,7 +2639,7 @@ function calculateTax(grossIncome) {
         let valueId = "customPostTaxValue" + i.toString();
         let description = getSaveData(descriptionId, false);
         if(description) description = description.trim();
-        let value = parseFloat(getSaveData(valueId, false));
+        let value = Math.abs(parseFloat(getSaveData(valueId, false)));
         if(description && !isNaN(value) && value != 0) { //if both fields populated and valid
             value *= -1;
             taxPay.push(new TaxElement(description, value, 5));
@@ -2907,7 +2907,7 @@ function taxConfigurator() {
     contentElement.innerHTML = ""; //clear any existing content
     let formHeader = document.createElement("div");
     formHeader.classList.add("grid-1-3")
-    formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+    formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><ul><li>Check and enter in values for all relevant options. If an option is not relevant, you can leave it blank.</li><li>Each value entered represents the total dollar amount or percentage per fortnight.</li><li>To change a field from dollars to percent, press the dollar sign or percent sign on the relevant field.</li></ul><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
 
     let createDollarPercentInput = (id, showDollar = false, showPercent = false, percentActive = false) => {
         let inputGroup = document.createElement("div");
