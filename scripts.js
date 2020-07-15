@@ -7,13 +7,13 @@
 "use strict";
 
 //version
-const calcVersion = "1.16";
+const calcVersion = "1.17 beta";
 const calcLastUpdateDate = "12/06/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion
-+ "<ul><li>Backpay Calculator updated to require far fewer payslips and inputs. Thanks Rob!</li><li>New EA pay rates are now active from 7/6/2020 onwards.</li><li>A new backpay calculator can be accessed from the Menu!</li></ul>";
++ "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
 
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins. MUST BE IN CHRONOLOGICAL ORDER (left to right)
@@ -658,14 +658,16 @@ class PayElement {
  */
 class TaxElement { 
     /**
-     * 
-     * @param {string} description 
-     * @param {number} value 
-     * @param {boolean} postTaxDeduction 
+     * Initialise a TaxElement
+     * @param {string} description - name of the tax element that will be displayed in the results table
+     * @param {number} value - value of this tax element in dollars and cents (eg: 123.98)
+     * @param {number} sortIndex - Optional. Default: 1000. Determines how this element show be sorted. Lower values are displayed first. 
+     * @param {boolean} postTaxDeduction - Optional. Default: false. Flag for indicating that this is a post-tax deduction (taken from net pay)
      */
-    constructor(description, value, postTaxDeduction = false) {
+    constructor(description, value, sortIndex = 1000, postTaxDeduction = false) {
         this.description = description;
         this.value = parseFloat(value.toFixed(2));
+        this.sortIndex = sortIndex;
         this.postTaxDeduction = postTaxDeduction;
     }
 }
@@ -1832,7 +1834,7 @@ function updateResults() {
         if(payElement.helpText) {
             elemClass.addEventListener("click", function(){
                 $(".pay-element-table > tr").css("background-color", ""); //clear existing highlights
-                $(".hoursWorked").css("background-color", "");
+                $(".hours-worked").css("background-color", "");
                 document.getElementById("resultsHelpDiv").innerHTML = payElement.helpText;
                 payElementRow.style.backgroundColor = "#00000040"; //highlight clicked element
                 window.location.replace("#resultsHelpDiv"); //scroll to help box
@@ -1935,7 +1937,18 @@ function updateResults() {
         let taxTotals;
         let taxCalculationEnabled = getSaveData("enableTaxCalc", false);
         if(taxCalculationEnabled) {
-            taxTotals = calculateTax(totalGross); //array
+            taxTotals = calculateTax(totalGross);
+            //calculate compulsary super contribution
+            let nonOvertimePay = 0.0;
+            groupedElements.forEach(function(e){ 
+                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "bonusPayment", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance", "leaveLoading"].includes(e.payType)) nonOvertimePay += e.value;
+            });
+            if(nonOvertimePay > 0) {
+                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1));
+            }
+            taxPay.sort(function(a, b){
+                return a.sortIndex - b.sortIndex;
+            });
             if(taxPay.length > 0) {
                 resultArea.appendChild(document.createElement("hr"));
                 let listDiv = document.createElement("div");
@@ -1949,7 +1962,7 @@ function updateResults() {
                     let elemDescription = document.createElement("td");
                     let elemValue = document.createElement("td");
                     elemDescription.innerHTML = e.description;
-                    elemValue.textContent = "$" + e.value.toFixed(2);
+                    elemValue.textContent = (e.value < 0 ? "-$" : "$") + Math.abs(e.value).toFixed(2);
                     elemDescription.className = "pay-element-class";
                     taxElementRow.appendChild(elemDescription);
                     taxElementRow.appendChild(elemValue);
@@ -1965,23 +1978,49 @@ function updateResults() {
         //total gross element
         let totalGrossElement = document.createElement("h3");
         totalGrossElement.classList.add("total-element");
-        totalGrossElement.textContent = "Total Gross: $" + totalGross.toFixed(2);
+        totalGrossElement.textContent = "Gross Income: " + ((totalGross < 0) ? "-$" : "$") + Math.abs(totalGross).toFixed(2);
         resultArea.appendChild(totalGrossElement);
 
         //tax total elements
         if(taxCalculationEnabled) {
+            resultArea.appendChild(document.createElement("hr"));
+
+            let taxableIncomeElement = document.createElement("p");
+            taxableIncomeElement.classList.add("hours-worked");
+            taxableIncomeElement.textContent = "Taxable Income: " + ((taxTotals.taxableIncome < 0) ? "-$" : "$") + Math.abs(taxTotals.taxableIncome).toFixed(2);
+            resultArea.appendChild(taxableIncomeElement);
+
             let totalTaxElement = document.createElement("p");
             totalTaxElement.classList.add("hours-worked");
-            totalTaxElement.textContent = "Tax: $" + taxTotals.taxBalance.toFixed(2);
+            totalTaxElement.textContent = "Tax: " + ((taxTotals.taxBalance < 0) ? "-$" : "$") + Math.abs(taxTotals.taxBalance).toFixed(2);
             resultArea.appendChild(totalTaxElement);
+
+            let postTaxDeductionElement = document.createElement("p");
+            postTaxDeductionElement.classList.add("hours-worked");
+            postTaxDeductionElement.textContent = "Post-tax Deductions: " + ((taxTotals.postTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.postTaxDeduction).toFixed(2);
+            resultArea.appendChild(postTaxDeductionElement);
     
             let totalNetElement = document.createElement("h3");
             totalNetElement.classList.add("total-element");
-            totalNetElement.textContent = "Net Income: $" + taxTotals.netIncome.toFixed(2);
+            totalNetElement.textContent = "Net Income: " + ((taxTotals.netIncome < 0) ? "-$" : "$") + Math.abs(taxTotals.netIncome).toFixed(2);
             resultArea.appendChild(totalNetElement);
+        }
+        else if(!getSaveData("hideTaxSetupPrompt", false)) {
+            resultArea.appendChild(document.createElement("hr"));
+            let taxPrompt = document.createElement("p");
+            taxPrompt.classList.add("tax-prompt");
+            let hideLink = document.createElement("a");
+            hideLink.textContent = "Hide this message";
+            hideLink.addEventListener("click", function(){
+                setSaveData("hideTaxSetupPrompt", "true", false);
+                updateResults();
+            });
+            taxPrompt.append("Net income calculation is not enabled. To enable, select the Net Income Settings option from Menu and configure the relevant settings. ", hideLink);
+            resultArea.appendChild(taxPrompt);
         }
 
         //payslip hours worked
+        resultArea.appendChild(document.createElement("hr"));
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
             if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
@@ -1995,7 +2034,7 @@ function updateResults() {
             $(".hours-worked").css("background-color", "");
             payslipHoursWorkedElement.style.backgroundColor = "#00000040"; //highlight clicked element
             document.getElementById("resultsHelpDiv").innerHTML = "<strong>Payslip Hours Worked</strong><p>Calculates the value that appears in the <em>Hours Worked</em> section on the <em>payslip</em>." 
-            + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -)!.</p> <p>Use <em>Payslip Hours Worked</em> to compare with the <em>Hours Worked</em> section on your payslip.</p>";
+            + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -).</p> <p>Compare this value to the <em>Hours Worked</em> section on your payslip.</p>";
             window.location.replace("#resultsHelpDiv"); //scroll to help box
         });
         
@@ -2471,31 +2510,57 @@ function updateShiftPayTable() {
  * @param {number} taxableIncome - the taxable income to calculate tax amount on
  * @returns {number[]} number array with the following calculated values [post tax deduction, tax amount, net amount]
  */
-function calculateTax(taxableIncome) {
+function calculateTax(grossIncome) {
     taxPay = [];
+    let taxableIncome = grossIncome;
     let taxBalance = 0;
     let postTaxDeduction = 0;
-    let weeklyIncome = Math.floor(taxableIncome / 2) + 0.99; //weekly income calculated as per ATO tax formula
-    let taxFreeThreshold = false, stsl = false, etdscMembership, superSalSac = 0, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0;
+    let taxFreeThreshold = false, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
     if(getSaveData("taxFreeThreshold", false) == "true") taxFreeThreshold = true;
     if(getSaveData("stsl", false)) stsl = true;
     if(getSaveData("etdscMembership", false)) etdscMembership = getSaveData("etdscMembership", false);
-    if(getSaveData("superSalSac", false)) superSalSac = getSaveData("superSalSac", false);
-    if(getSaveData("novatedLeasePre", false)) novatedLeasePreTax = getSaveData("novatedLeasePre", false);
-    if(getSaveData("novatedLeasePost", false)) novatedLeasePostTax = getSaveData("novatedLeasePost", false);
-    if(getSaveData("withholdExtra", false)) additionalTaxWithheld = getSaveData("withholdExtra", false);
+    if(getSaveData("superSalSac", false)) superSalSac = Math.abs(parseFloat(getSaveData("superSalSac", false)));
+    if(getSaveData("superSalSacPercent", false)) superSalSacPercent = true;
+    if(getSaveData("novatedLeasePre", false)) novatedLeasePreTax =  Math.abs(parseFloat(getSaveData("novatedLeasePre", false)));
+    if(getSaveData("novatedLeasePost", false)) novatedLeasePostTax =  Math.abs(parseFloat(getSaveData("novatedLeasePost", false)));
+    if(getSaveData("withholdExtra", false)) additionalTaxWithheld =  Math.abs(parseFloat(getSaveData("withholdExtra", false)));
+    if(getSaveData("withholdExtraPercent", false)) additionalTaxWithheldPercent = true;
 
     let fortnightEndDate = $("#week-commencing-date").datepicker("getDate"); //date for finding relevant tax tables
     fortnightEndDate.setDate(fortnightEndDate.getDate() + 13);
 
+    
+    //calculate pre-tax deductions first
+    //novated lease pre-tax
+    if(!isNaN(novatedLeasePreTax)) {
+        novatedLeasePreTax *= -1;
+        if(novatedLeasePreTax != 0) {
+            taxPay.push(new TaxElement("Novated Lease Pre-Tax", novatedLeasePreTax, 4));
+            taxableIncome += novatedLeasePreTax;
+        }
+    }
+
+    //super salary sacrifice
+    if(!isNaN(superSalSac)) {
+        if(superSalSacPercent) {
+            superSalSac = grossIncome * (superSalSac/100);
+        }
+        superSalSac *= -1;
+        if(superSalSac != 0) {
+            taxPay.push(new TaxElement("Super Salary Sacrifice", superSalSac, 3));
+            taxableIncome += superSalSac;
+        }
+    }
+
     //income tax
     //find correct scale and rates
+    let weeklyTaxableIncome = Math.floor(taxableIncome / 2) + 0.99; //weekly income calculated as per ATO tax formula
     let taxScale, taxScaleIndex = 0;
     for(let i = taxScales.length - 1; i >= 0; i--) {
         if(fortnightEndDate.stripTime().getTime() >= new Date(taxScales[i].startDate).stripTime().getTime()){
             if(taxFreeThreshold) taxScale = taxScales[i].scale2;
                 else taxScale = taxScales[i].scale1;
-            while(weeklyIncome > taxScale[taxScaleIndex][0]) {
+            while(weeklyTaxableIncome > taxScale[taxScaleIndex][0]) {
                 taxScaleIndex++;
             }
             break;
@@ -2506,20 +2571,21 @@ function calculateTax(taxableIncome) {
         return;
     };
     //calculate income tax and add element to tax table
-    let incomeTax = Math.round((weeklyIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
-    if(incomeTax > 0) {
-        taxPay.push(new TaxElement("Income Tax", incomeTax));
+    let incomeTax = Math.round((weeklyTaxableIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
+    incomeTax *= -1;
+    if(incomeTax != 0) {
+        taxPay.push(new TaxElement("Income Tax", incomeTax, 0));
         taxBalance += incomeTax;
     }
 
     //etdsc membership
     if(etdscMembership == "full") {
-        taxPay.push(new TaxElement("Electric Train Drivers Social Club", etdscFullMemberRate));
-        postTaxDeduction += etdscFullMemberRate;
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscFullMemberRate, 6));
+        postTaxDeduction -= etdscFullMemberRate;
     }
     else if(etdscMembership == "half") {
-        taxPay.push(new TaxElement("Electric Train Drivers Social Club", etdscHalfMemberRate));
-        postTaxDeduction += etdscHalfMemberRate;
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscHalfMemberRate, 6));
+        postTaxDeduction -= etdscHalfMemberRate;
     }
 
     //student loan
@@ -2529,7 +2595,7 @@ function calculateTax(taxableIncome) {
             if(fortnightEndDate.stripTime().getTime() >= new Date(stslScales[i].startDate).stripTime().getTime()){
                 if(taxFreeThreshold) stslScale = stslScales[i].scale2;
                     else stslScale = stslScales[i].scale1;
-                while(weeklyIncome > stslScale[stslScaleIndex][0]) {
+                while(weeklyTaxableIncome > stslScale[stslScaleIndex][0]) {
                     stslScaleIndex++;
                 }
                 break;
@@ -2539,17 +2605,42 @@ function calculateTax(taxableIncome) {
             console.warn("STSL rates not found for fortnight ending " + fortnightEndDate.toDDMMYYYY());
             return;
         };
-        let studentLoanRepayment = Math.round(weeklyIncome * stslScale[stslScaleIndex][1]) * 2;
-        if(studentLoanRepayment > 0) {
-            taxPay.push(new TaxElement("Study & Training Support Loan", studentLoanRepayment));
+        let studentLoanRepayment = Math.round(weeklyTaxableIncome * stslScale[stslScaleIndex][1]) * 2;
+        studentLoanRepayment *= -1;
+        if(studentLoanRepayment != 0) {
+            taxPay.push(new TaxElement("Study & Training Support Loan", studentLoanRepayment, 10));
             taxBalance += studentLoanRepayment; 
         }
     }
 
-    let netIncome = taxableIncome - taxBalance - postTaxDeduction;
     
-    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome}
-    //return [postTaxDeduction, taxBalance, netIncome];
+
+    //novated lease post-tax
+    if(!isNaN(novatedLeasePostTax)) {
+        novatedLeasePostTax *= -1;
+        if(novatedLeasePostTax != 0) {
+            taxPay.push(new TaxElement("Novated Lease Post-Tax", novatedLeasePostTax, 5));
+            postTaxDeduction += novatedLeasePostTax;
+        }
+    }
+
+    
+
+    //extra tax
+    if(!isNaN(additionalTaxWithheld)) {
+        if(additionalTaxWithheldPercent) {
+            additionalTaxWithheld = grossIncome * (additionalTaxWithheld/100);
+        }
+        additionalTaxWithheld *= -1;
+        if(additionalTaxWithheld != 0) {
+            taxPay.push(new TaxElement("Extra Tax", additionalTaxWithheld, 1));
+            taxBalance += additionalTaxWithheld;
+        }
+    }
+
+    let netIncome = taxableIncome + taxBalance + postTaxDeduction;
+    
+    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome}
 }
 
 //Data storage
@@ -2801,28 +2892,81 @@ function showPrintView() {
  * Creates a help box window with settings to confugure tax and net pay
  */
 function taxConfigurator() {
-    document.getElementById("helpboxTitle").textContent = "Tax Configuration";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("helpboxTitle").textContent = "Net Income Configuration";
     let contentElement = document.getElementById("helpboxContent");
     contentElement.innerHTML = ""; //clear any existing content
     let formHeader = document.createElement("div");
     formHeader.classList.add("grid-1-3")
-    formHeader.innerHTML = "<p>Configure options for tax and net calculation.<br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+    formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
 
-    let createDollarPercentInput = (id) => {
-        let dollarLabel = document.createElement("label");
-        dollarLabel.textContent = "$";
-        let percentLabel = document.createElement("label");
-        percentLabel.textContent = "%";
-        let inputDiv = document.createElement("div");
-        inputDiv.classList.add("dollar-percent-input");
+    let createDollarPercentInput = (id, showDollar = false, showPercent = false, percentActive = false) => {
+        let inputGroup = document.createElement("div");
+        inputGroup.classList.add("input-group");
+        let dollarAddon = document.createElement("span");
+        dollarAddon.classList.add("input-group-addon", "dollar")
+        dollarAddon.textContent = "$";
+        let percentAddon = document.createElement("span");
+        percentAddon.classList.add("input-group-addon", "percent")
+        percentAddon.textContent = "%";
         let inputElement = document.createElement("input");
         inputElement.id = id;
         inputElement.setAttribute("type", "text");
         inputElement.setAttribute("inputmode", "decimal");
-        inputDiv.appendChild(dollarLabel);
-        inputDiv.appendChild(inputElement);
-        inputDiv.appendChild(percentLabel);
-        return inputDiv;
+        if(!showDollar) {
+            dollarAddon.classList.add("hidden");
+        }
+        if(!showPercent) {
+           percentAddon.classList.add("hidden");
+        }
+        if(showDollar && showPercent) {
+            dollarAddon.addEventListener("click", function(){
+                setSaveData(id + "Percent", "", false);
+                dollarAddon.classList.remove("inactive");
+                percentAddon.classList.add("inactive");
+                updateResults();
+            });
+            percentAddon.addEventListener("click", function(){
+                setSaveData(id + "Percent", "true", false);
+                percentAddon.classList.remove("inactive");
+                dollarAddon.classList.add("inactive");
+                updateResults();
+            });
+            if(percentActive) {
+                setSaveData(id + "Percent", "true", false);
+                percentAddon.classList.remove("inactive");
+                dollarAddon.classList.add("inactive");
+            }
+            else {
+                setSaveData(id + "Percent", "", false);
+                dollarAddon.classList.remove("inactive");
+                percentAddon.classList.add("inactive");
+            }
+        }
+        inputGroup.appendChild(dollarAddon);
+        inputGroup.appendChild(inputElement);
+        inputGroup.appendChild(percentAddon);
+        
+        return inputGroup;
+    }
+
+    let createCheckboxInput = (id, checked = false) => {
+        let checkboxDiv = document.createElement("label");
+        checkboxDiv.classList.add("checkbox-container");
+        let checkboxInput = document.createElement("input");
+        checkboxInput.id = id;
+        checkboxInput.setAttribute("type", "checkbox");
+        if(checked) checkboxInput.setAttribute("checked", "checked");
+        checkboxInput.addEventListener("input", function(){
+            if(this.checked) setSaveData(id, "true", false);
+            else setSaveData(id, "", false);
+            updateResults();
+        });
+        let checkboxCheckmark = document.createElement("span");
+        checkboxCheckmark.classList.add("checkbox-checkmark");
+
+        checkboxDiv.append(checkboxInput, checkboxCheckmark);
+        return checkboxDiv;
     }
    
 
@@ -2834,47 +2978,23 @@ function taxConfigurator() {
     //enable checkbox
     let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
-    enableCheckboxLabel.textContent = "Enable Tax Calculation";
-    let enableCheckboxInput = document.createElement("input");
-    enableCheckboxInput.id = enableTaxCalcId;
-    enableCheckboxInput.setAttribute("type", "checkbox");
-    enableCheckboxInput.addEventListener("input", function(){
-        if(this.checked) setSaveData(enableTaxCalcId, "true", false);
-        else setSaveData(enableTaxCalcId, "", false);
-        updateResults();
-    });
+    enableCheckboxLabel.textContent = "Enable Net Pay Calculation";
     formArea.appendChild(enableCheckboxLabel);
-    formArea.appendChild(enableCheckboxInput);
+    formArea.appendChild(createCheckboxInput(enableTaxCalcId, (getSaveData(enableTaxCalcId, false) ? true : false)));
 
     //tax-free threshold
     let taxFreeThresholdId = "taxFreeThreshold";
     let taxFreeThresholdLabel = document.createElement("span");
     taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
-    let taxFreeThresholdInput = document.createElement("input");
-    taxFreeThresholdInput.id = taxFreeThresholdId;
-    taxFreeThresholdInput.setAttribute("type", "checkbox");
-    taxFreeThresholdInput.addEventListener("input", function(){
-        if(this.checked) setSaveData(taxFreeThresholdId, "true", false);
-        else setSaveData(taxFreeThresholdId, "", false);
-        updateResults();
-    });
     formArea.appendChild(taxFreeThresholdLabel);
-    formArea.appendChild(taxFreeThresholdInput);
+    formArea.appendChild(createCheckboxInput(taxFreeThresholdId, (getSaveData(taxFreeThresholdId, false) ? true : false)));
 
     //HECS/STSL
     let stslId = "stsl";
     let stslLabel = document.createElement("span");
     stslLabel.textContent = "STSL/HELP";
-    let stslInput = document.createElement("input");
-    stslInput.id = stslId;
-    stslInput.setAttribute("type", "checkbox");
-    stslInput.addEventListener("input", function(){
-        if(this.checked) setSaveData(stslId, "true", false);
-        else setSaveData(stslId, "", false);
-        updateResults();
-    });
     formArea.appendChild(stslLabel);
-    formArea.appendChild(stslInput);
+    formArea.appendChild(createCheckboxInput(stslId, (getSaveData(stslId, false) ? true : false)));
 
     //etdsc membership
     let etdscId = "etdscMembership";
@@ -2886,11 +3006,11 @@ function taxConfigurator() {
     etdscInputOptionNone.textContent = "None";
     etdscInputOptionNone.setAttribute("value", "none")
     let etdscInputOptionFull = document.createElement("option");
-    etdscInputOptionFull.textContent = "Full-Time";
-    etdscInputOptionFull.setAttribute("value", "full")
+    etdscInputOptionFull.textContent = "Half";
+    etdscInputOptionFull.setAttribute("value", "half")
     let etdscInputOptionHalf = document.createElement("option");
-    etdscInputOptionHalf.textContent = "Part-Time/Job-Share";
-    etdscInputOptionHalf.setAttribute("value", "half")
+    etdscInputOptionHalf.textContent = "Full";
+    etdscInputOptionHalf.setAttribute("value", "full")
     etdscInput.addEventListener("input", function(){
         if(this.value == "full") setSaveData(etdscId, "full", false);
         else if(this.value == "half") setSaveData(etdscId, "half", false);
@@ -2907,7 +3027,7 @@ function taxConfigurator() {
     let superSalSacId = "superSalSac";
     let superSalSacLabel = document.createElement("span");
     superSalSacLabel.textContent = "Super Salary Sacrifice";
-    let superSalSacInput = createDollarPercentInput(superSalSacId);
+    let superSalSacInput = createDollarPercentInput(superSalSacId, true, true, (getSaveData(superSalSacId + "Percent", false) ? true : false));
     superSalSacInput.addEventListener("input", function(){
         setSaveData(superSalSacId, document.forms.taxSettings.elements.namedItem(superSalSacId).value, false);
         updateResults();
@@ -2915,11 +3035,23 @@ function taxConfigurator() {
     formArea.appendChild(superSalSacLabel);
     formArea.appendChild(superSalSacInput);
 
+    //additional tax withheld
+    let withholdExtraId = "withholdExtra";
+    let withholdExtraLabel = document.createElement("span");
+    withholdExtraLabel.textContent = "Additional Tax Withholding";
+    let withholdExtraInput = createDollarPercentInput(withholdExtraId, true, true, (getSaveData(withholdExtraId + "Percent", false) ? true : false));
+    withholdExtraInput.addEventListener("input", function(){
+        setSaveData(withholdExtraId, document.forms.taxSettings.elements.namedItem(withholdExtraId).value, false);
+        updateResults();
+    });
+    formArea.appendChild(withholdExtraLabel);
+    formArea.appendChild(withholdExtraInput);
+
     //novated lease
     let novatedLeasePreId = "novatedLeasePre";
     let novatedLeasePreLabel = document.createElement("span");
     novatedLeasePreLabel.textContent = "Novated Lease Pre-Tax";
-    let novatedLeasePreInput = createDollarPercentInput(novatedLeasePreId);
+    let novatedLeasePreInput = createDollarPercentInput(novatedLeasePreId, true, false);
     novatedLeasePreInput.addEventListener("input", function(){
         setSaveData(novatedLeasePreId, document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value, false);
         updateResults();
@@ -2930,7 +3062,7 @@ function taxConfigurator() {
     let novatedLeasePostId = "novatedLeasePost";
     let novatedLeasePostLabel = document.createElement("span");
     novatedLeasePostLabel.textContent = "Novated Lease Post-Tax";
-    let novatedLeasePostInput = createDollarPercentInput(novatedLeasePostId);
+    let novatedLeasePostInput = createDollarPercentInput(novatedLeasePostId, true, false);
     novatedLeasePostInput.addEventListener("input", function(){
         setSaveData(novatedLeasePostId, document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value, false);
         updateResults();
@@ -2938,17 +3070,8 @@ function taxConfigurator() {
     formArea.appendChild(novatedLeasePostLabel);
     formArea.appendChild(novatedLeasePostInput);
 
-    //additional tax withheld
-    let withholdExtraId = "withholdExtra";
-    let withholdExtraLabel = document.createElement("span");
-    withholdExtraLabel.textContent = "Additional Tax Withheld";
-    let withholdExtraInput = createDollarPercentInput(withholdExtraId);
-    withholdExtraInput.addEventListener("input", function(){
-        setSaveData(withholdExtraId, document.forms.taxSettings.elements.namedItem(withholdExtraId).value, false);
-        updateResults();
-    });
-    formArea.appendChild(withholdExtraLabel);
-    formArea.appendChild(withholdExtraInput);
+
+    
 
     //show helpbox
     contentElement.appendChild(formHeader);
@@ -2962,9 +3085,7 @@ function taxConfigurator() {
     }
 
     //check and load saved tax config data
-    if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
-    if(getSaveData(taxFreeThresholdId, false) == "true") taxFreeThresholdInput.checked = true;
-    if(getSaveData(stslId, false) == "true") stslInput.checked = true;
+    //if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
     switch(getSaveData(etdscId, false)) {
         case "full": etdscInput.value = "full"; break;
         case "half": etdscInput.value = "half"; break;
@@ -3065,6 +3186,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>15/07/2020 - Version 1.17<ul>"
+            + "<li>Net income calculation. Configure net income settings from the menu.</li>"
+            + "<li>Improved scroll-down indicator icon behaviour.</li>"
+            + "<li>Minor layout changes.</li>"
+            + "</ul></li>"
             + "<li>12/06/2020 - Version 1.16<ul>"
             + "<li>EA2019 payrates to start from 7/6/20</li>"
             + "<li>Updated backpay calculator to require only 3 payslips to calculate instead of the previous 24.</li>"

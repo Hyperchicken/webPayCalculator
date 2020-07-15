@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 body {
     background-color: rgb(17, 95, 167);
     color: white;
@@ -131,6 +134,77 @@ a:visited {
     border-radius: 50%;
     background: white;
 } 
+
+ /* Customize the label (the container) */
+ .checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 25px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    justify-self: center;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    display: none;
+  }
+  
+  /* Create a custom checkbox */
+  .checkbox-checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border: solid black 1px;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .checkbox-container:hover input ~ .checkbox-checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .checkbox-container input:checked ~ .checkbox-checkmark {
+    background-color: #90ee90;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkbox-checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .checkbox-container input:checked ~ .checkbox-checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .checkbox-container .checkbox-checkmark:after {
+    left: 8px;
+    top: 4px;
+    width: 4px;
+    height: 10px;
+    border: solid #000;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  } 
 
 .tso-dropdown {
     display: none;
@@ -354,7 +428,7 @@ hr {
 }
 
 .input-container {
-    max-width: 400px;
+    max-width: 420px;
 }
 
 .centre-text {
@@ -377,16 +451,76 @@ hr {
 
 .grid-taxform {
     display: grid;
-    grid-template-columns: 250px auto;
-    grid-gap: 3px;
-    max-width: 400px;
+    grid-template-columns: auto 150px;
+    row-gap: 8px;
+    column-gap: 3px;
     align-items: center;
+    max-width: 420px;
+    margin-bottom: 10px;
+    padding-right: 20px;
+}
+
+.input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    background-color: #fff;
+    border-radius: 4px;
+    font-size: 1.1em;
+}
+
+.input-group input {
+    width: 100%;
+    height: 30px;
+}
+
+.input-group input, .input-group-addon {
+    display: table-cell;
+}
+
+.input-group-addon {
+    border: 1px solid #fff;
+    background-color: #90ee90;
+    text-align: center;
+    width: 20%;
+    cursor: default;
+    color: #000;
+    user-select: none;
+}
+
+.input-group-addon.dollar {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.input-group-addon.percent {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.input-group-addon.inactive {
+    background-color: #d0d0d0;
+    color: #979797;
+    cursor: pointer;
+}
+
+.input-group-addon.inactive:hover { 
+    background-color: #a6d29d;
+}
+
+.input-group-addon.hidden {
+    visibility: hidden;
+}
+
+.tax-prompt a {
+    color: #acf7ff;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .time {
-    width: 2.5em;
-    margin: 2px auto;
-    padding: 2px;
+    width: 3em;
+    margin: auto;
 }
 
 .day-of-week {
@@ -574,8 +708,7 @@ div.day-of-week > p {
     padding-left: 3%;
 }
 
-input[type=text],
-input[type=tel] {
+input[type=text], select{
     border: none;
     border-radius: 5px;
     padding: 4px;
@@ -789,26 +922,33 @@ li.helpbox-topnav > a {
 }
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
-    input[type=tel],
     select  {
         font-size: 1em;
     }
+
     .ui-datepicker {
         width: 22em !important;
     }
+
     .ui-datepicker td a,
     .ui-datepicker td span {
         height: 2em !important;
     }
+
     .pay-element-table {
         font-size: 3.5vw;
     }
+
     .total-element { 
         font-size: 4.5vw;
     }
 
     .container {
         margin: 7px -6px 0px -6px;
+    }
+
+    #helpboxContent input, #helpboxContent select {
+        font-size: initial;
     }
 }
 
