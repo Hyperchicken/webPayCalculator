@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.17 beta";
-const calcLastUpdateDate = "15/07/2020";
+const calcVersion = "1.17";
+const calcLastUpdateDate = "21/07/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1934,7 +1934,7 @@ function updateResults() {
 
         //calculate tax
         let taxTotals;
-        let taxCalculationEnabled = getSaveData("enableTaxCalc", false);
+        let taxCalculationEnabled = getSaveData("enableTaxCalc", false) == "yes" ? true : false;
         if(taxCalculationEnabled) {
             taxTotals = calculateTax(totalGross);
             //calculate compulsary super contribution
@@ -2009,12 +2009,14 @@ function updateResults() {
             let taxPrompt = document.createElement("p");
             taxPrompt.classList.add("tax-prompt");
             let hideLink = document.createElement("a");
-            hideLink.textContent = "Hide this message";
+            hideLink.textContent = "hide this message";
             hideLink.addEventListener("click", function(){
                 setSaveData("hideTaxSetupPrompt", "true", false);
                 updateResults();
             });
-            taxPrompt.append("Net income calculation is not enabled. To enable, select the Net Income Settings option from Menu and configure the relevant settings. ", hideLink);
+            let icon = document.createElement("i");
+            icon.classList.add("fas", "fa-info-circle", "fa-2x", "tax-prompt-icon")
+            taxPrompt.append(icon, "Please configure Net Income Settings via the Menu to calculate tax, super and net income. If you'd prefer not to, you can ", hideLink);
             resultArea.appendChild(taxPrompt);
         }
 
@@ -2514,9 +2516,9 @@ function calculateTax(grossIncome) {
     let taxableIncome = grossIncome;
     let taxBalance = 0;
     let postTaxDeduction = 0;
-    let taxFreeThreshold = false, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
-    if(getSaveData("taxFreeThreshold", false) == "true") taxFreeThreshold = true;
-    if(getSaveData("stsl", false)) stsl = true;
+    let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
+    if(getSaveData("taxFreeThreshold", false) == "no") taxFreeThreshold = false; //using 'no' instead of 'false' in order to make 'true' the default if unset.
+    if(getSaveData("stsl", false) == "yes") stsl = true;
     if(getSaveData("etdscMembership", false)) etdscMembership = getSaveData("etdscMembership", false);
     if(getSaveData("superSalSac", false)) superSalSac = Math.abs(parseFloat(getSaveData("superSalSac", false)));
     if(getSaveData("superSalSacPercent", false)) superSalSacPercent = true;
@@ -2907,7 +2909,7 @@ function taxConfigurator() {
     contentElement.innerHTML = ""; //clear any existing content
     let formHeader = document.createElement("div");
     formHeader.classList.add("grid-1-3")
-    formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><ul><li>Check and enter in values for all relevant options. If an option is not relevant, you can leave it blank.</li><li>Each value entered represents the total dollar amount or percentage per fortnight.</li><li>To change a field from dollars to percent, press the dollar sign or percent sign on the relevant field.</li></ul><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
+    formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
 
     let createDollarPercentInput = (id, showDollar = false, showPercent = false, percentActive = false) => {
         let inputGroup = document.createElement("div");
@@ -2922,6 +2924,7 @@ function taxConfigurator() {
         inputElement.id = id;
         inputElement.setAttribute("type", "text");
         inputElement.setAttribute("inputmode", "decimal");
+        inputElement.setAttribute("placeholder", "0");
         if(!showDollar) {
             dollarAddon.classList.add("hidden");
         }
@@ -2959,26 +2962,39 @@ function taxConfigurator() {
         return inputGroup;
     }
 
-    let createCheckboxInput = (id, checked = false) => {
-        let checkboxDiv = document.createElement("label");
-        checkboxDiv.classList.add("checkbox-container");
-        let checkboxInput = document.createElement("input");
-        checkboxInput.id = id;
-        checkboxInput.setAttribute("type", "checkbox");
-        if(checked) checkboxInput.setAttribute("checked", "checked");
-        checkboxInput.addEventListener("input", function(){
-            if(this.checked) setSaveData(id, "true", false);
-            else setSaveData(id, "", false);
+    let createToggleSwitch = (id, checked = false, onText = "", offText = "") => {
+        let container = document.createElement("div");
+        container.classList.add("toggle-switch-div");
+        let switchContainer = document.createElement("label");
+        switchContainer.classList.add("switch");
+        let toggleText = document.createElement("span");
+        let switchInput = document.createElement("input");
+        switchInput.id = id;
+        switchInput.setAttribute("type", "checkbox");
+        if(checked) {
+            switchInput.setAttribute("checked", "checked");
+            toggleText.textContent = onText;
+        }
+        else {
+            toggleText.textContent = offText;
+        }
+        switchInput.addEventListener("input", function(){
+            if(this.checked) {
+                setSaveData(id, "yes", false);
+                toggleText.textContent = onText;
+            } 
+            else {
+                setSaveData(id, "no", false);
+                toggleText.textContent = offText;
+            }
             updateResults();
         });
-        let checkboxCheckmark = document.createElement("span");
-        checkboxCheckmark.classList.add("checkbox-checkmark");
-
-        checkboxDiv.append(checkboxInput, checkboxCheckmark);
-        return checkboxDiv;
+        let switchSlider = document.createElement("span");
+        switchSlider.classList.add("slider", "round");
+        switchContainer.append(switchInput, switchSlider);
+        container.append(switchContainer, toggleText)
+        return container;
     }
-   
-
 
     let formArea = document.createElement("form");
     formArea.id = "taxSettings";
@@ -2987,23 +3003,42 @@ function taxConfigurator() {
     //enable checkbox
     let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
-    enableCheckboxLabel.textContent = "Enable Net Pay Calculation";
+    enableCheckboxLabel.textContent = "Net Pay Calculation";
     formArea.appendChild(enableCheckboxLabel);
-    formArea.appendChild(createCheckboxInput(enableTaxCalcId, (getSaveData(enableTaxCalcId, false) ? true : false)));
+    if(getSaveData(enableTaxCalcId, false) == "yes") {
+        formArea.appendChild(createToggleSwitch(enableTaxCalcId, true, "Enabled", "Disabled"));
+    }
+    else {
+        formArea.appendChild(createToggleSwitch(enableTaxCalcId, false, "Enabled", "Disabled"));
+    }
+
+    formArea.appendChild(document.createElement("hr"));
 
     //tax-free threshold
     let taxFreeThresholdId = "taxFreeThreshold";
     let taxFreeThresholdLabel = document.createElement("span");
     taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
     formArea.appendChild(taxFreeThresholdLabel);
-    formArea.appendChild(createCheckboxInput(taxFreeThresholdId, (getSaveData(taxFreeThresholdId, false) ? true : false)));
+    if(getSaveData(taxFreeThresholdId, false) == "no") { //reverse logic to make the default 'true'
+        formArea.appendChild(createToggleSwitch(taxFreeThresholdId, false, "Yes", "No"));
+    }
+    else {
+        formArea.appendChild(createToggleSwitch(taxFreeThresholdId, true, "Yes", "No"));
+    }
+
 
     //HECS/STSL
     let stslId = "stsl";
     let stslLabel = document.createElement("span");
     stslLabel.textContent = "STSL/HELP Debt";
     formArea.appendChild(stslLabel);
-    formArea.appendChild(createCheckboxInput(stslId, (getSaveData(stslId, false) ? true : false)));
+    if(getSaveData(stslId, false) == "yes") {
+        formArea.appendChild(createToggleSwitch(stslId, true, "Yes", "No"));
+    }
+    else {
+        formArea.appendChild(createToggleSwitch(stslId, false, "Yes", "No"));
+    }
+    
 
     //etdsc membership
     let etdscId = "etdscMembership";
@@ -3081,9 +3116,7 @@ function taxConfigurator() {
 
 
     //custom post-tax
-    let formHr = document.createElement("hr");
-    formHr.classList.add("grid-1-3", "width100");
-    formArea.appendChild(formHr);
+    formArea.appendChild(document.createElement("hr"));
     let customPostTaxHeader = document.createElement("span");
     customPostTaxHeader.textContent = "Other Post-Tax Deductions"
     customPostTaxHeader.classList.add("grid-1-3", "bold");
@@ -3105,6 +3138,7 @@ function taxConfigurator() {
         let customPostTaxDescriptionInput = document.createElement("input");
         customPostTaxDescriptionInput.classList.add("taxform-text-input")
         customPostTaxDescriptionInput.setAttribute("maxlength", "50")
+        customPostTaxDescriptionInput.setAttribute("placeholder", "Deduction Name")
         customPostTaxDescriptionInput.id = descriptionId;
         customPostTaxDescriptionInput.addEventListener("input", function(){
             setSaveData(descriptionId, document.forms.taxSettings.elements.namedItem(descriptionId).value, false);
@@ -3238,7 +3272,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>15/07/2020 - Version 1.17<ul>"
+            + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"
             + "<li>Improved scroll-down indicator icon behaviour.</li>"
             + "<li>Minor layout changes.</li>"
