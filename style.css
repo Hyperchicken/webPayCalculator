@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 body {
     background-color: rgb(17, 95, 167);
     color: white;
@@ -48,6 +51,21 @@ a:visited {
     margin-left: 0 !important;
 }
 
+.dollar-percent-input {
+    color: #000;
+    background-color: #fff;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 20px auto 20px;
+    align-items: center;
+    justify-items: center;
+}
+
+.dollar-percent-input > input {
+    width: 100%;
+    background: none;
+}
+
 /* Customize the label (the container) */
 .radio-container {
     float: left;
@@ -90,7 +108,7 @@ a:visited {
     background-color: #ccc;
 }
   
-/* When the radio button is checked, add a blue background */
+/* When the radio button is checked, add a background */
 .radio-container input:checked ~ .checkmark {
     background-color: #414141;
 }
@@ -117,6 +135,79 @@ a:visited {
     background: white;
 } 
 
+ /* The switch - the box around the slider */
+ .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d02929;
+    -webkit-transition: .4s;
+    transition: .4s;
+    user-select: none;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #50E850;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #50E850;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  } 
+
+.toggle-switch-div {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-switch-div span {
+    padding-left: 5px;
+}
+
 .tso-dropdown {
     display: none;
 }
@@ -138,6 +229,10 @@ a:visited {
 
 .shelf-button {
     margin: 0px 5px 4px 5px;
+}
+
+.grid-1-2 {
+    grid-column: 1 / 2;
 }
 
 .grid-1-3 {
@@ -335,7 +430,7 @@ hr {
 }
 
 .input-container {
-    max-width: 400px;
+    max-width: 420px;
 }
 
 .centre-text {
@@ -356,10 +451,101 @@ hr {
     align-items: center;
 }
 
+.grid-taxform {
+    display: grid;
+    grid-template-columns: auto 150px;
+    row-gap: 8px;
+    column-gap: 3px;
+    align-items: center;
+    max-width: 420px;
+    margin-bottom: 10px;
+    padding-right: 20px;
+}
+
+.grid-taxform hr {
+    width: 100%;
+    grid-column: 1 / 3;
+    border-top-style: dashed;
+}
+
+.input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    background-color: #fff;
+    border-radius: 4px;
+    font-size: 1.1em;
+}
+
+.input-group input {
+    width: 100%;
+    height: 30px;
+}
+
+.width100 {
+    width: 100%;
+}
+
+.input-group input, .input-group-addon {
+    display: table-cell;
+}
+
+.input-group-addon {
+    border: 1px solid #fff;
+    background-color: #90ee90;
+    text-align: center;
+    width: 20%;
+    cursor: default;
+    color: #000;
+    user-select: none;
+}
+
+.input-group-addon.dollar {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.input-group-addon.percent {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.input-group-addon.inactive {
+    background-color: #d0d0d0;
+    color: #979797;
+    cursor: pointer;
+}
+
+.input-group-addon.inactive:hover { 
+    background-color: #a6d29d;
+}
+
+.input-group-addon.hidden {
+    visibility: hidden;
+}
+
+.tax-prompt a {
+    color: #acf7ff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.tax-prompt-icon {
+    float: left;
+    margin: 3px;
+}
+
+.taxform-text-input {
+    height: 30px;
+    border-style: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    padding: 0 5px;
+}
+
 .time {
-    width: 2.5em;
-    margin: 2px auto;
-    padding: 2px;
+    width: 3em;
+    margin: auto;
 }
 
 .day-of-week {
@@ -527,19 +713,18 @@ div.day-of-week > p {
     margin-top: 2px;
 }
 
-#totalElement {
+.total-element {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
 }
 
-.hoursWorked {
+.hours-worked {
     font-family:  "Lucida Console", Monaco, monospace;
     white-space: pre-wrap;
-    font-weight: bold;
     cursor: pointer;
 }
 
-.hoursWorked:hover {
+.hours-worked:hover {
     text-decoration: underline;
 }
 
@@ -547,8 +732,7 @@ div.day-of-week > p {
     padding-left: 3%;
 }
 
-input[type=text],
-input[type=tel] {
+input[type=text], select{
     border: none;
     border-radius: 5px;
     padding: 4px;
@@ -663,6 +847,10 @@ li.dropdown {
 .menu-icon {
     margin-right: 10px;
 }
+
+.bold {
+    font-weight: bold;
+}
   
 .dropdown-content a:hover, .dropdown-content a.active {background-color: #f1f1f1;}
 
@@ -709,6 +897,10 @@ li.helpbox-topnav > a {
     padding: 8px;
     margin: -8px;
     cursor: pointer;
+}
+
+.helpbox-close-button:hover {
+    background-color: #e65959aa;
 }
 
 #helpboxContent {
@@ -758,26 +950,33 @@ li.helpbox-topnav > a {
 }
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
-    input[type=tel],
     select  {
         font-size: 1em;
     }
+
     .ui-datepicker {
         width: 22em !important;
     }
+
     .ui-datepicker td a,
     .ui-datepicker td span {
         height: 2em !important;
     }
+
     .pay-element-table {
         font-size: 3.5vw;
     }
-    #totalElement { 
+
+    .total-element { 
         font-size: 4.5vw;
     }
 
     .container {
         margin: 7px -6px 0px -6px;
+    }
+
+    #helpboxContent input, #helpboxContent select {
+        font-size: initial;
     }
 }
 
