@@ -916,16 +916,30 @@ li.helpbox-topnav > a {
     margin: 0.5em 0 1.5em 0;
 }
 
+@keyframes bounce {
+    25% {bottom: 40px}
+    50% {bottom: 30px}
+    75% {bottom: 40px}
+    100% {bottom: 30px}
+}
+
+.scroll-indicator:hover::before {
+    content: "Scroll for more! ";
+}
+
 .scroll-indicator {
     display: block;
     position: relative;
-    background-color: #000c;
+    background-color: #0007;
     padding: 2px 5px;
     border-radius: 5px;
     float: right;
     bottom: 30px;
     right: 20px;
     margin-bottom: -30px;
+    animation-name: bounce;
+    animation-duration: 4s;
+    animation-iteration-count: 2;
 }
 
 #printViewDiv {
