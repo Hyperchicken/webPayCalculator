@@ -3286,6 +3286,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
             + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
             + "<li>Stopped the name of the public holiday appearing in results when in split view.</li>"
+            + "<li>Minor visual changes.</li>"
             + "</ul></li>"
             + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"
