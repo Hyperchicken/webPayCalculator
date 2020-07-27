@@ -308,8 +308,9 @@ a:visited {
     border-style: solid;
     word-break: keep-all;
     white-space: nowrap;
-    max-width: 100px;
+    max-width: 150px;
     overflow: hidden;
+    float: left;
 }
 
 .delete-save-button {
@@ -412,7 +413,12 @@ a:visited {
 
 hr {
     border-bottom: none;
-    border-top: 1px solid white;
+    border-top: 1px solid #fff;
+}
+
+.hr-dashed {
+    border-top-style: dotted;
+    border-color: #fff7;
 }
 
 .grid-heading {
@@ -427,6 +433,7 @@ hr {
     border-radius: 3px;
     margin: 7px 7px 0px 0px;
     min-width: 320px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .input-container {
@@ -440,7 +447,7 @@ hr {
 .grid {
     display: grid;
     grid-template-columns: 75px auto 50px 50px 45px;
-    grid-gap: 3px;
+    grid-gap: 6px 3px;
     align-items: center;
 }
 
@@ -611,7 +618,8 @@ div.day-of-week > p {
     font-weight: bold;
     font-size: 1.2em;
     padding-top: 10px;
-    border-top: solid;
+    border-top: dotted;
+    border-color: #fff7;
     border-width: 1px;
     padding-left: 0;
 }
@@ -647,7 +655,7 @@ div.day-of-week > p {
 }
 
 .hr {
-    background-color: white;
+    background-color: #fff;
     height: 1px;
     margin: 8px 0px;
 }
@@ -916,16 +924,41 @@ li.helpbox-topnav > a {
     margin: 0.5em 0 1.5em 0;
 }
 
+@keyframes bounce {
+    100% {bottom: 40px}
+}
+
+.scroll-indicator:hover::before {
+    content: "Scroll for more! ";
+    color: #fff;
+    padding-left: 6px;
+}
+
+.scroll-indicator:hover {
+    opacity: 100%;
+    width: auto;
+    background-color: #000d;
+}
+
 .scroll-indicator {
     display: block;
     position: relative;
-    background-color: #000c;
-    padding: 2px 5px;
-    border-radius: 5px;
+    background-color: #0003;
+    color: #76e5ff;
+    opacity: 70%;
+    padding: 5px;
+    border-radius: 15px;
     float: right;
-    bottom: 30px;
+    bottom: 35px;
     right: 20px;
-    margin-bottom: -30px;
+    height: 30px;
+    width: 30px;
+    margin-bottom: -35px;
+    animation-name: bounce;
+    animation-duration: 0.4s;
+    animation-direction: alternate;
+    animation-iteration-count: 12;
+    animation-timing-function: cubic-bezier(.22,.61,.36,1);
 }
 
 #printViewDiv {
@@ -936,6 +969,11 @@ li.helpbox-topnav > a {
     border-style: solid;
     border-color: #ffe300;
     padding: 5px;
+}
+
+.view-mode span {
+    float: left;
+    margin-right: 20px;
 }
 
 /* Add animation (fade in the popup) */

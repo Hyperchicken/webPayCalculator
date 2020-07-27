@@ -7,13 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.17";
-const calcLastUpdateDate = "21/07/2020";
+const calcVersion = "1.18";
+const calcLastUpdateDate = "27/07/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion
-+ "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
+var motd = ""; //"Calculator updated to version " + calcVersion + "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
 
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins. MUST BE IN CHRONOLOGICAL ORDER (left to right)
@@ -1823,7 +1822,7 @@ function updateResults() {
         else {
             elemHours.textContent = payElement.hours.toFixed(4);
         }
-        elemAmount.textContent = "$" + payElement.value.toFixed(2);
+        elemAmount.textContent = (payElement.value < 0 ? "-$" : "$") + Math.abs(payElement.value).toFixed(2);
         elemClass.className = "pay-element-class";
         payElementRow.appendChild(elemClass);
         payElementRow.appendChild(elemRate);
@@ -1888,7 +1887,7 @@ function updateResults() {
                     let shiftTitle = document.createElement("td");
                     shiftHeaderRow.className = "splitview-title";
                     shiftTitle.className = "splitview-title-data";
-                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
+                    shiftTitle.textContent = $(".day-of-week > p:first-of-type")[i].textContent;
                     shiftTitle.colSpan = 4;
                     shiftHeaderRow.appendChild(shiftTitle);
                     elementTable.appendChild(shiftHeaderRow);
@@ -1949,7 +1948,9 @@ function updateResults() {
                 return a.sortIndex - b.sortIndex;
             });
             if(taxPay.length > 0) {
-                resultArea.appendChild(document.createElement("hr"));
+                let dashedHr = document.createElement("hr");
+                dashedHr.classList.add("hr-dashed");
+                resultArea.appendChild(dashedHr);
                 let listDiv = document.createElement("div");
                 let taxTable = document.createElement("table");
                 taxTable.classList.add("pay-element-table");
@@ -1982,7 +1983,10 @@ function updateResults() {
 
         //tax total elements
         if(taxCalculationEnabled) {
-            resultArea.appendChild(document.createElement("hr"));
+
+            let dashedHr = document.createElement("hr");
+            dashedHr.classList.add("hr-dashed");
+            resultArea.appendChild(dashedHr);
 
             let taxableIncomeElement = document.createElement("p");
             taxableIncomeElement.classList.add("hours-worked");
@@ -2005,7 +2009,9 @@ function updateResults() {
             resultArea.appendChild(totalNetElement);
         }
         else if(!getSaveData("hideTaxSetupPrompt", false)) {
-            resultArea.appendChild(document.createElement("hr"));
+            let dashedHr = document.createElement("hr");
+            dashedHr.classList.add("hr-dashed");
+            resultArea.appendChild(dashedHr);
             let taxPrompt = document.createElement("p");
             taxPrompt.classList.add("tax-prompt");
             let hideLink = document.createElement("a");
@@ -2021,7 +2027,9 @@ function updateResults() {
         }
 
         //payslip hours worked
-        resultArea.appendChild(document.createElement("hr"));
+        let dashedHr = document.createElement("hr");
+        dashedHr.classList.add("hr-dashed");
+        resultArea.appendChild(dashedHr);
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
             if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
@@ -3272,6 +3280,13 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>27/07/2020 - Version 1.18<ul>"
+            + "<li>Improved 'scrollable' indicator in menu windows.</li>"
+            + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
+            + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
+            + "<li>Stopped the name of the public holiday appearing in results when in split view.</li>"
+            + "<li>Minor visual changes.</li>"
+            + "</ul></li>"
             + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"
             + "<li>Improved scroll-down indicator icon behaviour.</li>"

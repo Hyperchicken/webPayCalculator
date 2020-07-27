@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.17">
+    <link rel="stylesheet" href="style.css?v=1.18">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -23,7 +23,7 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.02"></script> 
-    <script src="scripts.js?v=1.17"></script> 
+    <script src="scripts.js?v=1.18"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -54,7 +54,7 @@
             <li class="helpbox-topnav dropdown helpbox-close-button"><i class="fas fa-times fa-fw fa-lg helpbox-close-button-icon"></i></a></li>
         </ul>
         <div id="helpboxContent"></div>
-        <div id="helpboxScroll" class="scroll-indicator">Scroll <i class="fas fa-arrow-circle-down"></i></div>
+        <div id="helpboxScroll" class="scroll-indicator"><i class="fas fa-arrow-circle-down fa-fw"></i></div>
     </div>
 
     <span style="margin-bottom: 8px"></span>
@@ -237,24 +237,28 @@
         <div class="col-50">
             <div class="container" id="results-container">
                 <h3>Results</h3>
-                <form class="radio-buttons" id="results-view-radios" name="resultsViewForm" oninput="updateResults()">
-                    <label class="radio-container no-left-margin">Grouped
-                        <input type="radio" name="resultsView" value="grouped" checked="checked">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Split
-                        <input type="radio" name="resultsView" value="split">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container debug">Debug-Grouped
-                        <input type="radio" name="resultsView" value="debug-grouped">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container debug">Debug-Split
-                        <input type="radio" name="resultsView" value="debug-split">
-                        <span class="checkmark"></span>
-                    </label>
-                </form>
+                <div class="view-mode">
+                    <span>View Mode:</span>
+                    <form class="radio-buttons" id="results-view-radios" name="resultsViewForm" oninput="updateResults()">
+                        <label class="radio-container no-left-margin">Payslip
+                            <input type="radio" name="resultsView" value="grouped" checked="checked">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="radio-container">Day-by-day
+                            <input type="radio" name="resultsView" value="split">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="radio-container debug">Debug-Grouped
+                            <input type="radio" name="resultsView" value="debug-grouped">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="radio-container debug">Debug-Split
+                            <input type="radio" name="resultsView" value="debug-split">
+                            <span class="checkmark"></span>
+                        </label>
+                    </form>
+                </div>
+                <hr>
                 <div id="result-area">
                     <p>No data entered.</p>
                 </div>
