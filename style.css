@@ -412,11 +412,12 @@ a:visited {
 
 hr {
     border-bottom: none;
-    border-top: 1px solid white;
+    border-top: 1px solid #fff;
 }
 
 .hr-dashed {
-    border-top-style: dashed;
+    border-top-style: dotted;
+    border-color: #fff7;
 }
 
 .grid-heading {
@@ -616,7 +617,8 @@ div.day-of-week > p {
     font-weight: bold;
     font-size: 1.2em;
     padding-top: 10px;
-    border-top: solid;
+    border-top: dotted;
+    border-color: #fff7;
     border-width: 1px;
     padding-left: 0;
 }
@@ -652,7 +654,7 @@ div.day-of-week > p {
 }
 
 .hr {
-    background-color: white;
+    background-color: #fff;
     height: 1px;
     margin: 8px 0px;
 }
