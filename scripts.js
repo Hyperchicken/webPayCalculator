@@ -1823,7 +1823,7 @@ function updateResults() {
         else {
             elemHours.textContent = payElement.hours.toFixed(4);
         }
-        elemAmount.textContent = "$" + payElement.value.toFixed(2);
+        elemAmount.textContent = (payElement.value < 0 ? "-$" : "$") + Math.abs(payElement.value).toFixed(2);
         elemClass.className = "pay-element-class";
         payElementRow.appendChild(elemClass);
         payElementRow.appendChild(elemRate);
@@ -3272,6 +3272,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>21/07/2020 - Version 1.18<ul>"
+            + "<li>Improved 'scrollable' indicator in menu windows.</li>"
+            + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
+            + "<li></li>"
+            + "</ul></li>"
             + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"
             + "<li>Improved scroll-down indicator icon behaviour.</li>"
