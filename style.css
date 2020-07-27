@@ -310,6 +310,7 @@ a:visited {
     white-space: nowrap;
     max-width: 150px;
     overflow: hidden;
+    float: left;
 }
 
 .delete-save-button {
@@ -446,7 +447,7 @@ hr {
 .grid {
     display: grid;
     grid-template-columns: 75px auto 50px 50px 45px;
-    grid-gap: 3px;
+    grid-gap: 6px 3px;
     align-items: center;
 }
 
