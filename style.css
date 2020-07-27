@@ -917,29 +917,39 @@ li.helpbox-topnav > a {
 }
 
 @keyframes bounce {
-    25% {bottom: 40px}
-    50% {bottom: 30px}
-    75% {bottom: 40px}
-    100% {bottom: 30px}
+    100% {bottom: 40px}
 }
 
 .scroll-indicator:hover::before {
     content: "Scroll for more! ";
+    color: #fff;
+    padding-left: 6px;
+}
+
+.scroll-indicator:hover {
+    opacity: 100%;
+    width: auto;
 }
 
 .scroll-indicator {
     display: block;
     position: relative;
-    background-color: #0007;
-    padding: 2px 5px;
-    border-radius: 5px;
+    background-color: #000d;
+    color: #76e5ff;
+    opacity: 70%;
+    padding: 5px;
+    border-radius: 15px;
     float: right;
-    bottom: 30px;
+    bottom: 35px;
     right: 20px;
-    margin-bottom: -30px;
+    height: 30px;
+    width: 30px;
+    margin-bottom: -35px;
     animation-name: bounce;
-    animation-duration: 4s;
-    animation-iteration-count: 2;
+    animation-duration: 0.4s;
+    animation-direction: alternate;
+    animation-iteration-count: 12;
+    animation-timing-function: cubic-bezier(.22,.61,.36,1);
 }
 
 #printViewDiv {
