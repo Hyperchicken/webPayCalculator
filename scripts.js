@@ -1888,7 +1888,7 @@ function updateResults() {
                     let shiftTitle = document.createElement("td");
                     shiftHeaderRow.className = "splitview-title";
                     shiftTitle.className = "splitview-title-data";
-                    shiftTitle.textContent = $(".day-of-week")[i].textContent;
+                    shiftTitle.textContent = $(".day-of-week > p:first-of-type")[i].textContent;
                     shiftTitle.colSpan = 4;
                     shiftHeaderRow.appendChild(shiftTitle);
                     elementTable.appendChild(shiftHeaderRow);
@@ -3275,7 +3275,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>21/07/2020 - Version 1.18<ul>"
             + "<li>Improved 'scrollable' indicator in menu windows.</li>"
             + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
-            + "<li></li>"
+            + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
             + "</ul></li>"
             + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"
