@@ -7,13 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.17";
-const calcLastUpdateDate = "21/07/2020";
+const calcVersion = "1.18";
+const calcLastUpdateDate = "27/07/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion
-+ "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
+var motd = ""; //"Calculator updated to version " + calcVersion + "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
 
 //rates
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins. MUST BE IN CHRONOLOGICAL ORDER (left to right)
@@ -3281,7 +3280,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>21/07/2020 - Version 1.18<ul>"
+            + "<li>27/07/2020 - Version 1.18<ul>"
             + "<li>Improved 'scrollable' indicator in menu windows.</li>"
             + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
             + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
