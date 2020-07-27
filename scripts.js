@@ -1949,7 +1949,9 @@ function updateResults() {
                 return a.sortIndex - b.sortIndex;
             });
             if(taxPay.length > 0) {
-                resultArea.appendChild(document.createElement("hr"));
+                let dashedHr = document.createElement("hr");
+                dashedHr.classList.add("hr-dashed");
+                resultArea.appendChild(dashedHr);
                 let listDiv = document.createElement("div");
                 let taxTable = document.createElement("table");
                 taxTable.classList.add("pay-element-table");
@@ -1982,7 +1984,10 @@ function updateResults() {
 
         //tax total elements
         if(taxCalculationEnabled) {
-            resultArea.appendChild(document.createElement("hr"));
+
+            let dashedHr = document.createElement("hr");
+            dashedHr.classList.add("hr-dashed");
+            resultArea.appendChild(dashedHr);
 
             let taxableIncomeElement = document.createElement("p");
             taxableIncomeElement.classList.add("hours-worked");
@@ -2005,7 +2010,9 @@ function updateResults() {
             resultArea.appendChild(totalNetElement);
         }
         else if(!getSaveData("hideTaxSetupPrompt", false)) {
-            resultArea.appendChild(document.createElement("hr"));
+            let dashedHr = document.createElement("hr");
+            dashedHr.classList.add("hr-dashed");
+            resultArea.appendChild(dashedHr);
             let taxPrompt = document.createElement("p");
             taxPrompt.classList.add("tax-prompt");
             let hideLink = document.createElement("a");
@@ -2021,7 +2028,9 @@ function updateResults() {
         }
 
         //payslip hours worked
-        resultArea.appendChild(document.createElement("hr"));
+        let dashedHr = document.createElement("hr");
+        dashedHr.classList.add("hr-dashed");
+        resultArea.appendChild(dashedHr);
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
             if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
@@ -3276,6 +3285,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Improved 'scrollable' indicator in menu windows.</li>"
             + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
             + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
+            + "<li>Stopped the name of the public holiday appearing in results when in split view.</li>"
             + "</ul></li>"
             + "<li>21/07/2020 - Version 1.17<ul>"
             + "<li>Net income calculation. Configure net income settings from the menu.</li>"

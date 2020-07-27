@@ -415,6 +415,10 @@ hr {
     border-top: 1px solid white;
 }
 
+.hr-dashed {
+    border-top-style: dashed;
+}
+
 .grid-heading {
     font-size: 0.8em;
     text-align: center;
@@ -427,6 +431,7 @@ hr {
     border-radius: 3px;
     margin: 7px 7px 0px 0px;
     min-width: 320px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .input-container {
@@ -929,12 +934,13 @@ li.helpbox-topnav > a {
 .scroll-indicator:hover {
     opacity: 100%;
     width: auto;
+    background-color: #000d;
 }
 
 .scroll-indicator {
     display: block;
     position: relative;
-    background-color: #000d;
+    background-color: #0003;
     color: #76e5ff;
     opacity: 70%;
     padding: 5px;
@@ -960,6 +966,11 @@ li.helpbox-topnav > a {
     border-style: solid;
     border-color: #ffe300;
     padding: 5px;
+}
+
+.view-mode span {
+    float: left;
+    margin-right: 20px;
 }
 
 /* Add animation (fade in the popup) */
