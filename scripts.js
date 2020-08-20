@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.18";
-const calcLastUpdateDate = "27/07/2020";
+const calcVersion = "1.19";
+const calcLastUpdateDate = "20/08/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1935,14 +1935,14 @@ function updateResults() {
         let taxTotals;
         let taxCalculationEnabled = getSaveData("enableTaxCalc", false) == "yes" ? true : false;
         if(taxCalculationEnabled) {
-            taxTotals = calculateTax(totalGross);
+            taxTotals = calculateTax(groupedElements);
             //calculate compulsary super contribution
             let nonOvertimePay = 0.0;
             groupedElements.forEach(function(e){ 
-                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance"].includes(e.payType)) nonOvertimePay += e.value;
+                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
-                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1));
+                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1)); //super guarantee rate of 9.5%
             }
             taxPay.sort(function(a, b){
                 return a.sortIndex - b.sortIndex;
@@ -2516,12 +2516,17 @@ function updateShiftPayTable() {
 /**
  * Calculate tax and and any tax related elements based on the settings found in the configuration menu.
  * Tax elements are added to the taxPay[] array.
- * @param {number} taxableIncome - the taxable income to calculate tax amount on
+ * @param {number} payElements - 
  * @returns {number[]} number array with the following calculated values [post tax deduction, tax amount, net amount]
  */
-function calculateTax(grossIncome) {
+function calculateTax(payElements) {
     taxPay = [];
-    let taxableIncome = grossIncome;
+    let taxableIncome = 0;
+    let grossIncome = 0;
+    payElements.forEach(function(e){
+        if(!["mealAllowance"].includes(e.payType)) taxableIncome += parseFloat(e.value.toFixed(2));
+        grossIncome += parseFloat(e.value.toFixed(2));
+    });
     let taxBalance = 0;
     let postTaxDeduction = 0;
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
@@ -2657,7 +2662,7 @@ function calculateTax(grossIncome) {
         }
     }
 
-    let netIncome = taxableIncome + taxBalance + postTaxDeduction;
+    let netIncome = grossIncome + taxBalance + postTaxDeduction;
     
     return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome}
 }
@@ -3275,11 +3280,13 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Conversion and TSO grade calculations not yet thoroughly tested.</li>"
-            + "<li>Page doesn't fit correctly on some devices with smaller screens.</li>"
+            + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts can cause a slight miscalculation. This will be fixed as soon as I have it all figured out.</li>"
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>20/08/2020 - Version 1.19<ul>"
+            + "<li>Fixed tax and super miscalculation on fortnights with with Meal Allowances.</li>"
+            + "</ul></li>"
             + "<li>27/07/2020 - Version 1.18<ul>"
             + "<li>Improved 'scrollable' indicator in menu windows.</li>"
             + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
