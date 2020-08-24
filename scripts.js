@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.19";
-const calcLastUpdateDate = "20/08/2020";
+const calcVersion = "1.20";
+const calcLastUpdateDate = "24/08/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2528,6 +2528,7 @@ function calculateTax(payElements) {
         grossIncome += parseFloat(e.value.toFixed(2));
     });
     let taxBalance = 0;
+    let preTaxDeduction = 0;
     let postTaxDeduction = 0;
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
     if(getSaveData("taxFreeThreshold", false) == "no") taxFreeThreshold = false; //using 'no' instead of 'false' in order to make 'true' the default if unset.
@@ -2551,6 +2552,7 @@ function calculateTax(payElements) {
         if(novatedLeasePreTax != 0) {
             taxPay.push(new TaxElement("Novated Lease Pre-Tax", novatedLeasePreTax, 4));
             taxableIncome += novatedLeasePreTax;
+            preTaxDeduction += novatedLeasePreTax;
         }
     }
 
@@ -2563,6 +2565,7 @@ function calculateTax(payElements) {
         if(superSalSac != 0) {
             taxPay.push(new TaxElement("Super Salary Sacrifice", superSalSac, 3));
             taxableIncome += superSalSac;
+            preTaxDeduction += superSalSac;
         }
     }
 
@@ -2662,7 +2665,7 @@ function calculateTax(payElements) {
         }
     }
 
-    let netIncome = grossIncome + taxBalance + postTaxDeduction;
+    let netIncome = grossIncome + taxBalance + postTaxDeduction + preTaxDeduction;
     
     return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome}
 }
@@ -3284,6 +3287,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>24/08/2020 - Version 1.20<ul>"
+            + "<li>Fixed net income miscalculation when super salary sacrifice or novated lease was deducted.</li>"
+            + "</ul></li>"
             + "<li>20/08/2020 - Version 1.19<ul>"
             + "<li>Fixed tax and super miscalculation on fortnights with with Meal Allowances.</li>"
             + "</ul></li>"
