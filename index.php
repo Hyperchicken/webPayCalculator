@@ -64,45 +64,23 @@
             <div class="container grid input-container" id="shift-details">
                 <h3>Data Entry</h3>
 
-                <label class="pay-grade-label" for="payGradeForm">Pay grade: &nbsp;</label>
-                <form name="payGradeForm" class="pay-grade-radio-container" oninput="updateGrade()">
-                    <label class="radio-container">SPOT
-                            <input type="radio" name="payGrade" value="spot" id="spot" checked="checked">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">TD Lvl 1
-                            <input type="radio" name="payGrade" value="level1" id="level1">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Trainee
-                            <input type="radio" name="payGrade" value="trainee" id="trainee">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Conversion
-                            <input type="radio" name="payGrade" value="conversion" id="conversion">
-                            <span class="checkmark"></span>
-                    </label>
-                    <label class="radio-container">Part-Time/Job-Share (SPOT)
-                        <input type="radio" name="payGrade" value="parttime" id="parttime">
-                        <span class="checkmark"></span>
-                    </label>
-                    <div>
-                        <label class="radio-container">TSO
-                            <input type="radio" name="payGrade" value="tso" id="tso">
-                            <span class="checkmark"></span>
-                            <span class="tso-dropdown"> - 
-                                <select id="tso-so">
-                                    <option value="so8">SO-8</option>
-                                    <option value="so9">SO-9</option>
-                                    <option value="so10">SO-10</option>
-                                    <option value="so11">SO-11</option>
-                                    <option value="so12">SO-12</option>
-                                </select>
-                            </span>
-                        </label>
-                        
-                    </div>
-                </form>
+                <span>Pay grade: </span>
+
+                <div class="">
+                        <select id="pay-grade" oninput="updateGrade()">
+                            <option value="spot">SPOT</option>
+                            <option value="level1">TD Lvl 1</option>
+                            <option value="trainee">Trainee</option>
+                            <option value="conversion">Conversion</option>
+                            <option value="parttime">Part-Time/Job-Share (SPOT)</option>
+                            <option value="so8">TSO SO-8</option>
+                            <option value="so9">TSO SO-9</option>
+                            <option value="so10">TSO SO-10</option>
+                            <option value="so11">TSO SO-11</option>
+                            <option value="so12">TSO SO-12</option>
+                            <option value="dao">DAO</option>
+                        </select>
+                </div>
 
                 <div id="payClassWarning" class="grid-1-6 start-hidden">
                     <p style="font-size: 0.8em; font-family: Verdana, sans-serif; border-style: solid; border-radius: 3px; border-width: 1px; background-color: #0005; padding: 5px;"><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade have not been thoroughly tested for accuracy!</p>
