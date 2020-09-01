@@ -372,13 +372,19 @@ a:visited {
     content: "hrs";
 }
 
-.pay-grade-radio {
-    margin-right: 15px;
-    display: inline-block;
+.pay-grade-container {
+    align-self: center;
+    margin-bottom: 15px;
+    margin-right: 20px;
+    grid-column: 1 / 6;
 }
 
-.pay-grade-radio-container {
-    grid-column: 2 / 6;
+.pay-grade-container > select {
+    float: right;
+}
+
+.pay-grade-container > span {
+    float: left;
 }
 
 .shift-options-shelf {
@@ -400,6 +406,10 @@ a:visited {
     display: flex;
     flex-wrap: wrap;
     margin: 0;
+}
+
+.col-shift {
+    flex-grow: 1;
 }
 
 .col-50 {
