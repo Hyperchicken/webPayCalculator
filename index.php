@@ -23,6 +23,7 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.02"></script> 
+    <script src="rates.js?v=1.00"></script> 
     <script src="scripts.js?v=1.20"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
@@ -64,22 +65,21 @@
             <div class="container grid input-container" id="shift-details">
                 <h3>Data Entry</h3>
 
-                <span>Pay grade: </span>
-
-                <div class="">
-                        <select id="pay-grade" oninput="updateGrade()">
-                            <option value="spot">SPOT</option>
-                            <option value="level1">TD Lvl 1</option>
-                            <option value="trainee">Trainee</option>
-                            <option value="conversion">Conversion</option>
-                            <option value="parttime">Part-Time/Job-Share (SPOT)</option>
-                            <option value="so8">TSO SO-8</option>
-                            <option value="so9">TSO SO-9</option>
-                            <option value="so10">TSO SO-10</option>
-                            <option value="so11">TSO SO-11</option>
-                            <option value="so12">TSO SO-12</option>
-                            <option value="dao">DAO</option>
-                        </select>
+                <div class="pay-grade-container">
+                    <span>Grade:</span>
+                    <select id="pay-grade" oninput="updateGrade()">
+                        <option value="spot">SPOT</option>
+                        <option value="level1">TD Lvl 1</option>
+                        <option value="trainee">Trainee</option>
+                        <option value="conversion">Conversion</option>
+                        <option value="parttime">Part-Time/Job-Share (SPOT)</option>
+                        <option value="so8">TSO SO-8</option>
+                        <option value="so9">TSO SO-9</option>
+                        <option value="so10">TSO SO-10</option>
+                        <option value="so11">TSO SO-11</option>
+                        <option value="so12">TSO SO-12</option>
+                        <option value="dao">DAO</option>
+                    </select>
                 </div>
 
                 <div id="payClassWarning" class="grid-1-6 start-hidden">
