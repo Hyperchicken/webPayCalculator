@@ -328,6 +328,11 @@ a:visited {
     border-color: #ff7300;
 }
 
+.team-leader-button {
+    background-color: #e70082;
+    border-color: #e70082;
+}
+
 .ph-button {
     background-color: #44c600;
     border-color: #44c600;
@@ -409,7 +414,7 @@ a:visited {
 }
 
 .col-shift {
-    flex-grow: 1;
+    flex-basis: 420px;
 }
 
 .col-50 {
