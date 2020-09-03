@@ -12,7 +12,7 @@ const calcLastUpdateDate = "03/09/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li>Added DAO grade.</li></ul><p>CALCULATION BUG: There is currently a known miscalulation for all grades when there is overtime shifts and sick days in the same fortnight. I'm currently working on a fix. -Petar</p>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Added DAO grade.</li></ul><p>CALCULATION BUG: There is currently a known miscalculation for all grades when there is overtime shifts and sick days in the same fortnight. I'm currently working on a fix. -Petar</p>";
 
 //colours
 const normalColour = "#00b9e8";
