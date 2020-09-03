@@ -474,7 +474,7 @@ class PayElement {
                 rate += getEbaRate(shiftDate, mealAllowanceRates);
                 break;
             case "leaveLoading":
-                rate += getEbaRate(shiftDate, this.rateTable.gradeRates); //20%
+                rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //20%
                 rate *= 0.2;
                 break;
             default:
