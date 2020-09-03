@@ -7,12 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.20";
-const calcLastUpdateDate = "24/08/2020";
+const calcVersion = "1.21";
+const calcLastUpdateDate = "03/09/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = ""; //"Calculator updated to version " + calcVersion + "<ul><li>Added support for net income calculation.<ul><li>Enable and configure net income calculation via the Net Income Settings option in the Menu (top-right corner of the page).</li></ul></li></ul>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Added DAO grade.</li></ul><p>CALCULATION BUG: There is currently a known miscalulation for all grades when there is overtime shifts and sick days in the same fortnight. I'm currently working on a fix. -Petar</p>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -706,7 +706,7 @@ $(document).ready(function() {
     //check and display message of the day
     let lastVersion = getSaveData("lastCalcVersion", false);
     if(lastVersion != calcVersion && motd != "") {
-        topHelpBox("Calculator Update", motd);
+        topHelpBox("Calculator Update Notes", motd);
     }
     setSaveData("lastCalcVersion", calcVersion, false);
 
@@ -3167,6 +3167,10 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>03/09/2020 - Version 1.21<ul>"
+            + "<li>Added support for DAO grade.</li>"
+            + "<li>Grade selection is now a dropdown box.</li>"
+            + "</ul></li>"
             + "<li>24/08/2020 - Version 1.20<ul>"
             + "<li>Fixed net income miscalculation when super salary sacrifice or novated lease was deducted.</li>"
             + "</ul></li>"
