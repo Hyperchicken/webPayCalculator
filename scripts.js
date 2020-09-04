@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.21";
-const calcLastUpdateDate = "03/09/2020";
+const calcVersion = "1.22";
+const calcLastUpdateDate = "04/09/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -538,7 +538,6 @@ let numberOfCustomPostTaxFields = 4;
 //init on document load
 $(document).ready(function() { 
     initButtons();
-
     let timeFields = document.querySelectorAll(".time");
     for(let i = 0; i < timeFields.length; i++) {
         timeFields[i].addEventListener("blur", function(){
@@ -1575,7 +1574,10 @@ function updateGrade() {
             setSaveData("paygrade", "dao");
             break;
         default: 
-            selectedGradeRates = undefined;
+            selectedGradeRates = spotRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
     }
 
     updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
@@ -2661,7 +2663,12 @@ function loadSavedData(datePrefix = "") {
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
     let savedPayGrade = getSaveData("paygrade");
-    if(savedPayGrade == null) savedPayGrade = getSaveData("paygrade", false);
+    if(savedPayGrade == null) {
+        savedPayGrade = getSaveData("paygrade", false);
+        if(savedPayGrade == null) {
+            savedPayGrade = "spot"; //default
+        }
+    }
     document.getElementById("pay-grade").value = savedPayGrade;
     
     //shift options save data
@@ -3167,6 +3174,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Not all public holidays have their information complete.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>04/09/2020 - Version 1.22<ul>"
+            + "<li>Fixed the Grade dropdown box not having a default value if there was no previously saved data.</li>"
+            + "</ul></li>"
             + "<li>03/09/2020 - Version 1.21<ul>"
             + "<li>Added support for DAO grade.</li>"
             + "<li>Grade selection is now a dropdown box.</li>"
