@@ -69,8 +69,8 @@ class Shift {
         this.bonus = false; //bonus payment
         this.bonusHours = 0.0; //bonus payment hours
         this.teamLeader = false;
-        this.shiftNumber = 0; 
         this.shiftWorkedNumber = 0;
+        this.rosteredShiftNumber = 0;
     }    
 
     get daoTeamLeader() {
@@ -208,6 +208,7 @@ class PayElement {
     get sortIndex() {
         let sortOrder = [ //array to define the order in which pay elements should be sorted in the results.
             "normal",
+            "overtime",
             "guarantee",
             "sickFull",
             "sickPart",
@@ -258,6 +259,7 @@ class PayElement {
         let payClassName = "";
         switch(this.payType) {
             case "normal": payClassName = "Normal"; break;
+            case "overtime": payClassName = "Overtime"; break;
             case "guarantee": payClassName = "Guarantee"; break;
             case "sickFull": payClassName = "Sick Full"; break;
             case "sickPart": payClassName = "Sick Part"; break;
@@ -303,6 +305,9 @@ class PayElement {
                 + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
                 + "<ul><li>Ordinary hours are up to 8 hours per day (7.6 hours for trainees and part-time).</li>"
                 + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime, public holidays, weekends, etc).</li></ul>";
+                break;
+            case "overtime":
+                tooltipText = "<strong>Overtime</strong>";  //to be completed
                 break;
             case "guarantee": 
                 tooltipText = "<strong>Guarantee</strong>"
@@ -428,6 +433,7 @@ class PayElement {
         if(this.ojt) rate += getEbaRate(shiftDate, ojtAllowanceRates); //apply OJT allowance
         switch(this.payType) {
             case "normal":
+            case "overtime":
             case "sickFull":
             case "sickPart":
             case "guarantee":
@@ -1631,18 +1637,20 @@ function updateShiftTable() {
 }
 
 /**
- * Calculate and update the shiftNumber and shiftWorkedNumber for each shift in the shifts table. Non-shifts are set to 0. 
+ * Calculate and update the shiftWorkedNumber for each shift in the shifts table. Non-shifts are set to 0. 
  */
 function updateShiftWorkedCount() {
-    let shiftsCount = 0;
+    let rosteredShiftsCount = 0;
     let shiftsWorkedCount = 0;
-    if(ddoWeek() >= 0) shiftsWorkedCount = 1;
+    if(ddoWeek() >= 0) {
+        rosteredShiftsCount = 1;
+        shiftsWorkedCount = 1;
+    }
     for(let i = 0; i < shifts.length; i++) {
-        //determine if shift
-        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].ph) {
-            shifts[i].shiftNumber = ++shiftsCount;
-        } else shifts[i].shiftNumber = 0;
-
+        //determine if rostered shift
+        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || (shifts[i].ph && !shifts[i].phOffRoster)) {
+            shifts[i].rosteredShiftNumber = ++rosteredShiftsCount;
+        } else shifts[i].rosteredShiftNumber = 0;
         //determine if worked shift
         if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
             shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
@@ -1915,7 +1923,7 @@ function updateResults() {
         resultArea.appendChild(dashedHr);
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
-            if(["normal", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
+            if(["normal", "overtime", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hours-worked");
@@ -2099,7 +2107,8 @@ function updateShiftPayTable() {
     let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let ordinaryHours = 8; //default ordinary hours of 8
     let alDdoDeducted = false; //annual leave DDO deducted
-    let phOffCount = 0; //count PH-OFF shifts to count towards shifts worked for guarantee calculation only
+    let phOffCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
+    let nonWorkedShifts = 0; //counter for rostered shifts that were not worked (such as PH Gazette and Sick Full)
     let payGrade = getPayGrade();
     if(payGrade == "trainee" || payGrade == "parttime") {
         ordinaryHours = 7.6;
@@ -2129,6 +2138,7 @@ function updateShiftPayTable() {
             }
             if(s.sick) {
                 deductLeaveShifts[weekNo(day)]++;
+                nonWorkedShifts++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
                 }
@@ -2145,6 +2155,7 @@ function updateShiftPayTable() {
                     }
                 }
                 else {
+                    nonWorkedShifts++;
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
                 }
             }
@@ -2185,9 +2196,11 @@ function updateShiftPayTable() {
 
             //part-time PH-roster calculation
             if(getPayGrade() == "parttime" && s.phOffRoster) {
+                nonWorkedShifts++;
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
             }
             else if(s.sick && s.hoursDecimal <= 4) {
+                nonWorkedShifts++;
                 shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables)); //if went of sick half-way through shift or earlier, pay sick full day.
             }
             else {
@@ -2224,7 +2237,13 @@ function updateShiftPayTable() {
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
-                    shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                    if(s.rosteredShiftNumber > 10 && nonWorkedShifts > 0) {
+                        nonWorkedShifts--;
+                        shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                    }
                 }
 
                 //Guarantee and Sick-Part
@@ -2234,7 +2253,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickPart", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber + phOffCount <= 10 && s.hoursDecimal < ordinaryHours) {
+                else if(s.shiftWorkedNumber + phOffCount <= 10 && (s.rosteredShiftNumber + phOffCount <= 10) && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
