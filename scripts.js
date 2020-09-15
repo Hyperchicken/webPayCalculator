@@ -3192,7 +3192,7 @@ function topHelpBoxPreset(presetName) {
             + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>04/09/2020 - Version 1.23<ul>"
+            + "<li>15/09/2020 - Version 1.23<ul>"
             + "<li>Fixed Sick-Full and PH Gazette on fortnights with overtime shifts causing a miscalculation.</li>"
             + "<li>All public holiday information text is now complete (shown when clicking on a date with a public holiday).</li>"
             + "</ul></li>"
