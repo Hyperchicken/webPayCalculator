@@ -1,8 +1,11 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.02
+    Version: 1.03
     Public holdays from 2020 up to 2023
+
+    Based on information provided in the Metro Enterprise Agreements and the following government website:
+    https://www.business.vic.gov.au/victorian-public-holidays-and-daylight-saving/victorian-public-holidays
 
     Each entry should have the following keys:
     name: the name of the public holiday as a String
@@ -38,7 +41,7 @@ const publicHolidays = [
             "2023-01-26"
         ],
         infoTitle: "Australia Day Public Holiday",
-        infoText: "<ul><li>Australia Day is celebrated on the 26th of January each year.</li><li>If Australia Day falls on a weekend, the public holiday is subtituted to the following weekday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>Australia Day is celebrated on the 26th of January each year.</li><li>If Australia Day falls on a weekend, the public holiday is subtituted to the following weekday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Labour Day",
@@ -49,7 +52,7 @@ const publicHolidays = [
             "2023-03-13"
         ],
         infoTitle: "Labour Day Public Holiday",
-        infoText: "<ul><li>No special rules or exceptions apply to Labour Day public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>No special rules or exceptions apply to Labour Day public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Good Friday",
@@ -60,7 +63,7 @@ const publicHolidays = [
             "2023-04-07"
         ],
         infoTitle: "Good Friday Public Holiday",
-        infoText: "<ul><li>No special rules or exceptions apply to Good Friday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>No special rules or exceptions apply to Good Friday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Easter Saturday",
@@ -82,7 +85,7 @@ const publicHolidays = [
             "2023-04-09"
         ],
         infoTitle: "Easter Sunday Public Holiday",
-        infoText: "<ul><li>As this public holiday falls on a Sunday, it is always paid at double time and a half.</li><li>There is no provision for extra leave.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>As this public holiday falls on a Sunday, it is always paid at double time and a half.</li><li>There is no provision for extra leave.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Easter Monday",
@@ -93,7 +96,7 @@ const publicHolidays = [
             "2023-04-10"
         ],
         infoTitle: "Easter Monday Public Holiday",
-        infoText: "<ul><li>No special rules or exceptions apply to Easter Monday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>No special rules or exceptions apply to Easter Monday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "ANZAC Day",
@@ -115,15 +118,16 @@ const publicHolidays = [
             "2023-06-12"
         ],
         infoTitle: "Queen's Birthday Public Holiday",
-        infoText: "<ul><li>No special rules or exceptions apply to Queen's Birthday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of if you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>No special rules or exceptions apply to Queen's Birthday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Friday before the AFL Grand Final",
         dates: [
             //subject to AFL schedule
+            "2020-10-23"
         ],
         infoTitle: "Friday before the AFL Grand Final Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Friday before the AFL Grand Final public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Melbourne Cup",
@@ -134,7 +138,7 @@ const publicHolidays = [
             "2023-11-07"
         ],
         infoTitle: "Melbourne Cup Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>No special rules or exceptions apply to Melbourne Cup public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Christmas Day",
@@ -147,7 +151,7 @@ const publicHolidays = [
             "2023-12-25"
         ],
         infoTitle: "Christmas Day Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>Where Christmas Day falls on a Saturday or Sunday, it is to be observed on 27th December.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
         name: "Boxing Day",
@@ -160,6 +164,6 @@ const publicHolidays = [
             "2023-12-26"
         ],
         infoTitle: "Boxing Day Public Holiday",
-        infoText: "PH Info placeholder"
+        infoText: "<ul><li>Where Boxing Day falls on a Saturday or Sunday, it is to be observed on 28th December.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
 ];
