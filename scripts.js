@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.22";
-const calcLastUpdateDate = "04/09/2020";
+const calcVersion = "1.23";
+const calcLastUpdateDate = "15/09/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1984,7 +1984,7 @@ function updateDates() {
                 let phIndex = checkPublicHoliday(inputDate);
                 if(phIndex >= 0) {
                     dayOfWeekFields[i].classList.add("day-of-week-button");
-                    dayOfWeekFields[i].innerHTML += "<p class='subtext'>" + publicHolidays[phIndex].name + "</p>";
+                    dayOfWeekFields[i].innerHTML += "<p class='subtext'>" + publicHolidays[phIndex].name + " Public Holiday</p>";
                     $(dayOfWeekFields[i]).on("click", () => {
                         topHelpBox(publicHolidays[phIndex].infoTitle, publicHolidays[phIndex].infoText);
                         window.location.replace("#topHelpDiv");
@@ -3189,10 +3189,13 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog and Known Issues";
             helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts can cause a slight miscalculation. This will be fixed as soon as I have it all figured out.</li>"
-            + "<li>Not all public holidays have their information complete.</li>"
+            + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>04/09/2020 - Version 1.23<ul>"
+            + "<li>Fixed Sick-Full and PH Gazette on fortnights with overtime shifts causing a miscalculation.</li>"
+            + "<li>All public holiday information text is now complete (shown when clicking on a date with a public holiday).</li>"
+            + "</ul></li>"
             + "<li>04/09/2020 - Version 1.22<ul>"
             + "<li>Fixed the Grade dropdown box not having a default value if there was no previously saved data.</li>"
             + "</ul></li>"
