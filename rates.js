@@ -3,7 +3,8 @@
     version 1.00
 */
 
-//rates
+//enterprise agreement pay rates
+//rate array indexes correlate to the date in the same index of the rateDates array.
 const rateDates =               ["2015-01-11", "2015-07-12", "2016-01-10", "2016-07-10", "2017-01-08", "2017-07-09", "2018-01-07", "2018-07-08", "2019-01-06", "2020-06-07", "2020-07-05", "2021-01-03", "2021-07-04", "2022-01-02", "2022-07-03", "2023-01-01"]; //the date which the corresponding rate begins. MUST BE IN CHRONOLOGICAL ORDER (left to right)
 const spotRates =               [45.1833,      45.8611,      46.5490,      47.2472,      47.9559,      48.6752,      49.4054,      50.6405,      51.9065,      53.7362,      54.2736,      55.6304,      56.1867,      57.5914,      58.1673,      59.6215];
 const driverLevel1Rates =       [30.6682,      31.1282,      31.5951,      32.0691,      32.5501,      33.0383,      33.5339,      34.3723,      35.2316,      36.4735,      36.8382,      37.7592,      38.1368,      39.0902,      39.4811,      40.4681];
