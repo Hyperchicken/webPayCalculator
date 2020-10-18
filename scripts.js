@@ -83,7 +83,7 @@ class Shift {
     }
 
     get ojtShift() {
-        if(["spot", "parttime"].includes(getPayGrade()) && this.ojt) {
+        if(["spot", "parttime", "jobshare"].includes(getPayGrade()) && this.ojt) {
             return true;
         }
         else {
@@ -1419,7 +1419,7 @@ function generateOptionsShelfButtons(day) {
     if(getPayGrade() == "dao") {
         shelf.appendChild(teamLeaderButton);
     }
-    if(["spot", "parttime"].includes(getPayGrade())) {
+    if(["spot", "parttime", "jobshare"].includes(getPayGrade())) {
         shelf.appendChild(ojtButton);
     }  
     shelf.appendChild(ddoButton);
@@ -1461,7 +1461,7 @@ function timeChanged(field) {
  */
 function setFormColour(colour) {
     for(let i = 0; i < $(".container").length; i++) {
-        $(".container")[i].style.backgroundColor = colour;
+        $(".container")[i].style.background = colour;
     }
 }
 
@@ -1524,6 +1524,15 @@ function updateGrade() {
             setFormColour("rgb(56, 140, 65)");
             setSaveData("paygrade", "parttime", false);
             setSaveData("paygrade", "parttime");
+            break;
+        case "jobshare":
+            selectedGradeRates = spotRates;
+            selectedEarlyShiftRates = earlyShiftRatesLoco;
+            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
+            selectedNightShiftRates = nightShiftRatesLoco;
+            setFormColour("linear-gradient(to bottom, #005b77, #ac2a1c)");
+            setSaveData("paygrade", "jobshare", false);
+            setSaveData("paygrade", "jobshare");
             break;
         case "so8":
             selectedEarlyShiftRates = earlyShiftRatesSal;
@@ -2385,7 +2394,7 @@ function updateShiftPayTable() {
         }
         //suburban allowance
         let grade = getPayGrade();
-        if(["spot", "level1", "conversion", "parttime"].includes(grade) && s.shiftWorkedNumber > 0) { //driving grade (except trainees) only
+        if(["spot", "level1", "conversion", "parttime", "jobshare"].includes(grade) && s.shiftWorkedNumber > 0) { //driving grade (except trainees) only
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //wasted meal
@@ -2421,7 +2430,7 @@ function updateShiftPayTable() {
     }
     
     //pay calculation: DDO.
-    if(payGrade != "trainee" && payGrade != "parttime") { //part time and trainee don't get DDO
+    if(payGrade != "trainee" && payGrade != "parttime" && payGrade != "jobshare") { //part time, jobshare and trainee don't get DDO
         let day = ddoWeek();
         if(day < 0) {
             shiftPay[0].push(new PayElement("edo", -4, 0, rateTables));
