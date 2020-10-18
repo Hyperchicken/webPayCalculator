@@ -2837,6 +2837,7 @@ function taxConfigurator() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.getElementById("helpboxTitle").textContent = "Net Income Configuration";
     let contentElement = document.getElementById("helpboxContent");
+    contentElement.style.maxHeight = "unset"; //allow form to be full height (avoid scrollable behaviour)
     contentElement.innerHTML = ""; //clear any existing content
     let formHeader = document.createElement("div");
     formHeader.classList.add("grid-1-3")
@@ -3126,6 +3127,7 @@ function taxConfigurator() {
 function topHelpBox(title, helpText) {
     document.getElementById("helpboxTitle").textContent = title;
     document.getElementById("helpboxContent").innerHTML = helpText;
+    document.getElementById("helpboxContent").style.maxHeight = ""; //default to CSS defined max-height in case it has been overwritten elsewhere
     $("#topHelpDiv").addClass("show-top-helpbox");
     if(helpboxContent.scrollHeight > helpboxContent.clientHeight) {
         $(".scroll-indicator").show()
