@@ -1530,7 +1530,7 @@ function updateGrade() {
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
             selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("linear-gradient(to bottom, #005b77, #ac2a1c)");
+            setFormColour("linear-gradient(to bottom, #005f84, #aa5800)");
             setSaveData("paygrade", "jobshare", false);
             setSaveData("paygrade", "jobshare");
             break;
