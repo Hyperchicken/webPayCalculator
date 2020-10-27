@@ -7,12 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.24";
-const calcLastUpdateDate = "19/10/2020";
+const calcVersion = "1.25";
+const calcLastUpdateDate = "27/10/2020";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li><strong>Attn: Job-Share Drivers: </strong>Job-share is now a separate grade from part-time. Please check and update the grade as required.</li></p>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Updated tax tables to be in line with the October 2020 tax changes.</li></p>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -3203,11 +3203,13 @@ function topHelpBoxPreset(presetName) {
             + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>27/10/2020 - Version 1.25<ul>"
+            + "<li>Updated tax tables to reflect the October 2020 changes to tax thresholds.</li>"
+            + "</ul></li>"
             + "<li>19/10/2020 - Version 1.24<ul>"
             + "<li>Separated Job-share from part-time to make it's own paygrade to allow from some job-share specific calculation fixes.</li>"
             + "<li>Net Income Settings window will now show the full set of settings to avoid scrolling.</li>"
             + "</ul></li>"
-            + "<ul><strong>Changelog</strong>"
             + "<li>15/09/2020 - Version 1.23<ul>"
             + "<li>Fixed Sick-Full and PH Gazette on fortnights with overtime shifts causing a miscalculation.</li>"
             + "<li>All public holiday information text is now complete (shown when clicking on a date with a public holiday).</li>"
