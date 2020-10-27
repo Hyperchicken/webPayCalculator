@@ -1,6 +1,6 @@
 /*
     rates.js - pay rates, allowances, tax rates and more.
-    version 1.00
+    version 1.01
 */
 
 //enterprise agreement pay rates
@@ -59,6 +59,30 @@ const taxScales = [
             [1730, 0.3450, 161.9808],
             [3461, 0.3900, 239.8654],
             [Infinity,  0.4700, 516.7885]
+        ]
+    },
+    {
+        startDate: "2020-10-13",
+        // [weekly earning less than, 'a' coefficient, 'b' coefficient]
+        scale1: [ //Where the tax-free threshold is not claimed
+            [88, 0.1900, 0.1900],
+            [371, 0.2348, 3.9639],
+            [515, 0.2190, -1.9003],
+            [932, 0.3477, 64.4297],
+            [1957, 0.3450, 61.9132],
+            [3111, 0.3900, 150.0093],
+            [Infinity, 0.4700, 398.9324]
+        ],
+        scale2: [ //Where the employee claimed the tax‑free threshold
+            [359, 0, 0],
+            [438, 0.1900, 68.3462],
+            [548, 0.2900, 112.1942],
+            [721, 0.2100, 68.3465],
+            [865, 0.2190, 74.8369],
+            [1282, 0.3477, 186.2119],
+            [2307, 0.3450, 182.7504],
+            [3461, 0.3900, 286.5965],
+            [Infinity,  0.4700, 563.5196]
         ]
     }
 ];
