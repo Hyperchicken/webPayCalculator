@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.04
+    Version: 1.05
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
