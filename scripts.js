@@ -12,7 +12,7 @@ const calcLastUpdateDate = "01/01/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to go out-of-sync.</li></ul>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li></ul>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -3204,7 +3204,7 @@ function topHelpBoxPreset(presetName) {
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
             + "<li>01/01/2021 - Version 1.26<ul>"
-            + "<li>Fixed a calendar bug with the new year that caused fortnight dates to go out-of-sync.</li>"
+            + "<li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li>"
             + "<li>Removed Backpay Calculator link from menu.</li>"
             + "</ul></li>"
             + "<li>27/10/2020 - Version 1.25<ul>"
