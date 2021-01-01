@@ -7,12 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.25";
-const calcLastUpdateDate = "27/10/2020";
+const calcVersion = "1.26";
+const calcLastUpdateDate = "01/01/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li>Updated tax tables to be in line with the October 2020 tax changes.</li></p>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to go out-of-sync.</li></ul>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -576,7 +576,7 @@ $(document).ready(function() {
             }   
         }
         else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
-            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
+            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
                 if (todaysDate.getDay() == 0) return -14;
                 else return daysDifference - 7;
             }
@@ -3203,6 +3203,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>01/01/2021 - Version 1.26<ul>"
+            + "<li>Fixed a calendar bug with the new year that caused fortnight dates to go out-of-sync.</li>"
+            + "</ul></li>"
             + "<li>27/10/2020 - Version 1.25<ul>"
             + "<li>Updated tax tables to reflect the October 2020 changes to tax thresholds.</li>"
             + "</ul></li>"
