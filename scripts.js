@@ -3205,6 +3205,7 @@ function topHelpBoxPreset(presetName) {
             + "<ul><strong>Changelog</strong>"
             + "<li>01/01/2021 - Version 1.26<ul>"
             + "<li>Fixed a calendar bug with the new year that caused fortnight dates to go out-of-sync.</li>"
+            + "<li>Removed Backpay Calculator link from menu.</li>"
             + "</ul></li>"
             + "<li>27/10/2020 - Version 1.25<ul>"
             + "<li>Updated tax tables to reflect the October 2020 changes to tax thresholds.</li>"
