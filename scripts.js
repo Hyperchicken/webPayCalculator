@@ -7,12 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.26";
-const calcLastUpdateDate = "01/01/2021";
+const calcVersion = "1.26a";
+const calcLastUpdateDate = "04/01/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li></ul>";
+var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync...</li><li>...again</li></ul>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -28,8 +28,8 @@ const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
 
 //define a fortnightly pay-cycle to start on either an odd or even week of a given year
-const evenPayWeekYears = [2016, 2017, 2018, 2019, 2020];
-const oddPayWeekYears = [2015, 2021, 2022, 2023, 2024, 2025];
+const evenPayWeekYears = [2016, 2017, 2018, 2019, 2020, 2027];
+const oddPayWeekYears = [2015, 2021, 2022, 2023, 2024, 2025, 2026];
 
 //define Classes
 /**
@@ -562,9 +562,10 @@ $(document).ready(function() {
     };
     
     //setup datepicker
-    let startDate = () => {
+    let startDate = () => { //returns the number of days to the most recent fortnight start date (a negative number in most cases)
         let todaysDate = new Date();
-        let daysDifference = (todaysDate.getDay()) * -1;
+        //todaysDate.setDate(todaysDate.getDate() +1);
+        let daysDifference = (todaysDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
         if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
             if(todaysDate.getWeek() % 2 == 1) {//if not pay week
                 if (todaysDate.getDay() == 0) return -14;
@@ -576,7 +577,7 @@ $(document).ready(function() {
             }   
         }
         else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
-            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
+            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
                 if (todaysDate.getDay() == 0) return -14;
                 else return daysDifference - 7;
             }
