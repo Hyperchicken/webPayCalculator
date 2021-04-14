@@ -2117,7 +2117,7 @@ function updateShiftPayTable() {
     let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let ordinaryHours = 8; //default ordinary hours of 8
     let alDdoDeducted = false; //annual leave DDO deducted
-    let phOffCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
+    let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
     let nonWorkedShifts = 0; //counter for rostered shifts that were not worked (such as PH Gazette and Sick Full)
     let payGrade = getPayGrade();
     if(payGrade == "trainee" || payGrade == "parttime") {
@@ -2157,9 +2157,9 @@ function updateShiftPayTable() {
                 }
             }
             else if(s.ph) { //public holiday
-                phOffCount++;
                 deductLeaveShifts[weekNo(day)]++;
                 if(s.phOffRoster) {
+                    phOffRosterCount++;
                     if(payGrade != "parttime") {
                         shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables));
                     }
@@ -2263,7 +2263,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickPart", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber + phOffCount <= 10 && (s.rosteredShiftNumber + phOffCount <= 10) && s.hoursDecimal < ordinaryHours) {
+                else if(s.shiftWorkedNumber + phOffRosterCount <= 10 && s.rosteredShiftNumber + phOffRosterCount <= 10 && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
@@ -3204,6 +3204,9 @@ function topHelpBoxPreset(presetName) {
             + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
+            + "<li>14/04/2021 - Version 1.27<ul>"
+            + "<li>Fixed guarantee not being applied to the last shift or two in fortnights that have PH-Gazettes (shifts that have converted to PH).</li>"
+            + "</ul></li>"
             + "<li>01/01/2021 - Version 1.26<ul>"
             + "<li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li>"
             + "<li>Removed Backpay Calculator link from menu.</li>"
