@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.26a";
-const calcLastUpdateDate = "04/01/2021";
+const calcVersion = "1.27";
+const calcLastUpdateDate = "16/04/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1840,7 +1840,7 @@ function updateResults() {
             //calculate compulsary super contribution
             let nonOvertimePay = 0.0;
             groupedElements.forEach(function(e){ 
-                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "nonRosPH", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) nonOvertimePay += e.value;
+                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "leaveLoading"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
                 taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1)); //super guarantee rate of 9.5%
@@ -1927,10 +1927,58 @@ function updateResults() {
             resultArea.appendChild(taxPrompt);
         }
 
-        //payslip hours worked
         let dashedHr = document.createElement("hr");
         dashedHr.classList.add("hr-dashed");
         resultArea.appendChild(dashedHr);
+
+        //payslip hours paid
+        let payslipHoursPaid = 0.0;
+        groupedElements.forEach(function(e){ //the elements which to sum together their hours
+        switch(e.payType) {
+            //0.5x
+            case "phPen50":
+            case "wePen50":
+                payslipHoursPaid += e.hours * 0.5;
+                break;
+            //1x
+            case "normal":
+            case "overtime":
+            case "wePen100":
+            case "phWorked":
+            case "phGaz":
+            case "phXpay":
+            case "nonRosPH":
+            case "sickFull":
+            case "sickPart":
+            case "rost+100":
+            case "annualLeave":
+            case "guarantee":
+            case "edo":
+            case "bonusPayment":
+            case "phCredit":
+                payslipHoursPaid += e.hours;
+                break;
+            //1.5x
+            case "ot150":
+            case "phPen150":
+            case "rost+50":
+                payslipHoursPaid += e.hours * 1.5;
+                break;
+
+            //2x
+            case "ot200":
+            case "rost+100":
+                payslipHoursPaid += e.hours * 2;
+                break;
+        } 
+        });
+        let payslipHoursPaidElement = document.createElement("p");
+        payslipHoursPaidElement.classList.add("hours-worked");
+        payslipHoursPaidElement.innerHTML = "Hours Paid on payslip:&nbsp&nbsp" + payslipHoursPaid.toFixed(2);
+        resultArea.appendChild(payslipHoursPaidElement);
+
+
+        //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
             if(["normal", "overtime", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
@@ -1947,6 +1995,8 @@ function updateResults() {
             + " This includes time that wasn't physically worked such as Guarantee, A/Leave, and even EDO (+ and -).</p> <p>Compare this value to the <em>Hours Worked</em> section on your payslip.</p>";
             window.location.replace("#resultsHelpDiv"); //scroll to help box
         });
+
+        
         
         //element help tips
         let resultsHelpDiv = document.createElement("div");
@@ -3204,8 +3254,11 @@ function topHelpBoxPreset(presetName) {
             + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
             + "</ul>"
             + "<ul><strong>Changelog</strong>"
-            + "<li>14/04/2021 - Version 1.27<ul>"
-            + "<li>Fixed guarantee not being applied to the last shift or two in fortnights that have PH-Gazettes (shifts that have converted to PH).</li>"
+            + "<li>16/04/2021 - Version 1.27<ul>"
+            + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
+            + "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
+            + "<li>Annual leave loading is now counted towards super guarantee calculation.</li>"
+            + "<li>Added 'Hours Paid' calculation.</li>"
             + "</ul></li>"
             + "<li>01/01/2021 - Version 1.26<ul>"
             + "<li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li>"
