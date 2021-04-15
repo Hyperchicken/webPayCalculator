@@ -12,7 +12,12 @@ const calcLastUpdateDate = "16/04/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + "<ul><li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync...</li><li>...again</li></ul>";
+var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
++ "<ul><li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
++ "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
++ "<li>Annual leave loading is now counted towards super guarantee calculation.</li>"
++ "<li>Changed background colour of Job-Share.</li>"
++ "<li>Added 'Hours Paid' calculation.</li></ul>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -1531,7 +1536,7 @@ function updateGrade() {
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
             selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("linear-gradient(to bottom, #005f84, #aa5800)");
+            setFormColour("#5b1a4e");
             setSaveData("paygrade", "jobshare", false);
             setSaveData("paygrade", "jobshare");
             break;
@@ -3249,15 +3254,13 @@ function topHelpBoxPreset(presetName) {
             + "</ul>";
             break;
         case "changelog":
-            helpTitle = "Changelog and Known Issues";
-            helpText = "<ul><strong>Known Issues</strong>"
-            + "<li>Having sick days or PH Gazettes on fortnights with overtime shifts might show different pay elements to your payslip in some edge-case scenarios. Gross pay calculated should still be accurate.</li>"
-            + "</ul>"
-            + "<ul><strong>Changelog</strong>"
+            helpTitle = "Changelog";
+            helpText = "<ul>"
             + "<li>16/04/2021 - Version 1.27<ul>"
             + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
             + "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
             + "<li>Annual leave loading is now counted towards super guarantee calculation.</li>"
+            + "<li>Changed background colour of Job-Share.</li>"
             + "<li>Added 'Hours Paid' calculation.</li>"
             + "</ul></li>"
             + "<li>01/01/2021 - Version 1.26<ul>"
