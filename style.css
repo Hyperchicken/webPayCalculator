@@ -358,6 +358,11 @@ a:visited {
     border-color: #1c4ab3;
 }
 
+.long-service-leave-button {
+    background-color: #601cb3;
+    border-color: #601cb3;
+}
+
 .phc-button {
     background-color: #3d1cb3;
     border-color: #3d1cb3;
