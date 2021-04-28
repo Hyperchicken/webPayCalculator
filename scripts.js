@@ -2246,15 +2246,15 @@ function updateShiftPayTable() {
                 }
             }
             else if(s.ph) { //public holiday
-                deductLeaveShifts[weekNo(day)]++;
                 if(s.phOffRoster) {
                     phOffRosterCount++;
-                    if(payGrade != "parttime") {
+                    if(payGrade != "parttime" && !s.al && !s.lsl) { //dont pay NON ROS PH to part time or when on leave
                         shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables));
                     }
                 }
                 else {
                     nonWorkedShifts++;
+                    deductLeaveShifts[weekNo(day)]++;
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
                 }
             }
