@@ -71,6 +71,7 @@ class Shift {
         this.sickPart = false; //worked but went home sick partway through shift
         this.al = false; //annual leave
         this.lsl = false; //long service leave
+        this.lslHalfPay = false; //long service leave half pay option
         this.phc = false; //public holiday credit day off
         this.ddo = false; //DDO
         this.bonus = false; //bonus payment
@@ -879,8 +880,14 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(s.lsl) {
-                setButton("LSL", lslColour);
-                offButton = false;
+                if(s.lslHalfPay) {
+                    setButton("LSL-Half", lslColour);
+                    offButton = false;
+                }
+                else {
+                    setButton("LSL-Full", lslColour);
+                    offButton = false;
+                }
             }
             if(s.phc) {
                 setButton("PH&nbspCredit", phcColour);
@@ -1366,9 +1373,11 @@ function generateOptionsShelfButtons(day) {
     }
 
     //Long service leave button
+    let lslSpan = document.createElement("span");
     let lslButton = document.createElement("a");
-    lslButton.textContent = "Long Service Leave";
-    lslButton.setAttribute("class", "button long-service-leave-button shelf-button");
+    lslButton.textContent = "Long Service";
+    lslButton.setAttribute("class", "button lsl-button shelf-button");
+    lslSpan.appendChild(lslButton);
     if(shifts[day].lsl) {//if LSL
         lslButton.addEventListener("click", function(){
             shifts[day].lsl = false;
@@ -1376,6 +1385,32 @@ function generateOptionsShelfButtons(day) {
             saveToStorage("lsl", "false");
         });
         lslButton.style.background = "";
+
+        let fullPayButton = document.createElement("a");
+        let halfPayButton = document.createElement("a");
+        fullPayButton.setAttribute("class", "button lsl-button shelf-button dual-button-l");
+        halfPayButton.setAttribute("class", "button lsl-button shelf-button dual-button-r");
+        fullPayButton.textContent = "Full Pay";
+        halfPayButton.textContent = "Half Pay";
+        lslSpan.appendChild(fullPayButton);
+        lslSpan.appendChild(halfPayButton);
+        if(shifts[day].lslHalfPay) {
+            fullPayButton.addEventListener("click", function() {
+                shifts[day].lslHalfPay = false;
+                reloadPageData();
+                saveToStorage("lslHalfPay", "false");
+            });
+            halfPayButton.style.background = "";
+            fullPayButton.style.background = buttonBackgroundColour;
+        } else {
+            halfPayButton.addEventListener("click", function() {
+                shifts[day].lslHalfPay = true;
+                reloadPageData();
+                saveToStorage("lslHalfPay", "true");
+            });
+            fullPayButton.style.background = "";
+            halfPayButton.style.background = buttonBackgroundColour;
+        }
     }
     else {//if not LSL
         lslButton.addEventListener("click", function(){
@@ -1466,8 +1501,8 @@ function generateOptionsShelfButtons(day) {
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
     shelf.appendChild(alButton);
-    shelf.appendChild(lslButton);
     shelf.appendChild(phcButton);
+    shelf.appendChild(lslSpan);
     shelf.appendChild(bonusButton);
 
     //set focus if any
@@ -2202,8 +2237,10 @@ function ddoWeek() {
  * This is where all the pay calculation logic lives.
  */
 function updateShiftPayTable() {
-    let alShifts = [0, 0]; //[week1, week2]  //shifts counted as annual leave. designed to avoid using annual leave when sick or ph.
-    let deductLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
+    let alShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
+    let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
+    let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
+    let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
     let ordinaryHours = 8; //default ordinary hours of 8
     let alDdoDeducted = false; //annual leave DDO deducted
     let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
@@ -2235,8 +2272,11 @@ function updateShiftPayTable() {
             if(s.al) { //annual leave
                 alShifts[weekNo(day)]++;
             }
+            if(s.lsl) {
+                lslShifts[weekNo(day)]++;
+            }
             if(s.sick) {
-                deductLeaveShifts[weekNo(day)]++;
+                deductAnnualLeaveShifts[weekNo(day)]++;
                 nonWorkedShifts++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
@@ -2254,16 +2294,17 @@ function updateShiftPayTable() {
                 }
                 else {
                     nonWorkedShifts++;
-                    deductLeaveShifts[weekNo(day)]++;
+                    deductAnnualLeaveShifts[weekNo(day)]++;
+                    deductLSLShifts[weekNo(day)]++;
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
                 }
             }
             else if(s.phc) { //public holiday credit leave
-                deductLeaveShifts[weekNo(day)]++;
+                deductAnnualLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day, rateTables));
             }
             if(s.ddo && !alDdoDeducted) {
-                deductLeaveShifts[weekNo(day)]++;
+                deductAnnualLeaveShifts[weekNo(day)]++;
                 alDdoDeducted = true;
             }
         }
@@ -2306,7 +2347,7 @@ function updateShiftPayTable() {
                 //Public Holidays
                 let normalPhWorkedHours = 0.0;
                 let sundayPhWorkedHours = 0.0;
-                let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll version. Keep variable for future reference
+                let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll interpretation. Keep variable for future reference
                 if(todayPhHours > 0.0) {
                     if (day == 0 || day == 7) {
                         sundayPhWorkedHours += todayPhHours;
@@ -2331,8 +2372,8 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift));
                     shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift));
                 }
-                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojtShift)); //EA version: XPay based on hours worked. Keep for future reference
-                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll version: XPay based on ordinary hours
+                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojtShift)); //EA interpretation: XPay based on hours worked. Keep for future reference
+                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
@@ -2500,20 +2541,38 @@ function updateShiftPayTable() {
         nightShiftRates: selectedNightShiftRates
     };
 
-    //pay calculation: pass 2. determine and cap which days to pay annual leave on.
-    //AL capped at 5 days per week, with any sick or PH-off day during annual leave to be paid in place of annual leave.
+    //pay calculation: pass 2. determine and cap which days to pay annual and long service leave on.
+    //AL capped at 5 days per week, with any sick or PH-Gaz day during annual leave to be paid in place of annual leave.
+    //LSL capped at 5 days per week, with any PH-Gaz paid in place of LSL.
     for(let i = 0; i < 2; i++) {
         let endWeekDay = [7, 14];
         if(alShifts[i] > 0) {
             if(alShifts[i] > 5) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave
-            if(alShifts[i] + deductLeaveShifts[i] > 5) {
-                alShifts[i] -= deductLeaveShifts[i]; //deduct any sick or PH-OFF shifts from annual leave count
+            if(alShifts[i] + deductAnnualLeaveShifts[i] > 5) {
+                alShifts[i] -= deductAnnualLeaveShifts[i]; //deduct any sick or PH-Gaz shifts from annual leave count
             }
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
-                if(shifts[j].al && (!shifts[j].ph && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i] > 0) {
+                if(shifts[j].al && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i] > 0) {
                     alShifts[i]--;
                     shiftPay[j].push(new PayElement("annualLeave", ordinaryHours, j, rateTables));
                     shiftPay[j].push(new PayElement("leaveLoading", ordinaryHours, j, rateTables));
+                }
+            }
+        }
+        if(lslShifts[i] > 0) {
+            if(lslShifts[i] > 5) lslShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to long service leave
+            if(lslShifts[i] + deductLSLShifts[i] > 5) {
+                lslShifts[i] -= deductLSLShifts[i]; //deduct PH-Gaz shifts from long service leave count
+            }
+            for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
+                if(shifts[j].lsl && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].phc && !shifts.ddo) && lslShifts[i] > 0) {
+                    lslShifts[i]--;
+                    if(shifts[j].lslHalfPay) {
+                        shiftPay[j].push(new PayElement("longServiceLeaveHalf", ordinaryHours, j, rateTables));
+                    }
+                    else {
+                        shiftPay[j].push(new PayElement("longServiceLeaveFull", ordinaryHours, j, rateTables));
+                    }
                 }
             }
         }
