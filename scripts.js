@@ -29,6 +29,7 @@ const sickColour = "#ff0000";
 const bonusColour = "#e79e00";
 const teamLeaderColour = "#e70082";
 const alColour = "#1c4ab3";
+const lslColour = "#601cb3";
 const phcColour = "#3d1cb3";
 const buttonBackgroundColour = "#5554";
 
@@ -69,6 +70,7 @@ class Shift {
         this.sick = false; //sick full day
         this.sickPart = false; //worked but went home sick partway through shift
         this.al = false; //annual leave
+        this.lsl = false; //long service leave
         this.phc = false; //public holiday credit day off
         this.ddo = false; //DDO
         this.bonus = false; //bonus payment
@@ -218,6 +220,8 @@ class PayElement {
             "sickFull",
             "sickPart",
             "annualLeave",
+            "longServiceLeaveFull",
+            "longServiceLeaveHalf",
             "phGaz",
             "phXpay",
             "phWorked",
@@ -269,6 +273,8 @@ class PayElement {
             case "sickFull": payClassName = "Sick Full"; break;
             case "sickPart": payClassName = "Sick Part"; break;
             case "annualLeave": payClassName = "A/Leave"; break;
+            case "longServiceLeaveFull": payClassName = "LSL"; break;
+            case "longServiceLeaveHalf": payClassName = "LSL"; break;
             case "phGaz": payClassName = "PH Gazette"; break;
             case "phXpay": payClassName = "PH X/Pay"; break;
             case "phWorked": payClassName = "PH Worked"; break;
@@ -451,10 +457,12 @@ class PayElement {
             case "annualLeave":
             case "phCredit":
             case "bonusPayment":
+            case "longServiceLeaveFull":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //single rate
                 break;
             case "wePen50":
             case "phPen50":
+            case "longServiceLeaveHalf":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //half rate
                 rate /= 2;
                 break;
@@ -868,6 +876,10 @@ function updateOptionsButtons() {
             }
             if(s.al) {
                 setButton("A/Leave", alColour);
+                offButton = false;
+            }
+            if(s.lsl) {
+                setButton("LSL", lslColour);
                 offButton = false;
             }
             if(s.phc) {
@@ -1353,6 +1365,27 @@ function generateOptionsShelfButtons(day) {
         alButton.style.background = buttonBackgroundColour;
     }
 
+    //Long service leave button
+    let lslButton = document.createElement("a");
+    lslButton.textContent = "Long Service Leave";
+    lslButton.setAttribute("class", "button long-service-leave-button shelf-button");
+    if(shifts[day].lsl) {//if LSL
+        lslButton.addEventListener("click", function(){
+            shifts[day].lsl = false;
+            reloadPageData();
+            saveToStorage("lsl", "false");
+        });
+        lslButton.style.background = "";
+    }
+    else {//if not LSL
+        lslButton.addEventListener("click", function(){
+            shifts[day].lsl = true;
+            reloadPageData();
+            saveToStorage("lsl", "true");
+        });
+        lslButton.style.background = buttonBackgroundColour;
+    }
+
     //PH Credit Leave button
     let phcButton = document.createElement("a");
     phcButton.textContent = "PH Credit Leave";
@@ -1433,6 +1466,7 @@ function generateOptionsShelfButtons(day) {
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
     shelf.appendChild(alButton);
+    shelf.appendChild(lslButton);
     shelf.appendChild(phcButton);
     shelf.appendChild(bonusButton);
 
@@ -2765,7 +2799,8 @@ function loadSavedData(datePrefix = "") {
         let phxpSave = getSaveData("day" + day + "phxp");
         let phorSave = getSaveData("day" + day + "phor");
         let alSave = getSaveData("day" + day + "al");
-        let phcSave = getSaveData("day" + day + "phc")
+        let lslSave = getSaveData("day" + day + "lsl");
+        let phcSave = getSaveData("day" + day + "phc");
         let bonusSave = getSaveData("day" + day + "bonus");
         let bonusHoursSave = getSaveData("day" + day + "bonusHours");
         let teamLeaderSave = getSaveData("day" + day + "teamLeader");
@@ -2778,6 +2813,7 @@ function loadSavedData(datePrefix = "") {
         if(phxpSave == "true") shifts[day].phExtraPay = true;
         if(phorSave == "true") shifts[day].phOffRoster = true;
         if(alSave == "true") shifts[day].al = true;
+        if(lslSave == "true") shifts[day].lsl = true;
         if(phcSave == "true") shifts[day].phc = true;
         if(bonusSave == "true") shifts[day].bonus = true;
         if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
