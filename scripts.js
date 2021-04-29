@@ -684,14 +684,14 @@ $(document).ready(function() {
         closeMenu();
         $(".dropbtn").removeClass("active");
     });
-    $("#backpayMenuButton").on("click", function(){
+    /*$("#backpayMenuButton").on("click", function(){
         location.replace("backpay.php");
     });
     $("#printViewMenuButton").on("click", function(){
         showPrintView();
         closeMenu();
         $(".dropbtn").removeClass("active");
-    });
+    });*/
     $("#resetMenuButton").on("click", function(){
         if(confirm("Clear sign-on/off times and shift options for the current fortnight?")) {
             resetForm();
@@ -3331,22 +3331,19 @@ function topHelpBoxPreset(presetName) {
             + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."
             + " You can also click/tap on any of the pay elements to view an explanation of that pay element.</p>";
             break;
-        case "deleteSave":
-            helpTitle = "Delete Save Data";
-            helpText = "<p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
-            + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
-            break;
         case "saveInfo":
-            helpTitle = "About Data Saving";
+            helpTitle = "Saved Data Information";
             helpText = "<p>All shift-times and shift-options entered are automatically saved to the currently selected fortnight. In other words, the calculator will remember all the details you enter every time you use it."
             + "<br />Data saving allows you to do things like enter in shifts as you go, so you don't have to enter them all at once at the end of a pay cycle. You can also change the dates to load any data you entered in a different fortnight! </p>"
-            + "<p>Some extra things to know about the data saving feature:</p>"
+            + "<p>Some extra things to know about data saving:</p>"
             + "<ul><li>There is no 'save button'. Everything is saved instantly and automatically.</li>"
             + "<li>Data is saved locally to your web browser and not sent anywhere over the internet.</li>"
             + "<li>Saved data will <strong>not</strong> carry over to a different web browser or device.</li>"
             + "<li>Using incognito/private browsing mode will prevent data saving.</li>"
             + "<li>Clearing your browser's cookies will delete any saved data.</li>"
-            + "</ul>";
+            + "</ul>"
+            + "<p>The following button will delete all calculator save data that is stored in the current browser. Shift sign-on/sign-off times and shift-options for all dates will be deleted. It is not possible to undo this action.</p>"
+            + "<p><a class='button delete-save-button' onclick='confirmDeleteData()'>Delete All Save Data</a><p>";
             break;
         case "about":
             helpTitle = "About the pay calculator";

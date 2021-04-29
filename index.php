@@ -38,8 +38,7 @@
                 <!--<a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>-->
                 <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
-                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>About Data Saving</a>
-                <a id="deleteSaveMenuButton"><i class="fas fa-trash-alt fa-fw menu-icon"></i>Delete Save Data</a>
+                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Saved Data</a>
                 <a id="taxConfigurationMenuButton"><i class="fas fa-funnel-dollar fa-fw menu-icon"></i>Net Income Settings</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
                 <a id="aboutMenuButton"><i class="fas fa-info-circle fa-fw menu-icon"></i>About</a>
