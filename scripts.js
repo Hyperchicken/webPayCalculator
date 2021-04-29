@@ -339,8 +339,18 @@ class PayElement {
             case "annualLeave": 
                 tooltipText = "<strong>Annual Leave</strong>"
                 + "<p><em>Annual Leave</em> paid at 8 hours per day of leave, up to 40 hours (5 shifts) per week.</p>"
-                + "<ul><li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as Annual Leave.</li>"
-                + "<li>Public Holidays that occur during Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave.</li></ul>";
+                + "<ul><li>Sick days taken during Annual Leave will be paid as <em>Sick Full</em> and not count as taking Annual Leave for full-time.</li>"
+                + "<li>Public Holidays that you would normally be rostered to work according to your rotation if you weren't on Annual Leave will be paid as <em>PH Gazette</em> and not count as Annual Leave. Ensure you set the Public Holiday - Converted to PH shift options together with the Annual Leave shift option.</li></ul>";
+                break;
+            case "longServiceLeaveFull": 
+                tooltipText = "<strong>LSL (Full Pay)</strong>"
+                + "<p><em>Long Service Leave (Full Pay)</em> paid at 8 hours per day of leave, up to 40 hours (5 shifts) per week for full-time.</p>"
+                + "<li>Public Holidays that you would normally be rostered to work according to your rotation if you weren't on Long Service Leave will be paid as <em>PH Gazette</em> and not count as Long Service Leave. Ensure you set the Public Holiday - Converted to PH shift options together with the Long Service shift option.</li></ul>";
+                break;
+            case "longServiceLeaveHalf": 
+                tooltipText = "<strong>LSL (Half Pay)</strong>"
+                + "<p><em>Long Service Leave (Half Pay)</em> paid at 4 hours per day of leave, up to 40 hours (5 shifts) per week for full-time.</p>"
+                + "<li>Public Holidays that you would normally be rostered to work according to your rotation if you weren't on Long Service Leave will be paid as <em>PH Gazette</em> and not count as Long Service Leave. Ensure you set the Public Holiday - Converted to PH shift options together with the Long Service shift option.</li></ul>";
                 break;
             case "phGaz": tooltipText = "<strong>PH Gazette</strong>"
                 + "<p>A full day's (ordinary hours) <em>Paid leave of absence</em> for a <em>Public Holiday</em> where one was originally rostered but the shift was converted to PH.</p>"
@@ -2859,6 +2869,7 @@ function loadSavedData(datePrefix = "") {
         let phorSave = getSaveData("day" + day + "phor");
         let alSave = getSaveData("day" + day + "al");
         let lslSave = getSaveData("day" + day + "lsl");
+        let lslHalfPaySave = getSaveData("day" + day + "lslHalfPay");
         let phcSave = getSaveData("day" + day + "phc");
         let bonusSave = getSaveData("day" + day + "bonus");
         let bonusHoursSave = getSaveData("day" + day + "bonusHours");
@@ -2873,6 +2884,7 @@ function loadSavedData(datePrefix = "") {
         if(phorSave == "true") shifts[day].phOffRoster = true;
         if(alSave == "true") shifts[day].al = true;
         if(lslSave == "true") shifts[day].lsl = true;
+        if(lslHalfPaySave == "true") shifts[day].lslHalfPay = true;
         if(phcSave == "true") shifts[day].phc = true;
         if(bonusSave == "true") shifts[day].bonus = true;
         if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
