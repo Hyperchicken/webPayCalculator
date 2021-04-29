@@ -39,6 +39,7 @@
                 <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Saved Data</a>
+                <a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>
                 <a id="taxConfigurationMenuButton"><i class="fas fa-funnel-dollar fa-fw menu-icon"></i>Net Income Settings</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
                 <a id="aboutMenuButton"><i class="fas fa-info-circle fa-fw menu-icon"></i>About</a>
