@@ -274,8 +274,8 @@ class PayElement {
             case "sickFull": payClassName = "Sick Full"; break;
             case "sickPart": payClassName = "Sick Part"; break;
             case "annualLeave": payClassName = "A/Leave"; break;
-            case "longServiceLeaveFull": payClassName = "LSL"; break;
-            case "longServiceLeaveHalf": payClassName = "LSL"; break;
+            case "longServiceLeaveFull": payClassName = "LSL Full"; break;
+            case "longServiceLeaveHalf": payClassName = "LSL (Half)"; break;
             case "phGaz": payClassName = "PH Gazette"; break;
             case "phXpay": payClassName = "PH X/Pay"; break;
             case "phWorked": payClassName = "PH Worked"; break;
@@ -469,11 +469,11 @@ class PayElement {
             case "phCredit":
             case "bonusPayment":
             case "longServiceLeaveFull":
+            case "longServiceLeaveHalf":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //single rate
                 break;
             case "wePen50":
             case "phPen50":
-            case "longServiceLeaveHalf":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //half rate
                 rate /= 2;
                 break;
@@ -702,8 +702,12 @@ $(document).ready(function() {
         topHelpBoxPreset("saveInfo");
         closeMenu();
     });
-    $("#deleteSaveMenuButton").on("click", function(){
+    /*$("#deleteSaveMenuButton").on("click", function(){
         topHelpBoxPreset("deleteSave");
+        closeMenu();
+    });*/
+    $("#bulkLeaveMenuButton").on("click", function(){
+        bulkLeaveMenu();
         closeMenu();
     });
     $("#taxConfigurationMenuButton").on("click", function(){
@@ -2534,8 +2538,7 @@ function updateShiftPayTable() {
             }
         }
         //suburban allowance
-        let grade = getPayGrade();
-        if(["spot", "level1", "conversion", "parttime", "jobshare"].includes(grade) && s.shiftWorkedNumber > 0) { //driving grade (except trainees) only
+        if(["spot", "level1", "conversion", "parttime", "jobshare"].includes(payGrade) && s.shiftWorkedNumber > 0) { //driving grade (except trainees) only
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //wasted meal
@@ -2578,10 +2581,10 @@ function updateShiftPayTable() {
                 if(shifts[j].lsl && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].phc && !shifts.ddo) && lslShifts[i] > 0) {
                     lslShifts[i]--;
                     if(shifts[j].lslHalfPay) {
-                        shiftPay[j].push(new PayElement("longServiceLeaveHalf", ordinaryHours, j, rateTables));
+                        shiftPay[j].push(new PayElement("longServiceLeaveHalf", ordinaryHours / 2, j, rateTables)); //half ordinary hours
                     }
                     else {
-                        shiftPay[j].push(new PayElement("longServiceLeaveFull", ordinaryHours, j, rateTables));
+                        shiftPay[j].push(new PayElement("longServiceLeaveFull", ordinaryHours, j, rateTables)); //full ordinary hours
                     }
                 }
             }
@@ -2994,6 +2997,117 @@ function showPrintView() {
 }
 
 /**
+ * Creates a help box window with functionality to set leave in bulk
+ */
+function bulkLeaveMenu() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("helpboxTitle").textContent = "Bulk Leave Input";
+    let contentElement = document.getElementById("helpboxContent");
+    contentElement.style.maxHeight = "unset"; //allow form to be full height (avoid scrollable behaviour)
+    contentElement.innerHTML = ""; //clear any existing content
+    let formHeader = document.createElement("div");
+    formHeader.classList.add("grid-1-3")
+    formHeader.innerHTML = "<em>Input Annual, Long Service and PH Credit Leave in bulk.</em><hr>";
+    let formArea = document.createElement("form");
+    formArea.id = "bulkLeave";
+    formArea.classList.add("grid-taxform"); //use tax configurator layout
+
+    //leave type dropdown
+    let leaveTypeId = "leaveType";
+    let leaveTypeLabel = document.createElement("span");
+    leaveTypeLabel.textContent = "Leave Type";
+    let leaveTypeInput = document.createElement("select");
+    leaveTypeInput.id = leaveTypeId;
+    let leaveTypeInputOptionAnnualLeave = document.createElement("option");
+    leaveTypeInputOptionAnnualLeave.textContent = "Annual Leave";
+    leaveTypeInputOptionAnnualLeave.setAttribute("value", "al")
+    let leaveTypeInputOptionLslFullPay = document.createElement("option");
+    leaveTypeInputOptionLslFullPay.textContent = "Long Service Full-Pay";
+    leaveTypeInputOptionLslFullPay.setAttribute("value", "lslfull")
+    let leaveTypeInputOptionLslHalfPay = document.createElement("option");
+    leaveTypeInputOptionLslHalfPay.textContent = "Long Service Half-Pay";
+    leaveTypeInputOptionLslHalfPay.setAttribute("value", "lslhalf")
+    let leaveTypeInputOptionPhc = document.createElement("option");
+    leaveTypeInputOptionPhc.textContent = "Public Holiday Credit";
+    leaveTypeInputOptionPhc.setAttribute("value", "phc")
+
+    leaveTypeInput.appendChild(leaveTypeInputOptionAnnualLeave);
+    leaveTypeInput.appendChild(leaveTypeInputOptionLslFullPay);
+    leaveTypeInput.appendChild(leaveTypeInputOptionLslHalfPay);
+    leaveTypeInput.appendChild(leaveTypeInputOptionPhc);
+    formArea.appendChild(leaveTypeLabel);
+    formArea.appendChild(leaveTypeInput);
+
+    //start date
+    let leaveStartDateId = "leaveStartDate";
+    let leaveStartDateLabel = document.createElement("span");
+    leaveStartDateLabel.textContent = "Leave Start Date";
+    let leaveStartDateCalendar = document.createElement("input");
+    leaveStartDateCalendar.type = "text";
+    leaveStartDateCalendar.placeholder = "Start date";
+    leaveStartDateCalendar.id = leaveStartDateId;
+
+    //end date
+    let leaveEndDateId = "leaveEndDate";
+    let leaveEndDateLabel = document.createElement("span");
+    leaveEndDateLabel.textContent = "Leave End Date";
+    let leaveEndDateCalendar = document.createElement("input");
+    leaveEndDateCalendar.type = "text";
+    leaveEndDateCalendar.placeholder = "End date";
+    leaveEndDateCalendar.id = leaveEndDateId;
+
+    formArea.appendChild(leaveStartDateLabel);
+    formArea.appendChild(leaveStartDateCalendar);
+    formArea.appendChild(leaveEndDateLabel);
+    formArea.appendChild(leaveEndDateCalendar);
+
+    $(function () {
+        var dateFormat = "d/m/yy",
+            from = $(leaveStartDateCalendar)
+                .datepicker({
+                    dateFormat: "d/m/yy",
+                    changeMonth: true,
+                    numberOfMonths: 1
+                })
+                .on("change", function () {
+                    to.datepicker("option", "minDate", getDate(this));
+                }),
+            to = $(leaveEndDateCalendar).datepicker({
+                dateFormat: "d/m/yy",
+                defaultDate: "+4w",
+                changeMonth: true,
+                numberOfMonths: 1
+            })
+                .on("change", function () {
+                    from.datepicker("option", "maxDate", getDate(this));
+                });
+
+        function getDate(element) {
+            var date;
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+
+            return date;
+        }
+    });
+
+
+    //show helpbox
+    contentElement.appendChild(formHeader);
+    contentElement.appendChild(formArea);
+    $("#topHelpDiv").addClass("show-top-helpbox");
+    if(helpboxContent.scrollHeight > helpboxContent.clientHeight) {
+        $(".scroll-indicator").show()
+    }
+    else {
+        $(".scroll-indicator").hide()
+    }
+}
+
+/**
  * Creates a help box window with settings to confugure tax and net pay
  */
 function taxConfigurator() {
@@ -3093,7 +3207,7 @@ function taxConfigurator() {
 
     let formArea = document.createElement("form");
     formArea.id = "taxSettings";
-    formArea.classList.add("grid-taxform")
+    formArea.classList.add("grid-taxform");
 
     //enable checkbox
     let enableTaxCalcId = "enableTaxCalc";
@@ -3144,12 +3258,12 @@ function taxConfigurator() {
     let etdscInputOptionNone = document.createElement("option");
     etdscInputOptionNone.textContent = "None";
     etdscInputOptionNone.setAttribute("value", "none")
-    let etdscInputOptionFull = document.createElement("option");
-    etdscInputOptionFull.textContent = "Half";
-    etdscInputOptionFull.setAttribute("value", "half")
     let etdscInputOptionHalf = document.createElement("option");
-    etdscInputOptionHalf.textContent = "Full";
-    etdscInputOptionHalf.setAttribute("value", "full")
+    etdscInputOptionHalf.textContent = "Half";
+    etdscInputOptionHalf.setAttribute("value", "half")
+    let etdscInputOptionFull = document.createElement("option");
+    etdscInputOptionFull.textContent = "Full";
+    etdscInputOptionFull.setAttribute("value", "full")
     etdscInput.addEventListener("input", function(){
         if(this.value == "full") setSaveData(etdscId, "full", false);
         else if(this.value == "half") setSaveData(etdscId, "half", false);
@@ -3157,8 +3271,8 @@ function taxConfigurator() {
         updateResults();
     });
     etdscInput.appendChild(etdscInputOptionNone);
-    etdscInput.appendChild(etdscInputOptionFull);
     etdscInput.appendChild(etdscInputOptionHalf);
+    etdscInput.appendChild(etdscInputOptionFull);
     formArea.appendChild(etdscLabel);
     formArea.appendChild(etdscInput);
 
