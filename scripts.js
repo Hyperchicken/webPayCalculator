@@ -3074,7 +3074,7 @@ function bulkLeaveMenu() {
                 }),
             to = $(leaveEndDateCalendar).datepicker({
                 dateFormat: "d/m/yy",
-                defaultDate: "+4w",
+                defaultDate: "+2w",
                 changeMonth: true,
                 numberOfMonths: 1
             })
@@ -3094,6 +3094,18 @@ function bulkLeaveMenu() {
         }
     });
 
+    //submit button
+    let emptySpan = document.createElement("span");
+    let submitButton = document.createElement("button");
+    submitButton.type = "button";
+    submitButton.textContent = "Add Leave";
+    submitButton.addEventListener( "click", function(){
+        let startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
+        let endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
+        
+    });
+
+    formArea.append(emptySpan, submitButton);
 
     //show helpbox
     contentElement.appendChild(formHeader);
