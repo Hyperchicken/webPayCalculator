@@ -585,42 +585,11 @@ $(document).ready(function() {
         }
     };
     
-    //setup datepicker
-    let startDate = () => { //returns the number of days to the most recent fortnight start date (a negative number in most cases)
-        let todaysDate = new Date();
-        //todaysDate.setDate(todaysDate.getDate() +1);
-        let daysDifference = (todaysDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
-        if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
-            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
-                if (todaysDate.getDay() == 0) return -14;
-                else return daysDifference - 7;
-            }
-            else {
-                if (todaysDate.getDay() == 0) return -7;
-                else return daysDifference - 14;
-            }   
-        }
-        else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
-            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
-                if (todaysDate.getDay() == 0) return -14;
-                else return daysDifference - 7;
-            }
-            else {
-                if (todaysDate.getDay() == 0) return -7;
-                else return daysDifference - 14;
-            }   
-        }
-        else {
-            console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
-            return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
-        }
-    }
-    
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
-        defaultDate: startDate(),
+        defaultDate: daysToWeekCommencing(),
         beforeShowDay: function(date){ //Restrict calendar date selection to only first day of the fortnight.
             if(date.getDay() == 0) { //set which week is a valid 'week commencing' week
                 if(evenPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
@@ -803,6 +772,36 @@ Date.prototype.toDDMMYYYY = function() {
 Date.prototype.toYYYYMMDD = function() {
     var date = new Date(this.getTime());
     return "" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+}
+
+function daysToWeekCommencing(date = new Date()) { //returns the number of days to the most recent fortnight start date (a negative number in most cases)
+    let todaysDate = new Date();
+    //todaysDate.setDate(todaysDate.getDate() +1);
+    let daysDifference = (todaysDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
+    if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
+        if(todaysDate.getWeek() % 2 == 1) {//if not pay week
+            if (todaysDate.getDay() == 0) return -14;
+            else return daysDifference - 7;
+        }
+        else {
+            if (todaysDate.getDay() == 0) return -7;
+            else return daysDifference - 14;
+        }   
+    }
+    else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
+        if(todaysDate.getWeek() % 2 == 0) {//if not pay week
+            if (todaysDate.getDay() == 0) return -14;
+            else return daysDifference - 7;
+        }
+        else {
+            if (todaysDate.getDay() == 0) return -7;
+            else return daysDifference - 14;
+        }   
+    }
+    else {
+        console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
+        return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
+    }
 }
 
 /**
@@ -3087,7 +3086,7 @@ function bulkLeaveMenu() {
         catch(err) {
             return 0;
         } 
-        return ((endDate - startDate) / 1000 / 60 / 60 / 24) + 1;
+        return Math.round(((endDate - startDate) / 1000 / 60 / 60 / 24) + 1);
     }
 
     $(function () {
@@ -3136,10 +3135,9 @@ function bulkLeaveMenu() {
         try {
             startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
             endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
-            
         }
         catch(err) {
-            alert("invalid date(s)");
+            console.warn("Bulk Leave: invalid start or end date.");
         }
     });
 
