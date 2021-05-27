@@ -890,6 +890,10 @@ li.dropdown {
     display: none;
 }
 
+#leaveDays {
+    text-align: center;
+}
+
 #topHelpDiv {
     background-color: #555B;
     margin: 0 -8px;
