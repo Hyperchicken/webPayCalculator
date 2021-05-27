@@ -294,7 +294,7 @@ class PayElement {
             case "metroSig2": payClassName = "Metro Sig2"; break;
             case "mealAllowance": payClassName = "Meal Allow"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
-            case "phCredit": payClassName = "PH Credit"; break;
+            case "phCredit": payClassName = "NewPH/lieu"; break;
             case "edo": payClassName = "EDO"; break;
             case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
             default:
@@ -798,6 +798,11 @@ Date.prototype.stripTime = function() {
 Date.prototype.toDDMMYYYY = function() {
     var date = new Date(this.getTime());
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+}
+
+Date.prototype.toYYYYMMDD = function() {
+    var date = new Date(this.getTime());
+    return "" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
 }
 
 /**
@@ -3061,6 +3066,30 @@ function bulkLeaveMenu() {
     formArea.appendChild(leaveEndDateLabel);
     formArea.appendChild(leaveEndDateCalendar);
 
+    //number of leave days counter
+    let leaveDaysCountId = "leaveDays";
+    let leaveDaysLabel = document.createElement("span");
+    leaveDaysLabel.textContent = "Days of Leave";
+    let leaveDaysCount = document.createElement("span");
+    leaveDaysCount.textContent = "0 days";
+    leaveDaysCount.id = leaveDaysCountId;
+
+    formArea.append(leaveDaysLabel, leaveDaysCount)
+
+    let calculateLeaveDays = () => {
+        let startDate;
+        let endDate;
+        
+        try {
+            startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
+            endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
+        }
+        catch(err) {
+            return 0;
+        } 
+        return ((endDate - startDate) / 1000 / 60 / 60 / 24) + 1;
+    }
+
     $(function () {
         var dateFormat = "d/m/yy",
             from = $(leaveStartDateCalendar)
@@ -3071,15 +3100,17 @@ function bulkLeaveMenu() {
                 })
                 .on("change", function () {
                     to.datepicker("option", "minDate", getDate(this));
+                    $("#leaveDays")[0].textContent = calculateLeaveDays() + " days";
                 }),
             to = $(leaveEndDateCalendar).datepicker({
                 dateFormat: "d/m/yy",
-                defaultDate: "+2w",
+                //defaultDate: "+2w",
                 changeMonth: true,
                 numberOfMonths: 1
             })
                 .on("change", function () {
                     from.datepicker("option", "maxDate", getDate(this));
+                    $("#leaveDays")[0].textContent = calculateLeaveDays() + " days";
                 });
 
         function getDate(element) {
@@ -3100,9 +3131,16 @@ function bulkLeaveMenu() {
     submitButton.type = "button";
     submitButton.textContent = "Add Leave";
     submitButton.addEventListener( "click", function(){
-        let startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
-        let endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
-        
+        let startDate;
+        let endDate;
+        try {
+            startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
+            endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
+            
+        }
+        catch(err) {
+            alert("invalid date(s)");
+        }
     });
 
     formArea.append(emptySpan, submitButton);
@@ -3486,6 +3524,14 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog";
             helpText = "<ul>"
+            + "<li>//2021 - Version 1.28<ul>"
+            + "<li>Added new bulk leave input feature."
+            + "<ul><li>Quickly add days or weeks of leave by entering a start and finish date.</li>"
+            + "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "<li></li>"
+            + "</ul></li>"
             + "<li>16/04/2021 - Version 1.27<ul>"
             + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
             + "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
