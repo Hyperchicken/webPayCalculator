@@ -80,6 +80,7 @@
                         <option value="so11">TSO SO-11</option>
                         <option value="so12">TSO SO-12</option>
                         <option value="dao">DAO</option>
+                        <option value="daoteamleader">DAO Team-Leader</option>
                     </select>
                 </div>
 
