@@ -1513,8 +1513,10 @@ function generateOptionsShelfButtons(day) {
     }
     if(["spot", "parttime", "jobshare"].includes(getPayGrade())) {
         shelf.appendChild(ojtButton);
-    }  
-    shelf.appendChild(ddoButton);
+    }
+    if(getPayGrade() != "daoteamleader") {
+        shelf.appendChild(ddoButton);
+    } 
     shelf.appendChild(wmButton);
     shelf.appendChild(sickButton);
     shelf.appendChild(phSpan);
@@ -1680,6 +1682,15 @@ function updateGrade() {
             setFormColour("#9d1d1d");
             setSaveData("paygrade", "dao", false);
             setSaveData("paygrade", "dao");
+            break;
+        case "daoteamleader":
+            selectedEarlyShiftRates = earlyShiftRatesSal;
+            selectedAfternoonShiftRates = afternoonShiftRatesSal;
+            selectedNightShiftRates = nightShiftRatesSal;
+            selectedGradeRates = so9Rates;
+            setFormColour("#9d1d1d");
+            setSaveData("paygrade", "daoteamleader", false);
+            setSaveData("paygrade", "daoteamleader");
             break;
         default: 
             selectedGradeRates = spotRates;
@@ -2260,12 +2271,17 @@ function updateShiftPayTable() {
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
     let ordinaryHours = 8; //default ordinary hours of 8
+    let ordinaryDays = 10; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let alDdoDeducted = false; //annual leave DDO deducted
     let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
     let nonWorkedShifts = 0; //counter for rostered shifts that were not worked (such as PH Gazette and Sick Full)
     let payGrade = getPayGrade();
     if(payGrade == "trainee" || payGrade == "parttime") {
         ordinaryHours = 7.6;
+    }
+    if(payGrade == "daoteamleader") {
+        ordinaryHours = 8.5;
+        ordinaryDays = 9;
     }
     shiftPay = []; //clear pay table
     let weekNo = (day) => {
@@ -2394,8 +2410,8 @@ function updateShiftPayTable() {
                 if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
 
                 //Normal hours
-                if(s.shiftWorkedNumber <= 10 && normalHours > 0.0){ 
-                    if(s.rosteredShiftNumber > 10 && nonWorkedShifts > 0) {
+                if(s.shiftWorkedNumber <= ordinaryDays && normalHours > 0.0){ 
+                    if(s.rosteredShiftNumber > ordinaryDays && nonWorkedShifts > 0) {
                         nonWorkedShifts--;
                         shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
                     }
@@ -2411,13 +2427,13 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickPart", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber + phOffRosterCount <= 10 && s.rosteredShiftNumber + phOffRosterCount <= 10 && s.hoursDecimal < ordinaryHours) {
+                else if(s.shiftWorkedNumber + phOffRosterCount <= ordinaryDays && s.rosteredShiftNumber + phOffRosterCount <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
 
                 //Weekend Penalties
-                if(s.shiftWorkedNumber <= 10) { //not OT shift only
+                if(s.shiftWorkedNumber <= ordinaryDays) { //not OT shift only
                     let penaltyTime = Math.min(ordinaryHours, normalHours);
                     if(day == 5 || day == 12) { //friday shift
                         if(tomorrowNormalHours > 0.0) { //time into saturday
@@ -2444,7 +2460,7 @@ function updateShiftPayTable() {
                 }
 
                 //Excess Hours Overtime
-                if(normalHours > ordinaryHours && s.shiftWorkedNumber < 11) {
+                if(normalHours > ordinaryHours && s.shiftWorkedNumber <= ordinaryDays) {
                     let overtimeHours = normalHours - ordinaryHours;
                     let todayOvertimeHours = 0.0;
                     let tomorrowOvertimeHours = 0.0;
@@ -2491,7 +2507,7 @@ function updateShiftPayTable() {
                 }
 
                 //Excess Shift Overtime
-                if(s.shiftWorkedNumber > 10){
+                if(s.shiftWorkedNumber > ordinaryDays){
                     let ot150Hours = 0.0;
                     let ot200Hours = 0.0;
                     if(day == 12 && tomorrowNormalHours > 0.0) { //friday with saturday time
@@ -2509,7 +2525,7 @@ function updateShiftPayTable() {
                 }
 
                 //Shiftwork Allowances
-                if(s.shiftWorkedNumber < 11 && day != 6 && day != 13) { //excess shifts and saturdays not eligible
+                if(s.shiftWorkedNumber <= ordinaryDays && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
                         shiftworkHours +=  tomorrowNormalHours;
@@ -2520,7 +2536,7 @@ function updateShiftPayTable() {
                     else if([1,2,3,4,5,8,9,10,11,12].includes(day) && normalHours > 0.0) { 
                         shiftworkHours += normalHours;
                     }
-                    shiftworkHours = Math.round(Math.min(shiftworkHours, 8)); //capped at 8 hours. rounded to nearest whole hour
+                    shiftworkHours = Math.round(Math.min(shiftworkHours, ordinaryHours)); //capped at ordinary hours. rounded to nearest whole hour
                     if(shiftworkHours > 0.0) {
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
                             shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables));
@@ -2596,7 +2612,7 @@ function updateShiftPayTable() {
     }
     
     //pay calculation: DDO.
-    if(payGrade != "trainee" && payGrade != "parttime" && payGrade != "jobshare") { //part time, jobshare and trainee don't get DDO
+    if(payGrade != "trainee" && payGrade != "parttime" && payGrade != "jobshare" && payGrade != "daoteamleader") { //part time, jobshare and trainee don't get DDO
         let day = ddoWeek();
         if(day < 0) {
             shiftPay[0].push(new PayElement("edo", -4, 0, rateTables));
