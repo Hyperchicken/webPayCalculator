@@ -584,12 +584,42 @@ $(document).ready(function() {
             $(".scroll-indicator").show();
         }
     };
+
+    let startDate = () => { //returns the number of days to the most recent fortnight start date (a negative number in most cases)
+        let todaysDate = new Date();
+        //todaysDate.setDate(todaysDate.getDate() +1);
+        let daysDifference = (todaysDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
+        if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 1) {//if not pay week
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
+            if(todaysDate.getWeek() % 2 == 0) {//if not pay week
+                if (todaysDate.getDay() == 0) return -14;
+                else return daysDifference - 7;
+            }
+            else {
+                if (todaysDate.getDay() == 0) return -7;
+                else return daysDifference - 14;
+            }   
+        }
+        else {
+            console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
+            return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
+        }
+    }
     
     $("#week-commencing-date").datepicker({
         dateFormat: "d/m/yy",
         altField: "#date-button",
         firstDay: 0,
-        defaultDate: daysToWeekCommencing(),
+        defaultDate: startDate(),
         beforeShowDay: function(date){ //Restrict calendar date selection to only first day of the fortnight.
             if(date.getDay() == 0) { //set which week is a valid 'week commencing' week
                 if(evenPayWeekYears.includes(date.getWeekYear()) && date.getWeek() % 2 == 1) {
@@ -774,28 +804,26 @@ Date.prototype.toYYYYMMDD = function() {
     return "" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
 }
 
-function daysToWeekCommencing(date = new Date()) { //returns the number of days to the most recent fortnight start date (a negative number in most cases)
-    let todaysDate = new Date();
-    //todaysDate.setDate(todaysDate.getDate() +1);
-    let daysDifference = (todaysDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
-    if(evenPayWeekYears.includes(todaysDate.getFullYear())) {
-        if(todaysDate.getWeek() % 2 == 1) {//if not pay week
-            if (todaysDate.getDay() == 0) return -14;
-            else return daysDifference - 7;
+function daysToFortnightCommencing(fromDate = new Date()) { //returns the number of days from a given date to the most recent fortnight start date (a negative number in most cases)
+    let daysDifference = (fromDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
+    if(evenPayWeekYears.includes(fromDate.getFullYear())) {
+        if(fromDate.getWeek() % 2 == 1) {//if not pay week
+            if (fromDate.getDay() == 0) return -7;
+            else return daysDifference;
         }
         else {
-            if (todaysDate.getDay() == 0) return -7;
-            else return daysDifference - 14;
+            if (fromDate.getDay() == 0) return 0;
+            else return daysDifference - 7;
         }   
     }
-    else if(oddPayWeekYears.includes(todaysDate.getFullYear())) {
-        if(todaysDate.getWeek() % 2 == 0) {//if not pay week
-            if (todaysDate.getDay() == 0) return -14;
-            else return daysDifference - 7;
+    else if(oddPayWeekYears.includes(fromDate.getFullYear())) {
+        if(fromDate.getWeek() % 2 == 0) {//if not pay week
+            if (fromDate.getDay() == 0) return -7;
+            else return daysDifference;
         }
         else {
-            if (todaysDate.getDay() == 0) return -7;
-            else return daysDifference - 14;
+            if (fromDate.getDay() == 0) return 0;
+            else return daysDifference - 7;
         }   
     }
     else {
@@ -3155,6 +3183,7 @@ function bulkLeaveMenu() {
         catch(err) {
             console.warn("Bulk Leave: invalid start or end date.");
         }
+        console.log(daysToFortnightCommencing(startDate));
     });
 
     formArea.append(emptySpan, submitButton);
