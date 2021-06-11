@@ -804,32 +804,26 @@ Date.prototype.toYYYYMMDD = function() {
     return "" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
 }
 
-function daysToFortnightCommencing(fromDate = new Date()) { //returns the number of days from a given date to the most recent fortnight start date (a negative number in most cases)
+function getFortnightCommencingDate(fromDate = new Date()) { //returns the number of days from a given date to the most recent fortnight start date (a negative number in most cases)
     let daysDifference = (fromDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
+    let shiftedDate = new Date(fromDate); //shift the date one day forward as weeks start on a Monday by default in JS Date
+    shiftedDate.setDate(fromDate.getDate() + 1);
     if(evenPayWeekYears.includes(fromDate.getFullYear())) {
-        if(fromDate.getWeek() % 2 == 1) {//if not pay week
-            if (fromDate.getDay() == 0) return -7;
-            else return daysDifference;
-        }
-        else {
-            if (fromDate.getDay() == 0) return 0;
-            else return daysDifference - 7;
-        }   
+        if(shiftedDate.getWeek() % 2 == 1) {//if not pay week
+            daysDifference -= 7;
+        }  
     }
     else if(oddPayWeekYears.includes(fromDate.getFullYear())) {
-        if(fromDate.getWeek() % 2 == 0) {//if not pay week
-            if (fromDate.getDay() == 0) return -7;
-            else return daysDifference;
-        }
-        else {
-            if (fromDate.getDay() == 0) return 0;
-            else return daysDifference - 7;
-        }   
+        if(shiftedDate.getWeek() % 2 == 0) {//if not pay week
+            daysDifference -= 7;
+        } 
     }
     else {
-        console.warn("datepicker defaultDate: Unable to automatically select a date to place into week-commencing date field.");
+        console.warn("daysToFortnightCommencing(): Unable to automatically select a date to place into week-commencing date field.");
         return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
     }
+
+    return /////////////////////return new date
 }
 
 /**
@@ -3183,7 +3177,7 @@ function bulkLeaveMenu() {
         catch(err) {
             console.warn("Bulk Leave: invalid start or end date.");
         }
-        console.log(daysToFortnightCommencing(startDate));
+        let fortnightCommencingDate = get
     });
 
     formArea.append(emptySpan, submitButton);
