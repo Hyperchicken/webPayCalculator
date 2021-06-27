@@ -804,10 +804,12 @@ Date.prototype.toYYYYMMDD = function() {
     return "" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
 }
 
-function getFortnightCommencingDate(fromDate = new Date()) { //returns the number of days from a given date to the most recent fortnight start date (a negative number in most cases)
+function getFortnightCommencingDate(fromDate = new Date()) { //returns the fortnight commencing date from a given date
     let daysDifference = (fromDate.getDay()) * -1; //number of days to the most recent sunday (0 if sunday is today)
     let shiftedDate = new Date(fromDate); //shift the date one day forward as weeks start on a Monday by default in JS Date
     shiftedDate.setDate(fromDate.getDate() + 1);
+    let fortnightCommencingDate = new Date(fromDate)
+
     if(evenPayWeekYears.includes(fromDate.getFullYear())) {
         if(shiftedDate.getWeek() % 2 == 1) {//if not pay week
             daysDifference -= 7;
@@ -823,7 +825,9 @@ function getFortnightCommencingDate(fromDate = new Date()) { //returns the numbe
         return ((new Date().getDay()) * -1) -14; //return last fortnight sunday, even if not a pay week
     }
 
-    return /////////////////////return new date
+    fortnightCommencingDate.setDate(fortnightCommencingDate.getDate() + daysDifference);
+
+    return fortnightCommencingDate;
 }
 
 /**
@@ -2976,6 +2980,8 @@ function resetForm() {
         setSaveData("day" + day + "phxp", "");
         setSaveData("day" + day + "phor", "");
         setSaveData("day" + day + "al", "");
+        setSaveData("day" + day + "lsl", "");
+        setSaveData("day" + day + "lslHalfPay", "");
         setSaveData("day" + day + "phc", "")
         setSaveData("day" + day + "bonus", "");
         setSaveData("day" + day + "bonusHours", "");
@@ -2990,6 +2996,8 @@ function resetForm() {
         shifts[day].phExtraPay = false;
         shifts[day].phOffRoster = false;
         shifts[day].al = false;
+        shifts[day].lsl = false;
+        shifts[day].lslHalfPay = false;
         shifts[day].phc = false;
         shifts[day].bonus = false;
         shifts[day].bonusHours = 0.0;
@@ -3065,10 +3073,10 @@ function bulkLeaveMenu() {
     leaveTypeInputOptionAnnualLeave.setAttribute("value", "al")
     let leaveTypeInputOptionLslFullPay = document.createElement("option");
     leaveTypeInputOptionLslFullPay.textContent = "Long Service Full-Pay";
-    leaveTypeInputOptionLslFullPay.setAttribute("value", "lslfull")
+    leaveTypeInputOptionLslFullPay.setAttribute("value", "lsl")
     let leaveTypeInputOptionLslHalfPay = document.createElement("option");
     leaveTypeInputOptionLslHalfPay.textContent = "Long Service Half-Pay";
-    leaveTypeInputOptionLslHalfPay.setAttribute("value", "lslhalf")
+    leaveTypeInputOptionLslHalfPay.setAttribute("value", "lslHalfPay")
     let leaveTypeInputOptionPhc = document.createElement("option");
     leaveTypeInputOptionPhc.textContent = "Public Holiday Credit";
     leaveTypeInputOptionPhc.setAttribute("value", "phc")
@@ -3138,6 +3146,12 @@ function bulkLeaveMenu() {
                 .on("change", function () {
                     to.datepicker("option", "minDate", getDate(this));
                     $("#leaveDays")[0].textContent = calculateLeaveDays() + " days";
+                    if($("#leaveStartDate").datepicker("getDate") && $("#leaveEndDate").datepicker("getDate")) {
+                        document.getElementById("bulkLeaveSubmit").disabled = false;
+                    }
+                    else {
+                        document.getElementById("bulkLeaveSubmit").disabled = true;
+                    }
                 }),
             to = $(leaveEndDateCalendar).datepicker({
                 dateFormat: "d/m/yy",
@@ -3148,6 +3162,12 @@ function bulkLeaveMenu() {
                 .on("change", function () {
                     from.datepicker("option", "maxDate", getDate(this));
                     $("#leaveDays")[0].textContent = calculateLeaveDays() + " days";
+                    if($("#leaveStartDate").datepicker("getDate") && $("#leaveEndDate").datepicker("getDate")) {
+                        document.getElementById("bulkLeaveSubmit").disabled = false;
+                    }
+                    else {
+                        document.getElementById("bulkLeaveSubmit").disabled = true;
+                    }
                 });
 
         function getDate(element) {
@@ -3165,22 +3185,51 @@ function bulkLeaveMenu() {
     //submit button
     let emptySpan = document.createElement("span");
     let submitButton = document.createElement("button");
+    submitButton.id = "bulkLeaveSubmit";
     submitButton.type = "button";
     submitButton.textContent = "Add Leave";
+    submitButton.disabled = true;
     submitButton.addEventListener( "click", function(){
         let startDate;
         let endDate;
+        let leaveDays = calculateLeaveDays();
         try {
             startDate = $("#leaveStartDate").datepicker("getDate").stripTime();
             endDate = $("#leaveEndDate").datepicker("getDate").stripTime();
         }
         catch(err) {
             console.warn("Bulk Leave: invalid start or end date.");
+            return;
         }
-        let fortnightCommencingDate = get
+        
+        let curDate = new Date(startDate);
+        for(let i = 0; i < leaveDays; i++) {
+            let currentFortnightCommencingDate = getFortnightCommencingDate(curDate);
+            $("#week-commencing-date").datepicker("setDate", currentFortnightCommencingDate);
+            updateDates();
+            let dayNumber = curDate.getDate() - currentFortnightCommencingDate.getDate();
+            setSaveData("day" + dayNumber + document.getElementById("leaveType").value, "true");
+            if(document.getElementById("leaveType").value == "lsl") {
+                setSaveData("day" + dayNumber + "lslHalfPay", "");
+            }
+            if(document.getElementById("leaveType").value == "lslHalfPay") {
+                setSaveData("day" + dayNumber + "lsl", "true");
+            }
+            curDate.setDate(curDate.getDate() + 1); //increment to next date
+        }
+        loadSavedData();
+        updateGrade();
+        updateShiftTable();
+        updateShiftWorkedCount();
+        printShiftHours();
+        validateTimeFields();
+        updateOptionsButtons();
+        updateShiftPayTable();
+        updateResults();
     });
-
+    
     formArea.append(emptySpan, submitButton);
+
 
     //show helpbox
     contentElement.appendChild(formHeader);
