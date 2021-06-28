@@ -2314,15 +2314,22 @@ function updateShiftPayTable() {
         if(day < 7) return 0;
         else return 1;
     }
-    //pay calculation: pass 1. calculate everything except AL
+
+    //counters for which shifts are rostered and which are rostered and worked. Used for calculating excess shifts.
+    let rosteredShiftNumber = 0;
+    let workedShiftNumber = 0;
+
+    //pay calculation: pass 1. calculate everything except AL and LSL
     for(let day = 0; day < 14; day++) {
+        let rosteredShift = false;
+        let workedShift = false;
         let rateTables = {
             gradeRates: selectedGradeRates,
             earlyShiftRates: selectedEarlyShiftRates,
             afternoonShiftRates: selectedAfternoonShiftRates,
             nightShiftRates: selectedNightShiftRates
         };
-        let s = shifts[day]; //alias
+        let s = shifts[day]; //alias for current shift
         if(s.daoTeamLeader) {
             rateTables.gradeRates = so7Rates;
         }
@@ -2331,12 +2338,15 @@ function updateShiftPayTable() {
         if(shiftHours <= 0) { //if shift has zero hours
             if(s.al) { //annual leave
                 alShifts[weekNo(day)]++;
+                if(alShifts[weekNo(day)] <= 5) rosteredShift = true;
             }
             if(s.lsl) {
                 lslShifts[weekNo(day)]++;
+                if(lslShifts[weekNo(day)] <= 5) rosteredShift = true;
             }
             if(s.sick) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
+                rosteredShift = true;
                 nonWorkedShifts++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
@@ -2353,6 +2363,7 @@ function updateShiftPayTable() {
                     }
                 }
                 else {
+                    rosteredShift = true
                     nonWorkedShifts++;
                     deductAnnualLeaveShifts[weekNo(day)]++;
                     deductLSLShifts[weekNo(day)]++;
@@ -2361,11 +2372,14 @@ function updateShiftPayTable() {
             }
             else if(s.phc) { //public holiday credit leave
                 deductAnnualLeaveShifts[weekNo(day)]++;
+                rosteredShift = true;
                 shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day, rateTables));
             }
             if(s.ddo && !alDdoDeducted) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
                 alDdoDeducted = true;
+                rosteredShift = true;
+                workedShift = true;
             }
         }
         else { //if shift has hours
@@ -2397,10 +2411,12 @@ function updateShiftPayTable() {
             //part-time PH-roster calculation
             if(getPayGrade() == "parttime" && s.phOffRoster) {
                 nonWorkedShifts++;
+                rosteredShift = true;
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
             }
             else if(s.sick && s.hoursDecimal <= 4) {
                 nonWorkedShifts++;
+                rosteredShift = true;
                 shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables)); //if went of sick half-way through shift or earlier, pay sick full day.
             }
             else {
@@ -3145,6 +3161,7 @@ function bulkLeaveMenu() {
                 })
                 .on("change", function () {
                     to.datepicker("option", "minDate", getDate(this));
+                    to.datepicker("option", "defaultDate", getDate(this));
                     $("#leaveDays")[0].textContent = calculateLeaveDays() + " days";
                     if($("#leaveStartDate").datepicker("getDate") && $("#leaveEndDate").datepicker("getDate")) {
                         document.getElementById("bulkLeaveSubmit").disabled = false;
