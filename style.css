@@ -375,7 +375,7 @@ a:visited {
 
 .bonus-button > input {
     margin: -4px 5px -4px 10px;
-    width: 2em;
+    width: 3em;
 }
 
 .bonus-button > input::after {
