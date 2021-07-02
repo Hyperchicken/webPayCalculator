@@ -1,0 +1,12 @@
+{
+    "spot" : {
+        "name" : "SPOT",
+        "ordinaryDays" : "10",
+        "ordinaryHours" : "8"
+    },
+    "trainee" : {
+        "name" : "Trainee",
+        "ordinaryDays" : "10",
+        "ordinaryHours" : "7.6"
+    }
+}
