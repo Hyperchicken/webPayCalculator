@@ -1807,7 +1807,7 @@ function updateShiftWorkedCount() {
         } else shifts[i].rosteredShiftNumber = 0;
         
         //determine if worked shift
-        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
+        if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
             shifts[i].shiftWorkedNumber = ++workedShiftsCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
@@ -2469,7 +2469,7 @@ function updateShiftPayTable() {
                 if(s.sick) { //if sick, sick-part in place of guarantee
                     let sickHours = ordinaryHours - s.hoursDecimal;
                     if(sickHours > 0.0) {
-                        shiftPay[day].push(new PayElement("sickPart", sickHours, day, rateTables));
+                        shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables));
                     }
                 }
                 else if(s.shiftWorkedNumber + phOffRosterCount <= ordinaryDays && s.rosteredShiftNumber + phOffRosterCount <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
