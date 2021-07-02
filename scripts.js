@@ -205,7 +205,9 @@ class PayElement {
      */
     calculateValue() {
         let val = parseFloat((this.rate * parseFloat(this.hours.toFixed(4))));
-        if(this.payType == "annualLeave") return parseFloat(val.toFixed(2)); //adjust precision for annual leave as payroll rounds to 2 decimal places for EACH DAY of AL.
+        if(["annualLeave", "longServiceLeaveFull", "longServiceLeaveHalf", "phCredit", "sickFull", "sickPart"].includes(this.payType)) {
+            return parseFloat(val.toFixed(2)); //adjust precision for annual leave as payroll rounds to 2 decimal places for EACH DAY of Leave.
+        } 
         else return val;
     }
     
@@ -3633,8 +3635,10 @@ function topHelpBoxPreset(presetName) {
             + "<li>Added new bulk leave input feature."
             + "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
             + "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
+            + "<li>Improved calculation when there is both leave and overtime in the same fortnight.</li>"
             + "<li>Added DAO Team Leader grade.</li>"
             + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
+            + "<li>Sick-Part now applied on shifts with any amount of time work (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
             + "</ul></li>"
             + "<li>16/04/2021 - Version 1.27<ul>"
             + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
