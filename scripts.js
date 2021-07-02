@@ -966,12 +966,13 @@ function updateOptionsButtons() {
         else { //if actual shift
             if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader){
                 if(s.sick) {
-                    if(s.hoursDecimal > 4.0) {
+                    /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
                     }
                     else {
                         setButton("Sick-Full", sickColour);
-                    }
+                    }*/
+                    setButton("Sick-Part", sickColour);
                 }
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
@@ -1780,21 +1781,36 @@ function updateShiftTable() {
  */
 function updateShiftWorkedCount() {
     let rosteredShiftsCount = 0;
-    let shiftsWorkedCount = 0;
+    let workedShiftsCount = 0;
+    let leaveShiftsCount = [0, 0]; //[week 1, week 2]
     if(ddoWeek() >= 0) {
         rosteredShiftsCount = 1;
-        shiftsWorkedCount = 1;
+        workedShiftsCount = 1;
+    }
+    let weekNo = (day) => {
+        if(day < 7) return 0;
+        else return 1;
     }
     for(let i = 0; i < shifts.length; i++) {
         //determine if rostered shift
-        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || (shifts[i].ph && !shifts[i].phOffRoster)) {
-            shifts[i].rosteredShiftNumber = ++rosteredShiftsCount;
+        if(shifts[i].hoursDecimal > 0 || shifts[i].sick || shifts[i].al || shifts[i].lsl || shifts[i].phc || (shifts[i].ph && !shifts[i].phOffRoster)) {
+            if(shifts[i].al || shifts[i].lsl) {
+                if(++leaveShiftsCount[weekNo(i)] <= 5) {
+                    shifts[i].rosteredShiftNumber = ++rosteredShiftsCount;
+                }
+            }
+            else {
+                shifts[i].rosteredShiftNumber = ++rosteredShiftsCount;
+            }
         } else shifts[i].rosteredShiftNumber = 0;
+        
         //determine if worked shift
         if(((shifts[i].hoursDecimal > 0 && !shifts[i].sick) || (shifts[i].sick && shifts[i].hoursDecimal > 4.0)) && !(shifts[i].phOffRoster && getPayGrade() == "parttime")) {
-            shifts[i].shiftWorkedNumber = ++shiftsWorkedCount;
+            shifts[i].shiftWorkedNumber = ++workedShiftsCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
+    console.log(`Rostered Shifts Count: ${rosteredShiftsCount}`);
+    console.log(`Worked Shifts Count: ${workedShiftsCount}`);
 }
 
 /**
@@ -2298,9 +2314,8 @@ function updateShiftPayTable() {
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
     let ordinaryHours = 8; //default ordinary hours of 8
     let ordinaryDays = 10; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
-    let alDdoDeducted = false; //annual leave DDO deducted
+    let ddoFortnight = false;
     let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
-    let nonWorkedShifts = 0; //counter for rostered shifts that were not worked (such as PH Gazette and Sick Full)
     let payGrade = getPayGrade();
     if(payGrade == "trainee" || payGrade == "parttime") {
         ordinaryHours = 7.6;
@@ -2310,19 +2325,14 @@ function updateShiftPayTable() {
         ordinaryDays = 9;
     }
     shiftPay = []; //clear pay table
+    
     let weekNo = (day) => {
         if(day < 7) return 0;
         else return 1;
     }
 
-    //counters for which shifts are rostered and which are rostered and worked. Used for calculating excess shifts.
-    let rosteredShiftNumber = 0;
-    let workedShiftNumber = 0;
-
     //pay calculation: pass 1. calculate everything except AL and LSL
     for(let day = 0; day < 14; day++) {
-        let rosteredShift = false;
-        let workedShift = false;
         let rateTables = {
             gradeRates: selectedGradeRates,
             earlyShiftRates: selectedEarlyShiftRates,
@@ -2330,24 +2340,23 @@ function updateShiftPayTable() {
             nightShiftRates: selectedNightShiftRates
         };
         let s = shifts[day]; //alias for current shift
+        
         if(s.daoTeamLeader) {
             rateTables.gradeRates = so7Rates;
         }
-        shiftPay.push([]);
+
+        shiftPay.push([]); //clear the shiftPay array
+        
         let shiftHours = s.hoursDecimal;
         if(shiftHours <= 0) { //if shift has zero hours
             if(s.al) { //annual leave
                 alShifts[weekNo(day)]++;
-                if(alShifts[weekNo(day)] <= 5) rosteredShift = true;
             }
             if(s.lsl) {
                 lslShifts[weekNo(day)]++;
-                if(lslShifts[weekNo(day)] <= 5) rosteredShift = true;
             }
             if(s.sick) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
-                rosteredShift = true;
-                nonWorkedShifts++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
                 }
@@ -2363,8 +2372,6 @@ function updateShiftPayTable() {
                     }
                 }
                 else {
-                    rosteredShift = true
-                    nonWorkedShifts++;
                     deductAnnualLeaveShifts[weekNo(day)]++;
                     deductLSLShifts[weekNo(day)]++;
                     shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
@@ -2372,14 +2379,11 @@ function updateShiftPayTable() {
             }
             else if(s.phc) { //public holiday credit leave
                 deductAnnualLeaveShifts[weekNo(day)]++;
-                rosteredShift = true;
                 shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day, rateTables));
             }
-            if(s.ddo && !alDdoDeducted) {
+            if(s.ddo && !ddoFortnight) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
-                alDdoDeducted = true;
-                rosteredShift = true;
-                workedShift = true;
+                ddoFortnight = true;
             }
         }
         else { //if shift has hours
@@ -2410,20 +2414,16 @@ function updateShiftPayTable() {
 
             //part-time PH-roster calculation
             if(getPayGrade() == "parttime" && s.phOffRoster) {
-                nonWorkedShifts++;
-                rosteredShift = true;
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
             }
-            else if(s.sick && s.hoursDecimal <= 4) {
-                nonWorkedShifts++;
-                rosteredShift = true;
+            /*else if(s.sick && s.hoursDecimal <= 4) {
                 shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables)); //if went of sick half-way through shift or earlier, pay sick full day.
-            }
+            }*/
             else {
                 //Public Holidays
                 let normalPhWorkedHours = 0.0;
                 let sundayPhWorkedHours = 0.0;
-                let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll interpretation. Keep variable for future reference
+                //let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll interpretation. Keep variable for future reference
                 if(todayPhHours > 0.0) {
                     if (day == 0 || day == 7) {
                         sundayPhWorkedHours += todayPhHours;
@@ -2449,12 +2449,13 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift));
                 }
                 //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojtShift)); //EA interpretation: XPay based on hours worked. Keep for future reference
-                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
+                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) {
+                    shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
+                }
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= ordinaryDays && normalHours > 0.0){ 
-                    if(s.rosteredShiftNumber > ordinaryDays && nonWorkedShifts > 0) {
-                        nonWorkedShifts--;
+                    if(s.rosteredShiftNumber > ordinaryDays) {
                         shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
                     }
                     else {
