@@ -556,6 +556,8 @@ let shiftPay = [[]];
  */
 let taxPay = [];
 
+let payGrade;
+
 let selectedGradeRates; //stores the currently selected set of rates for the selected pay grade
 let selectedEarlyShiftRates;
 let selectedAfternoonShiftRates;
@@ -574,6 +576,9 @@ $(document).ready(function() {
     for(let i = 0; i < timeFields.length; i++) {
         timeFields[i].addEventListener("blur", function(){
             validateTimeFields();
+        });
+        timeFields[i].addEventListener("focus", function(){
+            addShortcutButton(i);
         });
     }
 
@@ -1567,9 +1572,6 @@ function generateOptionsShelfButtons(day) {
  * @param {number} field - the index of the time input field that has changed
  */
 function timeChanged(field) {
-    if(timeField()[field].value.length == 4) {
-        if(field < 27) timeField()[field + 1].focus();
-    }
     setSaveData("field" + field.toString(), timeField()[field].value);
     updateShiftTable();
     updateShiftWorkedCount();
@@ -1577,6 +1579,10 @@ function timeChanged(field) {
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
+    if(timeField()[field].value.length == 4) {
+        if(field < 27) timeField()[field + 1].focus();
+        addShortcutButton(field + 1);
+    }
 }
 
 /**
@@ -1605,6 +1611,7 @@ function updateGrade() {
     $("#payClassWarning").hide();
     switch(getPayGrade()) {
         case "spot": 
+            payGrade = grades.spot;
             selectedGradeRates = spotRates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1614,6 +1621,7 @@ function updateGrade() {
             setSaveData("paygrade", "spot");
             break;
         case "level1":
+            payGrade = grades.level1;
             selectedGradeRates = driverLevel1Rates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1623,6 +1631,7 @@ function updateGrade() {
             setSaveData("paygrade", "level1");
             break;
         case "trainee":
+            payGrade = grades.trainee;
             selectedGradeRates = traineeRates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1632,6 +1641,7 @@ function updateGrade() {
             setSaveData("paygrade", "trainee");
             break;
         case "conversion":
+            payGrade = grades.conversion;
             selectedGradeRates = conversionRates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1641,6 +1651,7 @@ function updateGrade() {
             setSaveData("paygrade", "conversion");
             break;
         case "parttime":
+            payGrade = grades.parttime;
             selectedGradeRates = spotRates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1650,6 +1661,7 @@ function updateGrade() {
             setSaveData("paygrade", "parttime");
             break;
         case "jobshare":
+            payGrade = grades.jobshare;
             selectedGradeRates = spotRates;
             selectedEarlyShiftRates = earlyShiftRatesLoco;
             selectedAfternoonShiftRates = afternoonShiftRatesLoco;
@@ -1659,6 +1671,7 @@ function updateGrade() {
             setSaveData("paygrade", "jobshare");
             break;
         case "so8":
+            payGrade = grades.so8;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1668,6 +1681,7 @@ function updateGrade() {
             setSaveData("paygrade", "so8");
             break;
         case "so9":
+            payGrade = grades.so9;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1677,6 +1691,7 @@ function updateGrade() {
             setSaveData("paygrade", "so9");
             break;
         case "so10":
+            payGrade = grades.so10;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1686,6 +1701,7 @@ function updateGrade() {
             setSaveData("paygrade", "so10");
             break;
         case "so11":
+            payGrade = grades.so11;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1695,6 +1711,7 @@ function updateGrade() {
             setSaveData("paygrade", "so11");
             break;
         case "so12":
+            payGrade = grades.so12;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1704,6 +1721,7 @@ function updateGrade() {
             setSaveData("paygrade", "so12");
             break;
         case "dao":
+            payGrade = grades.dao;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1713,6 +1731,7 @@ function updateGrade() {
             setSaveData("paygrade", "dao");
             break;
         case "daoteamleader":
+            payGrade = grades.daoteamleader;
             selectedEarlyShiftRates = earlyShiftRatesSal;
             selectedAfternoonShiftRates = afternoonShiftRatesSal;
             selectedNightShiftRates = nightShiftRatesSal;
@@ -1736,6 +1755,26 @@ function updateGrade() {
     updateResults();
 }
 
+function fieldToShift(field) {
+    switch(field) {
+        case 0: case 1: return 0;
+        case 2: case 3: return 1;
+        case 4: case 5: return 2;
+        case 6: case 7: return 3;
+        case 8: case 9: return 4;
+        case 10: case 11: return 5;
+        case 12: case 13: return 6;
+        case 14: case 15: return 7;
+        case 16: case 17: return 8;
+        case 18: case 19: return 9;
+        case 20: case 21: return 10;
+        case 22: case 23: return 11;
+        case 24: case 25: return 12;
+        case 26: case 27: return 13;
+        default: return NaN;
+    }
+}
+
 /**
  * Update each shift in the shift array with the values from the time input fields. Invlid shift times will set the shift to have zero hours.
  */
@@ -1745,25 +1784,7 @@ function updateShiftTable() {
      * Converts a field index to a shift index
      * @param {number} field - field index
      */
-    let fieldToShift = (field) => {
-        switch(field) {
-            case 0: case 1: return 0;
-            case 2: case 3: return 1;
-            case 4: case 5: return 2;
-            case 6: case 7: return 3;
-            case 8: case 9: return 4;
-            case 10: case 11: return 5;
-            case 12: case 13: return 6;
-            case 14: case 15: return 7;
-            case 16: case 17: return 8;
-            case 18: case 19: return 9;
-            case 20: case 21: return 10;
-            case 22: case 23: return 11;
-            case 24: case 25: return 12;
-            case 26: case 27: return 13;
-            default: return NaN;
-        }
-    }
+    
     for(let i = 0; i < times.length; i += 2) {
         let currentShift = fieldToShift(i);
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
@@ -1811,8 +1832,6 @@ function updateShiftWorkedCount() {
             shifts[i].shiftWorkedNumber = ++workedShiftsCount;
         } else shifts[i].shiftWorkedNumber = 0;
     }
-    console.log(`Rostered Shifts Count: ${rosteredShiftsCount}`);
-    console.log(`Worked Shifts Count: ${workedShiftsCount}`);
 }
 
 /**
@@ -2273,6 +2292,46 @@ function validateTimeFields() {
             errorPopup.textContent = "Sign-on and sign-off time cannot be the same"
             hoursField[i].appendChild(errorSpan);
             errorPopup.classList.add("show");
+        }
+    }
+}
+
+function addShortcutButton(field) {
+    printShiftHours(); //reset shift hours fields to clear any existing buttons
+    let timeFields = document.querySelectorAll(".time");
+    let hoursFields = document.querySelectorAll(".shift-hours");
+    let s = fieldToShift(field); //shift number
+    let shortcutButton = (shift, type) => {
+        let button = document.createElement("button");
+        if(type == "nextShift") button.textContent = "Skip";
+        if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}hr`;
+        button.onclick = () => {
+            console.log(`Shortcut button shift ${shift} button ${type}`);
+            if(type == "nextShift") {
+                timeFields[(shift + 1) * 2].focus();
+            }
+            else if(type == "ordinaryHours") {
+
+            }
+        }
+        return button;
+    }
+
+    if(field % 2 == 0) { //sign-on field
+        if(timeFields[field].value == "" && timeFields[field + 1].value == "") {
+            hoursFields[s].innerHTML = "";
+            hoursFields[s].append(shortcutButton(s, "nextShift"))
+        }
+    }
+    else { //sign-off field
+        if(timeFields[field].value == "" && timeFields[field - 1].value == "") {
+            hoursFields[s].innerHTML = "";
+            hoursFields[s].append(shortcutButton(s, "nextShift"))
+        }
+        else if(timeFields[field].value == "" && timeFields[field - 1].checkValidity()) {
+            console.log("+8");
+            hoursFields[s].innerHTML = "";
+            hoursFields[s].append(shortcutButton(s, "addOrdinaryHours"))
         }
     }
 }
