@@ -580,6 +580,13 @@ $(document).ready(function() {
         timeFields[i].addEventListener("focus", function(){
             addShortcutButton(i);
         });
+        timeFields[i].addEventListener("keyup", function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                console.log(`enter key pressed on field ${i}`);
+                //document.getElementsByClassName('shortcut-button')[0].click();
+            }
+        });
     }
 
     //helpbox scroll listener to detect scrollable indicator
@@ -2307,6 +2314,7 @@ function addShortcutButton(field) {
         button.tabIndex = '-1';
         if(type == "nextShift") button.textContent = "Skip";
         if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}h`;
+
         button.onclick = () => {
             if(type == "nextShift") {
                 timeFields[(shift + 1) * 2].focus();
