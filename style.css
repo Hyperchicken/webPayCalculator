@@ -321,10 +321,20 @@ a:visited {
     border-width: 1px;
     padding: 4px 2px;
     width: 3em;
+    cursor: pointer;
 }
+
 .shortcut-button:hover {
     background-color: #ffffff9e;
-    cursor: pointer;
+}
+
+.bulk-leave-submit-button {
+    color: black;
+    border-color: #008f47;
+}
+
+.bulk-leave-submit-button:hover {
+    background-color: #adf7b0;
 }
 
 .delete-save-button {
