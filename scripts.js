@@ -2304,6 +2304,7 @@ function addShortcutButton(field) {
     let shortcutButton = (shift, type) => {
         let button = document.createElement("button");
         button.classList.add("shortcut-button");
+        button.tabIndex = '-1';
         if(type == "nextShift") button.textContent = "Skip";
         if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}h`;
         button.onclick = () => {
@@ -2317,7 +2318,7 @@ function addShortcutButton(field) {
                 let newMinute = (signonMinute + Math.round((payGrade.ordinaryHours - Math.floor(payGrade.ordinaryHours)) * 60)) % 60;
                 let newTimeString = newHour.toString().padStart(2, '0') + newMinute.toString().padStart(2, '0');
                 timeFields[(shift * 2) + 1].value = newTimeString;
-                timeChanged(field);
+                timeChanged((shift * 2) + 1);
             }
         }
         return button;
@@ -2327,6 +2328,10 @@ function addShortcutButton(field) {
         if(timeFields[field].value == "" && timeFields[field + 1].value == "" && field < 26) {
             hoursFields[s].innerHTML = "";
             hoursFields[s].append(shortcutButton(s, "nextShift"))
+        }
+        else if(timeFields[field + 1].value == "" && timeFields[field].checkValidity() && timeFields[field].value.length == 4) {
+            hoursFields[s].innerHTML = "";
+            hoursFields[s].append(shortcutButton(s, "addOrdinaryHours"))
         }
     }
     else { //sign-off field
@@ -3273,6 +3278,7 @@ function bulkLeaveMenu() {
     submitButton.type = "button";
     submitButton.textContent = "Add Leave";
     submitButton.disabled = true;
+    submitButton.classList.add("button", "bulk-leave-submit-button");
     submitButton.addEventListener( "click", function(){
         let startDate;
         let endDate;
