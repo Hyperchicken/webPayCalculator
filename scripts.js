@@ -1574,14 +1574,15 @@ function generateOptionsShelfButtons(day) {
 function timeChanged(field) {
     setSaveData("field" + field.toString(), timeField()[field].value);
     updateShiftTable();
-    updateShiftWorkedCount();
     printShiftHours();
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
     if(timeField()[field].value.length == 4) {
         if(field < 27) timeField()[field + 1].focus();
-        addShortcutButton(field + 1);
+    }
+    else if (timeField()[field].value.length == 0) {
+        addShortcutButton(field);
     }
 }
 
@@ -1755,6 +1756,10 @@ function updateGrade() {
     updateResults();
 }
 
+/**
+ * Converts a field index to a shift index
+ * @param {number} field - field index
+ */
 function fieldToShift(field) {
     switch(field) {
         case 0: case 1: return 0;
@@ -1779,12 +1784,7 @@ function fieldToShift(field) {
  * Update each shift in the shift array with the values from the time input fields. Invlid shift times will set the shift to have zero hours.
  */
 function updateShiftTable() {
-    let times = timeField();
-    /**
-     * Converts a field index to a shift index
-     * @param {number} field - field index
-     */
-    
+    let times = timeField();    
     for(let i = 0; i < times.length; i += 2) {
         let currentShift = fieldToShift(i);
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
@@ -2303,33 +2303,38 @@ function addShortcutButton(field) {
     let s = fieldToShift(field); //shift number
     let shortcutButton = (shift, type) => {
         let button = document.createElement("button");
+        button.classList.add("shortcut-button");
         if(type == "nextShift") button.textContent = "Skip";
-        if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}hr`;
+        if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}h`;
         button.onclick = () => {
-            console.log(`Shortcut button shift ${shift} button ${type}`);
             if(type == "nextShift") {
                 timeFields[(shift + 1) * 2].focus();
             }
-            else if(type == "ordinaryHours") {
-
+            else if(type == "addOrdinaryHours") {
+                let signonHour = parseInt(timeFields[shift * 2].value.substring(0,2));
+                let signonMinute = parseInt(timeFields[shift * 2].value.substring(2,4));
+                let newHour = (signonHour + Math.floor(payGrade.ordinaryHours)) % 24;
+                let newMinute = (signonMinute + Math.round((payGrade.ordinaryHours - Math.floor(payGrade.ordinaryHours)) * 60)) % 60;
+                let newTimeString = newHour.toString().padStart(2, '0') + newMinute.toString().padStart(2, '0');
+                timeFields[(shift * 2) + 1].value = newTimeString;
+                timeChanged(field);
             }
         }
         return button;
     }
 
     if(field % 2 == 0) { //sign-on field
-        if(timeFields[field].value == "" && timeFields[field + 1].value == "") {
+        if(timeFields[field].value == "" && timeFields[field + 1].value == "" && field < 26) {
             hoursFields[s].innerHTML = "";
             hoursFields[s].append(shortcutButton(s, "nextShift"))
         }
     }
     else { //sign-off field
-        if(timeFields[field].value == "" && timeFields[field - 1].value == "") {
+        if(timeFields[field].value == "" && timeFields[field - 1].value == "" && field < 26) {
             hoursFields[s].innerHTML = "";
             hoursFields[s].append(shortcutButton(s, "nextShift"))
         }
-        else if(timeFields[field].value == "" && timeFields[field - 1].checkValidity()) {
-            console.log("+8");
+        else if(timeFields[field].value == "" && timeFields[field - 1].checkValidity() && timeFields[field - 1].value.length == 4) {
             hoursFields[s].innerHTML = "";
             hoursFields[s].append(shortcutButton(s, "addOrdinaryHours"))
         }
