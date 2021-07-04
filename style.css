@@ -313,6 +313,20 @@ a:visited {
     float: left;
 }
 
+.shortcut-button {
+    background-color: #ffffff75;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #000;
+    border-width: 1px;
+    padding: 4px 2px;
+    width: 3em;
+}
+.shortcut-button:hover {
+    background-color: #ffffff9e;
+    cursor: pointer;
+}
+
 .delete-save-button {
     background-color: #b90000;
     border-color: #b90000;
