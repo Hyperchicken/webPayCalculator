@@ -14,12 +14,12 @@ const calcLastUpdateDate = "6/7/2021";
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul><li>Added Long Service Leave - full-pay and half-pay.</li>"
-+ "<li>Added new bulk leave input feature."
++ "<li>Added bulk leave input feature."
 + "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
 + "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
-+ "<li>Added new shortcut button that skips the current shift being input.</li>"
-            + "<li>Added new shortcut button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
-+ "<li>Improved calculation when there is both leave and overtime in the same fortnight.</li>"
++ "<li>Added button that skips the current shift being input.</li>"
++ "<li>Added button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
++ "<li>Improved calculation when there is both leave/PH-Gazette and overtime in the same fortnight.</li>"
 + "<li>Added DAO Team Leader grade.</li>"
 + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
 + "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
@@ -2018,11 +2018,19 @@ function updateResults() {
             taxTotals = calculateTax(groupedElements);
             //calculate compulsary super contribution
             let nonOvertimePay = 0.0;
+            let superRate = superRates[0];
+            for(let i = superRates.length - 1; i >= 0; i--) {
+                if(selectedDate.stripTime().getTime() >= new Date(superRatesDate[i]).stripTime().getTime()){
+                    superRate = superRates[i];
+                    console.log(superRate);
+                    break;
+                }
+            }
             groupedElements.forEach(function(e){ 
                 if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "leaveLoading"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
-                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * 0.095, 1)); //super guarantee rate of 9.5%
+                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * superRate, 1));
             }
             taxPay.sort(function(a, b){
                 return a.sortIndex - b.sortIndex;
@@ -2362,14 +2370,14 @@ function addShortcutButton(field) {
 
 /**
  * Get the pay rate based on a given date from an array of rates. The rates array indicies should match those of the rateDates array
- * @param {Date} date - date of the shift
+ * @param {Date} date - date which to get the relevant rate
  * @param {number[]} rates - array of rates to check against the rateDates[] array
  * @returns {number} EBA pay rate
  */
 function getEbaRate(date, rates) {
-    let shiftDate = date.stripTime();
+    date = date.stripTime();
     for(let i = rates.length - 1; i >= 0; i--) {
-        if(shiftDate.getTime() >= new Date(rateDates[i]).stripTime().getTime()){
+        if(date.getTime() >= new Date(rateDates[i]).stripTime().getTime()){
             return rates[i];
         }
     }
