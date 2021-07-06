@@ -7,22 +7,22 @@
 "use strict";
 
 //version
-const calcVersion = "1.28 beta";
+const calcVersion = "1.28";
 const calcLastUpdateDate = "6/7/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul><li>Added Long Service Leave - full-pay and half-pay.</li>"
-+ "<li>Added bulk leave input feature."
-+ "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
-+ "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
++ "<li>Added Bulk Leave option to the menu - Quickly add multiple days of AL, LSL and PH Credit leave."
 + "<li>Added button that skips the current shift being input.</li>"
 + "<li>Added button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
 + "<li>Improved calculation when there is both leave/PH-Gazette and overtime in the same fortnight.</li>"
++ "<li>Added new super guarantee rates.</li>"
 + "<li>Added DAO Team Leader grade.</li>"
 + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
 + "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
++ "<li>Renamed Sick-Part element to Sick-Full to better match what is shown on payslips.</li>"
 + "</ul></li></ul>"
 
 //colours
@@ -589,7 +589,7 @@ $(document).ready(function() {
         timeFields[i].addEventListener("keyup", function(event) {
             if (event.key === 'Enter' || event.keyCode === 13) {
                 event.preventDefault();
-                console.log(`enter key pressed on field ${i}`);
+                //console.log(`enter key pressed on field ${i}`);
                 //document.getElementsByClassName('shortcut-button')[0].click();
             }
         });
@@ -2022,7 +2022,6 @@ function updateResults() {
             for(let i = superRates.length - 1; i >= 0; i--) {
                 if(selectedDate.stripTime().getTime() >= new Date(superRatesDate[i]).stripTime().getTime()){
                     superRate = superRates[i];
-                    console.log(superRate);
                     break;
                 }
             }
@@ -3722,17 +3721,17 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog";
             helpText = "<ul>"
-            + "<li>//2021 - Version 1.28<ul>"
+            + "<li>06/07/2021 - Version 1.28<ul>"
             + "<li>Added Long Service Leave - full-pay and half-pay.</li>"
-            + "<li>Added new bulk leave input feature."
-            + "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
-            + "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
-            + "<li>Added new shortcut button that skips the current shift being input.</li>"
-            + "<li>Added new shortcut button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
-            + "<li>Improved calculation when there is both leave and overtime in the same fortnight.</li>"
+            + "<li>Added Bulk Leave option to the menu - Quickly add multiple days of AL, LSL and PH Credit leave."
+            + "<li>Added button that skips the current shift being input.</li>"
+            + "<li>Added button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
+            + "<li>Improved calculation when there is both leave/PH-Gazette and overtime in the same fortnight.</li>"
+            + "<li>Added new super guarantee rates.</li>"
             + "<li>Added DAO Team Leader grade.</li>"
             + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
             + "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
+            + "<li>Renamed Sick-Part element to Sick-Full to better match what is shown on payslips.</li>"
             + "</ul></li>"
             + "<li>16/04/2021 - Version 1.27<ul>"
             + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
