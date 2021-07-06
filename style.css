@@ -1036,8 +1036,14 @@ li.helpbox-topnav > a {
 }
 @media only screen and (max-device-width: 480px) { 
     input[type=text],
+    button,
     select  {
         font-size: 1em;
+    }
+
+    .shortcut-button {
+        padding-top: 3px;
+        padding-bottom: 3px;
     }
 
     .ui-datepicker {
