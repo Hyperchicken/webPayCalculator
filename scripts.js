@@ -7,17 +7,23 @@
 "use strict";
 
 //version
-const calcVersion = "1.27";
-const calcLastUpdateDate = "16/04/2021";
+const calcVersion = "1.28 beta";
+const calcLastUpdateDate = "6/7/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul><li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
-+ "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
-+ "<li>Annual leave loading is now counted towards super guarantee calculation.</li>"
-+ "<li>Changed background colour of Job-Share.</li>"
-+ "<li>Added 'Hours Paid' calculation.</li></ul>";
++ "<ul><li>Added Long Service Leave - full-pay and half-pay.</li>"
++ "<li>Added new bulk leave input feature."
++ "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
++ "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
++ "<li>Added new shortcut button that skips the current shift being input.</li>"
+            + "<li>Added new shortcut button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
++ "<li>Improved calculation when there is both leave and overtime in the same fortnight.</li>"
++ "<li>Added DAO Team Leader grade.</li>"
++ "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
++ "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
++ "</ul></li></ul>"
 
 //colours
 const normalColour = "#00b9e8";
@@ -3713,10 +3719,12 @@ function topHelpBoxPreset(presetName) {
             + "<li>Added new bulk leave input feature."
             + "<ul><li>Quickly add days and weeks of Annual Leave, Long Service Leave and Public Holiday Credits by entering a start and finish date.</li>"
             + "<li>Access the feature with the Bulk Leave option in the menu.</li></ul></li>"
+            + "<li>Added new shortcut button that skips the current shift being input.</li>"
+            + "<li>Added new shortcut button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
             + "<li>Improved calculation when there is both leave and overtime in the same fortnight.</li>"
             + "<li>Added DAO Team Leader grade.</li>"
             + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
-            + "<li>Sick-Part now applied on shifts with any amount of time work (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
+            + "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
             + "</ul></li>"
             + "<li>16/04/2021 - Version 1.27<ul>"
             + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
