@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.28";
-const calcLastUpdateDate = "6/7/2021";
+const calcVersion = "1.28a";
+const calcLastUpdateDate = "8/7/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2336,7 +2336,11 @@ function addShortcutButton(field) {
                 let signonHour = parseInt(timeFields[shift * 2].value.substring(0,2));
                 let signonMinute = parseInt(timeFields[shift * 2].value.substring(2,4));
                 let newHour = (signonHour + Math.floor(payGrade.ordinaryHours)) % 24;
-                let newMinute = (signonMinute + Math.round((payGrade.ordinaryHours - Math.floor(payGrade.ordinaryHours)) * 60)) % 60;
+                let newMinute = (signonMinute + Math.round((payGrade.ordinaryHours - Math.floor(payGrade.ordinaryHours)) * 60));
+                if(newMinute >= 60){
+                    newHour++;
+                    newMinute = newMinute % 60;
+                }
                 let newTimeString = newHour.toString().padStart(2, '0') + newMinute.toString().padStart(2, '0');
                 timeFields[(shift * 2) + 1].value = newTimeString;
                 timeChanged((shift * 2) + 1);
@@ -3721,6 +3725,9 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog";
             helpText = "<ul>"
+            + "<li>06/07/2021 - Version 1.28<ul>"
+            + "<li>Fixed sign-off autofill button miscalculating the signoff time in some instances.</li>"
+            + "</ul></li>"
             + "<li>06/07/2021 - Version 1.28<ul>"
             + "<li>Added Long Service Leave - full-pay and half-pay.</li>"
             + "<li>Added Bulk Leave option to the menu - Quickly add multiple days of AL, LSL and PH Credit leave."
