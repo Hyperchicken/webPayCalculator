@@ -24,7 +24,7 @@
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.05"></script> 
     <script src="rates.js?v=1.02"></script> 
-    <script src="grades.js?v=1.00"></script> 
+    <script src="grades.js?v=1.01"></script> 
     <script src="scripts.js?v=1.28"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>

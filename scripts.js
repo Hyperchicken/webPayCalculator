@@ -2408,18 +2408,11 @@ function updateShiftPayTable() {
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
-    let ordinaryHours = 8; //default ordinary hours of 8
-    let ordinaryDays = 10; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
+    let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
+    let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let ddoFortnight = false;
     let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
-    let payGrade = getPayGrade();
-    if(payGrade == "trainee" || payGrade == "parttime") {
-        ordinaryHours = 7.6;
-    }
-    if(payGrade == "daoteamleader") {
-        ordinaryHours = 8.5;
-        ordinaryDays = 9;
-    }
+
     shiftPay = []; //clear pay table
     
     let weekNo = (day) => {
@@ -2463,7 +2456,7 @@ function updateShiftPayTable() {
             else if(s.ph) { //public holiday
                 if(s.phOffRoster) {
                     phOffRosterCount++;
-                    if(payGrade != "parttime" && !s.al && !s.lsl) { //dont pay NON ROS PH to part time or when on leave
+                    if(getPayGrade() != "parttime" && !s.al && !s.lsl) { //dont pay NON ROS PH to part time or when on leave
                         shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables));
                     }
                 }
@@ -2697,7 +2690,7 @@ function updateShiftPayTable() {
             }
         }
         //suburban allowance
-        if(["spot", "level1", "conversion", "parttime", "jobshare"].includes(payGrade) && s.shiftWorkedNumber > 0) { //driving grade (except trainees) only
+        if(payGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //wasted meal
@@ -2751,7 +2744,7 @@ function updateShiftPayTable() {
     }
     
     //pay calculation: DDO.
-    if(payGrade != "trainee" && payGrade != "parttime" && payGrade != "jobshare" && payGrade != "daoteamleader") { //part time, jobshare and trainee don't get DDO
+    if(payGrade.ddo) {
         let day = ddoWeek();
         if(day < 0) {
             shiftPay[0].push(new PayElement("edo", -4, 0, rateTables));
