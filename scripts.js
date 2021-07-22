@@ -8,7 +8,7 @@
 
 //version
 const calcVersion = "1.28a";
-const calcLastUpdateDate = "8/7/2021";
+const calcLastUpdateDate = "22/7/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -3720,6 +3720,9 @@ function topHelpBoxPreset(presetName) {
             helpText = "<ul>"
             + "<li>06/07/2021 - Version 1.28<ul>"
             + "<li>Fixed sign-off autofill button miscalculating the signoff time in some instances.</li>"
+            + "</ul></li>"
+            + "<li>06/07/2021 - Version 1.28a<ul>"
+            + "<li>Fixed issue with sign-off auto-fill button (+8hr, +7.6hr, etc) setting the sign-off time incorrectly in some instances.</li>"
             + "</ul></li>"
             + "<li>06/07/2021 - Version 1.28<ul>"
             + "<li>Added Long Service Leave - full-pay and half-pay.</li>"
