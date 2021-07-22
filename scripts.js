@@ -13,7 +13,10 @@ const calcLastUpdateDate = "22/7/2021";
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul><li>Added Long Service Leave - full-pay and half-pay.</li>"
++ "<ul>v1.28a"
++ "<li>Fixed issue with sign-off auto-fill button (+8hr, +7.6hr, etc) setting the sign-off time incorrectly in some instances.</li></ul>"
++ "<ul>v1.28"
++ "<li>Added Long Service Leave - full-pay and half-pay.</li>"
 + "<li>Added Bulk Leave option to the menu - Quickly add multiple days of AL, LSL and PH Credit leave."
 + "<li>Added button that skips the current shift being input.</li>"
 + "<li>Added button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
