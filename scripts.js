@@ -3718,10 +3718,7 @@ function topHelpBoxPreset(presetName) {
         case "changelog":
             helpTitle = "Changelog";
             helpText = "<ul>"
-            + "<li>06/07/2021 - Version 1.28<ul>"
-            + "<li>Fixed sign-off autofill button miscalculating the signoff time in some instances.</li>"
-            + "</ul></li>"
-            + "<li>06/07/2021 - Version 1.28a<ul>"
+            + "<li>22/07/2021 - Version 1.28a<ul>"
             + "<li>Fixed issue with sign-off auto-fill button (+8hr, +7.6hr, etc) setting the sign-off time incorrectly in some instances.</li>"
             + "</ul></li>"
             + "<li>06/07/2021 - Version 1.28<ul>"
