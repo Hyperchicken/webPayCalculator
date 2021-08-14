@@ -13,8 +13,7 @@ const calcLastUpdateDate = "15/08/2021";
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>v1.29"
-+ "<li>Added ability to export and import save data. Available in the <a href='javascript:importExportMenu();'>Import/Export Data</a> menu.</li></ul>";
++ "<ul><li>Added ability to export and import save data. Available in the <a href='javascript:importExportMenu();'>Import/Export Data</a> menu.</li></ul>";
 
 //colours
 const normalColour = "#00b9e8";
