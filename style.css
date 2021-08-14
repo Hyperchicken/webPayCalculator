@@ -15,7 +15,7 @@ p {
     margin: 0.5em 0;
 }
 
-p > a, li > a {
+a {
     color: #83b9ff;
 }
 
@@ -340,6 +340,37 @@ a:visited {
 .delete-save-button {
     background-color: #b90000;
     border-color: #b90000;
+}
+
+.import-button {
+    background-color: #2f7166;
+    border-color: #00b99a;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+.import-button:hover {
+    background-color: #00b99a;
+}
+
+.import-button:active {
+    background-color: #2fdabd;
+}
+
+.export-button {
+    background-color: #747e1f;
+    border-color: #b6b900;
+    margin-right: 10px;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+.export-button:hover {
+    background-color: #b6b900;
+}
+
+.export-button:active {
+    background-color: #e4e73b;
 }
 
 .reload-page-button {
@@ -970,6 +1001,12 @@ li.helpbox-topnav > a {
 
 #helpboxContent > p {
     margin: 0.5em 0 1.5em 0;
+}
+
+#importExportTextArea {
+    width: 80%;
+    font-size: 1em;
+    height: 7em;
 }
 
 @keyframes bounce {

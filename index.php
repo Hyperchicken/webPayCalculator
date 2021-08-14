@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.28">
+    <link rel="stylesheet" href="style.css?v=1.29">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,7 +25,7 @@
     <script src="publicHolidays.js?v1.05"></script> 
     <script src="rates.js?v=1.02"></script> 
     <script src="grades.js?v=1.01"></script> 
-    <script src="scripts.js?v=1.28a"></script> 
+    <script src="scripts.js?v=1.29"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -36,10 +36,10 @@
             <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
-                <!--<a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>-->
                 <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
-                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Saved Data</a>
+                <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
+                <a id="importExportMenuButton"><i class="fa fa-file-export fa-fw menu-icon"></i>Import/Export Data</a>
                 <a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>
                 <a id="taxConfigurationMenuButton"><i class="fas fa-funnel-dollar fa-fw menu-icon"></i>Net Income Settings</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
