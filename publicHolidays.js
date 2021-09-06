@@ -124,7 +124,8 @@ const publicHolidays = [
         name: "Friday before the AFL Grand Final",
         dates: [
             //subject to AFL schedule
-            "2020-10-23"
+            "2020-10-23",
+            "2021-09-24"
         ],
         infoTitle: "Friday before the AFL Grand Final Public Holiday",
         infoText: "<ul><li>No special rules or exceptions apply to Friday before the AFL Grand Final public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
