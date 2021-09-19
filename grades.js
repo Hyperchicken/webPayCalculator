@@ -35,7 +35,7 @@ const grades = {
         "suburbanAllowance" :  true
     },
     "jobshare" : {
-        "name" : "Job-Share (SPOT)",
+        "name" : "Job-Share/FWA (SPOT)",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : false,

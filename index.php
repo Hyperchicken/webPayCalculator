@@ -74,7 +74,7 @@
                         <option value="trainee">Trainee</option>
                         <option value="conversion">Conversion</option>
                         <option value="parttime">Part-Time (SPOT)</option>
-                        <option value="jobshare">Job-Share (SPOT)</option>
+                        <option value="jobshare">Job-Share/FWA (SPOT)</option>
                         <option value="so8">TSO SO-8</option>
                         <option value="so9">TSO SO-9</option>
                         <option value="so10">TSO SO-10</option>
