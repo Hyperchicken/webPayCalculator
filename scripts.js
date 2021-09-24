@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.29";
-const calcLastUpdateDate = "15/08/2021";
+const calcVersion = "1.30";
+const calcLastUpdateDate = "24/09/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1508,6 +1508,7 @@ function generateOptionsShelfButtons(day) {
     let bonusButtonText = document.createElement("a");
     let bonusTextbox = document.createElement("input");
     bonusButtonText.textContent = "Bonus Payment";
+    bonusButtonText.setAttribute("class", "bonus-button-text");
     bonusButton.setAttribute("class", "button bonus-button shelf-button");
     bonusTextbox.setAttribute("type", "text");
     bonusTextbox.setAttribute("inputmode", "decimal");
@@ -1517,6 +1518,7 @@ function generateOptionsShelfButtons(day) {
     if(shifts[day].bonus) { //if bonus payment
         let bonusHrsText = document.createElement("a");
         bonusHrsText.textContent = "hrs";
+        bonusHrsText.setAttribute("class", "bonus-button-text");
         bonusTextbox.value = shifts[day].bonusHours;
         bonusButton.appendChild(bonusTextbox);
         bonusButton.appendChild(bonusHrsText);
@@ -3857,10 +3859,6 @@ function topHelpBoxPreset(presetName) {
             + "<li>Version: " + calcVersion + "</li>"
             + "<li>Last Update: " + calcLastUpdateDate +"</li>"
             + "</ul>";
-            break;
-        case "changelog":
-            helpTitle = "Changelog";
-            
             break;
         case "newDomainWarning":
             helpTitle = "New Page Address";

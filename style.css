@@ -428,6 +428,10 @@ a:visited {
     border-color: #e79e00;
 }
 
+.bonus-button-text {
+    color: #fff;
+}
+
 .bonus-button > input {
     margin: -4px 5px -4px 10px;
     width: 3em;
