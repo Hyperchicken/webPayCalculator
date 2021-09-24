@@ -563,6 +563,7 @@ let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; //define shorthand names for days of the week
+let numberOfCustomPreTaxFields = 4;
 let numberOfCustomPostTaxFields = 4;
 
 //init on document load
@@ -721,7 +722,15 @@ $(document).ready(function() {
         closeMenu();
     });
     $("#changelogMenuButton").on("click", function(){
-        topHelpBoxPreset("changelog");
+        //topHelpBoxPreset("changelog");
+        topHelpBox("Changelog", "Loading...");
+        $.ajax({
+            url: 'changelog.html',
+            dataType: "html",
+            success: function (data) {
+                topHelpBox("Changelog", data);
+            }
+        });
         closeMenu();
     });
     $("#aboutMenuButton").on("click", function(){
@@ -2072,9 +2081,14 @@ function updateResults() {
             totalTaxElement.textContent = "Tax: " + ((taxTotals.taxBalance < 0) ? "-$" : "$") + Math.abs(taxTotals.taxBalance).toFixed(2);
             resultArea.appendChild(totalTaxElement);
 
+            let preTaxDeductionElement = document.createElement("p");
+            preTaxDeductionElement.classList.add("hours-worked");
+            preTaxDeductionElement.textContent = "Pre-tax Allows/Deds: " + ((taxTotals.preTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.preTaxDeduction).toFixed(2);
+            resultArea.appendChild(preTaxDeductionElement);
+
             let postTaxDeductionElement = document.createElement("p");
             postTaxDeductionElement.classList.add("hours-worked");
-            postTaxDeductionElement.textContent = "Post-tax Deductions: " + ((taxTotals.postTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.postTaxDeduction).toFixed(2);
+            postTaxDeductionElement.textContent = "Post-tax Allows/Deds: " + ((taxTotals.postTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.postTaxDeduction).toFixed(2);
             resultArea.appendChild(postTaxDeductionElement);
     
             let totalNetElement = document.createElement("h3");
@@ -2752,14 +2766,21 @@ function calculateTax(payElements) {
     taxPay = [];
     let taxableIncome = 0;
     let grossIncome = 0;
-    payElements.forEach(function(e){
-        if(!["mealAllowance"].includes(e.payType)) taxableIncome += parseFloat(e.value.toFixed(2));
-        grossIncome += parseFloat(e.value.toFixed(2));
-    });
     let taxBalance = 0;
     let preTaxDeduction = 0;
     let postTaxDeduction = 0;
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
+
+    payElements.forEach(function(e){
+        if(!["mealAllowance"].includes(e.payType)) { //deduct meal allowances from taxable income
+            taxableIncome += parseFloat(e.value.toFixed(2));
+        }
+        if(["mealAllowance", "earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) {
+            preTaxDeduction += -e.value.toFixed(2); //add allowances to pre-tax subtotal
+        }
+        grossIncome += parseFloat(e.value.toFixed(2));
+    });
+
     if(getSaveData("taxFreeThreshold", false) == "no") taxFreeThreshold = false; //using 'no' instead of 'false' in order to make 'true' the default if unset.
     if(getSaveData("stsl", false) == "yes") stsl = true;
     if(getSaveData("etdscMembership", false)) etdscMembership = getSaveData("etdscMembership", false);
@@ -2782,6 +2803,20 @@ function calculateTax(payElements) {
             taxPay.push(new TaxElement("Novated Lease Pre-Tax", novatedLeasePreTax, 4));
             taxableIncome += novatedLeasePreTax;
             preTaxDeduction += novatedLeasePreTax;
+        }
+    }
+    //custom pre-tax entries
+    for(let i = 0; i < numberOfCustomPreTaxFields; i++) {
+        let descriptionId = "customPreTaxDescription" + i.toString();
+        let valueId = "customPreTaxValue" + i.toString();
+        let description = getSaveData(descriptionId, false);
+        if(description) description = description.trim();
+        let value = Math.abs(parseFloat(getSaveData(valueId, false)));
+        if(description && !isNaN(value) && value != 0) { //if both fields populated and valid
+            value *= -1;
+            taxPay.push(new TaxElement(description, value, 3));
+            taxableIncome += value;
+            preTaxDeduction += value;
         }
     }
 
@@ -2896,7 +2931,7 @@ function calculateTax(payElements) {
 
     let netIncome = grossIncome + taxBalance + postTaxDeduction + preTaxDeduction;
     
-    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome}
+    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction};
 }
 
 //Data storage
@@ -3634,6 +3669,41 @@ function taxConfigurator() {
     formArea.appendChild(novatedLeasePostLabel);
     formArea.appendChild(novatedLeasePostInput);
 
+    //custom pre-tax
+    formArea.appendChild(document.createElement("hr"));
+    let customPreTaxHeader = document.createElement("span");
+    customPreTaxHeader.textContent = "Other Pre-Tax Deductions"
+    customPreTaxHeader.classList.add("grid-1-3", "bold");
+    formArea.appendChild(customPreTaxHeader);
+
+    let customPreTaxDescriptionLabel = document.createElement("span");
+    customPreTaxDescriptionLabel.textContent = "Description";
+    let customPreTaxInputLabel = document.createElement("span");
+    customPreTaxInputLabel.textContent = "Value";
+    formArea.append(customPreTaxDescriptionLabel, customPreTaxInputLabel);
+
+    //create multiple custom pre-tax fields
+    let customPreTaxValueId = "customPreTaxValue";
+    let customPreTaxDescriptionId = "customPreTaxDescription";
+    for (let i = 0; i < numberOfCustomPreTaxFields; i++) {
+        let descriptionId = customPreTaxDescriptionId + i.toString();
+        let valueId = customPreTaxValueId + i.toString();
+        let customPreTaxDescriptionInput = document.createElement("input");
+        customPreTaxDescriptionInput.classList.add("taxform-text-input")
+        customPreTaxDescriptionInput.setAttribute("maxlength", "50")
+        customPreTaxDescriptionInput.setAttribute("placeholder", "Deduction Name")
+        customPreTaxDescriptionInput.id = descriptionId;
+        customPreTaxDescriptionInput.addEventListener("input", function(){
+            setSaveData(descriptionId, document.forms.taxSettings.elements.namedItem(descriptionId).value, false);
+            updateResults();
+        });
+        let customPreTaxValueInput = createDollarPercentInput(valueId, true, false);
+        customPreTaxValueInput.addEventListener("input", function(){
+            setSaveData(valueId, document.forms.taxSettings.elements.namedItem(valueId).value, false);
+            updateResults();
+        });
+        formArea.append(customPreTaxDescriptionInput, customPreTaxValueInput);
+    }
 
     //custom post-tax
     formArea.appendChild(document.createElement("hr"));
@@ -3699,6 +3769,12 @@ function taxConfigurator() {
     if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
     if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
     if(withholdExtraSave) document.forms.taxSettings.elements.namedItem(withholdExtraId).value = withholdExtraSave;
+    for (let i = 0; i < numberOfCustomPreTaxFields; i++) {
+        let customPreTaxDescriptionSave = getSaveData(customPreTaxDescriptionId + i.toString(), false);
+        let customPreTaxValueSave = getSaveData(customPreTaxValueId + i.toString(), false);
+        if(customPreTaxDescriptionSave) document.forms.taxSettings.elements.namedItem(customPreTaxDescriptionId + i.toString()).value = customPreTaxDescriptionSave;
+        if(customPreTaxValueSave) document.forms.taxSettings.elements.namedItem(customPreTaxValueId + i.toString()).value = customPreTaxValueSave;
+    }
     for (let i = 0; i < numberOfCustomPostTaxFields; i++) {
         let customPostTaxDescriptionSave = getSaveData(customPostTaxDescriptionId + i.toString(), false);
         let customPostTaxValueSave = getSaveData(customPostTaxValueId + i.toString(), false);
@@ -3784,176 +3860,7 @@ function topHelpBoxPreset(presetName) {
             break;
         case "changelog":
             helpTitle = "Changelog";
-            helpText = "<ul>"
-            + "<li>15/08/2021 - Version 1.29<ul>"
-            + "<li>Added import/export save data function.</li>"
-            + "</ul></li>"
-            + "<li>22/07/2021 - Version 1.28a<ul>"
-            + "<li>Fixed issue with sign-off auto-fill button (+8hr, +7.6hr, etc) setting the sign-off time incorrectly in some instances.</li>"
-            + "</ul></li>"
-            + "<li>06/07/2021 - Version 1.28<ul>"
-            + "<li>Added Long Service Leave - full-pay and half-pay.</li>"
-            + "<li>Added Bulk Leave option to the menu - Quickly add multiple days of AL, LSL and PH Credit leave."
-            + "<li>Added button that skips the current shift being input.</li>"
-            + "<li>Added button that automatically fills in the sign-off time based on the sign-on time and ordinary hours.</li>"
-            + "<li>Improved calculation when there is both leave/PH-Gazette and overtime in the same fortnight.</li>"
-            + "<li>Added new super guarantee rates.</li>"
-            + "<li>Added DAO Team Leader grade.</li>"
-            + "<li>NON ROS PH no longer applied on Annual Leave days.</li>"
-            + "<li>Sick-Part now applied on shifts with any amount of time worked (previously defaulted to Sick-Full if less than 4hrs worked).</li>"
-            + "<li>Renamed Sick-Part element to Sick-Full to better match what is shown on payslips.</li>"
-            + "</ul></li>"
-            + "<li>16/04/2021 - Version 1.27<ul>"
-            + "<li>Fixed guarantee not being applied to some shifts in fortnights that have PH-Gazettes.</li>"
-            + "<li>NON ROS PH (OFF roster on a public holiday) is no longer mistakenly counted towards calculating super guarantee.</li>"
-            + "<li>Annual leave loading is now counted towards super guarantee calculation.</li>"
-            + "<li>Changed background colour of Job-Share.</li>"
-            + "<li>Added 'Hours Paid' calculation.</li>"
-            + "</ul></li>"
-            + "<li>01/01/2021 - Version 1.26<ul>"
-            + "<li>Fixed a calendar bug with the new year that caused fortnight dates to become out-of-sync.</li>"
-            + "<li>Removed Backpay Calculator link from menu.</li>"
-            + "</ul></li>"
-            + "<li>27/10/2020 - Version 1.25<ul>"
-            + "<li>Updated tax tables to reflect the October 2020 changes to tax thresholds.</li>"
-            + "</ul></li>"
-            + "<li>19/10/2020 - Version 1.24<ul>"
-            + "<li>Separated Job-share from part-time to make it's own paygrade to allow from some job-share specific calculation fixes.</li>"
-            + "<li>Net Income Settings window will now show the full set of settings to avoid scrolling.</li>"
-            + "</ul></li>"
-            + "<li>15/09/2020 - Version 1.23<ul>"
-            + "<li>Fixed Sick-Full and PH Gazette on fortnights with overtime shifts causing a miscalculation.</li>"
-            + "<li>All public holiday information text is now complete (shown when clicking on a date with a public holiday).</li>"
-            + "</ul></li>"
-            + "<li>04/09/2020 - Version 1.22<ul>"
-            + "<li>Fixed the Grade dropdown box not having a default value if there was no previously saved data.</li>"
-            + "</ul></li>"
-            + "<li>03/09/2020 - Version 1.21<ul>"
-            + "<li>Added support for DAO grade.</li>"
-            + "<li>Grade selection is now a dropdown box.</li>"
-            + "</ul></li>"
-            + "<li>24/08/2020 - Version 1.20<ul>"
-            + "<li>Fixed net income miscalculation when super salary sacrifice or novated lease was deducted.</li>"
-            + "</ul></li>"
-            + "<li>20/08/2020 - Version 1.19<ul>"
-            + "<li>Fixed tax and super miscalculation on fortnights with with Meal Allowances.</li>"
-            + "</ul></li>"
-            + "<li>27/07/2020 - Version 1.18<ul>"
-            + "<li>Improved 'scrollable' indicator in menu windows.</li>"
-            + "<li>Fixed shift-options buttons occasionally clipping the arrow icon.</li>"
-            + "<li>The minus-sign position on pay elements updated to be consistent with the new net-pay sections - in front of the dollar-sign</li>"
-            + "<li>Stopped the name of the public holiday appearing in results when in split view.</li>"
-            + "<li>Minor visual changes.</li>"
-            + "</ul></li>"
-            + "<li>21/07/2020 - Version 1.17<ul>"
-            + "<li>Net income calculation. Configure net income settings from the menu.</li>"
-            + "<li>Improved scroll-down indicator icon behaviour.</li>"
-            + "<li>Minor layout changes.</li>"
-            + "</ul></li>"
-            + "<li>12/06/2020 - Version 1.16<ul>"
-            + "<li>Updated backpay calculator to require only 3 payslips to calculate instead of the previous 24.</li>"
-            + "</ul></li>"
-            + "<li>10/06/2020 - Version 1.15<ul>"
-            + "<li>EA2019 payrates to start from 7/6/20</li>"
-            + "<li>Created a backpay calculator for EA 2019. Accessed from the menu.</li>"
-            + "<li>Removed confusing 'Physical Hours Worked' counter. Replaced by a new 'Total Hours' indicator below the sign-on/off times.</li>"
-            + "<li>Removed leading zero from certain values in the results to better match the formatting of the payslips.</li>"
-            + "<li>The Javascript code now has better documentation and added GitHub repository link to Javascript file.</li>"
-            + "<li>Scrollable indicator added to these information boxes.</li>"
-            + "<li>Changed the input mode on sign-on/off fields to have iOS devices show a decimal keypad instead of a telephone dialpad.</li>"
-            + "<li>Fixed bug where setting PH-Roster shift option as part-time, then switching paygrade would cause a miscalculation.</li>"
-            + "</ul></li>"
-            + "<li>14/05/2020 - Version 1.14<ul>"
-            + "<li>Fixed TSO shiftwork rates.</li>"
-            + "<li>Fixed calculation issue where excess hours would be paid at time and a half on a double-time shift.</li>"
-            + "</ul></li>"
-            + "<li>11/05/2020 - Version 1.13<ul>"
-            + "<li>Added rates from 2015-2017. Previously the calculator only had rates from 2018 onwards.</li>"
-            + "</ul></li>"
-            + "<li>30/04/2020 - Version 1.12<ul>"
-            + "<li>Improved Sunday public holiday calculation.</li>"
-            + "</ul></li>"
-            + "<li>30/04/2020 - Version 1.11<ul>"
-            + "<li>Added Easter Sunday as a public holiday.</li>"
-            + "</ul></li>"
-            + "<li>29/04/2020 - Version 1.10<ul>"
-            + "<li>Added new pay rates from EA 2019-2023</li>"
-            + "<li>Rates of pay are now applied on a per-day basis instead of the same pay-rates for the whole fortnight.</li>"
-            + "<li>Added public holiday detection. A new indication and button will now display on days that are observed to be public holidays. Clicking the button will show information about that public holiday.</li>"
-            + "<li>Time input error message will now automatically pop-up.</li>"
-            + "</ul></li>"
-            + "<li>07/04/2020 - Version 1.09<ul>"
-            + "<li>Updated shiftwork penalty rates for TSOs (unconfirmed if correct yet).</li>"
-            + "<li>Minor text adjustments around the place.</li>"
-            + "<li>Fixed incorrect rounding of hours for WePen50.</li>"
-            + "<li>Date bar is now not clickable.</li>"
-            + "<li>Made the border thinner for mobile devices.</li>"
-            + "</ul></li>"
-            + "<li>26/02/2020 - Version 1.08<ul>"
-            + "<li>Removed suburban allowance from TSO grade calculation.</li>"
-            + "<li>Adjusted font and page sizing to better fit smaller screens.</li>"
-            + "<li>Changed how OJT pay elements are displayed in the results.</li>"
-            + "</ul></li>"
-            + "<li>19/02/2020 - Version 1.07<ul>"
-            + "<li>Added TSO (PD and Training Officer) grades.</li>"
-            + "<li>Fixed PH Extra Pay persisting after unselecting Public Holiday shift option.</li>"
-            + "<li>Removed calculation warning from Trainee pay grade.</li>"
-            + "</ul></li>"
-            + "<li>18/02/2020 - Version 1.06<ul>"
-            + "<li>Added support for part-time public holiday shifts that have converted to PH-roster. Part-timers who have had a shift convert to PH should enter in the sign-on/off times of the original shift and select the shift options 'Public Holiday' and 'PH Roster'.</li>"
-            + "<li>Added support for Public Holidays OFF-roster. New public holiday shift option button added.</li>"
-            + "<li>Minor text adjustments for better page-display.</li>"
-            + "<li>Position of EDO pay element in 'grouped' results view better matches payslips, and is now attached to a day in 'split-view'.</li>"
-            + "</ul></li>"
-            + "<li>06/02/2020 - Version 1.05<ul>"
-            + "<li>Changed PH Extra Pay calculation to give a fixed payment of 8 hours (7.6 hours for trainee/part-time) as opposed to time worked. EA says time worked but payroll pays the fixed amount (which is arguably fairer overall).</li>"
-            + "<li>Fixed some instances where calculations were a few cents off.</li>"
-            + "</ul></li>"
-            + "<li>03/02/2020 - Version 1.04<ul>"
-            + "<li>Minor help guide text update.</li>"
-            + "<li>Pushed this version to try and fix the calculator not working correctly for some people after the website went down briefly.</li>"
-            + "</ul></li>"
-            + "<li>22/01/2020 - Version 1.03<ul>"
-            + "<li>Improved fortnight-commencing functionality with updated layout and new buttons to quickly change fortnight.</li>"
-            + "<li>The page will now remember the most recent fortnight-commencing date and automatically load it (but not for fortnights in the past).</li>"
-            + "<li>Title and menu bar should no longer double in height on smaller screens. Menu-button text now automatically hides on small screens.</li>"
-            + "</ul></li>"
-            + "<li>14/01/2020 - Version 1.02<ul>"
-            + "<li>Fixed another calculation issue with weekend penalty calculation when working excess hours overtime.</li>"
-            + "</ul></li>"
-            + "<li>12/01/2020 - Version 1.01<ul>"
-            + "<li>Added support for Part-Time/Job-Share.</li>"
-            + "<li>Added Sick-Part calculation.</li>"
-            + "<li>Fixed an issue with weekend penalty calculation on Saturday shifts that work into Sunday.</li>"
-            + "</ul></li>"
-            + "<li>08/01/2020 - Version 1.00<ul>"
-            + "<li>Out of Beta and into version 1.00! ✨</li>"
-            + "<li>Added scrollbar to menu information boxes with lots of content.</li>"
-            + "<li>Fixed options buttons text-wrap issue on Chrome.</li>"
-            + "<li>Fixed Guarantee calculation with PH-OFF shifts.</li>"
-            + "</ul></li>"
-            + "<li>01/01/2020 🎆 - Version 0.70<ul>"
-            + "<li>Adjusted results table alignment.</li>"
-            + "<li>Fixed Bonus Pay button text colour bug.</li>"
-            + "<li>Various text/phrasing adjustments and corrections.</li>"
-            + "<li>Added temporary warning for Trainee and Conversion pay-grades.</li>"
-            + "</ul></li>"
-            + "<li>20/12/2019 - Version 0.67<ul>"
-            + "<li>Added new title bar and menu with several new guides and options.</li>"
-            + "<li>Added bookmark icons.</li>"
-            + "<li>Added PH Credit leave shift option.</li>"
-            + "<li>Fixed DDO during Annual Leave calculation issue.</li>"
-            + "<li>Improved 'Hours Worked' section.</li>"
-            + "</ul></li>"
-            + "<li>18/11/2019 - Version 0.66<ul>"
-            + "<li>Adjusted rounding behaviour and fixed input validation highlighting bug when changing dates.</li>"
-            + "<li>Added 'hours worked'. The payslip's 'hours worked' does not reflect the real hours worked (it includes guarantee and annual leave for some reason??). I'll expand on this in a future update.</li>"
-            + "<li>Pay grades now save to the selected date.</li>"
-            + "<li>Fixed calculation error when working overtime on a Sunday past midnight.</li>"
-            + "<li>Added more visual time input validation.</li>"
-            + "<li>Restricted date selection to fortnightly instead of weekly.</li>"
-            + "</ul></li>"
-            + "</ul>"
+            
             break;
         case "newDomainWarning":
             helpTitle = "New Page Address";
