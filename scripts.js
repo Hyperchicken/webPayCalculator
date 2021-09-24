@@ -13,7 +13,12 @@ const calcLastUpdateDate = "24/09/2021";
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul><li>Added ability to export and import save data. Available in the <a href='javascript:importExportMenu();'>Import/Export Data</a> menu.</li></ul>";
++ "<ul>"
++ "<li>Renamed Job-Share grade to Job-Share/FWA.</li>"
++ "<li>Added ability to add custom Pre-Tax deductions in Net Income Settings.</li>"
++ "<li>Added pre-tax allowances/deductions subtotal.</li>"
++ "<li>Fixed wrong text colour on Bonus Payment button on some browsers.</li>"
++ "</ul>";
 
 //colours
 const normalColour = "#00b9e8";
