@@ -7,13 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.30";
-const calcLastUpdateDate = "24/09/2021";
+const calcVersion = "1.31";
+const calcLastUpdateDate = "26/09/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>"
++ "<ul>V1.31<li>Fixed net income and pre-tax allows/deds miscalculation bug introduced in v1.30.</li></ul>"
++ "<ul>v1.30"
 + "<li>Renamed Job-Share grade to Job-Share/FWA.</li>"
 + "<li>Added ability to add custom Pre-Tax deductions in Net Income Settings.</li>"
 + "<li>Added pre-tax allowances/deductions subtotal.</li>"
@@ -2088,9 +2089,10 @@ function updateResults() {
             totalTaxElement.textContent = "Tax: " + ((taxTotals.taxBalance < 0) ? "-$" : "$") + Math.abs(taxTotals.taxBalance).toFixed(2);
             resultArea.appendChild(totalTaxElement);
 
+            let preTaxAllowsDeds = taxTotals.preTaxDeduction + taxTotals.preTaxAllowance;
             let preTaxDeductionElement = document.createElement("p");
             preTaxDeductionElement.classList.add("hours-worked");
-            preTaxDeductionElement.textContent = "Pre-tax Allows/Deds: " + ((taxTotals.preTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.preTaxDeduction).toFixed(2);
+            preTaxDeductionElement.textContent = "Pre-tax Allows/Deds: " + ((preTaxAllowsDeds < 0) ? "-$" : "$") + Math.abs(preTaxAllowsDeds).toFixed(2);
             resultArea.appendChild(preTaxDeductionElement);
 
             let postTaxDeductionElement = document.createElement("p");
@@ -2775,15 +2777,20 @@ function calculateTax(payElements) {
     let grossIncome = 0;
     let taxBalance = 0;
     let preTaxDeduction = 0;
+    let preTaxAllowance = 0;
     let postTaxDeduction = 0;
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
 
     payElements.forEach(function(e){
-        if(!["mealAllowance"].includes(e.payType)) { //deduct meal allowances from taxable income
+        if(!["mealAllowance"].includes(e.payType)) { //all except meal allowance added to taxable income
             taxableIncome += parseFloat(e.value.toFixed(2));
         }
-        if(["mealAllowance", "earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) {
-            preTaxDeduction += -e.value.toFixed(2); //add allowances to pre-tax subtotal
+        else {
+            preTaxDeduction += parseFloat(e.value.toFixed(2));
+        }
+
+        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) {
+            preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
     });
@@ -2937,8 +2944,10 @@ function calculateTax(payElements) {
     }
 
     let netIncome = grossIncome + taxBalance + postTaxDeduction + preTaxDeduction;
+
+    console.log(`Pre deduct: ${preTaxDeduction} - pre allow: ${preTaxAllowance}`);
     
-    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction};
+    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction, preTaxAllowance: preTaxAllowance};
 }
 
 //Data storage
