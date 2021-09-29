@@ -2569,7 +2569,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber + phOffRosterCount <= ordinaryDays && s.rosteredShiftNumber + phOffRosterCount <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
+                else if(s.shiftWorkedNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.rosteredShiftNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
