@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.31">
+    <link rel="stylesheet" href="style.css?v=1.32">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,7 +25,7 @@
     <script src="publicHolidays.js?v1.06"></script> 
     <script src="rates.js?v=1.02"></script> 
     <script src="grades.js?v=1.01"></script> 
-    <script src="scripts.js?v=1.31"></script> 
+    <script src="scripts.js?v=1.32"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
