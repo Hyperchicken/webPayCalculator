@@ -7,13 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.31";
-const calcLastUpdateDate = "26/09/2021";
+const calcVersion = "1.32";
+const calcLastUpdateDate = "29/09/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>V1.31<li>Fixed net income and pre-tax allows/deds miscalculation bug introduced in v1.30.</li></ul>"
++ "<ul>v1.32<li>PH-OFF no longer counted as a worked shift for the purposes of calculating guarantee.</li></ul>"
++ "<ul>v1.31<li>Fixed net income and pre-tax allows/deds miscalculation bug introduced in v1.30.</li></ul>"
 + "<ul>v1.30"
 + "<li>Renamed Job-Share grade to Job-Share/FWA.</li>"
 + "<li>Added ability to add custom Pre-Tax deductions in Net Income Settings.</li>"
@@ -2421,7 +2422,7 @@ function updateShiftPayTable() {
     let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let ddoFortnight = false;
-    let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
+    //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
 
     shiftPay = []; //clear pay table
     
@@ -2465,7 +2466,7 @@ function updateShiftPayTable() {
             }
             else if(s.ph) { //public holiday
                 if(s.phOffRoster) {
-                    phOffRosterCount++;
+                    //phOffRosterCount++;
                     if(getPayGrade() != "parttime" && !s.al && !s.lsl) { //dont pay NON ROS PH to part time or when on leave
                         shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables));
                     }
@@ -2569,7 +2570,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.rosteredShiftNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
+                else if(s.shiftWorkedNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.rosteredShiftNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.hoursDecimal < ordinaryHours) { //PH-OFF not counted as worked shift (commented out)
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
