@@ -240,6 +240,7 @@ class PayElement {
             "ot200",
             "rost+50",
             "rost+100",
+            "ot250",
             "newPHCD",
             "nonRosPH",
             "phCredit",
@@ -292,6 +293,7 @@ class PayElement {
             case "wePen100": payClassName = "WePen 100%"; break;
             case "ot150": payClassName = "O/T1.5 Vol"; break;
             case "ot200": payClassName = "O/T2.0 Vol"; break;
+            case "ot250": payClassName = "OT 2.5"; break;
             case "rost+50": payClassName = "Rost+50%"; break;
             case "rost+100": payClassName = "Rost+100%"; break;
             case "earlyShift": payClassName = "E/Shift"; break;
@@ -497,6 +499,10 @@ class PayElement {
             case "rost+100":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //double time
                 rate *= 2;
+                break;
+            case "ot250":
+                rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //double time and a half
+                rate *= 2.5;
                 break;
             case "earlyShift":
                 rate += getEbaRate(shiftDate, this.rateTables.earlyShiftRates);
@@ -2139,43 +2145,47 @@ function updateResults() {
         //payslip hours paid
         let payslipHoursPaid = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
-        switch(e.payType) {
-            //0.5x
-            case "phPen50":
-            case "wePen50":
-                payslipHoursPaid += e.hours * 0.5;
-                break;
-            //1x
-            case "normal":
-            case "overtime":
-            case "wePen100":
-            case "phWorked":
-            case "phGaz":
-            case "phXpay":
-            case "nonRosPH":
-            case "sickFull":
-            case "sickPart":
-            case "rost+100":
-            case "annualLeave":
-            case "guarantee":
-            case "edo":
-            case "bonusPayment":
-            case "phCredit":
-                payslipHoursPaid += e.hours;
-                break;
-            //1.5x
-            case "ot150":
-            case "phPen150":
-            case "rost+50":
-                payslipHoursPaid += e.hours * 1.5;
-                break;
+            switch(e.payType) {
+                //0.5x
+                case "phPen50":
+                case "wePen50":
+                    payslipHoursPaid += e.hours * 0.5;
+                    break;
+                //1x
+                case "normal":
+                case "overtime":
+                case "wePen100":
+                case "phWorked":
+                case "phGaz":
+                case "phXpay":
+                case "nonRosPH":
+                case "sickFull":
+                case "sickPart":
+                case "annualLeave":
+                case "guarantee":
+                case "edo":
+                case "bonusPayment":
+                case "phCredit":
+                    payslipHoursPaid += e.hours;
+                    break;
+                //1.5x
+                case "ot150":
+                case "phPen150":
+                case "rost+50":
+                    payslipHoursPaid += e.hours * 1.5;
+                    break;
 
-            //2x
-            case "ot200":
-            case "rost+100":
-                payslipHoursPaid += e.hours * 2;
-                break;
-        } 
+                //2x
+                case "ot200":
+                case "rost+100":
+                    payslipHoursPaid += e.hours * 2;
+                    break;
+                //2.5x
+                case "ot250":
+                    payslipHoursPaid += e.hours * 2.5;
+                    break;
+            } 
+            console.log(`${e.payType} - subtotal: ${payslipHoursPaid}`);
         });
         let payslipHoursPaidElement = document.createElement("p");
         payslipHoursPaidElement.classList.add("hours-worked");
@@ -2186,7 +2196,7 @@ function updateResults() {
         //payslip hours worked
         let payslipHoursWorked = 0.0;
         groupedElements.forEach(function(e){ //the elements which to sum together their hours
-            if(["normal", "overtime", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
+            if(["normal", "overtime", "phWorked", "phGaz", "nonRosPH", "sickFull", "sickPart", "ot150", "ot200", "ot250", "rost+50", "rost+100", "annualLeave", "guarantee", "edo", "bonusPayment", "phCredit"].includes(e.payType)) payslipHoursWorked += e.hours;
         });
         let payslipHoursWorkedElement = document.createElement("p");
         payslipHoursWorkedElement.classList.add("hours-worked");
@@ -2505,10 +2515,11 @@ function updateShiftPayTable() {
             let normalHours;
             let todayPhHours = 0.0;
             let tomorrowPhHours = 0.0;
+            let phOvertimeHours = 0.0;
             let tomorrowPh;
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
-            if(s.endHour48 > 23) {
+            if(s.endHour48 > 23) { //if shift runs into the next day
                 let todayHours = 24 - (s.startHour + (s.startMinute / 60));
                 let tomorrowHours = (s.endHour48 - 24) + (s.endMinute / 60);
                 if(s.ph) todayPhHours += todayHours;
@@ -2524,6 +2535,15 @@ function updateShiftPayTable() {
             }
             normalHours = todayNormalHours + tomorrowNormalHours;
 
+            if(todayPhHours + tomorrowPhHours > ordinaryHours) {
+                phOvertimeHours = todayPhHours + tomorrowPhHours - ordinaryHours;
+                tomorrowPhHours -= phOvertimeHours;
+                if(tomorrowPhHours < 0.0) {
+                    todayPhHours += tomorrowPhHours;
+                    tomorrowPhHours = 0;
+                }
+            }
+
             //part-time PH-roster calculation
             if(getPayGrade() == "parttime" && s.phOffRoster) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
@@ -2535,7 +2555,6 @@ function updateShiftPayTable() {
                 //Public Holidays
                 let normalPhWorkedHours = 0.0;
                 let sundayPhWorkedHours = 0.0;
-                //let phXpayHours = 0.0; //obsolete: used for EA interpretation of calculation. Not used for payroll interpretation. Keep variable for future reference
                 if(todayPhHours > 0.0) {
                     if (day == 0 || day == 7) {
                         sundayPhWorkedHours += todayPhHours;
@@ -2565,6 +2584,9 @@ function updateShiftPayTable() {
                 if(sundayPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift));
                     shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift));
+                }
+                if(phOvertimeHours > 0.0) {
+                    shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift));
                 }
 
                 //Normal hours
