@@ -2623,14 +2623,15 @@ function updateShiftPayTable() {
                     let tomorrowOvertimeHours = 0.0;
                     let rost50hours = 0.0;
                     let rost100hours = 0.0;
+                    let excessHoursThreshold = payGrade.excessHoursThreshold;
                     if(todayNormalHours > ordinaryHours){
                         todayOvertimeHours = todayNormalHours - ordinaryHours;
                     }
                     tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
                     if((day == 6 || day == 13) && tomorrowOvertimeHours > 0.0) {
-                        if(todayOvertimeHours > 3) {
-                            rost50hours = 3;
-                            rost100hours = overtimeHours - 3;
+                        if(todayOvertimeHours > excessHoursThreshold) {
+                            rost50hours = excessHoursThreshold;
+                            rost100hours = overtimeHours - excessHoursThreshold;
                         }
                         else {
                             rost50hours = todayOvertimeHours;
@@ -2638,9 +2639,9 @@ function updateShiftPayTable() {
                         }
                     }
                     else if(day == 0 || day == 7 && todayOvertimeHours > 0.0) {
-                        if(overtimeHours > 3) {
+                        if(overtimeHours > excessHoursThreshold) {
                             rost100hours = todayOvertimeHours;
-                            rost50hours = Math.max(0, 3 - todayOvertimeHours)
+                            rost50hours = Math.max(0, excessHoursThreshold - todayOvertimeHours)
                             rost100hours += tomorrowOvertimeHours - rost50hours;
                         }
                         else {
@@ -2649,9 +2650,9 @@ function updateShiftPayTable() {
                         }
                     }
                     else {
-                        if(overtimeHours > 3) {
-                            rost50hours = 3;
-                            rost100hours = overtimeHours - 3;
+                        if(overtimeHours > excessHoursThreshold) {
+                            rost50hours = excessHoursThreshold;
+                            rost100hours = overtimeHours - excessHoursThreshold;
                         }
                         else {
                             rost50hours = overtimeHours;
