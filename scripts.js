@@ -240,6 +240,7 @@ class PayElement {
             "ot200",
             "rost+50",
             "rost+100",
+            "newPHCD",
             "nonRosPH",
             "phCredit",
             "bonusPayment",
@@ -300,6 +301,7 @@ class PayElement {
             case "mealAllowance": payClassName = "Meal Allow"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
+            case "newPHCD": payClassName = "New PHCD"; break;
             case "edo": payClassName = "EDO"; break;
             case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
             default:
@@ -425,8 +427,11 @@ class PayElement {
                 + "<li>In the past, bonus payments have been offered on days such as White Night and New Years.</li></ul>";
                 break;
             case "phCredit": tooltipText = "<strong>PH Credit</strong>"
-            + "<p><em>Publc Holiday Credit.</em> Day off taken in lieu of a worked public holiday where extra-leave was accrued.</p>";
-            break;
+                + "<p><em>Publc Holiday Credit.</em> Day off taken in lieu of a worked public holiday where extra-leave was accrued.</p>";
+                break;
+            case "newPHCD": tooltipText = "<strong>New PHCD</strong>"
+                + "<p><em>New Publc Holiday Credit.</em> PH credits added to your leave balance as a result of choosing Extra Leave on a public holiday.</p>";
+                break;
             case "edo": tooltipText = "<strong>EDO</strong>"
                 + "<p><em>Discretionary Day Off</em>. +4 hours paid on a DDO fortnight, -4 hours deducted otherwise.</p>"
                 break;
@@ -511,6 +516,9 @@ class PayElement {
             case "leaveLoading":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //20%
                 rate *= 0.2;
+                break;
+            case "newPHCD":
+                rate = 0;
                 break;
             default:
                 console.error("PayElement.rate: unable to get rate for payType \"" + this.payType + "\"");
@@ -2543,14 +2551,16 @@ function updateShiftPayTable() {
                 if(normalPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift));
                     shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift));
+                    if(s.phExtraPay && (day != 0 && day != 7)) {
+                        shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day,rateTables));
+                    }
                 }
                 if(sundayPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift));
                     shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift));
-                }
-                //if(phXpayHours > 0.0) shiftPay[day].push(new PayElement("phXpay", phXpayHours, s.ojtShift)); //EA interpretation: XPay based on hours worked. Keep for future reference
-                if((normalPhWorkedHours > 0.0 && s.phExtraPay) && (day != 0 && day != 7)) {
-                    shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
                 }
 
                 //Normal hours
