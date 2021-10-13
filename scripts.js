@@ -2786,11 +2786,11 @@ function calculateTax(payElements) {
         if(!["mealAllowance"].includes(e.payType)) { //all except meal allowance added to taxable income
             taxableIncome += parseFloat(e.value.toFixed(2));
         }
-        else {
-            preTaxDeduction += parseFloat(e.value.toFixed(2));
-        }
+        /*else {
+            preTaxAllowance += parseFloat(e.value.toFixed(2));
+        }*/
 
-        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2"].includes(e.payType)) {
+        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance"].includes(e.payType)) {
             preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
@@ -2945,8 +2945,6 @@ function calculateTax(payElements) {
     }
 
     let netIncome = grossIncome + taxBalance + postTaxDeduction + preTaxDeduction;
-
-    console.log(`Pre deduct: ${preTaxDeduction} - pre allow: ${preTaxAllowance}`);
     
     return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction, preTaxAllowance: preTaxAllowance};
 }
