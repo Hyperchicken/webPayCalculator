@@ -2341,11 +2341,15 @@ function addShortcutButton(field) {
     let hoursFields = document.querySelectorAll(".shift-hours");
     let s = fieldToShift(field); //shift number
     let shortcutButton = (shift, type) => {
+        let ordHours = payGrade.ordinaryHours;
+        if(payGrade.name == "DAO") { //override ordinary hours for DAO
+            ordHours = 8.25;
+        }
         let button = document.createElement("button");
         button.classList.add("shortcut-button");
         button.tabIndex = '-1';
         if(type == "nextShift") button.textContent = "Skip";
-        if(type == "addOrdinaryHours") button.textContent = `+${payGrade.ordinaryHours}h`;
+        if(type == "addOrdinaryHours") button.textContent = `+${ordHours + (payGrade.name == "DAO" ? '' : 'h')}`; //omit the 'h' if DAO so that the text fits in the button
 
         button.onclick = () => {
             if(type == "nextShift") {
@@ -2354,8 +2358,8 @@ function addShortcutButton(field) {
             else if(type == "addOrdinaryHours") {
                 let signonHour = parseInt(timeFields[shift * 2].value.substring(0,2));
                 let signonMinute = parseInt(timeFields[shift * 2].value.substring(2,4));
-                let newHour = (signonHour + Math.floor(payGrade.ordinaryHours)) % 24;
-                let newMinute = (signonMinute + Math.round((payGrade.ordinaryHours - Math.floor(payGrade.ordinaryHours)) * 60));
+                let newHour = (signonHour + Math.floor(ordHours)) % 24;
+                let newMinute = (signonMinute + Math.round((ordHours - Math.floor(ordHours)) * 60));
                 if(newMinute >= 60){
                     newHour++;
                     newMinute = newMinute % 60;
