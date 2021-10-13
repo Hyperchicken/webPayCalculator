@@ -5,7 +5,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  true,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "level1" : {
         "name" : "TD Level 1",
@@ -13,7 +13,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  true,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "trainee" : {
         "name" : "Trainee",
@@ -21,7 +21,7 @@ const grades = {
         "ordinaryHours" : 7.6,
         "ddo" : false,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "conversion" : {
         "name" : "Conversion",
@@ -29,7 +29,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  true,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "parttime" : {
         "name" : "Part-Time (SPOT)",
@@ -37,7 +37,7 @@ const grades = {
         "ordinaryHours" : 7.6,
         "ddo" : false,
         "suburbanAllowance" :  true,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "jobshare" : {
         "name" : "Job-Share/FWA (SPOT)",
@@ -45,7 +45,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : false,
         "suburbanAllowance" :  true,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "so8" : {
         "name" : "TSO SO-8",
@@ -53,7 +53,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "so9" : {
         "name" : "TSO SO-9",
@@ -61,7 +61,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "so10" : {
         "name" : "TSO SO-10",
@@ -69,7 +69,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "so11" : {
         "name" : "TSO SO-11",
@@ -77,7 +77,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "so12" : {
         "name" : "TSO SO-12",
@@ -85,7 +85,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "drivers"
+        "excessHoursThreshold": 3
     },
     "dao" : {
         "name" : "DAO",
@@ -93,7 +93,7 @@ const grades = {
         "ordinaryHours" : 8,
         "ddo" : true,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "operations"
+        "excessHoursThreshold": 4
     },
     "daoteamleader" : {
         "name" : "DAO Team Leader",
@@ -101,6 +101,6 @@ const grades = {
         "ordinaryHours" : 8.5,
         "ddo" : false,
         "suburbanAllowance" :  false,
-        "enterpriseAgreement": "operations"
+        "excessHoursThreshold": 4
     }
 }
