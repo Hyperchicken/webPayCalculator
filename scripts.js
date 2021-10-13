@@ -7,19 +7,19 @@
 "use strict";
 
 //version
-const calcVersion = "1.32";
-const calcLastUpdateDate = "29/09/2021";
+const calcVersion = "1.33";
+const calcLastUpdateDate = "14/10/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>v1.32<li>PH-OFF no longer counted as a worked shift for the purposes of calculating guarantee.</li></ul>"
-+ "<ul>v1.31<li>Fixed net income and pre-tax allows/deds miscalculation bug introduced in v1.30.</li></ul>"
-+ "<ul>v1.30"
-+ "<li>Renamed Job-Share grade to Job-Share/FWA.</li>"
-+ "<li>Added ability to add custom Pre-Tax deductions in Net Income Settings.</li>"
-+ "<li>Added pre-tax allowances/deductions subtotal.</li>"
-+ "<li>Fixed wrong text colour on Bonus Payment button on some browsers.</li>"
++ "<ul>"
++"<li>Fixed Meal Allowance causing Net Income miscalculation.</li>"
++"<li>Improved calculation on public holiday shifts that are in excess of ordinary hours; implemented 'OT 2.5' element.</li>"
++"<li>Added 'New PHCD' element (PH credits accrued).</li>"
++"<li>Fixed Rost+100% causing incorrect 'Hours paid on payslip' value.</li>"
++"<li>[DAO] Shortcut button now adds 8.25 hours instead of 8.</li>"
++"<li>[DAO] Excess hours overtime: now correctly calculates double time on time worked in excess of 12 hours instead of 11 hours.</li>"
 + "</ul>";
 
 //colours
