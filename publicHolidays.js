@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.05
+    Version: 1.07
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -145,9 +145,7 @@ const publicHolidays = [
         name: "Christmas Day",
         dates: [
             "2020-12-25",
-            "2021-12-25",
             "2021-12-27",
-            "2022-12-25",
             "2022-12-27",
             "2023-12-25"
         ],
@@ -157,9 +155,7 @@ const publicHolidays = [
     {
         name: "Boxing Day",
         dates: [
-            "2020-12-26",
             "2020-12-28",
-            "2021-12-26",
             "2021-12-28",
             "2022-12-26",
             "2023-12-26"
