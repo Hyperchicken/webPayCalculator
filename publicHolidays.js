@@ -24,10 +24,8 @@ const publicHolidays = [
         dates: [
             "2020-01-01",
             "2021-01-01",
-            "2022-01-01",
             "2022-01-03",
-            "2023-01-01",
-            "2023-01-02" //As New Year's Day falls on a Sunday, the Monday is an additional public holiday.
+            "2023-01-02"
         ],
         infoTitle: "New Year's Day Public Holiday",
         infoText: "PH Info placeholder"
