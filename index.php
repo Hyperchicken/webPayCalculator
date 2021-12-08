@@ -64,8 +64,18 @@
 
     <div class="row">
         <div class="col-shift">
-            <div class="container grid input-container" id="shift-details">
-                <h3>Data Entry</h3>
+            <div class="window container grid input-container" id="shift-details">
+                <div class="title-bar grid-1-6">
+                    <div class="title-bar-text">
+                        Data Input
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize"></button>
+                        <button aria-label="Maximize"></button>
+                        <button aria-label="Close"></button>
+                    </div>
+                </div>
+
 
                 <div class="pay-grade-container">
                     <span>Grade:</span>
