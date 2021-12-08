@@ -2188,7 +2188,6 @@ function updateResults() {
                     payslipHoursPaid += e.hours * 2.5;
                     break;
             } 
-            console.log(`${e.payType} - subtotal: ${payslipHoursPaid}`);
         });
         let payslipHoursPaidElement = document.createElement("p");
         payslipHoursPaidElement.classList.add("hours-worked");
@@ -2536,7 +2535,7 @@ function updateShiftPayTable() {
             else {
                 todayNormalHours += shiftHours;
             }
-            normalHours = todayNormalHours + tomorrowNormalHours;
+            normalHours = (todayNormalHours + tomorrowNormalHours).toFixed(10);
 
             if(todayPhHours + tomorrowPhHours > ordinaryHours) {
                 phOvertimeHours = todayPhHours + tomorrowPhHours - ordinaryHours;
