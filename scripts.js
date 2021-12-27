@@ -2578,9 +2578,9 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift));
                     if(s.phExtraPay && (day != 0 && day != 7)) {
                         shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
-                    }
-                    else {
-                        shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day,rateTables));
+                    } 
+                    else if(s.ph) {
+                        shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
                     }
                 }
                 if(sundayPhWorkedHours > 0.0) {
@@ -2608,7 +2608,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables));
                     }
                 }
-                else if(s.shiftWorkedNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.rosteredShiftNumber /*+ phOffRosterCount*/ <= ordinaryDays && s.hoursDecimal < ordinaryHours) { //PH-OFF not counted as worked shift (commented out)
+                else if(s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
                 }
