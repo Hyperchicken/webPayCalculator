@@ -17,7 +17,7 @@ var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpd
 + "<li>Added 'Public Holiday No Pay' shift option. Use this when Paid Leave of Absence will not be paid on a Public Holiday.</li>"
 + "<li>Fixed an issue where PH-Xpay would incorrectly be paid after unsetting the Public Holiday shift option.</li>"
 + "<li>'New PHCD' element no longer shown when a normal shift signs-off into the next day and the next day is a public holiday.</li>"
-+ "<li>Fixed come cases where a zero-value element may appear.</li>"
++ "<li>Fixed some cases where a zero-value element may appear.</li>"
 + "</ul>";
 
 //colours
