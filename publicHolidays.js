@@ -31,13 +31,13 @@ const publicHolidays = [
         infoText: "<ul><li>Where New Year's Day falls on a Saturday or Sunday, it is to be observed on the following weekday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
-        name: "New Year's Day ⚠",
+        name: "New Year's Day*",
         dates: [
             "2022-01-01",
             "2023-01-01"
         ],
         infoTitle: "New Year's Day Public Holiday (Saturday or Sunday)",
-        infoText: "<ul><li>This New Year's Day falls on a Saturday or a Sunday.</li><li>Select the " + phDummyButton + " shift option if you're rostered to work or your shift has converted to PH.</li><li>If you are OFF roster, do not set the " + phDummyButtonHollow + " shift option as OFF-roster is not entitled to leave of absence on this public holiday.</li>"
+        infoText: "<ul><li>This New Year's Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
     },
     {
         name: "Australia Day",
@@ -160,13 +160,13 @@ const publicHolidays = [
         infoText: "<ul><li>Where Christmas Day falls on a Saturday or Sunday, it is to be observed on 27th December.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
-        name: "Christmas Day ⚠",
+        name: "Christmas Day*",
         dates: [
             "2021-12-25",
             "2022-12-25"
         ],
         infoTitle: "Christmas Day Public Holiday (Saturday or Sunday)",
-        infoText: "<ul><li>This Christmas Day falls on a Saturday or a Sunday.</li><li>Select the " + phDummyButton + " shift option if you're rostered to work or your shift has converted to PH.</li><li>If you are OFF roster, do not set the " + phDummyButtonHollow + " shift option as OFF-roster is not entitled to leave of absence on this public holiday.</li>"
+        infoText: "<ul><li>This Christmas Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
     },
     {
         name: "Boxing Day",
@@ -180,12 +180,12 @@ const publicHolidays = [
         infoText: "<ul><li>Where Boxing Day falls on a Saturday or Sunday, it is to be observed on 28th December.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     },
     {
-        name: "Boxing Day ⚠",
+        name: "Boxing Day*",
         dates: [
             "2020-12-26",
             "2021-12-26"
         ],
         infoTitle: "Boxing Day Public Holiday (Saturday or Sunday)",
-        infoText: "<ul><li>This Boxing Day falls on a Saturday or a Sunday.</li><li>Select the " + phDummyButton + " shift option if you're rostered to work or your shift has converted to PH.</li><li>If you are OFF roster, do not set the " + phDummyButtonHollow + " shift option as OFF-roster is not entitled to leave of absence on this public holiday.</li>"
+        infoText: "<ul><li>This Boxing Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
     }
 ];
