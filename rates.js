@@ -1,6 +1,6 @@
 /*
     rates.js - pay rates, allowances, tax rates and more.
-    version 1.02
+    version 1.03
 */
 
 //enterprise agreement pay rates
@@ -34,6 +34,7 @@ const nightShiftRatesSal =      [3.5988,       3.6528,       3.7076,       3.763
 //ETDSC fortnightly membership rates
 const etdscFullMemberRate = 6;
 const etdscHalfMemberRate = 3;
+const etdscJobshareMemberRate = 12;
 
 //compulsary super contribution rates
 const superRatesDate =  ["2014-07-01",  "2021-07-01",   "2022-07-01",   "2023-07-01",   "2024-07-01",   "2025-07-01"];
