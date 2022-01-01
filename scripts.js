@@ -7,13 +7,16 @@
 "use strict";
 
 //version
-const calcVersion = "1.34a";
-const calcLastUpdateDate = "28/12/2021";
+const calcVersion = "1.35";
+const calcLastUpdateDate = "01/01/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>"
++ "<ul>1.35"
++ "<li>Added ETDSC Jobshare membership option in Net Income Settings.</li>"
++ "</ul>"
++ "<ul>1.34a"
 + "<li>Added 'Public Holiday No Pay' shift option. Use this when Paid Leave of Absence will not be paid on a Public Holiday.</li>"
 + "<li>Fixed an issue where PH-Xpay would incorrectly be paid after unsetting the Public Holiday shift option.</li>"
 + "<li>'New PHCD' element no longer shown when a normal shift signs-off into the next day and the next day is a public holiday.</li>"
@@ -706,7 +709,7 @@ $(document).ready(function() {
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
-    validateTimeFields()
+    validateTimeFields();
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
@@ -1671,8 +1674,8 @@ function timeChanged(field) {
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
-    if(timeField()[field].value.length == 4) {
-        if(field < 27) timeField()[field + 1].focus();
+    if(timeField()[field].value.length >= 4 && field < 27) {
+        timeField()[field + 1].focus();
     }
     else if (timeField()[field].value.length == 0) {
         addShortcutButton(field);
@@ -2363,9 +2366,12 @@ function printShiftHours() {
 
 /**
  * Perform input validation on each time input field and display an error pop-up and icon if validation fails.
+ * 
+ * @returns {boolean} true if time input fields are all valid, false if a field fails to validate
  */
 function validateTimeFields() {
     const textboxErrorColour = "#ffd4d4";
+    let valid = true;
     let hoursField = document.querySelectorAll(".shift-hours");
     let timeField = document.querySelectorAll(".time");
     for(let i = 0; i < shifts.length; i++) {
@@ -2376,12 +2382,13 @@ function validateTimeFields() {
         errorIcon.className = "fas fa-exclamation-triangle fa-lg yellow-colour"; //icon
         errorSpan.addEventListener("click", function(){
             errorPopup.classList.toggle("show");
-        });
+        }, true);
         errorPopup.className = "popuptext";
         errorPopup.textContent = "Sign-on and sign-off times must be 4 digits and between 0000 and 2359";
         errorSpan.appendChild(errorIcon);
         errorSpan.appendChild(errorPopup);
         if(!timeField[i*2].checkValidity() || !timeField[(i*2)+1].checkValidity()) {
+            valid = false;
             hoursField[i].innerHTML = "";
             hoursField[i].appendChild(errorSpan);
             errorPopup.classList.add("show");
@@ -2399,6 +2406,7 @@ function validateTimeFields() {
             timeField[(i*2)+1].style.backgroundColor = "";
         }
         if(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "") {
+            valid = false;
             timeField[i*2].style.backgroundColor = textboxErrorColour;
             timeField[(i*2)+1].style.backgroundColor = textboxErrorColour;
             hoursField[i].innerHTML = "";
@@ -2984,6 +2992,10 @@ function calculateTax(payElements) {
         taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscHalfMemberRate, 6));
         postTaxDeduction -= etdscHalfMemberRate;
     }
+    else if(etdscMembership == "jobshare") {
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscJobshareMemberRate, 6));
+        postTaxDeduction -= etdscJobshareMemberRate;
+    }
 
     //student loan
     if(stsl) {
@@ -3262,7 +3274,7 @@ function resetForm() {
     updateShiftTable();
     updateShiftWorkedCount();
     printShiftHours();
-    validateTimeFields()
+    validateTimeFields();
     updateOptionsButtons();
     updateShiftPayTable();
     updateResults();
@@ -3727,22 +3739,25 @@ function taxConfigurator() {
     etdscInput.id = etdscId;
     let etdscInputOptionNone = document.createElement("option");
     etdscInputOptionNone.textContent = "None";
-    etdscInputOptionNone.setAttribute("value", "none")
+    etdscInputOptionNone.setAttribute("value", "")
     let etdscInputOptionHalf = document.createElement("option");
     etdscInputOptionHalf.textContent = "Half";
     etdscInputOptionHalf.setAttribute("value", "half")
     let etdscInputOptionFull = document.createElement("option");
     etdscInputOptionFull.textContent = "Full";
     etdscInputOptionFull.setAttribute("value", "full")
+    let etdscInputOptionJobshare = document.createElement("option");
+    etdscInputOptionJobshare.textContent = "Jobshare";
+    etdscInputOptionJobshare.setAttribute("value", "jobshare")
     etdscInput.addEventListener("input", function(){
-        if(this.value == "full") setSaveData(etdscId, "full", false);
-        else if(this.value == "half") setSaveData(etdscId, "half", false);
+        if(this.value) setSaveData(etdscId, this.value, false);
         else setSaveData(etdscId, "", false);
         updateResults();
     });
     etdscInput.appendChild(etdscInputOptionNone);
     etdscInput.appendChild(etdscInputOptionHalf);
     etdscInput.appendChild(etdscInputOptionFull);
+    etdscInput.appendChild(etdscInputOptionJobshare);
     formArea.appendChild(etdscLabel);
     formArea.appendChild(etdscInput);
 
@@ -3880,15 +3895,15 @@ function taxConfigurator() {
 
     //check and load saved tax config data
     //if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
-    switch(getSaveData(etdscId, false)) {
-        case "full": etdscInput.value = "full"; break;
-        case "half": etdscInput.value = "half"; break;
-        default: etdscInput.value = "none";
-    }
+    
+    etdscInput.value = getSaveData(etdscId, false);
+    let etdscMembershipSave = getSaveData(etdscId, false);
     let superSalSacSave = getSaveData(superSalSacId, false);
     let novatedLeasePreSave = getSaveData(novatedLeasePreId, false);
     let novatedLeasePostSave = getSaveData(novatedLeasePostId, false);
     let withholdExtraSave = getSaveData(withholdExtraId, false);
+    if(etdscMembershipSave) etdscInput.value = etdscMembershipSave;
+        else etdscInput.value = "";
     if(superSalSacSave) document.forms.taxSettings.elements.namedItem(superSalSacId).value = superSalSacSave;
     if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
     if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
