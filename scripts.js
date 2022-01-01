@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.34";
-const calcLastUpdateDate = "27/12/2021";
+const calcVersion = "1.34a";
+const calcLastUpdateDate = "28/12/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2597,7 +2597,7 @@ function updateShiftPayTable() {
             else {
                 todayNormalHours += shiftHours;
             }
-            normalHours = (todayNormalHours + tomorrowNormalHours).toFixed(10);
+            normalHours = parseFloat((todayNormalHours + tomorrowNormalHours).toFixed(10));
 
             if(todayPhHours + tomorrowPhHours > ordinaryHours) {
                 phOvertimeHours = todayPhHours + tomorrowPhHours - ordinaryHours;
