@@ -7,12 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.35";
-const calcLastUpdateDate = "01/01/2021";
+const calcVersion = "1.35a";
+const calcLastUpdateDate = "05/01/2021";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
++ "<ul>1.35a"
++ "<li>Fixed another instance where New PHCD will incorrectly be \"paid\".</li>"
 + "<ul>1.35"
 + "<li>Added ETDSC Jobshare membership option in Net Income Settings.</li>"
 + "</ul>"
@@ -2649,7 +2651,7 @@ function updateShiftPayTable() {
                     if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
                         shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
                     } 
-                    else if(s.ph) {
+                    else if(s.ph && (day != 0 && day != 7)) {
                         shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
                     }
                 }
