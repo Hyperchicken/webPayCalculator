@@ -14,7 +14,7 @@ const calcLastUpdateDate = "05/01/2021";
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul>1.35a"
-+ "<li>Fixed another instance where New PHCD will incorrectly be \"paid\".</li>"
++ "<li>Fixed another instance where New PHCD was incorrectly \"paid\".</li>"
 + "</ul>"
 + "<ul>1.35"
 + "<li>Added ETDSC Jobshare membership option in Net Income Settings.</li>"
