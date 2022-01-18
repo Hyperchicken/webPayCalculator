@@ -8,7 +8,7 @@
 
 //version
 const calcVersion = "1.35a";
-const calcLastUpdateDate = "05/01/2021";
+const calcLastUpdateDate = "05/01/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
