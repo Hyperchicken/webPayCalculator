@@ -2902,7 +2902,7 @@ function calculateTax(payElements) {
             preTaxAllowance += parseFloat(e.value.toFixed(2));
         }*/
 
-        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance"].includes(e.payType)) {
+        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance", "leaveLoading"].includes(e.payType)) {
             preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
