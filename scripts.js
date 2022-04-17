@@ -2979,7 +2979,15 @@ function calculateTax(payElements) {
         return;
     };
     //calculate income tax and add element to tax table
-    let incomeTax = Math.round((weeklyTaxableIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
+    let incomeTax;
+    let customFixedTaxRate = parseFloat(getSaveData("fixedTaxRate", false)) / 100;
+    if(customFixedTaxRate) { //fixed tax rate set in tax configurator
+        incomeTax = Math.round(weeklyTaxableIncome * customFixedTaxRate);
+    }
+    else { //default sliding scale tax rate
+        incomeTax = Math.round((weeklyTaxableIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
+    }
+    
     incomeTax *= -1;
     if(incomeTax != 0) {
         taxPay.push(new TaxElement("Income Tax", incomeTax, 0));
@@ -3605,7 +3613,7 @@ function taxConfigurator() {
     formHeader.classList.add("grid-1-3")
     formHeader.innerHTML = "<em>Configure settings for tax, net and super calculation.</em><p><br><strong>Please note:</strong> These settings will stay constant regardless of the currently set fortnight. Any changes to these settings will affect NET and TAX calculations for any previously saved fortnights.</p><hr>";
 
-    let createDollarPercentInput = (id, showDollar = false, showPercent = false, percentActive = false) => {
+    let createDollarPercentInput = (id, showDollar = false, showPercent = false, percentActive = false, placeholder = "0") => {
         let inputGroup = document.createElement("div");
         inputGroup.classList.add("input-group");
         let dollarAddon = document.createElement("span");
@@ -3618,7 +3626,7 @@ function taxConfigurator() {
         inputElement.id = id;
         inputElement.setAttribute("type", "text");
         inputElement.setAttribute("inputmode", "decimal");
-        inputElement.setAttribute("placeholder", "0");
+        inputElement.setAttribute("placeholder", placeholder);
         if(!showDollar) {
             dollarAddon.classList.add("hidden");
         }
@@ -3811,6 +3819,18 @@ function taxConfigurator() {
     formArea.appendChild(novatedLeasePostLabel);
     formArea.appendChild(novatedLeasePostInput);
 
+    //fixed tax rate
+    let fixedTaxRateId = "fixedTaxRate";
+    let fixedTaxRateLabel = document.createElement("span");
+    fixedTaxRateLabel.textContent = "Custom Fixed Tax Rate";
+    let fixedTaxRateInput = createDollarPercentInput(fixedTaxRateId, false, true, true, "None");
+    fixedTaxRateInput.addEventListener("input", function(){
+        setSaveData(fixedTaxRateId, document.forms.taxSettings.elements.namedItem(fixedTaxRateId).value, false);
+        updateResults();
+    });
+    formArea.appendChild(fixedTaxRateLabel);
+    formArea.appendChild(fixedTaxRateInput);
+
     //custom pre-tax
     formArea.appendChild(document.createElement("hr"));
     let customPreTaxHeader = document.createElement("span");
@@ -3905,12 +3925,14 @@ function taxConfigurator() {
     let novatedLeasePreSave = getSaveData(novatedLeasePreId, false);
     let novatedLeasePostSave = getSaveData(novatedLeasePostId, false);
     let withholdExtraSave = getSaveData(withholdExtraId, false);
+    let fixedTaxRateSave = getSaveData(fixedTaxRateId, false);
     if(etdscMembershipSave) etdscInput.value = etdscMembershipSave;
         else etdscInput.value = "";
     if(superSalSacSave) document.forms.taxSettings.elements.namedItem(superSalSacId).value = superSalSacSave;
     if(novatedLeasePreSave)document.forms.taxSettings.elements.namedItem(novatedLeasePreId).value = novatedLeasePreSave;
     if(novatedLeasePostSave) document.forms.taxSettings.elements.namedItem(novatedLeasePostId).value = novatedLeasePostSave;
     if(withholdExtraSave) document.forms.taxSettings.elements.namedItem(withholdExtraId).value = withholdExtraSave;
+    if(fixedTaxRateSave) document.forms.taxSettings.elements.namedItem(fixedTaxRateId).value = fixedTaxRateSave;
     for (let i = 0; i < numberOfCustomPreTaxFields; i++) {
         let customPreTaxDescriptionSave = getSaveData(customPreTaxDescriptionId + i.toString(), false);
         let customPreTaxValueSave = getSaveData(customPreTaxValueId + i.toString(), false);
