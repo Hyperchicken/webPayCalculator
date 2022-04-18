@@ -7,23 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.35a";
-const calcLastUpdateDate = "05/01/2022";
+const calcVersion = "1.36";
+const calcLastUpdateDate = "18/04/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>1.35a"
-+ "<li>Fixed another instance where New PHCD was incorrectly \"paid\".</li>"
-+ "</ul>"
-+ "<ul>1.35"
-+ "<li>Added ETDSC Jobshare membership option in Net Income Settings.</li>"
-+ "</ul>"
-+ "<ul>1.34a"
-+ "<li>Added 'Public Holiday No Pay' shift option. Use this when Paid Leave of Absence will not be paid on a Public Holiday.</li>"
-+ "<li>Fixed an issue where PH-Xpay would incorrectly be paid after unsetting the Public Holiday shift option.</li>"
-+ "<li>'New PHCD' element no longer shown when a normal shift signs-off into the next day and the next day is a public holiday.</li>"
-+ "<li>Fixed some cases where a zero-value element may appear.</li>"
++ "<ul>"
++ "<li>Added ability to set a fixed tax rate (net income settings).</li>"
 + "</ul>";
 
 //colours
