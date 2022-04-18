@@ -2170,9 +2170,10 @@ function updateResults() {
             taxableIncomeElement.textContent = "Taxable Income: " + ((taxTotals.taxableIncome < 0) ? "-$" : "$") + Math.abs(taxTotals.taxableIncome).toFixed(2);
             resultArea.appendChild(taxableIncomeElement);
 
+            let customFixedTaxRate = parseFloat(getSaveData("fixedTaxRate", false));
             let totalTaxElement = document.createElement("p");
             totalTaxElement.classList.add("hours-worked");
-            totalTaxElement.textContent = "Tax: " + ((taxTotals.taxBalance < 0) ? "-$" : "$") + Math.abs(taxTotals.taxBalance).toFixed(2);
+            totalTaxElement.textContent = "Tax" + (customFixedTaxRate ? ' [' + customFixedTaxRate + '% fixed rate]' : "") + ": " + ((taxTotals.taxBalance < 0) ? "-$" : "$") + Math.abs(taxTotals.taxBalance).toFixed(2);
             resultArea.appendChild(totalTaxElement);
 
             let preTaxAllowsDeds = taxTotals.preTaxDeduction + taxTotals.preTaxAllowance;
@@ -2982,7 +2983,7 @@ function calculateTax(payElements) {
     let incomeTax;
     let customFixedTaxRate = parseFloat(getSaveData("fixedTaxRate", false)) / 100;
     if(customFixedTaxRate) { //fixed tax rate set in tax configurator
-        incomeTax = Math.round(weeklyTaxableIncome * customFixedTaxRate);
+        incomeTax = Math.round(taxableIncome * customFixedTaxRate);
     }
     else { //default sliding scale tax rate
         incomeTax = Math.round((weeklyTaxableIncome * taxScale[taxScaleIndex][1]) - taxScale[taxScaleIndex][2]) * 2;
