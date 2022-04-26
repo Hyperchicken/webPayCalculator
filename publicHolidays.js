@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.08
+    Version: 1.10
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -17,6 +17,9 @@
 //html for visual dummy buttons
 const phDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">Public Holiday</span></a>";
 const phDummyButtonHollow = "<a class=\"button\" style=\"background-color: #5554; display: inline-block; border: solid; border-color: #44c600; border-width: 2px; cursor: default;\">Public Holiday</span></a>";
+const phNoPayDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">OFF No Pay</span></a>";
+const phOffRosterDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">OFF Roster</span></a>";
+const phGazetteDummyButton = "<a class=\"button\" style=\"background-color: #44c600; display: inline-block; border: none; cursor: default;\">Converted to PH</span></a>";
 
 const publicHolidays = [
     {
@@ -92,7 +95,7 @@ const publicHolidays = [
             "2023-04-09"
         ],
         infoTitle: "Easter Sunday Public Holiday",
-        infoText: "<ul><li>As this public holiday falls on a Sunday, it is always paid at double time and a half.</li><li>There is no provision for extra leave.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
+        infoText: "<ul><li>As this public holiday falls on a Sunday, it is always paid at double time and a half.</li><li>There is no provision for extra leave.</li><li>Paid Leave of Absence does not apply to Easter Sunday.</.li><li>If you are OFF Roster on Easter Sunday, set the "+ phDummyButton + phNoPayDummyButton + " shift option.</li><li>If you are on leave, set the " + phDummyButton + phGazetteDummyButton + " shift option together with the Annual Leave shift option.</li>"
     },
     {
         name: "Easter Monday",
