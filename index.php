@@ -69,21 +69,33 @@
                 <h3>Data Entry</h3>
 
                 <div class="pay-grade-container">
-                    <span>Grade:</span>
-                    <select id="pay-grade" oninput="updateGrade()">
-                        <option value="spot">SPOT</option>
-                        <option value="level1">TD Lvl 1</option>
-                        <option value="trainee">Trainee</option>
-                        <option value="conversion">Conversion</option>
-                        <option value="parttime">Part-Time (SPOT)</option>
-                        <option value="jobshare">Job-Share/FWA (SPOT)</option>
-                        <option value="so8">TSO SO-8</option>
-                        <option value="so9">TSO SO-9</option>
-                        <option value="so10">TSO SO-10</option>
-                        <option value="so11">TSO SO-11</option>
-                        <option value="so12">TSO SO-12</option>
-                        <option value="dao">DAO</option>
-                        <option value="daoteamleader">DAO Team-Leader</option>
+                    <label for="pay-grade">Grade:</label>
+                    <select name="pay-grade" id="pay-grade" oninput="updateGrade()">
+                        <optgroup label="Drivers">
+                            <option value="spot">SPOT</option>
+                            <option value="level1">TD Lvl 1</option>
+                            <option value="trainee">Trainee</option>
+                            <option value="conversion">Conversion</option>
+                            <option value="parttime">Part-Time (SPOT)</option>
+                            <option value="jobshare">Job-Share/FWA (SPOT)</option>
+                            <option value="so8">TSO SO-8</option>
+                            <option value="so9">TSO SO-9</option>
+                            <option value="so10">TSO SO-10</option>
+                            <option value="so11">TSO SO-11</option>
+                            <option value="so12">TSO SO-12</option>
+                        </optgroup>
+                        <optgroup label="DAOs">
+                            <option value="dao">DAO</option>
+                            <option value="daoteamleader">DAO Team-Leader</option>
+                        </optgroup>
+                        <optgroup label="Station Staff">
+                            <option value="">Station Officer 1</option>
+                            <option value="">Station Master 1</option>
+                        </optgroup>
+                        <optgroup label="Signallers">
+                            <option value="dao">DAO</option>
+                            <option value="daoteamleader">DAO Team-Leader</option>
+                        </optgroup>
                     </select>
                 </div>
 
