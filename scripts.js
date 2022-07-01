@@ -7,14 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.36";
+const calcVersion = "1.37 DEV";
 const calcLastUpdateDate = "18/04/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul>"
-+ "<li>Added ability to set a fixed tax rate (net income settings).</li>"
++ "<li>Station Staff Development Build - INCOMPLETE</li>"
 + "</ul>";
 
 //colours
@@ -81,7 +81,8 @@ class Shift {
         this.ddo = false; //DDO
         this.bonus = false; //bonus payment
         this.bonusHours = 0.0; //bonus payment hours
-        this.teamLeader = false;
+        this.teamLeader = false; //DAO team leader
+        this.relievingExpenses = false; //relieving expenses
         this.shiftWorkedNumber = 0;
         this.rosteredShiftNumber = 0;
     }    
@@ -96,7 +97,7 @@ class Shift {
     }
 
     get ojtShift() {
-        if(["spot", "parttime", "jobshare"].includes(getPayGrade()) && this.ojt) {
+        if(getPayGrade() == "spot" && this.ojt) {
             return true;
         }
         else {
@@ -585,12 +586,6 @@ let shiftPay = [[]];
  */
 let taxPay = [];
 
-let payGrade;
-
-let selectedGradeRates; //stores the currently selected set of rates for the selected pay grade
-let selectedEarlyShiftRates;
-let selectedAfternoonShiftRates;
-let selectedNightShiftRates;
 let selectBonusTextbox; //used keep track of bonus-pay option button textbox to be selected when loading pay-options buttons.
 let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
@@ -960,7 +955,7 @@ function updateOptionsButtons() {
         }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
             let offButton = true;
-            if(s.ddo) {
+            if(s.ddo && grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
                 setButton("DDO-OFF", ddoColour);
                 offButton = false;
             }
@@ -1018,7 +1013,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader){
+            if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses){
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1031,14 +1026,17 @@ function updateOptionsButtons() {
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
                 }
+                if(s.relievingExpenses) {
+                    setButton("Rel Exp", teamLeaderColour);
+                }
                 if(s.daoTeamLeader) {
                     setButton("Team&nbspLeader", teamLeaderColour);
                 }
-                if(s.ddo) {
+                if(s.ddo && grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
                     setButton("DDO-Work", ddoColour);
                 }
                 if(s.ph){
-                    if(getPayGrade() == "parttime") {
+                    if(getEmploymentType() == "parttime") {
                         if(s.phExtraPay) {
                             setButton("PH-XPay", phColour);
                         }
@@ -1197,6 +1195,27 @@ function generateOptionsShelfButtons(day) {
         ojtButton.style.background = buttonBackgroundColour;
     }
 
+    //Relieving Expenses button
+    let relExpensesButton = document.createElement("a");
+    relExpensesButton.textContent = "Relieving Expenses";
+    relExpensesButton.setAttribute("class", "button team-leader-button shelf-button");
+    if(shifts[day].relievingExpenses) {//if Rel Expenses
+        relExpensesButton.addEventListener("click", function(){
+            shifts[day].relievingExpenses = false;
+            reloadPageData();
+            saveToStorage("relievingExpenses", "false");
+        });
+        relExpensesButton.style.background = "";
+    }
+    else {//if not Team Leader
+        relExpensesButton.addEventListener("click", function(){
+            shifts[day].relievingExpenses = true;
+            reloadPageData();
+            saveToStorage("relExpensesButton", "true");
+        });
+        relExpensesButton.style.background = buttonBackgroundColour;
+    }
+
     //DAO Team Leader button
     let teamLeaderButton = document.createElement("a");
     teamLeaderButton.textContent = "Team Leader";
@@ -1266,7 +1285,7 @@ function generateOptionsShelfButtons(day) {
             phSpan.appendChild(xLeaveButton);
             phSpan.appendChild(xPayButton);
             phDiv.appendChild(phSpan);
-            if(getPayGrade() == "parttime") { //special PH options button configuration for part-time grade
+            if(getEmploymentType() == "parttime") { //special PH options button configuration for part-time grade
                 phSpan.appendChild(phRosterButton);
                 xPayButton.classList.remove("dual-button-r");
                 xPayButton.classList.add("dual-button-m");
@@ -1635,10 +1654,13 @@ function generateOptionsShelfButtons(day) {
     if(getPayGrade() == "dao") {
         shelf.appendChild(teamLeaderButton);
     }
-    if(["spot", "parttime", "jobshare"].includes(getPayGrade())) {
+    if(getPayGrade() == "spot") {
         shelf.appendChild(ojtButton);
     }
-    if(getPayGrade() != "daoteamleader") {
+    if(getPayGrade()) {
+        shelf.appendChild(relExpensesButton);
+    }
+    if(grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
         shelf.appendChild(ddoButton);
     } 
     shelf.appendChild(wmButton);
@@ -1695,148 +1717,23 @@ function getPayGrade() {
     return document.getElementById("pay-grade").value;
 }
 
+function getEmploymentType() {
+    return document.getElementById("employment-type").value;
+}
+
 /**
  * Run when the paygrade has been set or changed. Updates all pay-rates, calculator colour, save the grade to storage and refresh the calculator
  */
 function updateGrade() {
     $("#payClassWarning").hide();
-    switch(getPayGrade()) {
-        case "spot": 
-            payGrade = grades.spot;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("#4691db");
-            setSaveData("paygrade", "spot", false);
-            setSaveData("paygrade", "spot");
-            break;
-        case "level1":
-            payGrade = grades.level1;
-            selectedGradeRates = driverLevel1Rates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(114, 99, 191)");
-            setSaveData("paygrade", "level1", false);
-            setSaveData("paygrade", "level1");
-            break;
-        case "trainee":
-            payGrade = grades.trainee;
-            selectedGradeRates = traineeRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(56, 149, 149)");
-            setSaveData("paygrade", "trainee", false);
-            setSaveData("paygrade", "trainee");
-            break;
-        case "conversion":
-            payGrade = grades.conversion;
-            selectedGradeRates = conversionRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(207, 133, 50)");
-            setSaveData("paygrade", "conversion", false);
-            setSaveData("paygrade", "conversion");
-            break;
-        case "parttime":
-            payGrade = grades.parttime;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(56, 140, 65)");
-            setSaveData("paygrade", "parttime", false);
-            setSaveData("paygrade", "parttime");
-            break;
-        case "jobshare":
-            payGrade = grades.jobshare;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("#5b1a4e");
-            setSaveData("paygrade", "jobshare", false);
-            setSaveData("paygrade", "jobshare");
-            break;
-        case "so8":
-            payGrade = grades.so8;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so8Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so8", false);
-            setSaveData("paygrade", "so8");
-            break;
-        case "so9":
-            payGrade = grades.so9;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so9Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so9", false);
-            setSaveData("paygrade", "so9");
-            break;
-        case "so10":
-            payGrade = grades.so10;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so10Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so10", false);
-            setSaveData("paygrade", "so10");
-            break;
-        case "so11":
-            payGrade = grades.so11;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so11Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so11", false);
-            setSaveData("paygrade", "so11");
-            break;
-        case "so12":
-            payGrade = grades.so12;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so12Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so12", false);
-            setSaveData("paygrade", "so12");
-            break;
-        case "dao":
-            payGrade = grades.dao;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so2Rates;
-            setFormColour("#9d1d1d");
-            setSaveData("paygrade", "dao", false);
-            setSaveData("paygrade", "dao");
-            break;
-        case "daoteamleader":
-            payGrade = grades.daoteamleader;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so9Rates;
-            setFormColour("#9d1d1d");
-            setSaveData("paygrade", "daoteamleader", false);
-            setSaveData("paygrade", "daoteamleader");
-            break;
-        default: 
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-    }
+    let selectedGrade = getPayGrade();
+    let employmentType = getEmploymentType();
+
+    setFormColour(grades[selectedGrade].colour);
+    setSaveData("paygrade", selectedGrade, false);
+    setSaveData("paygrade", selectedGrade);
+    setSaveData("employmenttype", employmentType, false);
+    setSaveData("employmenttype", employmentType);
 
     updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
     closeAllOptionsShelves();
@@ -2418,15 +2315,15 @@ function addShortcutButton(field) {
     let hoursFields = document.querySelectorAll(".shift-hours");
     let s = fieldToShift(field); //shift number
     let shortcutButton = (shift, type) => {
-        let ordHours = payGrade.ordinaryHours;
-        if(payGrade.name == "DAO") { //override ordinary hours for DAO
+        let ordHours = grades[getPayGrade()].ordinaryHours;
+        if(getPayGrade() == "dao") { //override shortcut button ordinary hours for DAO
             ordHours = 8.25;
         }
         let button = document.createElement("button");
         button.classList.add("shortcut-button");
         button.tabIndex = '-1';
         if(type == "nextShift") button.textContent = "Skip";
-        if(type == "addOrdinaryHours") button.textContent = `+${ordHours + (payGrade.name == "DAO" ? '' : 'h')}`; //omit the 'h' if DAO so that the text fits in the button
+        if(type == "addOrdinaryHours") button.textContent = `+${ordHours + (getPayGrade() == "dao" ? '' : 'h')}`; //omit the 'h' if DAO so that the text fits in the button
 
         button.onclick = () => {
             if(type == "nextShift") {
@@ -2504,11 +2401,13 @@ function ddoWeek() {
  * This is where all the pay calculation logic lives.
  */
 function updateShiftPayTable() {
+    let payGrade = grades[getPayGrade()];
     let alShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
     let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
+    if(getEmploymentType() == "parttime") ordinaryHours = 7.6; //override ord hours for part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let ddoFortnight = false;
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
@@ -2520,13 +2419,15 @@ function updateShiftPayTable() {
         else return 1;
     }
 
+    
+
     //pay calculation: pass 1. calculate everything except AL and LSL
     for(let day = 0; day < 14; day++) {
-        let rateTables = {
-            gradeRates: selectedGradeRates,
-            earlyShiftRates: selectedEarlyShiftRates,
-            afternoonShiftRates: selectedAfternoonShiftRates,
-            nightShiftRates: selectedNightShiftRates
+        let rateTables = { //rates for current shift
+            gradeRates: grades[getPayGrade()].payRates,
+            earlyShiftRates:  grades[getPayGrade()].earlyShiftRates,
+            afternoonShiftRates:  grades[getPayGrade()].afternoonShiftRates,
+            nightShiftRates:  grades[getPayGrade()].nightShiftRates
         };
         let s = shifts[day]; //alias for current shift
         
@@ -2612,7 +2513,7 @@ function updateShiftPayTable() {
             }
 
             //part-time PH-roster calculation
-            if(getPayGrade() == "parttime" && s.phOffRoster) {
+            if(getEmploymentType() == "parttime" && s.phOffRoster) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
             }
             /*else if(s.sick && s.hoursDecimal <= 4) {
@@ -2815,10 +2716,10 @@ function updateShiftPayTable() {
     }
 
     let rateTables = {
-        gradeRates: selectedGradeRates,
-        earlyShiftRates: selectedEarlyShiftRates,
-        afternoonShiftRates: selectedAfternoonShiftRates,
-        nightShiftRates: selectedNightShiftRates
+        gradeRates: grades[getPayGrade()].payRates,
+        earlyShiftRates:  grades[getPayGrade()].earlyShiftRates,
+        afternoonShiftRates:  grades[getPayGrade()].afternoonShiftRates,
+        nightShiftRates:  grades[getPayGrade()].nightShiftRates
     };
 
     //pay calculation: pass 2. determine and cap which days to pay annual and long service leave on.
@@ -2857,9 +2758,9 @@ function updateShiftPayTable() {
             }
         }
     }
-    
+
     //pay calculation: DDO.
-    if(payGrade.ddo) {
+    if(payGrade.ddo && getEmploymentType() == "fulltime") {
         let day = ddoWeek();
         if(day < 0) {
             shiftPay[0].push(new PayElement("edo", -4, 0, rateTables));
@@ -3158,13 +3059,37 @@ function loadSavedData(datePrefix = "") {
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
     let savedPayGrade = getSaveData("paygrade");
+    let savedEmploymentType = getSaveData("employmenttype")
+
     if(savedPayGrade == null) {
         savedPayGrade = getSaveData("paygrade", false);
         if(savedPayGrade == null) {
-            savedPayGrade = "spot"; //default
+            savedPayGrade = "spot"; //default grade
+
         }
     }
+
+    //convert old parttime and jobshare grades to new grade + employment-type
+    if (savedPayGrade == "parttime") { 
+        savedPayGrade = "spot";
+        savedEmploymentType = "parttime";
+        setSaveData("employmenttype", savedEmploymentType, false);
+    }
+    else if (savedPayGrade == "jobshare") {
+        savedPayGrade = "spot";
+        savedEmploymentType = "jobsharefwa";
+        setSaveData("employmenttype", savedEmploymentType, false);
+    }
+
+    if(savedEmploymentType == null) {
+        savedEmploymentType = getSaveData("employmenttype", false);
+        if(savedEmploymentType == null) {
+            savedEmploymentType = "fulltime"; //default employment type
+        }
+    }
+
     document.getElementById("pay-grade").value = savedPayGrade;
+    document.getElementById("employment-type").value = savedEmploymentType;
     
     //shift options save data
     for(let day = 0; day < 14; day++) {
