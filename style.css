@@ -448,12 +448,12 @@ a:visited {
     grid-column: 1 / 6;
 }
 
-.pay-grade-container > select {
-    float: right;
-}
-
 .pay-grade-container > span {
     float: left;
+}
+
+.pay-grade-container > label {
+    margin-right: 10px;
 }
 
 .shift-options-shelf {
@@ -631,6 +631,7 @@ hr {
 
 .time {
     width: 3em;
+    height: 2em;
     margin: auto;
 }
 
