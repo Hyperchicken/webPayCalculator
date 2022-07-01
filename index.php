@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.36">
+    <link rel="stylesheet" href="style.css?v=1.37d">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,9 +25,9 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.10"></script> 
-    <script src="rates.js?v=1.03"></script> 
-    <script src="grades.js?v=1.02"></script> 
-    <script src="scripts.js?v=1.36"></script> 
+    <script src="rates.js?v=1.03c"></script> 
+    <script src="grades.js?v=1.03c"></script> 
+    <script src="scripts.js?v=1.37d"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -76,26 +76,53 @@
                             <option value="level1">TD Lvl 1</option>
                             <option value="trainee">Trainee</option>
                             <option value="conversion">Conversion</option>
-                            <option value="parttime">Part-Time (SPOT)</option>
-                            <option value="jobshare">Job-Share/FWA (SPOT)</option>
+                        </optgroup>
+                        <optgroup label="Train Services">
                             <option value="so8">TSO SO-8</option>
                             <option value="so9">TSO SO-9</option>
                             <option value="so10">TSO SO-10</option>
                             <option value="so11">TSO SO-11</option>
                             <option value="so12">TSO SO-12</option>
                         </optgroup>
-                        <optgroup label="DAOs">
+                        <optgroup label="DAO/Rosters">
                             <option value="dao">DAO</option>
                             <option value="daoteamleader">DAO Team-Leader</option>
                         </optgroup>
-                        <optgroup label="Station Staff">
-                            <option value="">Station Officer 1</option>
-                            <option value="">Station Master 1</option>
+                        <optgroup label="Station Assistant">
+                            <option value="sac1y1">SA Class 1 Yr 1</option>
+                            <option value="sac1y2">SA Class 1 Yr 2</option>
+                            <option value="sac1y3">SA Class 1 Yr 3</option>
+                            <option value="sac2y1">SA Class 2 Yr 1</option>
+                            <option value="sac2y2">SA Class 2 Yr 2</option>
+                            <option value="sac2y3">SA Class 2 Yr 3</option>
+                            <option value="sac3y1">SA Class 3 Yr 1</option>
+                            <option value="sac3y2">SA Class 3 Yr 2</option>
+                            <option value="sac3y3">SA Class 3 Yr 3</option>
+                            <option value="lsay1">LSA Yr 1</option>
+                            <option value="lsay2">LSA Yr 2</option>
+                            <option value="lsay3">LSA Yr 3</option>
                         </optgroup>
-                        <optgroup label="Signallers">
-                            <option value="dao">DAO</option>
-                            <option value="daoteamleader">DAO Team-Leader</option>
+                        <optgroup label="Station Officer">
+                            <option value="soc1d1">SO Class 1 Div 1</option>
+                            <option value="soc1d2">SO Class 1 Div 2</option>
+                            <option value="soc2d1">SO Class 2 Div 1</option>
+                            <option value="soc2d2">SO Class 2 Div 2</option>
+                            <option value="soc3d1">SO Class 3 Div 1</option>
+                            <option value="soc3d2">SO Class 3 Div 2</option>
                         </optgroup>
+                        <optgroup label="Station Master">
+                            <option value="smc4d1">SM Class 4 Div 1</option>
+                            <option value="smc4d2">SM Class 4 Div 2</option>
+                            <option value="smc6d1">SM Class 6 Div 1</option>
+                            <option value="smc6d2">SM Class 6 Div 2</option>
+                            <option value="smc8d1">SM Class 8 Div 1</option>
+                            <option value="smc8d2">SM Class 8 Div 2</option>
+                        </optgroup>                
+                    </select>
+                    <select name="employment-type" id="employment-type" oninput="updateGrade()">
+                        <option value="fulltime">Full-Time</option>
+                        <option value="parttime">Part-Time</option>
+                        <option value="jobsharefwa">Job-Share/FWA</option>
                     </select>
                 </div>
 
