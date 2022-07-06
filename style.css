@@ -73,7 +73,6 @@ a:visited {
     position: relative;
     padding-left: 25px;
     margin-left: 20px;
-    margin-bottom: 10px;
     cursor: pointer;
     font-size: 1em;
     -webkit-user-select: none;
@@ -229,6 +228,10 @@ a:visited {
 
 .shelf-button {
     margin: 0px 5px 4px 5px;
+}
+
+.shelf-button > select {
+    margin: -3px 0px -3px 10px;
 }
 
 .grid-1-2 {
@@ -428,6 +431,11 @@ a:visited {
     border-color: #e79e00;
 }
 
+.higher-duties-button {
+    background-color: #00b391;
+    border-color: #00b391;
+}
+
 .bonus-button-text {
     color: #fff;
 }
@@ -443,17 +451,23 @@ a:visited {
 
 .pay-grade-container {
     align-self: center;
-    margin-bottom: 15px;
-    margin-right: 20px;
     grid-column: 1 / 6;
+    border-bottom: 1px dotted;
+    padding-bottom: 10px;
 }
 
-.pay-grade-container > span {
-    float: left;
+.pay-grade-container select {
+    width: 90%;
 }
 
-.pay-grade-container > label {
-    margin-right: 10px;
+.pay-grade-container label {
+    text-align: right;
+    padding-right: 5px;
+}
+
+.pay-grade-container td {
+    padding: 6px 0;
+    
 }
 
 .shift-options-shelf {
@@ -487,7 +501,7 @@ a:visited {
 
 .container > h3 {
     grid-column: 1 / 6;
-    margin-top: 10px;
+    margin: 10px;
 }
 
 hr {
@@ -674,7 +688,7 @@ div.day-of-week > p {
 
 .pay-element-table {
     width: 100%;
-    font-family: "Lucida Console", Monaco, monospace;
+    font-family: Monaco, monospace;
     border-collapse: collapse;
     table-layout: fixed;
     text-align: right;
@@ -751,6 +765,7 @@ div.day-of-week > p {
 .week-commencing {
     grid-column: 1 / 6;
     text-align: center;
+    margin-top: 10px;
 }
 
 .week-commencing-label {
@@ -802,12 +817,12 @@ div.day-of-week > p {
 }
 
 .total-element {
-    font-family:  "Lucida Console", Monaco, monospace;
+    font-family:  Monaco, monospace;
     white-space: pre-wrap;
 }
 
 .hours-worked {
-    font-family:  "Lucida Console", Monaco, monospace;
+    font-family:  Monaco, monospace;
     white-space: pre-wrap;
     cursor: pointer;
 }
