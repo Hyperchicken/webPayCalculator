@@ -163,7 +163,9 @@ class Shift {
             minutes += 60;
             hours--;
         }
-        minutes += this.extendedShiftMinutes;
+        if(this.extendedShift) {
+            minutes += this.extendedShiftMinutes;
+        }
         if(minutes >= 60) {
             hours += Math.floor(minutes/60);
             minutes = minutes%60;
@@ -350,7 +352,7 @@ class PayElement {
             case "nightShift": payClassName = "N/Shift"; break;
             case "metroSig2": payClassName = "Metro Sig2"; break;
             case "relExp": payClassName = "Rel-Exp"; break;
-            case "suburbanGroupWorking": payClassName = "Group Allow"; break;
+            case "suburbanGroupWorking": payClassName = "Sub Group"; break;
             case "mealAllowance": payClassName = "Meal Allow"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
@@ -1367,7 +1369,6 @@ function generateOptionsShelfButtons(day) {
     extendedShiftButton.setAttribute("class", "button bonus-button shelf-button");
     extendedShiftTextbox.setAttribute("type", "text");
     extendedShiftTextbox.setAttribute("inputmode", "decimal");
-    extendedShiftTextbox.setAttribute("class", "time");
     extendedShiftTextbox.setAttribute("placeholder", "0000");
     extendedShiftTextbox.pattern = "([0-1][0-9]|2[0-3])[0-5][0-9]";
     extendedShiftTextbox.maxLength = "4";
@@ -2670,7 +2671,7 @@ function updateShiftPayTable() {
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
     let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
-    if(getEmploymentType() == "parttime") ordinaryHours = 7.6; //override ord hours for part-time employees
+    if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let ddoFortnight = false;
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
@@ -2846,7 +2847,7 @@ function updateShiftPayTable() {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables, false, higherDuties));
                     }
                 }
-                else if(s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
+                else if(shiftPayGrade.drivingGrade && s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift, higherDuties));
                 }
@@ -2964,13 +2965,13 @@ function updateShiftPayTable() {
                     shiftworkHours = Math.round(Math.min(shiftworkHours, ordinaryHours)); //capped at ordinary hours. rounded to nearest whole hour
                     if(shiftworkHours > 0.0) {
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
-                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false, higherDuties));
+                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
                         }
                         if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
-                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false, higherDuties));
+                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                         }
                         if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
-                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false, higherDuties));
+                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false));
                         }
                     }
                 }
