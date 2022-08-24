@@ -139,6 +139,14 @@
                             </select>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label for="suburban-group-working">Suburban Group Working</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="suburban-group-working" oninput="updateGrade()">
+                        </td>
+                    </tr>
                 </table>
 
                 <div id="payClassWarning" class="data-entry-message-box start-hidden">
