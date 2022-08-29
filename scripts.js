@@ -1945,6 +1945,10 @@ function getEmploymentType() {
     return document.getElementById("employment-type").value;
 }
 
+function getSuburbanGroupWorking() {
+    return document.getElementById("suburban-group-working").checked;
+}
+
 /**
  * Run when the paygrade has been set or changed. Updates all pay-rates, calculator colour, save the grade to storage and refresh the calculator
  */
@@ -1952,6 +1956,7 @@ function updateGrade() {
     $("#payClassWarning").hide();
     let selectedGrade = getPayGrade();
     let employmentType = getEmploymentType();
+    let sgw = getSuburbanGroupWorking();
 
     if(selectedGrade == "none") {
         $("#welcomeMessage").show();
@@ -1969,6 +1974,8 @@ function updateGrade() {
         setSaveData("paygrade", selectedGrade);
         setSaveData("employmenttype", employmentType, false);
         setSaveData("employmenttype", employmentType);
+        setSaveData("suburbanGroupWorking", sgw, false);
+        setSaveData("suburbanGroupWorking", sgw);
     
         updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
         closeAllOptionsShelves();
@@ -2988,7 +2995,7 @@ function updateShiftPayTable() {
             shiftPay[day].push(new PayElement("relExp", 1, day, rateTables));
         }
         //suburban group working
-        if(s.suburbanGroupWorking && shiftPayGrade.suburbanGroupWorking) {
+        if(getSuburbanGroupWorking() && shiftPayGrade.suburbanGroupWorking) {
             shiftPay[day].push(new PayElement("suburbanGroupWorking", 1, day, rateTables));
         }
         //suburban allowance
