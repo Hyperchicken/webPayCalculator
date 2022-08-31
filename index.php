@@ -139,12 +139,17 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
+                    <tr id="sgw-row">
                         <td>
                             <label for="suburban-group-working">Suburban Group Working</label>
                         </td>
                         <td>
-                            <input type="checkbox" id="suburban-group-working" oninput="updateGrade()">
+                            <div class="toggle-switch-div">
+                                <label class="switch small-switch">
+                                    <input type="checkbox" id="suburban-group-working" oninput="updateGrade()">
+                                    <span class="slider small-slider round"></span>
+                                </label>
+                            </div>
                         </td>
                     </tr>
                 </table>

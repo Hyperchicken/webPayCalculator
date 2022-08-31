@@ -1969,6 +1969,12 @@ function updateGrade() {
         $("#results-container").show();
         $(".shift-input").show();
         $(".week-commencing").show();
+        if(grades[selectedGrade].suburbanGroupWorking) {
+            $("#sgw-row").show();
+        }
+        else {
+            $("#sgw-row").hide();
+        }
         setFormColour(grades[selectedGrade].colour);
         setSaveData("paygrade", selectedGrade, false);
         setSaveData("paygrade", selectedGrade);
