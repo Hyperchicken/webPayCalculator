@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.37k">
+    <link rel="stylesheet" href="style.css?v=1.37l">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -24,10 +24,10 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.10"></script> 
-    <script src="rates.js?v=1.03k"></script> 
-    <script src="grades.js?v=1.03k"></script> 
-    <script src="scripts.js?v=1.37k"></script> 
+    <script src="publicHolidays.js?v1.11"></script> 
+    <script src="rates.js?v=1.03l"></script> 
+    <script src="grades.js?v=1.03l"></script> 
+    <script src="scripts.js?v=1.37l"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -155,13 +155,13 @@
                 </table>
 
                 <div id="payClassWarning" class="data-entry-message-box start-hidden">
-                    <p><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade have not been thoroughly tested for accuracy!</p>
+                    <p><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade are still being tested and may not be accurate!</p>
                 </div>
 
                 <div id="welcomeMessage" class="data-entry-message-box start-hidden">
                     <p>⭐ Welcome to the Pay Calculator! ⭐</p>
-                    <p>To get started, choose your grade and employment-type from the above dropdown menus.</p>
-                    <p>If this is your first time here, take a look at the Help Guide in the Menu to learn the basics on how to use this calculator.</p>
+                    <p>Select your grade and employment-type from the above dropdown menusto get started.</p>
+                    <p>If this is your first time here, take a look at the Help Guide in the Menu to learn the basics.</p>
                 </div>
 
                 <div class="week-commencing">

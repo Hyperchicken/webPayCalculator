@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.37k DEV";
-const calcLastUpdateDate = "31/07/2022";
+const calcVersion = "1.37l DEV";
+const calcLastUpdateDate = "01/09/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1040,9 +1040,9 @@ function updateOptionsButtons() {
             if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
                 setButton("Rel Exp", teamLeaderColour);
             }
-            if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
+            /*if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
                 setButton("Grp Working", ojtColour);
-            }
+            }*/
             if(s.ph) {
                 if(s.phOffRoster) {
                     if(s.phOffRosterNoPay) {
@@ -1091,9 +1091,9 @@ function updateOptionsButtons() {
                 if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
                     setButton("Rel-Exp", teamLeaderColour);
                 }
-                if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
+                /*if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
                     setButton("Grp-Working", ojtColour);
-                }
+                }*/
                 if(s.higherDuties && s.higherDutiesGrade && grades[getPayGrade()].higherDutiesGroup) {
                     setButton(grades[s.higherDutiesGrade].name, higherDutiesColour);
                 }
@@ -1293,7 +1293,7 @@ function generateOptionsShelfButtons(day) {
     }
 
     //Suburban Group Working button
-    let suburbanGroupWorkingButton = document.createElement("a");
+    /*let suburbanGroupWorkingButton = document.createElement("a");
     suburbanGroupWorkingButton.textContent = "Group Working";
     suburbanGroupWorkingButton.setAttribute("class", "button ojt-button shelf-button");
     if(shifts[day].suburbanGroupWorking) {//if suburban group working
@@ -1311,7 +1311,7 @@ function generateOptionsShelfButtons(day) {
             saveToStorage("suburbanGroupWorking", "true");
         });
         suburbanGroupWorkingButton.style.background = buttonBackgroundColour;
-    }
+    }*/
 
     //DAO Team Leader button
     let teamLeaderButton = document.createElement("a");
@@ -1871,9 +1871,9 @@ function generateOptionsShelfButtons(day) {
     if(grades[getPayGrade()].relievingExpenses) {
         shelf.appendChild(relExpensesButton);
     }
-    if(grades[getPayGrade()].suburbanGroupWorking) {
+    /*if(grades[getPayGrade()].suburbanGroupWorking) {
         shelf.appendChild(suburbanGroupWorkingButton);
-    }
+    }*/
     if(grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
         shelf.appendChild(ddoButton);
     } 
@@ -1954,6 +1954,7 @@ function getSuburbanGroupWorking() {
  */
 function updateGrade() {
     $("#payClassWarning").hide();
+    $("#sgw-row").hide();
     let selectedGrade = getPayGrade();
     let employmentType = getEmploymentType();
     let sgw = getSuburbanGroupWorking();
@@ -1971,9 +1972,7 @@ function updateGrade() {
         $(".week-commencing").show();
         if(grades[selectedGrade].suburbanGroupWorking) {
             $("#sgw-row").show();
-        }
-        else {
-            $("#sgw-row").hide();
+            $("#payClassWarning").show();
         }
         setFormColour(grades[selectedGrade].colour);
         setSaveData("paygrade", selectedGrade, false);
@@ -3349,8 +3348,9 @@ function getSaveData(key, prefixDate = true) {
  */
 function loadSavedData(datePrefix = "") {
     closeAllOptionsShelves();
-    //first reset all shifts
-    shifts = [];
+
+    //reset shifts table
+    shifts = []; 
     for (let i = 0; i < 14; i++) shifts.push(new Shift(i));
 
     if(datePrefix === "") {
@@ -3358,7 +3358,8 @@ function loadSavedData(datePrefix = "") {
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
     let savedPayGrade = getSaveData("paygrade");
-    let savedEmploymentType = getSaveData("employmenttype")
+    let savedEmploymentType = getSaveData("employmenttype");
+    let savedSuburbanGroupWorking = getSaveData("suburbanGroupWorking");
 
     if(savedPayGrade == null) {
         savedPayGrade = getSaveData("paygrade", false);
@@ -3385,6 +3386,20 @@ function loadSavedData(datePrefix = "") {
         if(savedEmploymentType == null) {
             savedEmploymentType = "fulltime"; //default employment type
         }
+    }
+
+    if(savedSuburbanGroupWorking == null) {
+        savedSuburbanGroupWorking = getSaveData("suburbanGroupWorking", false);
+        if(savedSuburbanGroupWorking == null) {
+            savedSuburbanGroupWorking == "false";
+        }
+    }
+
+    if(savedSuburbanGroupWorking == "true") {
+        document.getElementById("suburban-group-working").checked = true;
+    }
+    else {
+        document.getElementById("suburban-group-working").checked = false;
     }
 
     document.getElementById("pay-grade").value = savedPayGrade;
@@ -4220,13 +4235,13 @@ function topHelpBoxPreset(presetName) {
     switch(presetName) {
         case "gettingStarted":
             helpTitle = "Help Guide";
-            helpText = "<p><strong>Fortnight Commencing</strong><br />Before entering shift details, first ensure the correct dates are set and shown near the top of the Data Entry area. Use the <i class='fas fa-angle-double-left'></i> and <i class='fas fa-angle-double-right'></i> buttons to change the date range a fortnight at a time, or click the <i class='far fa-calendar-alt'></i> button to open the the date-picker and select the fornight that way. The date range that is selected is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
+            helpText = "<p><strong>Fortnight Commencing</strong><br />Before entering shift details, first ensure the correct dates are set and shown near the top of the Data Entry area. Use the <i class='fas fa-angle-double-left'></i> and <i class='fas fa-angle-double-right'></i> buttons to change the date range a fortnight at a time, or click the <i class='far fa-calendar-alt'></i> button to open the the date-picker and select the fortnight that way. The date range that is selected is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
             + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
             + "<ul><li>To set shift options, click the shift options button (looks like this: " + dummyButton("OFF", "black", true) + " or " + dummyButton("Normal", normalColour, true) + ")"
             + ", then click the relevant options to toggle them on and off for that shift.</li>"
             + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
-            + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
-            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the " + dummyButton("DDO", ddoColour) + " shift option and enter valid sign-on and sign-off times for that shift.</p>"
+            + "<p><strong>DDOs/EDOs and Public Holidays: Worked or OFF?</strong>"
+            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO/EDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the " + dummyButton("DDO", ddoColour) + " shift option and enter valid sign-on and sign-off times for that shift.</p>"
             + "<p><strong>Sick-Part</strong>"
             + "<br />For shifts where you went home sick part-way through a shift, set the " + dummyButton("Sick", sickColour) + " shift option and enter your sign-on time as normal. For your sign-off time, instead of your shifts normal sign-off time, set this as the time you were signed-off as going home sick.</p>"
             + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."

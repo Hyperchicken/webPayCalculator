@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.10
+    Version: 1.11
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -135,7 +135,8 @@ const publicHolidays = [
         dates: [
             //subject to AFL schedule
             "2020-10-23",
-            "2021-09-24"
+            "2021-09-24",
+            "2022-09-23"
         ],
         infoTitle: "Friday before the AFL Grand Final Public Holiday",
         infoText: "<ul><li>No special rules or exceptions apply to Friday before the AFL Grand Final public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
