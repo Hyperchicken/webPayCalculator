@@ -804,7 +804,7 @@ $(document).ready(function() {
         //topHelpBoxPreset("changelog");
         topHelpBox("Changelog", "Loading...");
         $.ajax({
-            url: 'changelog.html',
+            url: 'changelog.html?v=' + calcVersion,
             dataType: "html",
             success: function (data) {
                 topHelpBox("Changelog", data);
@@ -2682,7 +2682,7 @@ function updateShiftPayTable() {
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
-    let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
+    let ordinaryHours = payGrade.ordinaryHours;
     if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     let ddoFortnight = false;
@@ -2694,8 +2694,6 @@ function updateShiftPayTable() {
         if(day < 7) return 0;
         else return 1;
     }
-
-    
 
     //pay calculation: pass 1. calculate everything except AL and LSL
     for(let day = 0; day < 14; day++) {
