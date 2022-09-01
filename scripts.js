@@ -7,14 +7,16 @@
 "use strict";
 
 //version
-const calcVersion = "1.37l DEV";
+const calcVersion = "1.37 BETA v1";
 const calcLastUpdateDate = "01/09/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul>"
-+ "<li>Station Staff Update Development Build - INCOMPLETE</li>"
++ "<li>Station Staff Update Beta</li>"
++ "<li>Please do not share this version of the Pay Calculator. It is not yet ready to be released.</li>"
++ "<li>Please send feedback, discrepancies and bug reports to <a href='mailto:petar@hyperchicken.com'>petar@hyperchicken.com</a> or call/message me on 0425158149. Thanks! - Petar</li>"
 + "</ul>";
 
 //colours
@@ -836,6 +838,7 @@ $(document).ready(function() {
     if(lastVersion != calcVersion && motd != "") {
         topHelpBox("Calculator Update Notes", motd);
     }
+    topHelpBox("Calculator Update Notes", motd); ///////////////////////////////////always show motd for beta
     setSaveData("lastCalcVersion", calcVersion, false);
 
     let timeField = $(".time");
