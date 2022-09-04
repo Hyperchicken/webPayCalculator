@@ -22,7 +22,7 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.09"></script> 
+    <script src="publicHolidays.js?v1.10"></script> 
     <script src="rates.js?v=1.03"></script> 
     <script src="grades.js?v=1.02"></script> 
     <script src="scripts.js?v=1.36"></script> 

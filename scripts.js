@@ -7,14 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.36";
+const calcVersion = "1.36a";
 const calcLastUpdateDate = "18/04/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
 + "<ul>"
-+ "<li>Added ability to set a fixed tax rate (net income settings).</li>"
++ "<li>Added missing AFL grand final public holiday marker.</li>"
 + "</ul>";
 
 //colours
