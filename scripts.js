@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.37 BETA v1";
-const calcLastUpdateDate = "01/09/2022";
+const calcVersion = "1.37 BETA v2";
+const calcLastUpdateDate = "04/09/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -17,6 +17,7 @@ var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpd
 + "<li>Station Staff Update Beta</li>"
 + "<li>Please do not share this version of the Pay Calculator. It is not yet ready to be released.</li>"
 + "<li>Please send feedback, discrepancies and bug reports to <a href='mailto:petar@hyperchicken.com'>petar@hyperchicken.com</a> or call/message me on 0425158149. Thanks! - Petar</li>"
++ "<li>BETA v2 - improved part-time stations overtime calculation</li>"
 + "</ul>";
 
 //colours
