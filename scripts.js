@@ -2685,6 +2685,7 @@ function updateShiftPayTable() {
     let ordinaryHours = payGrade.ordinaryHours;
     if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
+    if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) ordinaryDays = Infinity;
     let ddoFortnight = false;
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
 
@@ -2932,8 +2933,15 @@ function updateShiftPayTable() {
                         }
                     }
 
-                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement("rost+50", rost50hours, day, rateTables, s.ojtShift, higherDuties));
-                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement("rost+100", rost100hours, day, rateTables, s.ojtShift, higherDuties));
+                    let rost50Element = "rost+50";
+                    let rost100Element = "rost+100";
+                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                        rost50Element = "ot150";
+                        rost100Element = "ot200";
+                    }
+
+                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement(rost50Element, rost50hours, day, rateTables, s.ojtShift, higherDuties));
+                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement(rost100Element, rost100hours, day, rateTables, s.ojtShift, higherDuties));
                     if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
                 }
 
