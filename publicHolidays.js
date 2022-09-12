@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.10
+    Version: 1.11
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -188,5 +188,13 @@ const publicHolidays = [
         ],
         infoTitle: "Boxing Day Public Holiday (Saturday or Sunday)",
         infoText: "<ul><li>This Boxing Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
+    },
+    {
+        name: "National Day of Mourning",
+        dates: [
+            "2022-09-22"
+        ],
+        infoTitle: "National Day of Mourning",
+        infoText: "<ul><li>No special rules or exceptions apply to this public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
     }
 ];
