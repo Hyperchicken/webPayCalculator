@@ -1075,7 +1075,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
+            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1083,10 +1083,18 @@ function updateOptionsButtons() {
                     else {
                         setButton("Sick-Full", sickColour);
                     }*/
-                    setButton("Sick-Part", sickColour);
+                    if(getEmploymentType() == "parttime") {
+                        setButton("Sick-Full", sickColour);
+                    }
+                    else {
+                        setButton("Sick-Part", sickColour);
+                    }
                 }
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
+                }
+                if(s.phc && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
+                    setButton("PH&nbspCredit", phcColour);
                 }
                 if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
                     setButton("Rel-Exp", teamLeaderColour);
@@ -2801,6 +2809,16 @@ function updateShiftPayTable() {
                 }
             }
 
+            //sick non-driver part-timers: set working hours to zero.
+            if((s.sick || s.phc) && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                normalHours = 0.0;
+                todayNormalHours = 0.0;
+                tomorrowNormalHours = 0.0;
+                todayPhHours = 0.0;
+                tomorrowPhHours = 0.0;
+                phOvertimeHours = 0.0;
+            }
+
             //part-time PH-roster calculation
             if(getEmploymentType() == "parttime" && s.phOffRoster && s.ph) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables, false, higherDuties));
@@ -2856,9 +2874,20 @@ function updateShiftPayTable() {
                     }
                 }
 
+                //Public Holiday Credit (part-time non-driver only)
+                if(s.phc && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                    shiftPay[day].push(new PayElement("phCredit", s.hoursDecimal, day, rateTables, false, higherDuties));
+                }
+
                 //Guarantee and Sick-Part
                 if(s.sick) { //if sick, sick-part in place of guarantee
-                    let sickHours = ordinaryHours - s.hoursDecimal;
+                    let sickHours;
+                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) { //part-time non-driving get paid sick for their rostered hours
+                        sickHours = s.hoursDecimal;
+                    }
+                    else { //otherwise sick-part
+                        sickHours = ordinaryHours - s.hoursDecimal;
+                    }
                     if(sickHours > 0.0) {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables, false, higherDuties));
                     }
