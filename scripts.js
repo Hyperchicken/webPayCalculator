@@ -1079,7 +1079,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
+            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1087,10 +1087,18 @@ function updateOptionsButtons() {
                     else {
                         setButton("Sick-Full", sickColour);
                     }*/
-                    setButton("Sick-Part", sickColour);
+                    if(getEmploymentType() == "parttime") {
+                        setButton("Sick-Full", sickColour);
+                    }
+                    else {
+                        setButton("Sick-Part", sickColour);
+                    }
                 }
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
+                }
+                if(s.phc && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
+                    setButton("PH&nbspCredit", phcColour);
                 }
                 if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
                     setButton("Rel-Exp", teamLeaderColour);
@@ -1682,17 +1690,21 @@ function generateOptionsShelfButtons(day) {
                 let higherDutiesOption = document.createElement("option");
                 higherDutiesOption.textContent = grades[higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]].name;
                 higherDutiesOption.setAttribute("value", higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]);
-                if(shifts[day].higherDutiesGrade == "") {
-                    if(getPayGrade() == higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]) {
-                        shifts[day].higherDutiesGrade = higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i+2];
-                        updateOptionsButtons();
-                        updateShiftPayTable();
-                        updateResults();
-                        saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
-                    }
-                }
                 higherDutiesSelectbox.appendChild(higherDutiesOption);
-            }   
+            }
+            if(shifts[day].higherDutiesGrade == "") {
+                if(getSaveData("lastHigherDutiesGrade", false)) {
+                    shifts[day].higherDutiesGrade = getSaveData("lastHigherDutiesGrade", false);
+                }
+                else {
+                    shifts[day].higherDutiesGrade = getPayGrade();
+                }
+                    updateOptionsButtons();
+                    updateShiftPayTable();
+                    updateResults();
+                    saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
+                    setSaveData("lastHigherDutiesGrade", shifts[day].higherDutiesGrade, false)
+            }
             higherDutiesSelectbox.value = shifts[day].higherDutiesGrade;
             higherDutiesButton.appendChild(higherDutiesSelectbox);
             higherDutiesText.addEventListener("click", function(){
@@ -1704,6 +1716,7 @@ function generateOptionsShelfButtons(day) {
                 if(this.validity.valid) { //only accept valid input.
                     shifts[day].higherDutiesGrade = this.value;
                     saveToStorage("higherDutiesGrade", this.value);
+                    setSaveData("lastHigherDutiesGrade", this.value, false)
                 }
                 else {
                     shifts[day].higherDutiesGrade = "";
@@ -2800,6 +2813,16 @@ function updateShiftPayTable() {
                 }
             }
 
+            //sick non-driver part-timers: set working hours to zero.
+            if((s.sick || s.phc) && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                normalHours = 0.0;
+                todayNormalHours = 0.0;
+                tomorrowNormalHours = 0.0;
+                todayPhHours = 0.0;
+                tomorrowPhHours = 0.0;
+                phOvertimeHours = 0.0;
+            }
+
             //part-time PH-roster calculation
             if(getEmploymentType() == "parttime" && s.phOffRoster && s.ph) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables, false, higherDuties));
@@ -2855,9 +2878,20 @@ function updateShiftPayTable() {
                     }
                 }
 
+                //Public Holiday Credit (part-time non-driver only)
+                if(s.phc && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                    shiftPay[day].push(new PayElement("phCredit", s.hoursDecimal, day, rateTables, false, higherDuties));
+                }
+
                 //Guarantee and Sick-Part
                 if(s.sick) { //if sick, sick-part in place of guarantee
-                    let sickHours = ordinaryHours - s.hoursDecimal;
+                    let sickHours;
+                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) { //part-time non-driving get paid sick for their rostered hours
+                        sickHours = s.hoursDecimal;
+                    }
+                    else { //otherwise sick-part
+                        sickHours = ordinaryHours - s.hoursDecimal;
+                    }
                     if(sickHours > 0.0) {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables, false, higherDuties));
                     }
@@ -3967,6 +4001,8 @@ function taxConfigurator() {
     let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
     enableCheckboxLabel.textContent = "Net Pay Calculation";
+    enableCheckboxLabel.style.color = "#eed969";
+    enableCheckboxLabel.style.fontWeight = "bold";
     formArea.appendChild(enableCheckboxLabel);
     if(getSaveData(enableTaxCalcId, false) == "yes") {
         formArea.appendChild(createToggleSwitch(enableTaxCalcId, true, "Enabled", "Disabled"));
@@ -3979,8 +4015,16 @@ function taxConfigurator() {
 
     //tax-free threshold
     let taxFreeThresholdId = "taxFreeThreshold";
-    let taxFreeThresholdLabel = document.createElement("span");
-    taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
+    let taxFreeThresholdLabel = document.createElement("div");
+    let taxFreeThresholdLabelText = document.createElement("span");
+    taxFreeThresholdLabelText.style.display = "inline-block";
+    taxFreeThresholdLabelText.style.width = "100%";
+    let taxFreeThresholdLabelSubtext = document.createElement("span");
+    taxFreeThresholdLabelSubtext.style.fontSize = "70%";
+    taxFreeThresholdLabelSubtext.style.color = "#9db8c6"
+    taxFreeThresholdLabelText.textContent = "Claim Tax-Free Threshold";
+    taxFreeThresholdLabelSubtext.textContent = "If unsure, set to YES";
+    taxFreeThresholdLabel.append(taxFreeThresholdLabelText, taxFreeThresholdLabelSubtext);
     formArea.appendChild(taxFreeThresholdLabel);
     if(getSaveData(taxFreeThresholdId, false) == "no") { //reverse logic to make the default 'true'
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, false, "Yes", "No"));
@@ -3988,7 +4032,6 @@ function taxConfigurator() {
     else {
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, true, "Yes", "No"));
     }
-
 
     //HECS/STSL
     let stslId = "stsl";
