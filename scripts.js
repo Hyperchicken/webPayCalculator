@@ -3968,6 +3968,8 @@ function taxConfigurator() {
     let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
     enableCheckboxLabel.textContent = "Net Pay Calculation";
+    enableCheckboxLabel.style.color = "#eed969";
+    enableCheckboxLabel.style.fontWeight = "bold";
     formArea.appendChild(enableCheckboxLabel);
     if(getSaveData(enableTaxCalcId, false) == "yes") {
         formArea.appendChild(createToggleSwitch(enableTaxCalcId, true, "Enabled", "Disabled"));
@@ -3980,8 +3982,16 @@ function taxConfigurator() {
 
     //tax-free threshold
     let taxFreeThresholdId = "taxFreeThreshold";
-    let taxFreeThresholdLabel = document.createElement("span");
-    taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
+    let taxFreeThresholdLabel = document.createElement("div");
+    let taxFreeThresholdLabelText = document.createElement("span");
+    taxFreeThresholdLabelText.style.display = "inline-block";
+    taxFreeThresholdLabelText.style.width = "100%";
+    let taxFreeThresholdLabelSubtext = document.createElement("span");
+    taxFreeThresholdLabelSubtext.style.fontSize = "70%";
+    taxFreeThresholdLabelSubtext.style.color = "#9db8c6"
+    taxFreeThresholdLabelText.textContent = "Claim Tax-Free Threshold";
+    taxFreeThresholdLabelSubtext.textContent = "If unsure, set to YES";
+    taxFreeThresholdLabel.append(taxFreeThresholdLabelText, taxFreeThresholdLabelSubtext);
     formArea.appendChild(taxFreeThresholdLabel);
     if(getSaveData(taxFreeThresholdId, false) == "no") { //reverse logic to make the default 'true'
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, false, "Yes", "No"));
@@ -3989,7 +3999,6 @@ function taxConfigurator() {
     else {
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, true, "Yes", "No"));
     }
-
 
     //HECS/STSL
     let stslId = "stsl";
