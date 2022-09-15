@@ -1678,17 +1678,21 @@ function generateOptionsShelfButtons(day) {
                 let higherDutiesOption = document.createElement("option");
                 higherDutiesOption.textContent = grades[higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]].name;
                 higherDutiesOption.setAttribute("value", higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]);
-                if(shifts[day].higherDutiesGrade == "") {
-                    if(getPayGrade() == higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]) {
-                        shifts[day].higherDutiesGrade = higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i+2];
-                        updateOptionsButtons();
-                        updateShiftPayTable();
-                        updateResults();
-                        saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
-                    }
-                }
                 higherDutiesSelectbox.appendChild(higherDutiesOption);
-            }   
+            }
+            if(shifts[day].higherDutiesGrade == "") {
+                if(getSaveData("lastHigherDutiesGrade", false)) {
+                    shifts[day].higherDutiesGrade = getSaveData("lastHigherDutiesGrade", false);
+                }
+                else {
+                    shifts[day].higherDutiesGrade = getPayGrade();
+                }
+                    updateOptionsButtons();
+                    updateShiftPayTable();
+                    updateResults();
+                    saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
+                    setSaveData("lastHigherDutiesGrade", shifts[day].higherDutiesGrade, false)
+            }
             higherDutiesSelectbox.value = shifts[day].higherDutiesGrade;
             higherDutiesButton.appendChild(higherDutiesSelectbox);
             higherDutiesText.addEventListener("click", function(){
@@ -1700,6 +1704,7 @@ function generateOptionsShelfButtons(day) {
                 if(this.validity.valid) { //only accept valid input.
                     shifts[day].higherDutiesGrade = this.value;
                     saveToStorage("higherDutiesGrade", this.value);
+                    setSaveData("lastHigherDutiesGrade", this.value, false)
                 }
                 else {
                     shifts[day].higherDutiesGrade = "";
