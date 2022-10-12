@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.37 BETA v3";
-const calcLastUpdateDate = "16/09/2022";
+const calcVersion = "1.37 BETA v4";
+const calcLastUpdateDate = "12/10/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -20,6 +20,7 @@ var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpd
 + "<li>BETA v2 - improved part-time stations overtime calculation.</li>"
 + "<li>BETA v3 - part-time stations sick and public holiday credit now calculates based on the shift time entered.</li>"
 + "<li>BETA v3 - higher duties now automatically selects the last selected grade.</li>"
++ "<li>BETA v4 - part-time stations public holiday penalties calculation improved</li>"
 + "</ul>";
 
 //colours
