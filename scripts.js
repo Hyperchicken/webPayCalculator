@@ -2696,6 +2696,8 @@ function updateShiftPayTable() {
         if(getPayGrade() != "none") console.error("updateShiftPayTable(): invalid paygrade!")
         return;
     }
+    let partTimeNonDriver = false;
+    if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) partTimeNonDriver = true;
     let alShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
@@ -2703,8 +2705,9 @@ function updateShiftPayTable() {
     let ordinaryHours = payGrade.ordinaryHours;
     if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
-    if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) ordinaryDays = Infinity;
+    if(partTimeNonDriver) ordinaryDays = Infinity;
     let ddoFortnight = false;
+   
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
 
     shiftPay = []; //clear pay table
@@ -2853,12 +2856,23 @@ function updateShiftPayTable() {
                 }
                 if(normalPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
-                        shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
-                    } 
-                    else if(s.ph && (day != 0 && day != 7)) {
-                        shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
+                    if(partTimeNonDriver) {
+                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phPen150", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                        } 
+                        else if(s.ph && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                            shiftPay[day].push(new PayElement("newPHCD", normalPhWorkedHours, day, rateTables));
+                        }
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                        } 
+                        else if(s.ph && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
+                        }
                     }
                 }
                 if(sundayPhWorkedHours > 0.0) {
