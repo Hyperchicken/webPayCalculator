@@ -7,15 +7,28 @@
 "use strict";
 
 //version
-const calcVersion = "1.37l DEV";
-const calcLastUpdateDate = "01/09/2022";
+const calcVersion = "1.37";
+const calcLastUpdateDate = "02/11/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>"
-+ "<li>Station Staff Update Development Build - INCOMPLETE</li>"
-+ "</ul>";
+   + "<ul>"
+        +"<li>Added Station Staff paygrades and shift-options."
+           + "<ul>"
+               + "<li><strong>PLEASE NOTE!</strong> Calculations for stations grades may not be accurate at this early stage. Your feedback helps improve the calculator's accuracy with every update.</li>"
+              +  "<li>I would love to hear your feedback! Let me know what you think or report any issues to <a href='mailto:petar+paycalc@hyperchicken.com'>petar+paycalc@hyperchicken.com</a>. Thanks! - Petar Stankovic, Driver FSS.</li>"
+          +  "</ul>"
+       + "</li>"
+       + "<li>Added Driver Rosters paygrade.</li>"
+       + "<li>Employment status (full-time, part-time, jobshare, etc) is now a separate dropdown selection.</li>"
+       + "<li>DDO button renamed to EDO on non-driving grades.</li>"
+       + "<li>DDO/EDO shift-option now hidden when EDOs don't apply.</li>"
+       + "<li>Part-time PH-Roster no longer persists after disabling Public Holiday shift option.</li>"
+       + "<li>Invalid sign-on/off time input error message now advises that colons should be omitted.</li>"
+       + "<li>Wasted Meal shift option now only appears on driving grades.</li>"
+       + "<li>Added bug report/feedback button to the menu.</li>"
+   + "</ul>"
 
 //colours
 const normalColour = "#00b9e8";
