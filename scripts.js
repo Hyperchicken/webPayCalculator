@@ -7,15 +7,28 @@
 "use strict";
 
 //version
-const calcVersion = "1.36a";
-const calcLastUpdateDate = "06/09/2022";
+const calcVersion = "1.37";
+const calcLastUpdateDate = "02/11/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-+ "<ul>"
-+ "<li>Added missing AFL grand final public holiday marker.</li>"
-+ "</ul>";
+   + "<ul>"
+        +"<li>Added Station Staff paygrades and shift-options."
+           + "<ul>"
+               + "<li><strong>PLEASE NOTE!</strong> Calculations for stations grades may not be accurate at this early stage. Your feedback helps improve the calculator's accuracy with every update.</li>"
+              +  "<li>I would love to hear your feedback! Let me know what you think or report any issues to <a href='mailto:petar+paycalc@hyperchicken.com'>petar+paycalc@hyperchicken.com</a>. Thanks! - Petar Stankovic, Driver FSS.</li>"
+          +  "</ul>"
+       + "</li>"
+       + "<li>Added Driver Rosters paygrade.</li>"
+       + "<li>Employment status (full-time, part-time, jobshare, etc) is now a separate dropdown selection.</li>"
+       + "<li>DDO button renamed to EDO on non-driving grades.</li>"
+       + "<li>DDO/EDO shift-option now hidden when EDOs don't apply.</li>"
+       + "<li>Part-time PH-Roster no longer persists after disabling Public Holiday shift option.</li>"
+       + "<li>Invalid sign-on/off time input error message now advises that colons should be omitted.</li>"
+       + "<li>Wasted Meal shift option now only appears on driving grades.</li>"
+       + "<li>Added bug report/feedback button to the menu.</li>"
+   + "</ul>"
 
 //colours
 const normalColour = "#00b9e8";
@@ -29,6 +42,7 @@ const teamLeaderColour = "#e70082";
 const alColour = "#1c4ab3";
 const lslColour = "#601cb3";
 const phcColour = "#3d1cb3";
+const higherDutiesColour = "#00b391";
 const buttonBackgroundColour = "#5554";
 
 //define a fortnightly pay-cycle to start on either an odd or even week of a given year
@@ -78,10 +92,17 @@ class Shift {
         this.lsl = false; //long service leave
         this.lslHalfPay = false; //long service leave half pay option
         this.phc = false; //public holiday credit day off
+        this.unpaidLeave = false; //unpaid leave - normally rostered
+        this.extendedShift = false; //shift extended for part-time OT purposes per 3.11(d)(iv)
+        this.extendedShiftStartTime = ""; //either the time the shift was rostered to finish before it was extended, or the new extended sign-off time. 4 character string representing 24hr time (0000-2359)
         this.ddo = false; //DDO
         this.bonus = false; //bonus payment
         this.bonusHours = 0.0; //bonus payment hours
-        this.teamLeader = false;
+        this.teamLeader = false; //DAO team leader
+        this.relievingExpenses = false; //relieving expenses allowance
+        this.suburbanGroupWorking = false; //suburban group working allowance
+        this.higherDuties = false; //working in higher duties
+        this.higherDutiesGrade = ""; //higher duties grade. Shift will be paid at the selected grade's rates.
         this.shiftWorkedNumber = 0;
         this.rosteredShiftNumber = 0;
     }    
@@ -96,7 +117,7 @@ class Shift {
     }
 
     get ojtShift() {
-        if(["spot", "parttime", "jobshare"].includes(getPayGrade()) && this.ojt) {
+        if(getPayGrade() == "spot" && this.ojt) {
             return true;
         }
         else {
@@ -139,6 +160,10 @@ class Shift {
         return this.calcHoursString();
     }
 
+    get extendedShiftMinutes() {
+        return this.calcExtendedShiftMinutes();
+    }
+
     /**
      * Shift's work hours as a formatted string.
      * @returns {string} shift hours in the format H:MM
@@ -151,8 +176,34 @@ class Shift {
             minutes += 60;
             hours--;
         }
+        if(this.extendedShift) {
+            minutes += this.extendedShiftMinutes;
+        }
+        if(minutes >= 60) {
+            hours += Math.floor(minutes/60);
+            minutes = minutes%60;
+        }
         if(hours || minutes) return hours + ":" + minutes.toString().padStart(2, "0");
         else return "";
+    }
+
+    calcExtendedShiftMinutes() {
+        let extTimeHour = parseInt(this.extendedShiftStartTime.substring(0,2));
+        let extTimeMinute = parseInt(this.extendedShiftStartTime.substring(2,4));
+        if(isNaN(extTimeHour) || isNaN(extTimeMinute)) return 0;
+        let totalMinutes = 0.0;
+        let hours;
+        let minutes;
+        hours = extTimeHour - this.endHour;
+        minutes = extTimeMinute - this.endMinute;
+        
+        if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
+        if(minutes < 0) {
+            minutes += 60;
+            hours--;
+        }
+        totalMinutes = (hours * 60) + minutes;
+        return totalMinutes;
     }
 
     /**
@@ -200,13 +251,15 @@ class PayElement {
      * @param {number} hours - the number of hours this pay element is worth
      * @param {number} fcDateOffset - fortnight-commencing date offset. The number of days this pay element is offset from the fortnight-commencing date 
      * @param {boolean} ojt - apply OJT rate to pay element
+     * @param {boolean} higherDuties - flag PayElement as higher duties
      * @param {object} rateTables - an object of with the following rate table keys: gradeRates, earlyShiftRates, afternoonShiftRates, nightShiftRates
      */
-    constructor(payType, hours, fcDateOffset, rateTables, ojt) {
+    constructor(payType, hours, fcDateOffset, rateTables, ojt, higherDuties) {
         this.payType = payType;
         this.hours = parseFloat(hours.toFixed(4));
         this.rateTables = rateTables;
         this.ojt = ojt;
+        this.higherDuties = higherDuties;
         this.fcDateOffset = fcDateOffset; //week commencing date offset. the number of days this shift is offset from the week-commencing date
         this.value = this.calculateValue(); //used to keep track of the pay amount when grouping elements together
     }
@@ -258,6 +311,8 @@ class PayElement {
             "afternoonShift",
             "nightShift",
             "metroSig2",
+            "relExp",
+            "suburbanGroupWorking",
             "mealAllowance",
             "leaveLoading"
         ];
@@ -309,6 +364,8 @@ class PayElement {
             case "afternoonShift": payClassName = "A/Shift"; break;
             case "nightShift": payClassName = "N/Shift"; break;
             case "metroSig2": payClassName = "Metro Sig2"; break;
+            case "relExp": payClassName = "Rel-Exp"; break;
+            case "suburbanGroupWorking": payClassName = "Sub Group"; break;
             case "mealAllowance": payClassName = "Meal Allow"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
@@ -319,8 +376,9 @@ class PayElement {
                 payClassName = this.payType;
                 console.warn("PayElement.payClass: no pay-type name defined for \"" + this.payType + "\"");
         }
-        if(this.ojt) return payClassName + "*";
-        else return payClassName;
+        if(this.ojt) payClassName += "*";
+        if(this.higherDuties) payClassName += "^";
+        return payClassName;
     }
 
     /**
@@ -332,7 +390,7 @@ class PayElement {
         switch(this.payType) {
             case "normal": 
                 tooltipText = "<strong>Normal</strong>"
-                + "<p><em>Ordinary hours</em> at the ordinary rate. How ordinary...</p>"
+                + "<p><em>Ordinary hours</em> at the ordinary rate.</p>"
                 + "<ul><li>Ordinary hours are up to 8 hours per day (7.6 hours for trainees and part-time).</li>"
                 + "<li>Generally, ordinary hours is time worked that is not affected by penalty rates (for example: overtime, public holidays, weekends, etc).</li></ul>";
                 break;
@@ -528,6 +586,12 @@ class PayElement {
             case "metroSig2":
                 rate += getEbaRate(shiftDate, suburbanAllowanceRates);
                 break;
+            case "relExp":
+                rate += getEbaRate(shiftDate, relievingExpensesRates);
+                break;
+            case "suburbanGroupWorking":
+                rate += getEbaRate(shiftDate, suburbanGroupWorkingRates);
+                break;
             case "mealAllowance":
                 rate += getEbaRate(shiftDate, mealAllowanceRates);
                 break;
@@ -585,13 +649,8 @@ let shiftPay = [[]];
  */
 let taxPay = [];
 
-let payGrade;
-
-let selectedGradeRates; //stores the currently selected set of rates for the selected pay grade
-let selectedEarlyShiftRates;
-let selectedAfternoonShiftRates;
-let selectedNightShiftRates;
-let selectBonusTextbox; //used keep track of bonus-pay option button textbox to be selected when loading pay-options buttons.
+let focusBonusTextbox; //used keep track of bonus-pay option button textbox to be selected when loading pay-options buttons.
+let focusExtendedShiftTextbox;
 let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
@@ -758,12 +817,16 @@ $(document).ready(function() {
         //topHelpBoxPreset("changelog");
         topHelpBox("Changelog", "Loading...");
         $.ajax({
-            url: 'changelog.html',
+            url: 'changelog.html?v=' + calcVersion,
             dataType: "html",
             success: function (data) {
                 topHelpBox("Changelog", data);
             }
         });
+        closeMenu();
+    });
+    $("#feedbackMenuButton").on("click", function(){
+        topHelpBoxPreset("feedback");
         closeMenu();
     });
     $("#aboutMenuButton").on("click", function(){
@@ -960,8 +1023,13 @@ function updateOptionsButtons() {
         }
         if(s.hoursDecimal <= 0){ //if ZERO HOURS
             let offButton = true;
-            if(s.ddo) {
-                setButton("DDO-OFF", ddoColour);
+            if(s.ddo && grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
+                if(grades[getPayGrade()].drivingGrade) {
+                    setButton("DDO-OFF", ddoColour);
+                }
+                else {
+                    setButton("EDO-OFF", ddoColour);
+                }
                 offButton = false;
             }
             if(s.sick) {
@@ -986,6 +1054,12 @@ function updateOptionsButtons() {
                 setButton("PH&nbspCredit", phcColour);
                 offButton = false;
             }
+            if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
+                setButton("Rel Exp", teamLeaderColour);
+            }
+            /*if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
+                setButton("Grp Working", ojtColour);
+            }*/
             if(s.ph) {
                 if(s.phOffRoster) {
                     if(s.phOffRosterNoPay) {
@@ -1000,7 +1074,7 @@ function updateOptionsButtons() {
                 }
                 offButton = false;
             }
-            if(s.wm) {
+            if(s.wm && grades[getPayGrade()].drivingGrade) {
                 setButton("Wasted Meal", wmColour);
                 offButton = false;
             }
@@ -1009,7 +1083,7 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(offButton) {
-                if(s.ojtShift || (s.bonus && s.bonusHours <= 0.0)) {
+                if(s.ojtShift || (s.bonus && s.bonusHours <= 0.0) || s.higherDuties) {
                     setButton("OFF&nbsp(+)", "black");
                 }
                 else {
@@ -1018,7 +1092,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.wm || s.ddo || s.bonus || s.daoTeamLeader){
+            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1026,19 +1100,44 @@ function updateOptionsButtons() {
                     else {
                         setButton("Sick-Full", sickColour);
                     }*/
-                    setButton("Sick-Part", sickColour);
+                    if(getEmploymentType() == "parttime") {
+                        setButton("Sick-Full", sickColour);
+                    }
+                    else {
+                        setButton("Sick-Part", sickColour);
+                    }
                 }
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
                 }
+                if(s.phc && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
+                    setButton("PH&nbspCredit", phcColour);
+                }
+                if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
+                    setButton("Rel-Exp", teamLeaderColour);
+                }
+                /*if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
+                    setButton("Grp-Working", ojtColour);
+                }*/
+                if(s.higherDuties && s.higherDutiesGrade && grades[getPayGrade()].higherDutiesGroup) {
+                    setButton(grades[s.higherDutiesGrade].name, higherDutiesColour);
+                }
+                if(s.extendedShift && s.extendedShiftStartTime && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
+                    setButton("+" + s.extendedShiftMinutes + "min OT", bonusColour);
+                }
                 if(s.daoTeamLeader) {
                     setButton("Team&nbspLeader", teamLeaderColour);
                 }
-                if(s.ddo) {
-                    setButton("DDO-Work", ddoColour);
+                if(s.ddo && grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
+                    if(grades[getPayGrade()].drivingGrade) {
+                        setButton("DDO-Work", ddoColour);
+                    }
+                    else {
+                        setButton("EDO-Work", ddoColour);
+                    }
                 }
                 if(s.ph){
-                    if(getPayGrade() == "parttime") {
+                    if(getEmploymentType() == "parttime") {
                         if(s.phExtraPay) {
                             setButton("PH-XPay", phColour);
                         }
@@ -1058,8 +1157,8 @@ function updateOptionsButtons() {
                         }
                     }
                 }
-                if(s.wm) {
-                    setButton("W/Meal", wmColour);
+                if(s.wm && grades[getPayGrade()].drivingGrade) {
+                    setButton("Wasted Meal", wmColour);
                 }
                 if(s.bonus && s.bonusHours > 0) {
                     setButton("Bonus&nbspPay", bonusColour);
@@ -1197,6 +1296,48 @@ function generateOptionsShelfButtons(day) {
         ojtButton.style.background = buttonBackgroundColour;
     }
 
+    //Relieving Expenses button
+    let relExpensesButton = document.createElement("a");
+    relExpensesButton.textContent = "Relieving Expenses";
+    relExpensesButton.setAttribute("class", "button team-leader-button shelf-button");
+    if(shifts[day].relievingExpenses) {//if Rel Expenses
+        relExpensesButton.addEventListener("click", function(){
+            shifts[day].relievingExpenses = false;
+            reloadPageData();
+            saveToStorage("relievingExpenses", "false");
+        });
+        relExpensesButton.style.background = "";
+    }
+    else {//if not relExp
+        relExpensesButton.addEventListener("click", function(){
+            shifts[day].relievingExpenses = true;
+            reloadPageData();
+            saveToStorage("relievingExpenses", "true");
+        });
+        relExpensesButton.style.background = buttonBackgroundColour;
+    }
+
+    //Suburban Group Working button
+    /*let suburbanGroupWorkingButton = document.createElement("a");
+    suburbanGroupWorkingButton.textContent = "Group Working";
+    suburbanGroupWorkingButton.setAttribute("class", "button ojt-button shelf-button");
+    if(shifts[day].suburbanGroupWorking) {//if suburban group working
+        suburbanGroupWorkingButton.addEventListener("click", function(){
+            shifts[day].suburbanGroupWorking = false;
+            reloadPageData();
+            saveToStorage("suburbanGroupWorking", "false");
+        });
+        suburbanGroupWorkingButton.style.background = "";
+    }
+    else {//if not Suburban Group Working
+        suburbanGroupWorkingButton.addEventListener("click", function(){
+            shifts[day].suburbanGroupWorking = true;
+            reloadPageData();
+            saveToStorage("suburbanGroupWorking", "true");
+        });
+        suburbanGroupWorkingButton.style.background = buttonBackgroundColour;
+    }*/
+
     //DAO Team Leader button
     let teamLeaderButton = document.createElement("a");
     teamLeaderButton.textContent = "Team Leader";
@@ -1220,7 +1361,12 @@ function generateOptionsShelfButtons(day) {
 
     //DDO button
     let ddoButton = document.createElement("a");
-    ddoButton.textContent = "DDO";
+    if(grades[getPayGrade()].drivingGrade) {
+        ddoButton.textContent = "DDO";
+    }
+    else {
+        ddoButton.textContent = "EDO";
+    }
     ddoButton.setAttribute("class", "button ddo-button shelf-button");
     if(shifts[day].ddo) {//if DDO
         ddoButton.addEventListener("click", function(){
@@ -1237,6 +1383,58 @@ function generateOptionsShelfButtons(day) {
             saveToStorage("ddo", "true");
         });
         ddoButton.style.background = buttonBackgroundColour;
+    }
+
+    //Extended shift button (part-time non-driver only)
+    let extendedShiftButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
+    let extendedShiftButtonText = document.createElement("a");
+    let extendedShiftTextbox = document.createElement("input");
+    extendedShiftButtonText.textContent = "Shift Extended";
+    extendedShiftButtonText.setAttribute("class", "bonus-button-text");
+    extendedShiftButton.setAttribute("class", "button bonus-button shelf-button");
+    extendedShiftTextbox.setAttribute("type", "text");
+    extendedShiftTextbox.setAttribute("inputmode", "decimal");
+    extendedShiftTextbox.setAttribute("placeholder", "0000");
+    extendedShiftTextbox.pattern = "([0-1][0-9]|2[0-3])[0-5][0-9]";
+    extendedShiftTextbox.maxLength = "4";
+    extendedShiftButton.appendChild(extendedShiftButtonText);
+    if(shifts[day].extendedShift) { //if extended shift
+        let extendedShiftTimeText = document.createElement("a");
+        extendedShiftTimeText.textContent = "sign-off";
+        extendedShiftTimeText.setAttribute("class", "bonus-button-text");
+        if(shifts[day].extendedShiftStartTime){
+            extendedShiftTextbox.value = shifts[day].extendedShiftStartTime;
+        }
+        extendedShiftButton.appendChild(extendedShiftTextbox);
+        extendedShiftButton.appendChild(extendedShiftTimeText);
+        extendedShiftButtonText.addEventListener("click", function(){
+            shifts[day].extendedShift = false;
+            reloadPageData();
+            saveToStorage("extendedShift", "false");
+        });
+        extendedShiftTextbox.addEventListener("input", function(){
+            if(this.validity.valid) { //only accept valid input for time input.
+                shifts[day].extendedShiftStartTime = this.value.toString();
+                saveToStorage("extendedShiftStartTime", this.value.toString());
+            }
+            else {
+                shifts[day].extendedShiftStartTime = "";
+                saveToStorage("extendedShiftStartTime", "");
+            }
+            printShiftHours();
+            updateOptionsButtons();
+            updateShiftPayTable();
+            updateResults();
+        });
+    }
+    else {
+        extendedShiftButton.addEventListener("click", function(){
+            shifts[day].extendedShift = true;
+            focusExtendedShiftTextbox = true;
+            reloadPageData();
+            saveToStorage("extendedShift", "true");
+        });
+        extendedShiftButton.style.background = buttonBackgroundColour;
     }
 
     //Public Holiday button
@@ -1266,7 +1464,7 @@ function generateOptionsShelfButtons(day) {
             phSpan.appendChild(xLeaveButton);
             phSpan.appendChild(xPayButton);
             phDiv.appendChild(phSpan);
-            if(getPayGrade() == "parttime") { //special PH options button configuration for part-time grade
+            if(getEmploymentType() == "parttime") { //special PH options button configuration for part-time grade
                 phSpan.appendChild(phRosterButton);
                 xPayButton.classList.remove("dual-button-r");
                 xPayButton.classList.add("dual-button-m");
@@ -1491,6 +1689,68 @@ function generateOptionsShelfButtons(day) {
         sickButton.style.background = buttonBackgroundColour;
     }
 
+    //Higher duties button
+    let higherDutiesButton = document.createElement("span"); //span instead of an anchor for provision of select box
+    if(grades[getPayGrade()].higherDutiesGroup) { //only generate button if applicable to current grade
+        let higherDutiesText = document.createElement("a");
+        higherDutiesText.textContent = "Higher Duties";
+        higherDutiesText.setAttribute("class", "bonus-button-text");
+        higherDutiesButton.setAttribute("class", "button higher-duties-button shelf-button");
+        higherDutiesButton.appendChild(higherDutiesText);
+        if(shifts[day].higherDuties) { //if higher duties
+            let higherDutiesSelectbox = document.createElement("select");
+            for(let i = 0; i < higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup].length; i++){
+                let higherDutiesOption = document.createElement("option");
+                higherDutiesOption.textContent = grades[higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]].name;
+                higherDutiesOption.setAttribute("value", higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]);
+                higherDutiesSelectbox.appendChild(higherDutiesOption);
+            }
+            if(shifts[day].higherDutiesGrade == "") {
+                if(getSaveData("lastHigherDutiesGrade", false)) {
+                    shifts[day].higherDutiesGrade = getSaveData("lastHigherDutiesGrade", false);
+                }
+                else {
+                    shifts[day].higherDutiesGrade = getPayGrade();
+                }
+                    updateOptionsButtons();
+                    updateShiftPayTable();
+                    updateResults();
+                    saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
+                    setSaveData("lastHigherDutiesGrade", shifts[day].higherDutiesGrade, false)
+            }
+            higherDutiesSelectbox.value = shifts[day].higherDutiesGrade;
+            higherDutiesButton.appendChild(higherDutiesSelectbox);
+            higherDutiesText.addEventListener("click", function(){
+                shifts[day].higherDuties = false;
+                reloadPageData();
+                saveToStorage("higherDuties", "");
+            });
+            higherDutiesSelectbox.addEventListener("input", function(){
+                if(this.validity.valid) { //only accept valid input.
+                    shifts[day].higherDutiesGrade = this.value;
+                    saveToStorage("higherDutiesGrade", this.value);
+                    setSaveData("lastHigherDutiesGrade", this.value, false)
+                }
+                else {
+                    shifts[day].higherDutiesGrade = "";
+                    saveToStorage("higherDutiesGrade", "");
+                }
+                updateOptionsButtons();
+                updateShiftPayTable();
+                updateResults();
+            });
+        }
+        else {
+            higherDutiesButton.addEventListener("click", function(){
+                shifts[day].higherDuties = true;
+                reloadPageData();
+                saveToStorage("higherDuties", "true");
+            });
+            higherDutiesButton.style.background = buttonBackgroundColour;
+        }
+    }
+    
+
     //Annual leave button
     let alButton = document.createElement("a");
     alButton.textContent = "Annual Leave";
@@ -1623,7 +1883,7 @@ function generateOptionsShelfButtons(day) {
     else {
         bonusButton.addEventListener("click", function(){
             shifts[day].bonus = true;
-            selectBonusTextbox = true;
+            focusBonusTextbox = true;
             reloadPageData();
             saveToStorage("bonus", "true");
         });
@@ -1635,14 +1895,28 @@ function generateOptionsShelfButtons(day) {
     if(getPayGrade() == "dao") {
         shelf.appendChild(teamLeaderButton);
     }
-    if(["spot", "parttime", "jobshare"].includes(getPayGrade())) {
+    if(getPayGrade() == "spot") {
         shelf.appendChild(ojtButton);
     }
-    if(getPayGrade() != "daoteamleader") {
+    if(grades[getPayGrade()].relievingExpenses) {
+        shelf.appendChild(relExpensesButton);
+    }
+    /*if(grades[getPayGrade()].suburbanGroupWorking) {
+        shelf.appendChild(suburbanGroupWorkingButton);
+    }*/
+    if(grades[getPayGrade()].ddo && getEmploymentType() == "fulltime") {
         shelf.appendChild(ddoButton);
     } 
-    shelf.appendChild(wmButton);
+    if(!grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
+        shelf.appendChild(extendedShiftButton);
+    }
+    if(grades[getPayGrade()].drivingGrade) {
+        shelf.appendChild(wmButton);
+    }
     shelf.appendChild(sickButton);
+    if(grades[getPayGrade()].higherDutiesGroup) {
+        shelf.appendChild(higherDutiesButton);
+    }
     shelf.appendChild(phDiv);
     shelf.appendChild(alButton);
     shelf.appendChild(phcButton);
@@ -1650,9 +1924,13 @@ function generateOptionsShelfButtons(day) {
     shelf.appendChild(bonusButton);
 
     //set focus if any
-    if(selectBonusTextbox) {
+    if(focusBonusTextbox) {
         bonusTextbox.select();
-        selectBonusTextbox = false;
+        focusBonusTextbox = false;
+    }
+    if(focusExtendedShiftTextbox) {
+        extendedShiftTextbox.select();
+        focusExtendedShiftTextbox = false;
     }
 }
 
@@ -1695,155 +1973,54 @@ function getPayGrade() {
     return document.getElementById("pay-grade").value;
 }
 
+function getEmploymentType() {
+    return document.getElementById("employment-type").value;
+}
+
+function getSuburbanGroupWorking() {
+    return document.getElementById("suburban-group-working").checked;
+}
+
 /**
  * Run when the paygrade has been set or changed. Updates all pay-rates, calculator colour, save the grade to storage and refresh the calculator
  */
 function updateGrade() {
     $("#payClassWarning").hide();
-    switch(getPayGrade()) {
-        case "spot": 
-            payGrade = grades.spot;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("#4691db");
-            setSaveData("paygrade", "spot", false);
-            setSaveData("paygrade", "spot");
-            break;
-        case "level1":
-            payGrade = grades.level1;
-            selectedGradeRates = driverLevel1Rates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(114, 99, 191)");
-            setSaveData("paygrade", "level1", false);
-            setSaveData("paygrade", "level1");
-            break;
-        case "trainee":
-            payGrade = grades.trainee;
-            selectedGradeRates = traineeRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(56, 149, 149)");
-            setSaveData("paygrade", "trainee", false);
-            setSaveData("paygrade", "trainee");
-            break;
-        case "conversion":
-            payGrade = grades.conversion;
-            selectedGradeRates = conversionRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(207, 133, 50)");
-            setSaveData("paygrade", "conversion", false);
-            setSaveData("paygrade", "conversion");
-            break;
-        case "parttime":
-            payGrade = grades.parttime;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("rgb(56, 140, 65)");
-            setSaveData("paygrade", "parttime", false);
-            setSaveData("paygrade", "parttime");
-            break;
-        case "jobshare":
-            payGrade = grades.jobshare;
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-            setFormColour("#5b1a4e");
-            setSaveData("paygrade", "jobshare", false);
-            setSaveData("paygrade", "jobshare");
-            break;
-        case "so8":
-            payGrade = grades.so8;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so8Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so8", false);
-            setSaveData("paygrade", "so8");
-            break;
-        case "so9":
-            payGrade = grades.so9;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so9Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so9", false);
-            setSaveData("paygrade", "so9");
-            break;
-        case "so10":
-            payGrade = grades.so10;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so10Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so10", false);
-            setSaveData("paygrade", "so10");
-            break;
-        case "so11":
-            payGrade = grades.so11;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so11Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so11", false);
-            setSaveData("paygrade", "so11");
-            break;
-        case "so12":
-            payGrade = grades.so12;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so12Rates;
-            setFormColour("#606060");
-            setSaveData("paygrade", "so12", false);
-            setSaveData("paygrade", "so12");
-            break;
-        case "dao":
-            payGrade = grades.dao;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so2Rates;
-            setFormColour("#9d1d1d");
-            setSaveData("paygrade", "dao", false);
-            setSaveData("paygrade", "dao");
-            break;
-        case "daoteamleader":
-            payGrade = grades.daoteamleader;
-            selectedEarlyShiftRates = earlyShiftRatesSal;
-            selectedAfternoonShiftRates = afternoonShiftRatesSal;
-            selectedNightShiftRates = nightShiftRatesSal;
-            selectedGradeRates = so9Rates;
-            setFormColour("#9d1d1d");
-            setSaveData("paygrade", "daoteamleader", false);
-            setSaveData("paygrade", "daoteamleader");
-            break;
-        default: 
-            selectedGradeRates = spotRates;
-            selectedEarlyShiftRates = earlyShiftRatesLoco;
-            selectedAfternoonShiftRates = afternoonShiftRatesLoco;
-            selectedNightShiftRates = nightShiftRatesLoco;
-    }
+    $("#sgw-row").hide();
+    let selectedGrade = getPayGrade();
+    let employmentType = getEmploymentType();
+    let sgw = getSuburbanGroupWorking();
 
-    updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
-    closeAllOptionsShelves();
-    printShiftHours();
-    updateOptionsButtons();
-    updateShiftPayTable();
-    updateResults();
+    if(selectedGrade == "none") {
+        $("#welcomeMessage").show();
+        $("#results-container").hide();
+        $(".shift-input").hide();
+        $(".week-commencing").hide();
+    }
+    else {
+        $("#welcomeMessage").hide();
+        $("#results-container").show();
+        $(".shift-input").show();
+        $(".week-commencing").show();
+        if(grades[selectedGrade].suburbanGroupWorking) {
+            $("#sgw-row").show();
+            $("#payClassWarning").show();
+        }
+        setFormColour(grades[selectedGrade].colour);
+        setSaveData("paygrade", selectedGrade, false);
+        setSaveData("paygrade", selectedGrade);
+        setSaveData("employmenttype", employmentType, false);
+        setSaveData("employmenttype", employmentType);
+        setSaveData("suburbanGroupWorking", sgw, false);
+        setSaveData("suburbanGroupWorking", sgw);
+    
+        updateShiftWorkedCount(); //needed as the grade affects for phOffRoster which affects shiftWorkedCount
+        closeAllOptionsShelves();
+        printShiftHours();
+        updateOptionsButtons();
+        updateShiftPayTable();
+        updateResults();
+    }
 }
 
 /**
@@ -1937,6 +2114,7 @@ function updateResults() {
     let selectedDate = $("#week-commencing-date").datepicker("getDate");
     let dateDiv = document.querySelector(".week-commencing");
     let ojtFlag = false;
+    let higherDutiesFlag = false;
 
     //create grouped elements table for combined view, combining any elements that share the same payClass and rate
     let groupedElements = [];
@@ -1944,7 +2122,7 @@ function updateResults() {
         day.forEach(function(element){
             let elementIndex = groupedElements.findIndex(function(elem){return (element.payClass == elem.payClass) && (element.rate == elem.rate);});
             if(elementIndex == -1) {
-                groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.rateTables, element.ojt));
+                groupedElements.push(new PayElement(element.payType, element.hours, element.fcDateOffset, element.rateTables, element.ojt, element.higherDuties));
             }
             else {
                 groupedElements[elementIndex].hours += element.hours;
@@ -1952,6 +2130,9 @@ function updateResults() {
             }
             if(element.ojt) { //set OJT flag to trigger OJT footnote
                 ojtFlag = true;
+            }
+            if(element.higherDuties) { //set higher duties flag to trigger higher duties footnote
+                higherDutiesFlag = true;
             }
         });
     });
@@ -2034,6 +2215,19 @@ function updateResults() {
                 row.appendChild(data);
                 elementTable.appendChild(row);
             }
+            if(higherDutiesFlag) {
+                let blankRow = document.createElement("tr");
+                let blankData = document.createElement("td");
+                blankData.classList.add("last-row");
+                blankData.setAttribute("colspan", "4");
+                blankRow.appendChild(blankData);
+                elementTable.appendChild(blankRow);
+                let row = document.createElement("tr");
+                let data =  document.createElement("td");
+                data.textContent = "^ = Higher Duties";
+                row.appendChild(data);
+                elementTable.appendChild(row);
+            }
             listDiv.appendChild(elementTable);
             resultArea.appendChild(listDiv);
         }
@@ -2074,6 +2268,13 @@ function updateResults() {
                 let row = document.createElement("tr");
                 let data =  document.createElement("td");
                 data.textContent = "* = OJT rate"
+                row.appendChild(data);
+                elementTable.appendChild(row);
+            }
+            if(higherDutiesFlag) {
+                let row = document.createElement("tr");
+                let data =  document.createElement("td");
+                data.textContent = "^ = Higher Duties rate"
                 row.appendChild(data);
                 elementTable.appendChild(row);
             }
@@ -2189,15 +2390,14 @@ function updateResults() {
             resultArea.appendChild(dashedHr);
             let taxPrompt = document.createElement("p");
             taxPrompt.classList.add("tax-prompt");
-            let hideLink = document.createElement("a");
-            hideLink.textContent = "hide this message";
-            hideLink.addEventListener("click", function(){
-                setSaveData("hideTaxSetupPrompt", "true", false);
-                updateResults();
+            let taxConfigLink = document.createElement("a");
+            taxConfigLink.textContent = "Click here to configure";
+            taxConfigLink.addEventListener("click", function(){
+                taxConfigurator();
             });
             let icon = document.createElement("i");
-            icon.classList.add("fas", "fa-info-circle", "fa-2x", "tax-prompt-icon")
-            taxPrompt.append(icon, "Please configure Net Income Settings via the Menu to calculate tax, super and net income. If you'd prefer not to, you can ", hideLink);
+            icon.classList.add("fas", "fa-comment-dollar", "fa-2x", "tax-prompt-icon")
+            taxPrompt.append(icon, "Net and tax calculation not configured. ", taxConfigLink);
             resultArea.appendChild(taxPrompt);
         }
 
@@ -2379,7 +2579,7 @@ function validateTimeFields() {
             errorPopup.classList.toggle("show");
         }, true);
         errorPopup.className = "popuptext";
-        errorPopup.textContent = "Sign-on and sign-off times must be 4 digits and between 0000 and 2359";
+        errorPopup.textContent = "Sign-on and sign-off times must be 4 digits and between 0000 and 2359. Omit the colon (:) when entering times.";
         errorSpan.appendChild(errorIcon);
         errorSpan.appendChild(errorPopup);
         if(!timeField[i*2].checkValidity() || !timeField[(i*2)+1].checkValidity()) {
@@ -2418,15 +2618,15 @@ function addShortcutButton(field) {
     let hoursFields = document.querySelectorAll(".shift-hours");
     let s = fieldToShift(field); //shift number
     let shortcutButton = (shift, type) => {
-        let ordHours = payGrade.ordinaryHours;
-        if(payGrade.name == "DAO") { //override ordinary hours for DAO
+        let ordHours = grades[getPayGrade()].ordinaryHours;
+        if(getPayGrade() == "dao") { //override shortcut button ordinary hours for DAO
             ordHours = 8.25;
         }
         let button = document.createElement("button");
         button.classList.add("shortcut-button");
         button.tabIndex = '-1';
         if(type == "nextShift") button.textContent = "Skip";
-        if(type == "addOrdinaryHours") button.textContent = `+${ordHours + (payGrade.name == "DAO" ? '' : 'h')}`; //omit the 'h' if DAO so that the text fits in the button
+        if(type == "addOrdinaryHours") button.textContent = `+${ordHours + (getPayGrade() == "dao" ? '' : 'h')}`; //omit the 'h' if DAO so that the text fits in the button
 
         button.onclick = () => {
             if(type == "nextShift") {
@@ -2504,13 +2704,23 @@ function ddoWeek() {
  * This is where all the pay calculation logic lives.
  */
 function updateShiftPayTable() {
+    let payGrade = grades[getPayGrade()];
+    if(!payGrade) {
+        if(getPayGrade() != "none") console.error("updateShiftPayTable(): invalid paygrade!")
+        return;
+    }
+    let partTimeNonDriver = false;
+    if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) partTimeNonDriver = true;
     let alShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
-    let ordinaryHours = payGrade.ordinaryHours; //default ordinary hours of 8
+    let ordinaryHours = payGrade.ordinaryHours;
+    if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
+    if(partTimeNonDriver) ordinaryDays = Infinity;
     let ddoFortnight = false;
+   
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
 
     shiftPay = []; //clear pay table
@@ -2522,13 +2732,22 @@ function updateShiftPayTable() {
 
     //pay calculation: pass 1. calculate everything except AL and LSL
     for(let day = 0; day < 14; day++) {
-        let rateTables = {
-            gradeRates: selectedGradeRates,
-            earlyShiftRates: selectedEarlyShiftRates,
-            afternoonShiftRates: selectedAfternoonShiftRates,
-            nightShiftRates: selectedNightShiftRates
-        };
         let s = shifts[day]; //alias for current shift
+        let shiftPayGrade; //paygrade for current shift only
+        let higherDuties = false;
+        if(s.higherDuties && s.higherDutiesGrade && payGrade.higherDutiesGroup) {
+            shiftPayGrade = grades[s.higherDutiesGrade];
+            higherDuties = true;
+        }
+        else {
+            shiftPayGrade = grades[getPayGrade()];
+        }
+        let rateTables = { //rates for current shift
+            gradeRates: shiftPayGrade.payRates,
+            earlyShiftRates:  shiftPayGrade.earlyShiftRates,
+            afternoonShiftRates:  shiftPayGrade.afternoonShiftRates,
+            nightShiftRates:  shiftPayGrade.nightShiftRates
+        };
         
         if(s.daoTeamLeader) {
             rateTables.gradeRates = so7Rates;
@@ -2547,28 +2766,28 @@ function updateShiftPayTable() {
             if(s.sick) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
                 if(s.ph) {
-                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
+                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables, false, higherDuties));
                 }
                 else {
-                    shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables));
+                    shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables, false, higherDuties));
                 }
             }
             else if(s.ph) { //public holiday
                 if(s.phOffRoster) {
                     //phOffRosterCount++;
-                    if(getPayGrade() != "parttime" && !s.al && !s.lsl && !s.phOffRosterNoPay) { //dont pay NON ROS PH to part time, when on leave, or when PH OFF No Pay is set
-                        shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables));
+                    if(getEmploymentType() != "parttime" && !s.al && !s.lsl && !s.phOffRosterNoPay) { //dont pay NON ROS PH to part time, when on leave, or when PH OFF No Pay is set
+                        shiftPay[day].push(new PayElement("nonRosPH", ordinaryHours, day, rateTables, false, higherDuties));
                     }
                 }
                 else {
                     deductAnnualLeaveShifts[weekNo(day)]++;
                     deductLSLShifts[weekNo(day)]++;
-                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables));
+                    shiftPay[day].push(new PayElement("phGaz", ordinaryHours, day, rateTables, false, higherDuties));
                 }
             }
             else if(s.phc) { //public holiday credit leave
                 deductAnnualLeaveShifts[weekNo(day)]++;
-                shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day, rateTables));
+                shiftPay[day].push(new PayElement("phCredit", ordinaryHours, day, rateTables, false, higherDuties));
             }
             if(s.ddo && !ddoFortnight) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
@@ -2611,9 +2830,19 @@ function updateShiftPayTable() {
                 }
             }
 
+            //sick non-driver part-timers: set working hours to zero.
+            if((s.sick || s.phc) && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                normalHours = 0.0;
+                todayNormalHours = 0.0;
+                tomorrowNormalHours = 0.0;
+                todayPhHours = 0.0;
+                tomorrowPhHours = 0.0;
+                phOvertimeHours = 0.0;
+            }
+
             //part-time PH-roster calculation
-            if(getPayGrade() == "parttime" && s.phOffRoster) {
-                shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables));
+            if(getEmploymentType() == "parttime" && s.phOffRoster && s.ph) {
+                shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables, false, higherDuties));
             }
             /*else if(s.sick && s.hoursDecimal <= 4) {
                 shiftPay[day].push(new PayElement("sickFull", ordinaryHours, day, rateTables)); //if went of sick half-way through shift or earlier, pay sick full day.
@@ -2639,43 +2868,65 @@ function updateShiftPayTable() {
                     }
                 }
                 if(normalPhWorkedHours > 0.0) {
-                    shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift));
-                    shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift));
-                    if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
-                        shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift)); //payroll interpretation: XPay based on ordinary hours
-                    } 
-                    else if(s.ph && (day != 0 && day != 7)) {
-                        shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
+                    shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                    if(partTimeNonDriver) {
+                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phPen150", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                        } 
+                        else if(s.ph && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                            shiftPay[day].push(new PayElement("newPHCD", normalPhWorkedHours, day, rateTables));
+                        }
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("phXpay", ordinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                        } 
+                        else if(s.ph && (day != 0 && day != 7)) {
+                            shiftPay[day].push(new PayElement("newPHCD", ordinaryHours, day, rateTables));
+                        }
                     }
                 }
                 if(sundayPhWorkedHours > 0.0) {
-                    shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift));
-                    shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift));
+                    shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                    shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
                 }
                 if(phOvertimeHours > 0.0) {
-                    shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift));
+                    shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift, s.higherDuties));
                 }
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= ordinaryDays && normalHours > 0.0){ 
                     if(s.rosteredShiftNumber > ordinaryDays) {
-                        shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                        shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
                     }
                     else {
-                        shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                        shiftPay[day].push(new PayElement("normal", Math.min(normalHours, ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
                     }
+                }
+
+                //Public Holiday Credit (part-time non-driver only)
+                if(s.phc && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                    shiftPay[day].push(new PayElement("phCredit", s.hoursDecimal, day, rateTables, false, higherDuties));
                 }
 
                 //Guarantee and Sick-Part
                 if(s.sick) { //if sick, sick-part in place of guarantee
-                    let sickHours = ordinaryHours - s.hoursDecimal;
+                    let sickHours;
+                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) { //part-time non-driving get paid sick for their rostered hours
+                        sickHours = s.hoursDecimal;
+                    }
+                    else { //otherwise sick-part
+                        sickHours = ordinaryHours - s.hoursDecimal;
+                    }
                     if(sickHours > 0.0) {
-                        shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables));
+                        shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables, false, higherDuties));
                     }
                 }
-                else if(s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
+                else if(shiftPayGrade.drivingGrade && s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < ordinaryHours) {
                     let guaranteeHours = ordinaryHours - s.hoursDecimal;
-                    shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift));
+                    shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift, higherDuties));
                 }
 
                 //Weekend Penalties
@@ -2685,22 +2936,22 @@ function updateShiftPayTable() {
                         if(tomorrowNormalHours > 0.0) { //time into saturday
                             penaltyTime -= todayNormalHours;
                             if(penaltyTime > 0.0) {
-                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, day, rateTables, s.ojtShift)); 
+                                shiftPay[day].push(new PayElement("wePen50", penaltyTime, day, rateTables, s.ojtShift, higherDuties)); 
                             }
                         }
                     }
                     else if(day == 6 || day == 13) { //saturday shift
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
                         }
                         penaltyTime -= todayNormalHours;
                         if(tomorrowNormalHours > 0.0 && penaltyTime > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", penaltyTime, day, rateTables, s.ojtShift));
+                            shiftPay[day].push(new PayElement("wePen100", penaltyTime, day, rateTables, s.ojtShift, higherDuties));
                         }
                     }
                     else if(day == 0 || day == 7) { //sunday
                         if(todayNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, ordinaryHours), day, rateTables, s.ojtShift));
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
                         }
                     }
                 }
@@ -2748,9 +2999,21 @@ function updateShiftPayTable() {
                         }
                     }
 
-                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement("rost+50", rost50hours, day, rateTables, s.ojtShift));
-                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement("rost+100", rost100hours, day, rateTables, s.ojtShift));
+                    let rost50Element = "rost+50";
+                    let rost100Element = "rost+100";
+                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                        rost50Element = "ot150";
+                        rost100Element = "ot200";
+                    }
+
+                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement(rost50Element, rost50hours, day, rateTables, s.ojtShift, higherDuties));
+                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement(rost100Element, rost100hours, day, rateTables, s.ojtShift, higherDuties));
                     if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
+                }
+
+                //Shift Extended Overtime (part-time non-driving grades)
+                if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade && s.extendedShift && s.extendedShiftMinutes > 0) {
+                    shiftPay[day].push(new PayElement("ot150", s.extendedShiftMinutes/60, day, rateTables, false, higherDuties));
                 }
 
                 //Excess Shift Overtime
@@ -2767,8 +3030,8 @@ function updateShiftPayTable() {
                     else { //all other excess shifts
                         ot150Hours += normalHours;
                     }
-                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", ot150Hours, day, rateTables, s.ojtShift));
-                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", ot200Hours, day, rateTables, s.ojtShift));
+                    if(ot150Hours > 0.0) shiftPay[day].push(new PayElement("ot150", ot150Hours, day, rateTables, s.ojtShift, higherDuties));
+                    if(ot200Hours > 0.0) shiftPay[day].push(new PayElement("ot200", ot200Hours, day, rateTables, s.ojtShift, higherDuties));
                 }
 
                 //Shiftwork Allowances
@@ -2786,13 +3049,13 @@ function updateShiftPayTable() {
                     shiftworkHours = Math.round(Math.min(shiftworkHours, ordinaryHours)); //capped at ordinary hours. rounded to nearest whole hour
                     if(shiftworkHours > 0.0) {
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
-                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables));
+                            shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
                         }
                         if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
-                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables));
+                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                         }
                         if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
-                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables));
+                            shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false));
                         }
                     }
                 }
@@ -2804,21 +3067,29 @@ function updateShiftPayTable() {
                 shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours, day, rateTables)); 
             }
         }
+        //relieving expenses
+        if(s.relievingExpenses && shiftPayGrade.relievingExpenses) {
+            shiftPay[day].push(new PayElement("relExp", 1, day, rateTables));
+        }
+        //suburban group working
+        if(getSuburbanGroupWorking() && shiftPayGrade.suburbanGroupWorking) {
+            shiftPay[day].push(new PayElement("suburbanGroupWorking", 1, day, rateTables));
+        }
         //suburban allowance
         if(payGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //wasted meal
-        if(s.wm) {
+        if(s.wm && shiftPayGrade.drivingGrade) {
             shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
         }
     }
 
     let rateTables = {
-        gradeRates: selectedGradeRates,
-        earlyShiftRates: selectedEarlyShiftRates,
-        afternoonShiftRates: selectedAfternoonShiftRates,
-        nightShiftRates: selectedNightShiftRates
+        gradeRates: grades[getPayGrade()].payRates,
+        earlyShiftRates:  grades[getPayGrade()].earlyShiftRates,
+        afternoonShiftRates:  grades[getPayGrade()].afternoonShiftRates,
+        nightShiftRates:  grades[getPayGrade()].nightShiftRates
     };
 
     //pay calculation: pass 2. determine and cap which days to pay annual and long service leave on.
@@ -2857,9 +3128,9 @@ function updateShiftPayTable() {
             }
         }
     }
-    
+
     //pay calculation: DDO.
-    if(payGrade.ddo) {
+    if(payGrade.ddo && getEmploymentType() == "fulltime") {
         let day = ddoWeek();
         if(day < 0) {
             shiftPay[0].push(new PayElement("edo", -4, 0, rateTables));
@@ -3149,8 +3420,9 @@ function getSaveData(key, prefixDate = true) {
  */
 function loadSavedData(datePrefix = "") {
     closeAllOptionsShelves();
-    //first reset all shifts
-    shifts = [];
+
+    //reset shifts table
+    shifts = []; 
     for (let i = 0; i < 14; i++) shifts.push(new Shift(i));
 
     if(datePrefix === "") {
@@ -3158,13 +3430,52 @@ function loadSavedData(datePrefix = "") {
         datePrefix += weekCommencingDate.getFullYear().toString() + (weekCommencingDate.getMonth() + 1).toString().padStart(2, "0") + weekCommencingDate.getDate().toString();
     }
     let savedPayGrade = getSaveData("paygrade");
+    let savedEmploymentType = getSaveData("employmenttype");
+    let savedSuburbanGroupWorking = getSaveData("suburbanGroupWorking");
+
     if(savedPayGrade == null) {
         savedPayGrade = getSaveData("paygrade", false);
         if(savedPayGrade == null) {
-            savedPayGrade = "spot"; //default
+            savedPayGrade = "none"; //default grade
+
         }
     }
+
+    //convert old parttime and jobshare grades to new grade + employment-type
+    if (savedPayGrade == "parttime") { 
+        savedPayGrade = "spot";
+        savedEmploymentType = "parttime";
+        setSaveData("employmenttype", savedEmploymentType, false);
+    }
+    else if (savedPayGrade == "jobshare") {
+        savedPayGrade = "spot";
+        savedEmploymentType = "jobsharefwa";
+        setSaveData("employmenttype", savedEmploymentType, false);
+    }
+
+    if(savedEmploymentType == null) {
+        savedEmploymentType = getSaveData("employmenttype", false);
+        if(savedEmploymentType == null) {
+            savedEmploymentType = "fulltime"; //default employment type
+        }
+    }
+
+    if(savedSuburbanGroupWorking == null) {
+        savedSuburbanGroupWorking = getSaveData("suburbanGroupWorking", false);
+        if(savedSuburbanGroupWorking == null) {
+            savedSuburbanGroupWorking == "false";
+        }
+    }
+
+    if(savedSuburbanGroupWorking == "true") {
+        document.getElementById("suburban-group-working").checked = true;
+    }
+    else {
+        document.getElementById("suburban-group-working").checked = false;
+    }
+
     document.getElementById("pay-grade").value = savedPayGrade;
+    document.getElementById("employment-type").value = savedEmploymentType;
     
     //shift options save data
     for(let day = 0; day < 14; day++) {
@@ -3179,6 +3490,12 @@ function loadSavedData(datePrefix = "") {
         let lslSave = getSaveData("day" + day + "lsl");
         let lslHalfPaySave = getSaveData("day" + day + "lslHalfPay");
         let phcSave = getSaveData("day" + day + "phc");
+        let relExpSave = getSaveData("day" + day + "relievingExpenses");
+        let suburbanGroupWorkingSave = getSaveData("day" + day + "suburbanGroupWorking");
+        let higherDutiesSave = getSaveData("day" + day + "higherDuties");
+        let higherDutiesGradeSave = getSaveData("day" + day + "higherDutiesGrade");
+        let extendedShiftSave = getSaveData("day" + day + "extendedShift");
+        let extendedShiftStartTimeSave = getSaveData("day" + day + "extendedShiftStartTime");
         let bonusSave = getSaveData("day" + day + "bonus");
         let bonusHoursSave = getSaveData("day" + day + "bonusHours");
         let teamLeaderSave = getSaveData("day" + day + "teamLeader");
@@ -3201,6 +3518,12 @@ function loadSavedData(datePrefix = "") {
         if(lslSave == "true") shifts[day].lsl = true;
         if(lslHalfPaySave == "true") shifts[day].lslHalfPay = true;
         if(phcSave == "true") shifts[day].phc = true;
+        if(relExpSave == "true") shifts[day].relievingExpenses = true;
+        if(suburbanGroupWorkingSave == "true") shifts[day].suburbanGroupWorking = true;
+        if(higherDutiesSave == "true") shifts[day].higherDuties = true;
+        if(higherDutiesGradeSave) shifts[day].higherDutiesGrade = higherDutiesGradeSave;
+        if(extendedShiftSave == "true") shifts[day].extendedShift = true;
+        if(extendedShiftStartTimeSave) shifts[day].extendedShiftStartTime = extendedShiftStartTimeSave;
         if(bonusSave == "true") shifts[day].bonus = true;
         if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
         if(teamLeaderSave == "true") shifts[day].teamLeader = true;
@@ -3249,6 +3572,10 @@ function resetForm() {
         setSaveData("day" + day + "lsl", "");
         setSaveData("day" + day + "lslHalfPay", "");
         setSaveData("day" + day + "phc", "")
+        setSaveData("day" + day + "relievingExpenses", "")
+        setSaveData("day" + day + "suburbanGroupWorking", "")
+        setSaveData("day" + day + "higherDuties", "")
+        setSaveData("day" + day + "higherDutiesGrade", "")
         setSaveData("day" + day + "bonus", "");
         setSaveData("day" + day + "bonusHours", "");
         setSaveData("day" + day + "teamLeader", "");
@@ -3266,6 +3593,10 @@ function resetForm() {
         shifts[day].lsl = false;
         shifts[day].lslHalfPay = false;
         shifts[day].phc = false;
+        shifts[day].relievingExpenses = false;
+        shifts[day].suburbanGroupWorking = false;
+        shifts[day].higherDuties = false;
+        shifts[day].higherDutiesGrade = "";
         shifts[day].bonus = false;
         shifts[day].bonusHours = 0.0;
         shifts[day].teamLeader = false;
@@ -3698,6 +4029,8 @@ function taxConfigurator() {
     let enableTaxCalcId = "enableTaxCalc";
     let enableCheckboxLabel = document.createElement("span");
     enableCheckboxLabel.textContent = "Net Pay Calculation";
+    enableCheckboxLabel.style.color = "#eed969";
+    enableCheckboxLabel.style.fontWeight = "bold";
     formArea.appendChild(enableCheckboxLabel);
     if(getSaveData(enableTaxCalcId, false) == "yes") {
         formArea.appendChild(createToggleSwitch(enableTaxCalcId, true, "Enabled", "Disabled"));
@@ -3710,8 +4043,16 @@ function taxConfigurator() {
 
     //tax-free threshold
     let taxFreeThresholdId = "taxFreeThreshold";
-    let taxFreeThresholdLabel = document.createElement("span");
-    taxFreeThresholdLabel.textContent = "Claim Tax-Free Threshold";
+    let taxFreeThresholdLabel = document.createElement("div");
+    let taxFreeThresholdLabelText = document.createElement("span");
+    taxFreeThresholdLabelText.style.display = "inline-block";
+    taxFreeThresholdLabelText.style.width = "100%";
+    let taxFreeThresholdLabelSubtext = document.createElement("span");
+    taxFreeThresholdLabelSubtext.style.fontSize = "70%";
+    taxFreeThresholdLabelSubtext.style.color = "#9db8c6"
+    taxFreeThresholdLabelText.textContent = "Claim Tax-Free Threshold";
+    taxFreeThresholdLabelSubtext.textContent = "If unsure, set to YES";
+    taxFreeThresholdLabel.append(taxFreeThresholdLabelText, taxFreeThresholdLabelSubtext);
     formArea.appendChild(taxFreeThresholdLabel);
     if(getSaveData(taxFreeThresholdId, false) == "no") { //reverse logic to make the default 'true'
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, false, "Yes", "No"));
@@ -3719,7 +4060,6 @@ function taxConfigurator() {
     else {
         formArea.appendChild(createToggleSwitch(taxFreeThresholdId, true, "Yes", "No"));
     }
-
 
     //HECS/STSL
     let stslId = "stsl";
@@ -3976,13 +4316,13 @@ function topHelpBoxPreset(presetName) {
     switch(presetName) {
         case "gettingStarted":
             helpTitle = "Help Guide";
-            helpText = "<p><strong>Fortnight Commencing</strong><br />Before entering shift details, first ensure the correct dates are set and shown near the top of the Data Entry area. Use the <i class='fas fa-angle-double-left'></i> and <i class='fas fa-angle-double-right'></i> buttons to change the date range a fortnight at a time, or click the <i class='far fa-calendar-alt'></i> button to open the the date-picker and select the fornight that way. The date range that is selected is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
+            helpText = "<p><strong>Fortnight Commencing</strong><br />Before entering shift details, first ensure the correct dates are set and shown near the top of the Data Entry area. Use the <i class='fas fa-angle-double-left'></i> and <i class='fas fa-angle-double-right'></i> buttons to change the date range a fortnight at a time, or click the <i class='far fa-calendar-alt'></i> button to open the the date-picker and select the fortnight that way. The date range that is selected is used for two purposes: determining the base pay-rate the calculator will use, and saving the data you have entered to the selected date. See <a href='javascript:topHelpBoxPreset(\"saveInfo\");'>Data Saving Info</a> for more information.</p>"
             + "<p><strong>Shift Input</strong><br />There are two parts to entering the details for each shift: <em>Shift Options</em> and <em>Sign-On/Sign-Off times</em>. You can set either in any order, you don't need to put shift times in first or vice-versa."
             + "<ul><li>To set shift options, click the shift options button (looks like this: " + dummyButton("OFF", "black", true) + " or " + dummyButton("Normal", normalColour, true) + ")"
             + ", then click the relevant options to toggle them on and off for that shift.</li>"
             + "<li>Enter sign-on and off times as four-digit 24-hour time with no colon, for example: 0330 or 2100</li></ul></p>"
-            + "<p><strong>DDOs and Public Holidays: Worked or OFF?</strong>"
-            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the " + dummyButton("DDO", ddoColour) + " shift option and enter valid sign-on and sign-off times for that shift.</p>"
+            + "<p><strong>DDOs/EDOs and Public Holidays: Worked or OFF?</strong>"
+            + "<br />There is no separate button to distinguish OFF vs. Worked shifts. The calculator determines if your DDO/EDO or PH is worked or OFF depending on if you have entered sign-on and sign-off times for that day. For instance, if you worked your DDO, set the " + dummyButton("DDO", ddoColour) + " shift option and enter valid sign-on and sign-off times for that shift.</p>"
             + "<p><strong>Sick-Part</strong>"
             + "<br />For shifts where you went home sick part-way through a shift, set the " + dummyButton("Sick", sickColour) + " shift option and enter your sign-on time as normal. For your sign-off time, instead of your shifts normal sign-off time, set this as the time you were signed-off as going home sick.</p>"
             + "<p><strong>Results</strong><br />Results from the calculation appear as you enter in each of your shifts. You can view the results in two ways: <em>Grouped</em> or <em>Split</em>. <em>Grouped</em> is the default view and shows each of the pay elements like they would appear on your payslip, while <em>split</em> view will divide the results into individual days."
@@ -4008,10 +4348,20 @@ function topHelpBoxPreset(presetName) {
             + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
             + "<br />If you find any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
             + "<ul>"
-            + "<li>Developed by Petar Stankovic</li>"
+            + "<li>Developed by Petar Stankovic - Driver FSS</li>"
             + "<li><a href='https://github.com/Hyperchicken/webPayCalculator'>GitHub Respository</a></li>"
             + "<li>Version: " + calcVersion + "</li>"
             + "<li>Last Update: " + calcLastUpdateDate +"</li>"
+            + "</ul>";
+            break;
+        case "feedback":
+            helpTitle = "Report Issue or Feedback";
+            helpText = "<p>This pay calculator is developed and maintained by Petar Stankovic, driver at FSS.</p>"
+            + "<p>If you have any feedback or issues to report, please contact me using one of the methods below."
+            + "<br />Feedback and bug reports help make the calculator better and more accurate, so even reports on the smallest things are much appreciated! I reply to all reports.</p>"
+            + "<ul>"
+            + "<li>Email: <a href='mailto:petar+paycalc@hyperchicken.com?subject=Pay Calculator Feedback'>petar+paycalc@hyperchicken.com</a></li>"
+            + "<li>Phone/text: Find my number in the Metro global address book.</li>"
             + "</ul>";
             break;
         case "newDomainWarning":

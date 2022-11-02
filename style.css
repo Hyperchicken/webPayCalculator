@@ -73,7 +73,6 @@ a:visited {
     position: relative;
     padding-left: 25px;
     margin-left: 20px;
-    margin-bottom: 10px;
     cursor: pointer;
     font-size: 1em;
     -webkit-user-select: none;
@@ -135,23 +134,28 @@ a:visited {
     background: white;
 } 
 
- /* The switch - the box around the slider */
- .switch {
+/* The switch - the box around the slider */
+.switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
+}
+
+.small-switch {
+    width: 40px;
+    height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-  }
+}
   
-  /* The slider */
-  .slider {
+/* The slider */
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -162,9 +166,9 @@ a:visited {
     -webkit-transition: .4s;
     transition: .4s;
     user-select: none;
-  }
+}
   
-  .slider:before {
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -174,21 +178,32 @@ a:visited {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-  }
+}
+
+.small-slider:before {
+    height: 14px;
+    width: 14px;
+}
   
-  input:checked + .slider {
+input:checked + .slider {
     background-color: #50E850;
-  }
+}
   
-  input:focus + .slider {
+input:focus + .slider {
     box-shadow: 0 0 1px #50E850;
-  }
+}
   
-  input:checked + .slider:before {
+input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
+}
+
+input:checked + .small-slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
   
   /* Rounded sliders */
   .slider.round {
@@ -229,6 +244,10 @@ a:visited {
 
 .shelf-button {
     margin: 0px 5px 4px 5px;
+}
+
+.shelf-button > select {
+    margin: -3px 0px -3px 10px;
 }
 
 .grid-1-2 {
@@ -428,6 +447,12 @@ a:visited {
     border-color: #e79e00;
 }
 
+.higher-duties-button {
+    background-color: #00b391;
+    border-color: #00b391;
+    margin-right: 100px;
+}
+
 .bonus-button-text {
     color: #fff;
 }
@@ -443,17 +468,38 @@ a:visited {
 
 .pay-grade-container {
     align-self: center;
-    margin-bottom: 15px;
-    margin-right: 20px;
     grid-column: 1 / 6;
+    border-bottom: 1px dotted;
+    padding-bottom: 10px;
+    width: 100%;
 }
 
-.pay-grade-container > select {
-    float: right;
+.pay-grade-container select {
+    width: 90%;
 }
 
-.pay-grade-container > span {
-    float: left;
+.pay-grade-container label {
+    text-align: right;
+    padding-right: 5px;
+}
+
+.pay-grade-container td {
+    padding: 6px 0;
+    
+}
+
+.data-entry-message-box {
+    font-size: 0.8em;
+    font-family: Verdana, sans-serif;
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 1px;
+    background-color: #0005;
+    margin-top: 10px;
+}
+
+.data-entry-message-box p {
+    padding: 0 10px;
 }
 
 .shift-options-shelf {
@@ -487,12 +533,13 @@ a:visited {
 
 .container > h3 {
     grid-column: 1 / 6;
-    margin-top: 10px;
+    margin: 10px;
 }
 
 hr {
     border-bottom: none;
     border-top: 1px solid #fff;
+    clear: both;
 }
 
 .hr-dashed {
@@ -630,7 +677,8 @@ hr {
 }
 
 .time {
-    width: 3em;
+    width: 3.2em;
+    height: auto;
     margin: auto;
 }
 
@@ -673,7 +721,7 @@ div.day-of-week > p {
 
 .pay-element-table {
     width: 100%;
-    font-family: "Lucida Console", Monaco, monospace;
+    font-family: Monaco, monospace;
     border-collapse: collapse;
     table-layout: fixed;
     text-align: right;
@@ -750,6 +798,7 @@ div.day-of-week > p {
 .week-commencing {
     grid-column: 1 / 6;
     text-align: center;
+    margin-top: 10px;
 }
 
 .week-commencing-label {
@@ -801,12 +850,12 @@ div.day-of-week > p {
 }
 
 .total-element {
-    font-family:  "Lucida Console", Monaco, monospace;
+    font-family:  Monaco, monospace;
     white-space: pre-wrap;
 }
 
 .hours-worked {
-    font-family:  "Lucida Console", Monaco, monospace;
+    font-family:  Monaco, monospace;
     white-space: pre-wrap;
     cursor: pointer;
 }
