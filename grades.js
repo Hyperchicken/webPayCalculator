@@ -186,8 +186,25 @@ const grades = {
         "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(157, 29, 29)"
     },
+    "driverrosters" : {
+        "name": "Driver Rosters",
+        "ordinaryDays": 10,
+        "ordinaryHours": 8,
+        "ddo": true,
+        "drivingGrade": false,
+        "suburbanGroupWorking": false,
+        "relievingExpenses": false,
+        "higherDutiesGroup": false,
+        "suburbanAllowance":  false,
+        "excessHoursThreshold": 4,
+        "payRates": so4Rates,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
+        "colour": "rgb(157, 29, 29)"
+    },
     "sac1y1" : {
-        "name": "SA C1 Y1",
+        "name": "SA1 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -204,7 +221,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac1y2" : {
-        "name": "SA C1 Y2",
+        "name": "SA1 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -221,7 +238,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac1y3" : {
-        "name": "SA C1 Y3",
+        "name": "SA1 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -238,7 +255,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac2y1" : {
-        "name": "SA C2 Y1",
+        "name": "SA2 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -256,7 +273,7 @@ const grades = {
     }
     ,
     "sac2y2" : {
-        "name": "SA C2 Y2",
+        "name": "SA2 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -274,7 +291,7 @@ const grades = {
     }
     ,
     "sac2y3" : {
-        "name": "SA C2 Y3",
+        "name": "SA2 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -291,7 +308,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y1" : {
-        "name": "SA C3 Y1",
+        "name": "SA3 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -308,7 +325,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y2" : {
-        "name": "SA C3 Y2",
+        "name": "SA3 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -325,7 +342,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y3" : {
-        "name": "SA C3 Y3",
+        "name": "SA3 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -342,7 +359,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay1" : {
-        "name": "LSA Y1",
+        "name": "LSA Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -359,7 +376,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay2" : {
-        "name": "LSA Y2",
+        "name": "LSA Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -376,7 +393,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay3" : {
-        "name": "LSA Y3",
+        "name": "LSA Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -393,7 +410,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc1d1" : {
-        "name": "SO C1 D1",
+        "name": "SO1 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -410,7 +427,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc1d2" : {
-        "name": "SO C1 D2",
+        "name": "SO1 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -427,7 +444,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d1" : {
-        "name": "SO C2 D1",
+        "name": "SO2 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -444,7 +461,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d2" : {
-        "name": "SO C2 D2",
+        "name": "SO2 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -461,7 +478,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d1" : {
-        "name": "SO C3 D1",
+        "name": "SO3 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -478,7 +495,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d2" : {
-        "name": "SO C3 D2",
+        "name": "SO3 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -495,7 +512,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d1" : {
-        "name": "SM C4 D1",
+        "name": "SM4 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -512,7 +529,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d2" : {
-        "name": "SM C4 D2",
+        "name": "SM4 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -529,7 +546,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d1" : {
-        "name": "SM C5 D1",
+        "name": "SM5 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -546,7 +563,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d2" : {
-        "name": "SM C5 D2",
+        "name": "SM5 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -563,7 +580,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc6d1" : {
-        "name": "SM C6 D1",
+        "name": "SM6 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -581,7 +598,7 @@ const grades = {
     }
     ,
     "smc6d2" : {
-        "name": "SM C6 D2",
+        "name": "SM6 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -598,7 +615,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d1" : {
-        "name": "SM C7 D1",
+        "name": "SM7 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -615,7 +632,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d2" : {
-        "name": "SM C7 D2",
+        "name": "SM7 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -632,7 +649,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d1" : {
-        "name": "SM C8 D1",
+        "name": "SM8 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -649,7 +666,7 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d2" : {
-        "name": "SM C8 D2",
+        "name": "SM8 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,

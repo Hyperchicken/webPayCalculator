@@ -812,6 +812,10 @@ $(document).ready(function() {
         });
         closeMenu();
     });
+    $("#feedbackMenuButton").on("click", function(){
+        topHelpBoxPreset("feedback");
+        closeMenu();
+    });
     $("#aboutMenuButton").on("click", function(){
         topHelpBoxPreset("about");
         closeMenu();
@@ -1057,7 +1061,7 @@ function updateOptionsButtons() {
                 }
                 offButton = false;
             }
-            if(s.wm) {
+            if(s.wm && grades[getPayGrade()].drivingGrade) {
                 setButton("Wasted Meal", wmColour);
                 offButton = false;
             }
@@ -1140,8 +1144,8 @@ function updateOptionsButtons() {
                         }
                     }
                 }
-                if(s.wm) {
-                    setButton("W/Meal", wmColour);
+                if(s.wm && grades[getPayGrade()].drivingGrade) {
+                    setButton("Wasted Meal", wmColour);
                 }
                 if(s.bonus && s.bonusHours > 0) {
                     setButton("Bonus&nbspPay", bonusColour);
@@ -1893,7 +1897,9 @@ function generateOptionsShelfButtons(day) {
     if(!grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
         shelf.appendChild(extendedShiftButton);
     }
-    shelf.appendChild(wmButton);
+    if(grades[getPayGrade()].drivingGrade) {
+        shelf.appendChild(wmButton);
+    }
     shelf.appendChild(sickButton);
     if(grades[getPayGrade()].higherDutiesGroup) {
         shelf.appendChild(higherDutiesButton);
@@ -2371,15 +2377,14 @@ function updateResults() {
             resultArea.appendChild(dashedHr);
             let taxPrompt = document.createElement("p");
             taxPrompt.classList.add("tax-prompt");
-            let hideLink = document.createElement("a");
-            hideLink.textContent = "hide this message";
-            hideLink.addEventListener("click", function(){
-                setSaveData("hideTaxSetupPrompt", "true", false);
-                updateResults();
+            let taxConfigLink = document.createElement("a");
+            taxConfigLink.textContent = "Click here to configure";
+            taxConfigLink.addEventListener("click", function(){
+                taxConfigurator();
             });
             let icon = document.createElement("i");
-            icon.classList.add("fas", "fa-info-circle", "fa-2x", "tax-prompt-icon")
-            taxPrompt.append(icon, "Please configure Net Income Settings via the Menu to calculate tax, super and net income. If you'd prefer not to, you can ", hideLink);
+            icon.classList.add("fas", "fa-comment-dollar", "fa-2x", "tax-prompt-icon")
+            taxPrompt.append(icon, "Net and tax calculation not configured. ", taxConfigLink);
             resultArea.appendChild(taxPrompt);
         }
 
@@ -3048,7 +3053,7 @@ function updateShiftPayTable() {
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //wasted meal
-        if(s.wm) {
+        if(s.wm && shiftPayGrade.drivingGrade) {
             shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
         }
     }
@@ -4316,10 +4321,20 @@ function topHelpBoxPreset(presetName) {
             + "<p>While I've taken care to try and make this calculator accurate, I cannot guarantee that it will be perfect. Some parts of the EA can be interpreted with ambiguity and debated, bugs in the code may be present, and not all scenarios are covered by this calculator."
             + "<br />If you find any problems with the calculator, I'd love to hear about it. Find me on the Facebook page <i class='far fa-grin-alt'></i></p>"
             + "<ul>"
-            + "<li>Developed by Petar Stankovic</li>"
+            + "<li>Developed by Petar Stankovic - Driver FSS</li>"
             + "<li><a href='https://github.com/Hyperchicken/webPayCalculator'>GitHub Respository</a></li>"
             + "<li>Version: " + calcVersion + "</li>"
             + "<li>Last Update: " + calcLastUpdateDate +"</li>"
+            + "</ul>";
+            break;
+        case "feedback":
+            helpTitle = "Report Issue or Feedback";
+            helpText = "<p>This pay calculator is developed and maintained by Petar Stankovic, driver at FSS.</p>"
+            + "<p>If you have any feedback or issues to report, please contact me using one of the methods below."
+            + "<br />Feedback and bug reports help make the calculator better and more accurate, so even reports on the smallest things are much appreciated! I reply to all reports.</p>"
+            + "<ul>"
+            + "<li>Email: <a href='mailto:petar+paycalc@hyperchicken.com?subject=Pay Calculator Feedback'>petar+paycalc@hyperchicken.com</a></li>"
+            + "<li>Phone/text: Find my number in the Metro global address book.</li>"
             + "</ul>";
             break;
         case "newDomainWarning":

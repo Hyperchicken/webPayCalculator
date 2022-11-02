@@ -450,6 +450,7 @@ input:checked + .small-slider:before {
 .higher-duties-button {
     background-color: #00b391;
     border-color: #00b391;
+    margin-right: 100px;
 }
 
 .bonus-button-text {
@@ -538,6 +539,7 @@ input:checked + .small-slider:before {
 hr {
     border-bottom: none;
     border-top: 1px solid #fff;
+    clear: both;
 }
 
 .hr-dashed {
@@ -675,8 +677,8 @@ hr {
 }
 
 .time {
-    width: 3.5em;
-    height: 2em;
+    width: 3.2em;
+    height: auto;
     margin: auto;
 }
 

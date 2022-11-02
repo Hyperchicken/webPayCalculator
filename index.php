@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.37l">
+    <link rel="stylesheet" href="style.css?v=1.37">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,9 +25,9 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.11"></script> 
-    <script src="rates.js?v=1.03l"></script> 
-    <script src="grades.js?v=1.03l"></script> 
-    <script src="scripts.js?v=1.37l"></script> 
+    <script src="rates.js?v=1.04"></script> 
+    <script src="grades.js?v=1.04"></script> 
+    <script src="scripts.js?v=1.37"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -45,6 +45,7 @@
                 <a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>
                 <a id="taxConfigurationMenuButton"><i class="fas fa-funnel-dollar fa-fw menu-icon"></i>Net Income Settings</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
+                <a id="feedbackMenuButton"><i class="fas fa-bug fa-fw menu-icon"></i>Report Issue/Feedback</a>
                 <a id="aboutMenuButton"><i class="fas fa-info-circle fa-fw menu-icon"></i>About</a>
             </div>
         </li>
@@ -89,39 +90,40 @@
                                     <option value="so11">TSO SO-11</option>
                                     <option value="so12">TSO SO-12</option>
                                 </optgroup>
-                                <optgroup label="DAO/Rosters">
+                                <optgroup label="Driver Rosters/Allocation">
                                     <option value="dao">DAO</option>
                                     <option value="daoteamleader">DAO Team-Leader</option>
+                                    <option value="driverrosters">Driver Rosters</option>
                                 </optgroup>
                                 <optgroup label="Station Assistant">
-                                    <option value="sac1y1">SA Class 1 Yr 1</option>
-                                    <option value="sac1y2">SA Class 1 Yr 2</option>
-                                    <option value="sac1y3">SA Class 1 Yr 3</option>
-                                    <option value="sac2y1">SA Class 2 Yr 1</option>
-                                    <option value="sac2y2">SA Class 2 Yr 2</option>
-                                    <option value="sac2y3">SA Class 2 Yr 3</option>
-                                    <option value="sac3y1">SA Class 3 Yr 1</option>
-                                    <option value="sac3y2">SA Class 3 Yr 2</option>
-                                    <option value="sac3y3">SA Class 3 Yr 3</option>
+                                    <option value="sac1y1">SA1 Yr 1</option>
+                                    <option value="sac1y2">SA1 Yr 2</option>
+                                    <option value="sac1y3">SA1 Yr 3</option>
+                                    <option value="sac2y1">SA2 Yr 1</option>
+                                    <option value="sac2y2">SA2 Yr 2</option>
+                                    <option value="sac2y3">SA2 Yr 3</option>
+                                    <option value="sac3y1">SA3 Yr 1</option>
+                                    <option value="sac3y2">SA3 Yr 2</option>
+                                    <option value="sac3y3">SA3 Yr 3</option>
                                     <option value="lsay1">LSA Yr 1</option>
                                     <option value="lsay2">LSA Yr 2</option>
                                     <option value="lsay3">LSA Yr 3</option>
                                 </optgroup>
                                 <optgroup label="Station Officer">
-                                    <option value="soc1d1">SO Class 1 Div 1</option>
-                                    <option value="soc1d2">SO Class 1 Div 2</option>
-                                    <option value="soc2d1">SO Class 2 Div 1</option>
-                                    <option value="soc2d2">SO Class 2 Div 2</option>
-                                    <option value="soc3d1">SO Class 3 Div 1</option>
-                                    <option value="soc3d2">SO Class 3 Div 2</option>
+                                    <option value="soc1d1">SO1 Div 1</option>
+                                    <option value="soc1d2">SO1 Div 2</option>
+                                    <option value="soc2d1">SO2 Div 1</option>
+                                    <option value="soc2d2">SO2 Div 2</option>
+                                    <option value="soc3d1">SO3 Div 1</option>
+                                    <option value="soc3d2">SO3 Div 2</option>
                                 </optgroup>
                                 <optgroup label="Station Master">
-                                    <option value="smc4d1">SM Class 4 Div 1</option>
-                                    <option value="smc4d2">SM Class 4 Div 2</option>
-                                    <option value="smc6d1">SM Class 6 Div 1</option>
-                                    <option value="smc6d2">SM Class 6 Div 2</option>
-                                    <option value="smc8d1">SM Class 8 Div 1</option>
-                                    <option value="smc8d2">SM Class 8 Div 2</option>
+                                    <option value="smc4d1">SM4 Div 1</option>
+                                    <option value="smc4d2">SM4 Div 2</option>
+                                    <option value="smc6d1">SM6 Div 1</option>
+                                    <option value="smc6d2">SM6 Div 2</option>
+                                    <option value="smc8d1">SM8 Div 1</option>
+                                    <option value="smc8d2">SM8 Div 2</option>
                                 </optgroup>                
                             </select>
                         </td>
