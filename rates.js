@@ -1,6 +1,6 @@
 /*
     rates.js - pay rates, allowances, tax rates and more.
-    version 1.04
+    version 1.05
 */
 
 //enterprise agreement pay rates
@@ -76,6 +76,8 @@ const nightShiftRatesTPW =      [3.5639,       3.6173,       3.6716,       3.726
 const earlyShiftRatesSal =      [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
 const afternoonShiftRatesSal =  [3.0773,       3.1234,       3.1703,       3.2178,       3.2661,       3.3151,       3.3648,       3.4489,       3.5352,       3.6598,       3.6964,       3.7888,       3.8267,       3.9224,       3.9616,       4.0606];
 const nightShiftRatesSal =      [3.5988,       3.6528,       3.7076,       3.7632,       3.8196,       3.8769,       3.9351,       4.0335,       4.1343,       4.2800,       4.3228,       4.4309,       4.4752,       4.5871,       4.6330,       4.7488];
+
+const disruptionAllowanceRates= [0,            0,            0,            0,            0,            0,            0,            0.8610,       0.8696,       0.8914,       0.9003,       0.9228,       0.9320,       0.9553,       0.9649,       0.9890]
 
 //ETDSC fortnightly membership rates
 const etdscFullMemberRate = 6;
