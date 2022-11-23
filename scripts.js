@@ -3072,7 +3072,7 @@ function updateShiftPayTable() {
             shiftPay[day].push(new PayElement("relExp", 1, day, rateTables));
         }
         //suburban group working
-        if(getSuburbanGroupWorking() && shiftPayGrade.suburbanGroupWorking) {
+        if(getSuburbanGroupWorking() && shiftPayGrade.suburbanGroupWorking && !(shiftHours <= 0 && (s.sick || s.al || s.lsl || s.phc))) {
             shiftPay[day].push(new PayElement("suburbanGroupWorking", 1, day, rateTables));
         }
         //suburban allowance
