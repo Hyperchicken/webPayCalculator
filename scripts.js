@@ -100,6 +100,7 @@ class Shift {
         this.bonusHours = 0.0; //bonus payment hours
         this.teamLeader = false; //DAO team leader
         this.relievingExpenses = false; //relieving expenses allowance
+        this.disruption = false; //disruption to work allowance
         this.suburbanGroupWorking = false; //suburban group working allowance
         this.higherDuties = false; //working in higher duties
         this.higherDutiesGrade = ""; //higher duties grade. Shift will be paid at the selected grade's rates.
@@ -307,6 +308,7 @@ class PayElement {
             "nonRosPH",
             "phCredit",
             "bonusPayment",
+            "disruption",
             "earlyShift",
             "afternoonShift",
             "nightShift",
@@ -367,6 +369,7 @@ class PayElement {
             case "relExp": payClassName = "Rel-Exp"; break;
             case "suburbanGroupWorking": payClassName = "Sub Group"; break;
             case "mealAllowance": payClassName = "Meal Allow"; break;
+            case "disruption": payClassName = "Disruption"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
             case "newPHCD": payClassName = "New PHCD"; break;
@@ -594,6 +597,9 @@ class PayElement {
                 break;
             case "mealAllowance":
                 rate += getEbaRate(shiftDate, mealAllowanceRates);
+                break;
+            case "disruption":
+                rate += getEbaRate(shiftDate, disruptionAllowanceRates);
                 break;
             case "leaveLoading":
                 rate += getEbaRate(shiftDate, this.rateTables.gradeRates); //20%
@@ -1092,7 +1098,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift) {
+            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift || s.disruption) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1162,6 +1168,10 @@ function updateOptionsButtons() {
                 }
                 if(s.bonus && s.bonusHours > 0) {
                     setButton("Bonus&nbspPay", bonusColour);
+                }
+                if(s.disruption && !grades[getPayGrade()].drivingGrade)
+                {
+                    setButton("Disruption", wmColour);
                 }
             }
             if(buttonColours.length == 0) {
@@ -1315,6 +1325,27 @@ function generateOptionsShelfButtons(day) {
             saveToStorage("relievingExpenses", "true");
         });
         relExpensesButton.style.background = buttonBackgroundColour;
+    }
+
+    //Disruption Allowance button
+    let disruptionButton = document.createElement("a");
+    disruptionButton.textContent = "Disruption";
+    disruptionButton.setAttribute("class", "button wm-button shelf-button");
+    if(shifts[day].disruption) {//if disruption
+        disruptionButton.addEventListener("click", function(){
+            shifts[day].disruption = false;
+            reloadPageData();
+            saveToStorage("disruption", "false");
+        });
+        disruptionButton.style.background = "";
+    }
+    else {//if not disruption
+        disruptionButton.addEventListener("click", function(){
+            shifts[day].disruption = true;
+            reloadPageData();
+            saveToStorage("disruption", "true");
+        });
+        disruptionButton.style.background = buttonBackgroundColour;
     }
 
     //Suburban Group Working button
@@ -1898,8 +1929,9 @@ function generateOptionsShelfButtons(day) {
     if(getPayGrade() == "spot") {
         shelf.appendChild(ojtButton);
     }
-    if(grades[getPayGrade()].relievingExpenses) {
+    if(!grades[getPayGrade()].drivingGrade) { //not driving grade
         shelf.appendChild(relExpensesButton);
+        shelf.appendChild(disruptionButton);
     }
     /*if(grades[getPayGrade()].suburbanGroupWorking) {
         shelf.appendChild(suburbanGroupWorkingButton);
@@ -3078,6 +3110,10 @@ function updateShiftPayTable() {
         //suburban allowance
         if(payGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
+        }
+        //disruption allowance
+        if(s.disruption && s.shiftWorkedNumber > 0 && shiftPayGrade.relievingExpenses) {
+            shiftPay[day].push(new PayElement("disruption", s.hoursDecimal, day, rateTables));
         }
         //wasted meal
         if(s.wm && shiftPayGrade.drivingGrade) {
