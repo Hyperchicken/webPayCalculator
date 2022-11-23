@@ -421,9 +421,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC1D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "soc1d2" : {
@@ -438,9 +438,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC1D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d1" : {
@@ -455,9 +455,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC2D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d2" : {
@@ -472,9 +472,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC2D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d1" : {
@@ -489,9 +489,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC3D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d2" : {
@@ -506,9 +506,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": soC3D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d1" : {
@@ -523,9 +523,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC4D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d2" : {
@@ -540,9 +540,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC4D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d1" : {
@@ -557,9 +557,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC5D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d2" : {
@@ -574,9 +574,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC5D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc6d1" : {
@@ -591,9 +591,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC6D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     }
     ,
@@ -609,9 +609,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC6D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d1" : {
@@ -626,9 +626,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC7D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d2" : {
@@ -643,9 +643,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC7D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d1" : {
@@ -660,9 +660,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC8D1Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d2" : {
@@ -677,9 +677,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 2,
         "payRates": smC8D2Rates,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)"
     }
     
