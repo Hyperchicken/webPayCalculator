@@ -7,27 +7,14 @@
 "use strict";
 
 //version
-const calcVersion = "1.37";
-const calcLastUpdateDate = "02/11/2022";
+const calcVersion = "1.38 DEV";
+const calcLastUpdateDate = "27/11/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
 var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
    + "<ul>"
-        +"<li>Added Station Staff paygrades and shift-options."
-           + "<ul>"
-               + "<li><strong>PLEASE NOTE!</strong> Calculations for stations grades may not be accurate at this early stage. Your feedback helps improve the calculator's accuracy with every update.</li>"
-              +  "<li>I would love to hear your feedback! Let me know what you think or report any issues to <a href='mailto:petar+paycalc@hyperchicken.com'>petar+paycalc@hyperchicken.com</a>. Thanks! - Petar Stankovic, Driver FSS.</li>"
-          +  "</ul>"
-       + "</li>"
-       + "<li>Added Driver Rosters paygrade.</li>"
-       + "<li>Employment status (full-time, part-time, jobshare, etc) is now a separate dropdown selection.</li>"
-       + "<li>DDO button renamed to EDO on non-driving grades.</li>"
-       + "<li>DDO/EDO shift-option now hidden when EDOs don't apply.</li>"
-       + "<li>Part-time PH-Roster no longer persists after disabling Public Holiday shift option.</li>"
-       + "<li>Invalid sign-on/off time input error message now advises that colons should be omitted.</li>"
-       + "<li>Wasted Meal shift option now only appears on driving grades.</li>"
-       + "<li>Added bug report/feedback button to the menu.</li>"
+        +"<li>DEVELOPMENT VERSION</li>"
    + "</ul>"
 
 //colours
@@ -3134,7 +3121,7 @@ function updateShiftPayTable() {
     for(let i = 0; i < 2; i++) {
         let endWeekDay = [7, 14];
         if(alShifts[i] > 0) {
-            if(alShifts[i] > 5) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave
+            if(alShifts[i] > 5 && payGrade.drivingGrade) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave (driving grades only)
             if(alShifts[i] + deductAnnualLeaveShifts[i] > 5) {
                 alShifts[i] -= deductAnnualLeaveShifts[i]; //deduct any sick or PH-Gaz shifts from annual leave count
             }
@@ -3147,7 +3134,7 @@ function updateShiftPayTable() {
             }
         }
         if(lslShifts[i] > 0) {
-            if(lslShifts[i] > 5) lslShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to long service leave
+            if(lslShifts[i] > 5 && payGrade.drivingGrade) lslShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to long service leave (driving grades only)
             if(lslShifts[i] + deductLSLShifts[i] > 5) {
                 lslShifts[i] -= deductLSLShifts[i]; //deduct PH-Gaz shifts from long service leave count
             }
