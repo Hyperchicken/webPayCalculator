@@ -880,7 +880,7 @@ input[type=text], select{
 }
 
 ::placeholder {
-    color: #909090;
+    color: #b5b5b5;
 }
 
  /* Popup container */
