@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.11
+    Version: 1.12
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -170,7 +170,7 @@ const publicHolidays = [
             "2022-12-25"
         ],
         infoTitle: "Christmas Day Public Holiday (Saturday or Sunday)",
-        infoText: "<ul><li>This Christmas Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
+        infoText: "<ul><li>This Christmas Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday "+phNoPayDummyButton+" shift option if you are OFF roster.</li>"
     },
     {
         name: "Boxing Day",
@@ -190,7 +190,7 @@ const publicHolidays = [
             "2021-12-26"
         ],
         infoTitle: "Boxing Day Public Holiday (Saturday or Sunday)",
-        infoText: "<ul><li>This Boxing Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday 'OFF No Pay' shift option if you are OFF roster.</li>"
+        infoText: "<ul><li>This Boxing Day falls on a Saturday or a Sunday. Paid Leave of Absence will not be paid on this day.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li><li>Set the Public Holiday "+ phNoPayDummyButton +" shift option if you are OFF roster.</li>"
     },
     {
         name: "National Day of Mourning",

@@ -7,15 +7,12 @@
 "use strict";
 
 //version
-const calcVersion = "1.38 DEV";
+const calcVersion = "1.38";
 const calcLastUpdateDate = "27/11/2022";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
-var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate
-   + "<ul>"
-        +"<li>DEVELOPMENT VERSION</li>"
-   + "</ul>"
+var motd = "Calculator updated to version " + calcVersion + " on " + calcLastUpdateDate + "<ul id='motd'></ul>";
 
 //colours
 const normalColour = "#00b9e8";
@@ -822,6 +819,10 @@ $(document).ready(function() {
         topHelpBoxPreset("feedback");
         closeMenu();
     });
+    $("#payclassWarningFeedbackLink").on("click", function(){
+        topHelpBoxPreset("feedback");
+        closeMenu();
+    });
     $("#aboutMenuButton").on("click", function(){
         topHelpBoxPreset("about");
         closeMenu();
@@ -845,6 +846,14 @@ $(document).ready(function() {
     let lastVersion = getSaveData("lastCalcVersion", false);
     if(lastVersion != calcVersion && motd != "") {
         topHelpBox("Calculator Update Notes", motd);
+        $.ajax({
+            url: 'changelog.html?v=' + calcVersion,
+            dataType: "html",
+            success: function (data) {
+                let dataDOM = new DOMParser().parseFromString(data, "text/html");
+                $("#motd").html(dataDOM.getElementById(calcVersion).innerHTML);
+            }
+        });
     }
     setSaveData("lastCalcVersion", calcVersion, false);
 

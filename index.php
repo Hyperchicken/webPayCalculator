@@ -24,9 +24,9 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.11"></script> 
-    <script src="rates.js?v=1.05"></script> 
-    <script src="grades.js?v=1.05"></script> 
+    <script src="publicHolidays.js?v1.12"></script> 
+    <script src="rates.js?v=1.06"></script> 
+    <script src="grades.js?v=1.06"></script> 
     <script src="scripts.js?v=1.38"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
@@ -158,12 +158,12 @@
                 </table>
 
                 <div id="payClassWarning" class="data-entry-message-box start-hidden">
-                    <p><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Calculations for this pay-grade are still being tested and may not be accurate!</p>
+                    <p><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Feedback helps make the calculator accurate.<br><a href="#" id="payclassWarningFeedbackLink">Click here to report errors and feedback.</a></p>
                 </div>
 
                 <div id="welcomeMessage" class="data-entry-message-box start-hidden">
-                    <p>⭐ Welcome to the Pay Calculator! ⭐</p>
-                    <p>Select your grade and employment-type from the above dropdown menusto get started.</p>
+                    <p>Welcome to the Pay Calculator!</p>
+                    <p>Select your grade and employment-type from the above dropdown menus to get started.</p>
                     <p>If this is your first time here, take a look at the Help Guide in the Menu to learn the basics.</p>
                 </div>
 
