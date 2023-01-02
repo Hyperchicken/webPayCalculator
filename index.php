@@ -89,6 +89,7 @@
                                     <option value="so10">TSO SO-10</option>
                                     <option value="so11">TSO SO-11</option>
                                     <option value="so12">TSO SO-12</option>
+                                    <option value="so13">TSO SO-13</option>
                                 </optgroup>
                                 <optgroup label="Driver Rosters/Allocation">
                                     <option value="dao">DAO</option>

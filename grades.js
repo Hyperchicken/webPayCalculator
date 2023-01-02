@@ -152,6 +152,23 @@ const grades = {
         "nightShiftRates": nightShiftRatesSal,
         "colour": "#606060"
     },
+    "so13" : {
+        "name" : "Train Services Officer SO-13",
+        "ordinaryDays" : 10,
+        "ordinaryHours" : 8,
+        "ddo" : true,
+        "drivingGrade": true,
+        "suburbanGroupWorking": false,
+        "relievingExpenses": false,
+        "higherDutiesGroup": false,
+        "suburbanAllowance" :  false,
+        "excessHoursThreshold": 3,
+        "payRates": so13Rates,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
+        "colour": "#606060"
+    },
     "dao" : {
         "name" : "Driver Allocation Officer",
         "ordinaryDays": 10,
