@@ -1,7 +1,7 @@
 /*
     Database of Victorian public holidays used for public holiday detection feature.
 
-    Version: 1.12
+    Version: 1.13
     Public holdays from 2020 up to 2023
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
@@ -124,7 +124,14 @@ const publicHolidays = [
         dates: [
             "2020-06-08",
             "2021-06-14",
-            "2022-06-13",
+            "2022-06-13"
+        ],
+        infoTitle: "Queen's Birthday Public Holiday",
+        infoText: "<ul><li>No special rules or exceptions apply to Queen's Birthday public holiday.</li><li>Select the " + phDummyButton + " shift option regardless of whether you're rostered to work or not (including if you're on leave).</li>"
+    },
+    {
+        name: "King's Birthday",
+        dates: [
             "2023-06-12"
         ],
         infoTitle: "Queen's Birthday Public Holiday",
