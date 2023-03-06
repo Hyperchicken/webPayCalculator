@@ -92,6 +92,14 @@ class Shift {
         this.rosteredShiftNumber = 0;
     }    
 
+    get extendedEndHour() {
+        return this.endHour + Math.floor(this.calcExtendedShiftMinutes()/60);
+    }
+
+    get extendedEndMinute() {
+        return this.endMinute + this.calcExtendedShiftMinutes()%60;
+    }
+
     get daoTeamLeader() {
         if(getPayGrade() == "dao" && this.teamLeader) {
             return true;
@@ -160,9 +168,6 @@ class Shift {
         if(minutes < 0) {
             minutes += 60;
             hours--;
-        }
-        if(this.extendedShift) {
-            minutes += this.extendedShiftMinutes;
         }
         if(minutes >= 60) {
             hours += Math.floor(minutes/60);
@@ -2748,6 +2753,7 @@ function updateShiftPayTable() {
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     if(partTimeNonDriver) ordinaryDays = Infinity;
     let ddoFortnight = false;
+    
    
     //let phOffRosterCount = 0; //PH-OFF shifts to count towards shifts worked for guarantee calculation only
 
@@ -2831,6 +2837,7 @@ function updateShiftPayTable() {
             let tomorrowPhHours = 0.0;
             let phOvertimeHours = 0.0;
             let tomorrowPh;
+
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
             if(s.endHour48 > 23) { //if shift runs into the next day
@@ -2935,7 +2942,7 @@ function updateShiftPayTable() {
                 }
 
                 //Public Holiday Credit (part-time non-driver only)
-                if(s.phc && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                if(s.phc && partTimeNonDriver) {
                     shiftPay[day].push(new PayElement("phCredit", s.hoursDecimal, day, rateTables, false, higherDuties));
                 }
 
@@ -2984,14 +2991,24 @@ function updateShiftPayTable() {
                     }
                 }
 
+                //extended shift hours for part-time non-driver
+                let extendedShiftHours = 0
+                if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) extendedShiftHours = s.extendedShiftMinutes/60;
+/*this may need a bit of time. Need to split today and tomorrow extended shift hours so that portions of extended shift that land on 
+a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered OT is Rost+50. May need to add the word '"rostered" sign on/off' to page
+*/
+
+
+
                 //Excess Hours Overtime
-                if(normalHours > ordinaryHours && s.shiftWorkedNumber <= ordinaryDays) {
+                if((normalHours > ordinaryHours) && s.shiftWorkedNumber <= ordinaryDays) {
                     let overtimeHours = normalHours - ordinaryHours;
                     let todayOvertimeHours = 0.0;
                     let tomorrowOvertimeHours = 0.0;
                     let rost50hours = 0.0;
                     let rost100hours = 0.0;
                     let excessHoursThreshold = payGrade.excessHoursThreshold;
+
                     if(todayNormalHours > ordinaryHours){
                         todayOvertimeHours = todayNormalHours - ordinaryHours;
                     }
@@ -3029,7 +3046,7 @@ function updateShiftPayTable() {
 
                     let rost50Element = "rost+50";
                     let rost100Element = "rost+100";
-                    if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
+                    if(partTimeNonDriver) {
                         rost50Element = "ot150";
                         rost100Element = "ot200";
                     }
@@ -3039,10 +3056,10 @@ function updateShiftPayTable() {
                     if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
                 }
 
-                //Shift Extended Overtime (part-time non-driving grades)
-                if(getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade && s.extendedShift && s.extendedShiftMinutes > 0) {
+                /*//Shift Extended Overtime (part-time non-driving grades)
+                if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) {
                     shiftPay[day].push(new PayElement("ot150", s.extendedShiftMinutes/60, day, rateTables, false, higherDuties));
-                }
+                }*/
 
                 //Excess Shift Overtime
                 if(s.shiftWorkedNumber > ordinaryDays){
