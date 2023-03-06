@@ -23,8 +23,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
-    <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.12"></script> 
+    <script src="jquery-ui.js"></script>        <script src="publicHolidays.js?v1.13"></script> 
     <script src="rates.js?v=1.06"></script> 
     <script src="grades.js?v=1.06"></script> 
     <script src="scripts.js?v=1.38"></script> 
