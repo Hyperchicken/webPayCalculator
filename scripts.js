@@ -2992,8 +2992,36 @@ function updateShiftPayTable() {
                 }
 
                 //extended shift hours for part-time non-driver
-                let extendedShiftHours = 0
-                if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) extendedShiftHours = s.extendedShiftMinutes/60;
+                let extShiftTodayHours = 0.0;
+                let extShiftTomorrowHours = 0.0;
+                if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) {
+                    extShiftTodayHours = s.extendedShiftMinutes/60;
+                    if(s.endHour48 + s.endMinute/60 + extShiftTodayHours > 24) {
+                        if(s.endHour48 > 23) {
+                            extShiftTomorrowHours = extShiftTodayHours;
+                            extShiftTodayHours = 0;
+                        }
+                        else {
+                            extShiftTomorrowHours = (s.endHour48 + s.endMinute/60 + extShiftTodayHours) - 24;
+                            extShiftTodayHours -= extShiftTomorrowHours;
+                        }
+                    }
+                }
+                
+                if(day == 0 || day == 7 && extShiftTodayHours > 0.0) {
+                    shiftPay[day].push(new PayElement("ot200", extShiftTodayHours, day, rateTables, s.ojtShift, higherDuties));
+                    shiftPay[day].push(new PayElement("ot150", extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
+                }
+                else if(day == 6 || day == 13 && extShiftTomorrowHours > 0.0) {
+                    shiftPay[day].push(new PayElement("ot150", extShiftTodayHours, day, rateTables, s.ojtShift, higherDuties));
+                    shiftPay[day].push(new PayElement("ot200", extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
+                }
+                else if(extShiftTodayHours > 0.0 || extShiftTomorrowHours > 0.0){
+                    shiftPay[day].push(new PayElement("ot150", extShiftTodayHours + extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
+                }
+
+                console.log(`Day ${day}: today: ${extShiftTodayHours}h | tomorrow: ${extShiftTomorrowHours}h`);
+
 /*this may need a bit of time. Need to split today and tomorrow extended shift hours so that portions of extended shift that land on 
 a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered OT is Rost+50. May need to add the word '"rostered" sign on/off' to page
 */
