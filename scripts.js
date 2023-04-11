@@ -164,7 +164,7 @@ class Shift {
     calcHoursString() {
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
-        if(this.extendedShift) minutes += this.calcExtendedShiftMinutes();
+        if(this.extendedShift && (minutes > 0 || hours > 0)) minutes += this.calcExtendedShiftMinutes();
         if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
         if(minutes < 0) {
             minutes += 60;
