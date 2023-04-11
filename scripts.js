@@ -164,6 +164,7 @@ class Shift {
     calcHoursString() {
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
+        if(this.extendedShift) minutes += this.calcExtendedShiftMinutes();
         if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
         if(minutes < 0) {
             minutes += 60;
@@ -1501,12 +1502,30 @@ function generateOptionsShelfButtons(day) {
                 xPayButton.classList.remove("dual-button-r");
                 xPayButton.classList.add("dual-button-m");
                 if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
-                    xLeaveButton.addEventListener("click", function() {
-                        //add tooltip functionality explaining reason you cant have extra leave on a sunday
-                    });
                     xLeaveButton.style.background = "#808080ad";
                     xLeaveButton.style.color = "black";
-                    xPayButton.style.background = "";
+                    if(shifts[day].phExtraPay) {
+                        phRosterButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = false;
+                            shifts[day].phOffRoster = true;
+                            reloadPageData();
+                            saveToStorage("phxp", "false");
+                            saveToStorage("phor", "true");
+                        });
+                        xPayButton.style.background = "";
+                        phRosterButton.style.background = buttonBackgroundColour;
+                    }
+                    else if(shifts[day].phOffRoster) {
+                        xPayButton.addEventListener("click", function() {
+                            shifts[day].phExtraPay = true;
+                            shifts[day].phOffRoster = false;
+                            reloadPageData();
+                            saveToStorage("phxp", "true");
+                            saveToStorage("phor", "false");
+                        });
+                        xPayButton.style.background = buttonBackgroundColour;
+                        phRosterButton.style.background = "";
+                    }
                 }
                 else {
                     if(shifts[day].phExtraPay) {
@@ -3008,19 +3027,48 @@ function updateShiftPayTable() {
                     }
                 }
                 
-                if(day == 0 || day == 7 && extShiftTodayHours > 0.0) {
-                    shiftPay[day].push(new PayElement("ot200", extShiftTodayHours, day, rateTables, s.ojtShift, higherDuties));
-                    shiftPay[day].push(new PayElement("ot150", extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
+                
+                if(extShiftTodayHours > 0.0 || extShiftTomorrowHours > 0.0) {
+                    let ot150time = 0.0;
+                    let ot200time = 0.0;
+                    let ot250time = 0.0;
+                    if(extShiftTodayHours > 0.0) {
+                        if(s.ph) ot250time += extShiftTodayHours;
+                        else if (day == 0 || day == 7) ot200time += extShiftTodayHours;
+                        else ot150time += extShiftTodayHours;
+                    }
+                    if(extShiftTomorrowHours > 0.0) {
+                        if(tomorrowPh) ot250time += extShiftTomorrowHours;
+                        else if (day == 6 || day == 13) ot200time += extShiftTomorrowHours;
+                        else ot150time += extShiftTomorrowHours;
+                    }
+
+                    if(ot150time > 0.0) shiftPay[day].push(new PayElement("ot150", ot150time, day, rateTables, s.ojtShift, higherDuties));
+                    if(ot200time > 0.0) shiftPay[day].push(new PayElement("ot200", ot200time, day, rateTables, s.ojtShift, higherDuties));
+                    if(ot250time > 0.0) shiftPay[day].push(new PayElement("ot250", ot250time, day, rateTables, s.ojtShift, higherDuties));
+                }
+
+/*
+                if(day == 0 || day == 7) {
+                    if(extShiftTodayHours > 0.0) {
+                        ot200time += extShiftTodayHours;
+                    }
+                    if(extShiftTomorrowHours > 0.0) {
+                        ot150time += extShiftTomorrowHours
+                    }
                 }
                 else if(day == 6 || day == 13 && extShiftTomorrowHours > 0.0) {
                     shiftPay[day].push(new PayElement("ot150", extShiftTodayHours, day, rateTables, s.ojtShift, higherDuties));
                     shiftPay[day].push(new PayElement("ot200", extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
+                    if(extShiftTodayHours > 0.0) 
                 }
                 else if(extShiftTodayHours > 0.0 || extShiftTomorrowHours > 0.0){
                     shiftPay[day].push(new PayElement("ot150", extShiftTodayHours + extShiftTomorrowHours, day, rateTables, s.ojtShift, higherDuties));
-                }
+                }*/
 
-                console.log(`Day ${day}: today: ${extShiftTodayHours}h | tomorrow: ${extShiftTomorrowHours}h`);
+                
+
+                //console.log(`Day ${day}: today: ${extShiftTodayHours}h | tomorrow: ${extShiftTomorrowHours}h`);
 
 /*this may need a bit of time. Need to split today and tomorrow extended shift hours so that portions of extended shift that land on 
 a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered OT is Rost+50. May need to add the word '"rostered" sign on/off' to page
