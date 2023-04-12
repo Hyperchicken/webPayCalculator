@@ -2944,7 +2944,12 @@ function updateShiftPayTable() {
                 }
                 if(sundayPhWorkedHours > 0.0) {
                     shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                    if(s.ph && tomorrowPh && (day == 6 || day == 13)) {
+                        shiftPay[day].push(new PayElement("phPen50", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                    }
+                    else {
+                        shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                    }
                 }
                 if(phOvertimeHours > 0.0) {
                     shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift, s.higherDuties));
