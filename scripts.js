@@ -3161,7 +3161,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                 }
 
                 //Shiftwork Allowances
-                if(s.shiftWorkedNumber <= ordinaryDays && day != 6 && day != 13) { //excess shifts and saturdays not eligible
+                /*if(s.shiftWorkedNumber <= ordinaryDays && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
                     if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
                         shiftworkHours +=  tomorrowNormalHours;
@@ -3184,7 +3184,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                             shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false));
                         }
                     }
-                }
+                }*/
             }
         }
         //bonus pay
@@ -3202,9 +3202,9 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
             shiftPay[day].push(new PayElement("suburbanGroupWorking", 1, day, rateTables));
         }
         //suburban allowance
-        if(payGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
+        /*if(payGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
             shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
-        }
+        }*/
         //disruption allowance
         if(s.disruption && s.shiftWorkedNumber > 0 && shiftPayGrade.relievingExpenses) {
             shiftPay[day].push(new PayElement("disruption", s.hoursDecimal, day, rateTables));
