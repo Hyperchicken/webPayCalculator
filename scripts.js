@@ -2360,7 +2360,7 @@ function updateResults() {
                 }
             }
             groupedElements.forEach(function(e){ 
-                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "leaveLoading"].includes(e.payType)) nonOvertimePay += e.value;
+                if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "leaveLoading", "longServiceLeaveFull", "longServiceLeaveHalf"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
                 taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * superRate, 1));
