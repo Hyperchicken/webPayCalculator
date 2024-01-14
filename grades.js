@@ -191,7 +191,7 @@ const grades = {
     },
     "daoteamleader" : {
         "name": "Driver Allocation Officer Team Leader",
-        "ordinaryDays": 7,
+        "ordinaryDays": 9,
         "ordinaryHours": 8.5,
         "ddo": false,
         "drivingGrade": false,
