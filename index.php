@@ -27,7 +27,7 @@
     <script src="publicHolidays.js?v1.15"></script> 
     <script src="rates.js?v=1.06"></script> 
     <script src="grades.js?v=1.07"></script> 
-    <script src="scripts.js?v=1.39"></script> 
+    <script src="scripts.js?v=1.40"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -42,7 +42,7 @@
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
                 <a id="importExportMenuButton"><i class="fa fa-file-export fa-fw menu-icon"></i>Import/Export Data</a>
-                <a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>
+                <!--<a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>-->
                 <a id="taxConfigurationMenuButton"><i class="fas fa-funnel-dollar fa-fw menu-icon"></i>Net Income Settings</a>
                 <a id="changelogMenuButton"><i class="fas fa-code-branch fa-fw menu-icon"></i>Changelog</a>
                 <a id="feedbackMenuButton"><i class="fas fa-bug fa-fw menu-icon"></i>Report Issue/Feedback</a>
