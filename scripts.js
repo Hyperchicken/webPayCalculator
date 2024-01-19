@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.39";
-const calcLastUpdateDate = "13/04/2023";
+const calcVersion = "1.40";
+const calcLastUpdateDate = "20/01/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -801,10 +801,10 @@ $(document).ready(function() {
         topHelpBoxPreset("deleteSave");
         closeMenu();
     });*/
-    $("#bulkLeaveMenuButton").on("click", function(){
+    /*$("#bulkLeaveMenuButton").on("click", function(){
         bulkLeaveMenu();
         closeMenu();
-    });
+    });*/
     $("#taxConfigurationMenuButton").on("click", function(){
         taxConfigurator();
         closeMenu();
@@ -4017,7 +4017,12 @@ function bulkLeaveMenu() {
             let currentFortnightCommencingDate = getFortnightCommencingDate(curDate);
             $("#week-commencing-date").datepicker("setDate", currentFortnightCommencingDate);
             updateDates();
-            let dayNumber = curDate.getDate() - currentFortnightCommencingDate.getDate();
+            let curDateDay = curDate.getDate();
+            let curFnCommencingDateDay = currentFortnightCommencingDate.getDate();
+            let dayNumber = curDateDay - curFnCommencingDateDay;
+            if(dayNumber < 0){
+                dayNumber = curDateDay;
+            }
             setSaveData("day" + dayNumber + document.getElementById("leaveType").value, "true");
             if(document.getElementById("leaveType").value == "lsl") {
                 setSaveData("day" + dayNumber + "lslHalfPay", "");
