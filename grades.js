@@ -1,3 +1,6 @@
+//grades.js
+//version 1.07
+//defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
 
@@ -735,5 +738,17 @@ const higherDutiesGroups = {
         "smc7d2",
         "smc8d1",
         "smc8d2"
+    ],
+    "drivers": [
+        "spot",
+        "level1",
+        "trainee",
+        "conversion",
+        "so8",
+        "so9",
+        "so10",
+        "so11",
+        "so12",
+        "so13"
     ]
 }
