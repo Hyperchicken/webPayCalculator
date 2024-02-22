@@ -30,7 +30,7 @@ const higherDutiesColour = "#00b391";
 const buttonBackgroundColour = "#5554";
 
 //define a fortnightly pay-cycle to start on either an odd or even week of a given year
-const evenPayWeekYears = [2016, 2017, 2018, 2019, 2020, 2027];
+const evenPayWeekYears = [2016, 2017, 2018, 2019, 2020, 2027, 2028, 2029, 2030];
 const oddPayWeekYears = [2015, 2021, 2022, 2023, 2024, 2025, 2026];
 
 //define Classes
@@ -116,6 +116,17 @@ class Shift {
         else {
             return false;
         }
+    }
+
+    get higherDutiesShift() {
+        if(this.higherDuties == true && grades[getPayGrade()].higherDutiesGroup ) {
+            if(higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup].includes(this.higherDutiesGrade)) {
+                return true;
+            }
+            return false
+        }
+        return false;
+
     }
 
     /**
@@ -1091,7 +1102,7 @@ function updateOptionsButtons() {
                 offButton = false;
             }
             if(offButton) {
-                if(s.ojtShift || (s.bonus && s.bonusHours <= 0.0) || s.higherDuties) {
+                if(s.ojtShift || (s.bonus && s.bonusHours <= 0.0) || s.higherDutiesShift) {
                     setButton("OFF&nbsp(+)", "black");
                 }
                 else {
@@ -1100,7 +1111,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDuties || s.extendedShift || s.disruption) {
+            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDutiesShift || s.extendedShift || s.disruption) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1127,8 +1138,8 @@ function updateOptionsButtons() {
                 /*if(s.suburbanGroupWorking && grades[getPayGrade()].suburbanGroupWorking) {
                     setButton("Grp-Working", ojtColour);
                 }*/
-                if(s.higherDuties && s.higherDutiesGrade && grades[getPayGrade()].higherDutiesGroup) {
-                    setButton(grades[s.higherDutiesGrade].name, higherDutiesColour);
+                if(s.higherDutiesShift && s.higherDutiesGrade /*&& grades[getPayGrade()].higherDutiesGroup*/) {
+                    setButton(grades[s.higherDutiesGrade].shortname, higherDutiesColour);
                 }
                 if(s.extendedShift && s.extendedShiftStartTime && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
                     setButton("+" + s.extendedShiftMinutes + "min OT", bonusColour);
@@ -1752,7 +1763,7 @@ function generateOptionsShelfButtons(day) {
             let higherDutiesSelectbox = document.createElement("select");
             for(let i = 0; i < higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup].length; i++){
                 let higherDutiesOption = document.createElement("option");
-                higherDutiesOption.textContent = grades[higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]].name;
+                higherDutiesOption.textContent = grades[higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]].shortname;
                 higherDutiesOption.setAttribute("value", higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]);
                 higherDutiesSelectbox.appendChild(higherDutiesOption);
             }
