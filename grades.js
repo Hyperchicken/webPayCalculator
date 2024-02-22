@@ -7,13 +7,14 @@ const driverExcessHoursThreshold = 3
 const grades = {
     "spot" : {
         "name" : "Qualified Driver (SPOT)",
+        "shortname": "SPOT",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  true,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": spotRates,
@@ -24,13 +25,14 @@ const grades = {
     },
     "level1" : {
         "name" : "Train Driver Level 1",
+        "shortname": "TD Lvl 1",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  true,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": driverLevel1Rates,
@@ -41,13 +43,14 @@ const grades = {
     },
     "trainee" : {
         "name" : "Trainee Driver",
+        "shortname": "Trainee",
         "ordinaryDays" : 10,
         "ordinaryHours" : 7.6,
         "ddo" : false,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": traineeRates,
@@ -58,13 +61,14 @@ const grades = {
     },
     "conversion" : {
         "name" : "Conversion Trainee Driver",
+        "shortname": "Conversion",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  true,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": conversionRates,
@@ -75,13 +79,14 @@ const grades = {
     },
     "so8" : {
         "name" : "Train Services Officer SO-8",
+        "shortname": "TSO SO-8",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so8Rates,
@@ -92,13 +97,14 @@ const grades = {
     },
     "so9" : {
         "name" : "Train Services Officer SO-9",
+        "shortname": "TSO SO-9",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so9Rates,
@@ -109,13 +115,14 @@ const grades = {
     },
     "so10" : {
         "name" : "Train Services Officer SO-10",
+        "shortname": "TSO SO-10",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so10Rates,
@@ -126,13 +133,14 @@ const grades = {
     },
     "so11" : {
         "name" : "Train Services Officer SO-11",
+        "shortname": "TSO SO-11",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so11Rates,
@@ -143,13 +151,14 @@ const grades = {
     },
     "so12" : {
         "name" : "Train Services Officer SO-12",
+        "shortname": "TSO SO-12",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so12Rates,
@@ -160,13 +169,14 @@ const grades = {
     },
     "so13" : {
         "name" : "Train Services Officer SO-13",
+        "shortname": "TSO SO-13",
         "ordinaryDays" : 10,
         "ordinaryHours" : 8,
         "ddo" : true,
         "drivingGrade": true,
         "suburbanGroupWorking": false,
         "relievingExpenses": false,
-        "higherDutiesGroup": true,
+        "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
         "payRates": so13Rates,
@@ -177,6 +187,7 @@ const grades = {
     },
     "dao" : {
         "name" : "Driver Allocation Officer",
+        "shortname": "DAO",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -194,6 +205,7 @@ const grades = {
     },
     "daoteamleader" : {
         "name": "Driver Allocation Officer Team Leader",
+        "shortname": "DAO TL",
         "ordinaryDays": 9,
         "ordinaryHours": 8.5,
         "ddo": false,
@@ -211,6 +223,7 @@ const grades = {
     },
     "driverrosters" : {
         "name": "Driver Rosters",
+        "shortname": "Rosters",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -227,7 +240,8 @@ const grades = {
         "colour": "rgb(157, 29, 29)"
     },
     "sac1y1" : {
-        "name": "SA1 Yr1",
+        "name": "Station Assistant 1 Year 1",
+        "shortname": "SA1 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -244,7 +258,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac1y2" : {
-        "name": "SA1 Yr2",
+        "name": "Station Assistant 1 Year 2",
+        "shortname": "SA1 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -261,7 +276,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac1y3" : {
-        "name": "SA1 Yr3",
+        "name": "Station Assistant 1 Year 3",
+        "shortname": "SA1 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -278,7 +294,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac2y1" : {
-        "name": "SA2 Yr1",
+        "name": "Station Assistant 2 Year 1",
+        "shortname": "SA2 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -296,7 +313,8 @@ const grades = {
     }
     ,
     "sac2y2" : {
-        "name": "SA2 Yr2",
+        "name": "Station Assistant 2 Year 2",
+        "shortname": "SA2 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -314,7 +332,8 @@ const grades = {
     }
     ,
     "sac2y3" : {
-        "name": "SA2 Yr3",
+        "name": "Station Assistant 2 Year 3",
+        "shortname": "SA2 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -331,7 +350,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y1" : {
-        "name": "SA3 Yr1",
+        "name": "Station Assistant 3 Year 1",
+        "shortname": "SA3 Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -348,7 +368,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y2" : {
-        "name": "SA3 Yr2",
+        "name": "Station Assistant 3 Year 2",
+        "shortname": "SA3 Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -365,7 +386,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "sac3y3" : {
-        "name": "SA3 Yr3",
+        "name": "Station Assistant 3 Year 3",
+        "shortname": "SA3 Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -382,7 +404,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay1" : {
-        "name": "LSA Yr1",
+        "name": "Leading Station Assistant Year 1",
+        "shortname": "LSA Yr1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -399,7 +422,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay2" : {
-        "name": "LSA Yr2",
+        "name": "Leading Station Assistant Year 2",
+        "shortname": "LSA Yr2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -416,7 +440,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "lsay3" : {
-        "name": "LSA Yr3",
+        "name": "Leading Station Assistant Year 3",
+        "shortname": "LSA Yr3",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -433,7 +458,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc1d1" : {
-        "name": "SO1 Div1",
+        "name": "Station Officer 1 Div 1",
+        "shortname": "SO1 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -450,7 +476,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc1d2" : {
-        "name": "SO1 Div2",
+        "name": "Station Officer 1 Div 2",
+        "shortname": "SO1 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -467,7 +494,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d1" : {
-        "name": "SO2 Div1",
+        "name": "Station Officer 2 Div 1",
+        "shortname": "SO2 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -484,7 +512,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc2d2" : {
-        "name": "SO2 Div2",
+        "name": "Station Officer 2 Div 2",
+        "shortname": "SO2 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -501,7 +530,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d1" : {
-        "name": "SO3 Div1",
+        "name": "Station Officer 3 Div 1",
+        "shortname": "SO3 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -518,7 +548,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "soc3d2" : {
-        "name": "SO3 Div2",
+        "name": "Station Officer 3 Div 2",
+        "shortname": "SO3 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -535,7 +566,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d1" : {
-        "name": "SM4 Div1",
+        "name": "Station Master 4 Div 1",
+        "shortname": "SM4 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -552,7 +584,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc4d2" : {
-        "name": "SM4 Div2",
+        "name": "Station Master 4 Div 2",
+        "shortname": "SM4 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -569,7 +602,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d1" : {
-        "name": "SM5 Div1",
+        "name": "Station Master 5 Div 1",
+        "shortname": "SM5 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -586,7 +620,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc5d2" : {
-        "name": "SM5 Div2",
+        "name": "Station Master 5 Div 2",
+        "shortname": "SM5 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -603,7 +638,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc6d1" : {
-        "name": "SM6 Div1",
+        "name": "Station Master 6 Div 1",
+        "shortname": "SM6 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -621,7 +657,8 @@ const grades = {
     }
     ,
     "smc6d2" : {
-        "name": "SM6 Div2",
+        "name": "Station Master 6 Div 2",
+        "shortname": "SM6 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -638,7 +675,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d1" : {
-        "name": "SM7 Div1",
+        "name": "Station Master 7 Div 1",
+        "shortname": "SM7 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -655,7 +693,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc7d2" : {
-        "name": "SM7 Div2",
+        "name": "Station Master 7 Div 2",
+        "shortname": "SM7 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -672,7 +711,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d1" : {
-        "name": "SM8 Div1",
+        "name": "Station Master 8 Div 1",
+        "shortname": "SM8 Div1",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -689,7 +729,8 @@ const grades = {
         "colour": "rgb(19, 49, 96)"
     },
     "smc8d2" : {
-        "name": "SM8 Div2",
+        "name": "Station Master 8 Div 2",
+        "shortname": "SM8 Div2",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -740,10 +781,10 @@ const higherDutiesGroups = {
         "smc8d2"
     ],
     "drivers": [
-        "spot",
-        "level1",
-        "trainee",
         "conversion",
+        "trainee",
+        "level1",
+        "spot",
         "so8",
         "so9",
         "so10",
