@@ -316,7 +316,8 @@ class PayElement {
             "metroSig2",
             "relExp",
             "suburbanGroupWorking",
-            "mealAllowance",
+            "mealAllowanceWasted",
+            "mealAllowanceOT",
             "leaveLoading"
         ];
         let sortIndex = sortOrder.indexOf(this.payType);
@@ -369,7 +370,8 @@ class PayElement {
             case "metroSig2": payClassName = "Metro Sig2"; break;
             case "relExp": payClassName = "Rel-Exp"; break;
             case "suburbanGroupWorking": payClassName = "Sub Group"; break;
-            case "mealAllowance": payClassName = "Meal Allow"; break;
+            case "mealAllowanceWasted": payClassName = "Meal Allow"; break;
+            case "mealAllowanceOT": payClassName = "Meal Allow (OT)"; break;
             case "disruption": payClassName = "Disruption"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
@@ -494,8 +496,11 @@ class PayElement {
                 + "<p><em>Suburban Allowance.</em> The following excerpt is taken from the 2015-2019 EA section 4.7:</p>"
                 + "<blockquote><p>Employees regularly employed driving suburban electric trains in the Melbourne Metropolitan Rail Network and who are qualified to drive under the Metrol Signalling and Safe Working System are to be paid a Suburban Allowance in accordance with Schedule C of the Agreement, per shift for all rostered shifts for which they are ready willing and able to perform all of the functions required of that position. This allowance does not apply to Trainee Drivers.</p></blockquote>";
                 break;
-            case "mealAllowance": tooltipText = "<strong>Meal Allow</strong>"
-                + "<p><em>Meal Allowance.</em> Paid where the employee has had a wasted meal, or if they have worked more than 2 hours of overtime that shift.</p>"
+            case "mealAllowanceWasted": tooltipText = "<strong>Meal Allow</strong>"
+                + "<p><em>Meal Allowance.</em> Paid where the employee has claimed a wasted meal.</p>"
+                break;
+            case "mealAllowanceOT": tooltipText = "<strong>Meal Allow</strong>"
+                + "<p><em>Meal Allowance.</em> Paid where the employee has worked more than 2 hours of overtime that shift.</p>"
                 break;
             case "bonusPayment": tooltipText = "<strong>Bonus Pay</strong>"
                 + "<p><em>Bonus Payment</em> paid where the company has offered an incentive payment on a particular shift.</p>"
@@ -596,7 +601,8 @@ class PayElement {
             case "suburbanGroupWorking":
                 rate += getEbaRate(shiftDate, suburbanGroupWorkingRates);
                 break;
-            case "mealAllowance":
+            case "mealAllowanceWasted":
+            case "mealAllowanceOT":
                 rate += getEbaRate(shiftDate, mealAllowanceRates);
                 break;
             case "disruption":
@@ -3145,7 +3151,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
 
                     if(rost50hours > 0.0) shiftPay[day].push(new PayElement(rost50Element, rost50hours, day, rateTables, s.ojtShift, higherDuties));
                     if(rost100hours > 0.0) shiftPay[day].push(new PayElement(rost100Element, rost100hours, day, rateTables, s.ojtShift, higherDuties));
-                    if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
+                    if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowanceOT", 1, day, rateTables));
                 }
 
                 /*//Shift Extended Overtime (part-time non-driving grades)
@@ -3222,7 +3228,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
         }
         //wasted meal
         if(s.wm && shiftPayGrade.drivingGrade) {
-            shiftPay[day].push(new PayElement("mealAllowance", 1, day, rateTables));
+            shiftPay[day].push(new PayElement("mealAllowanceWasted", 1, day, rateTables));
         }
     }
 
@@ -3299,15 +3305,18 @@ function calculateTax(payElements) {
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
 
     payElements.forEach(function(e){
-        if(!["mealAllowance"].includes(e.payType)) { //all except meal allowance added to taxable income
+        if(!["mealAllowanceWasted"].includes(e.payType)) { //all except wasted meal added to taxable income
             taxableIncome += parseFloat(e.value.toFixed(2));
         }
         /*else {
             preTaxAllowance += parseFloat(e.value.toFixed(2));
         }*/
 
-        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowance", "leaveLoading"].includes(e.payType)) {
+        if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowanceWasted", "leaveLoading"].includes(e.payType)) {
             preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
+        }
+        if(["mealAllowanceOT"].includes(e.payType)) {
+            postTaxDeduction += parseFloat(e.value.toFixed(2)); //add allowances to post-tax deduction subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
     });
