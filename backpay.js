@@ -47,8 +47,8 @@ function calculateBackpay() {
         resultArea.innerHTML = "<p>Invalid data in at least one field.</p>";
     }
     else {
-        let firstIncreaseTotal = (ytd2 - ytd1) * 0.01;
-        let secondIncreaseTotal = (ytd3 - ytd2) * 0.035;
+        let firstIncreaseTotal = (ytd2 - ytd1) * 0.025;
+        let secondIncreaseTotal = (ytd3 - ytd2) * 0.05;
     
         let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
         
