@@ -77,55 +77,6 @@
                         <td>
                             <select name="pay-grade" id="pay-grade" oninput="updateGrade()">
                                 <option value="none" disabled hidden selected>Select Grade</option>
-                                <optgroup label="Driver">
-                                    <option value="spot">SPOT</option>
-                                    <option value="level1">TD Lvl 1</option>
-                                    <option value="trainee">Trainee</option>
-                                    <option value="conversion">Conversion</option>
-                                </optgroup>
-                                <optgroup label="Train Services">
-                                    <option value="so8">TSO SO-8</option>
-                                    <option value="so9">TSO SO-9</option>
-                                    <option value="so10">TSO SO-10</option>
-                                    <option value="so11">TSO SO-11</option>
-                                    <option value="so12">TSO SO-12</option>
-                                    <option value="so13">TSO SO-13</option>
-                                </optgroup>
-                                <optgroup label="Driver Rosters/Allocation">
-                                    <option value="dao">DAO</option>
-                                    <option value="daoteamleader">DAO Team-Leader</option>
-                                    <option value="driverrosters">Driver Rosters</option>
-                                </optgroup>
-                                <optgroup label="Station Assistant">
-                                    <option value="sac1y1">SA1 Yr 1</option>
-                                    <option value="sac1y2">SA1 Yr 2</option>
-                                    <option value="sac1y3">SA1 Yr 3</option>
-                                    <option value="sac2y1">SA2 Yr 1</option>
-                                    <option value="sac2y2">SA2 Yr 2</option>
-                                    <option value="sac2y3">SA2 Yr 3</option>
-                                    <option value="sac3y1">SA3 Yr 1</option>
-                                    <option value="sac3y2">SA3 Yr 2</option>
-                                    <option value="sac3y3">SA3 Yr 3</option>
-                                    <option value="lsay1">LSA Yr 1</option>
-                                    <option value="lsay2">LSA Yr 2</option>
-                                    <option value="lsay3">LSA Yr 3</option>
-                                </optgroup>
-                                <optgroup label="Station Officer">
-                                    <option value="soc1d1">SO1 Div 1</option>
-                                    <option value="soc1d2">SO1 Div 2</option>
-                                    <option value="soc2d1">SO2 Div 1</option>
-                                    <option value="soc2d2">SO2 Div 2</option>
-                                    <option value="soc3d1">SO3 Div 1</option>
-                                    <option value="soc3d2">SO3 Div 2</option>
-                                </optgroup>
-                                <optgroup label="Station Master">
-                                    <option value="smc4d1">SM4 Div 1</option>
-                                    <option value="smc4d2">SM4 Div 2</option>
-                                    <option value="smc6d1">SM6 Div 1</option>
-                                    <option value="smc6d2">SM6 Div 2</option>
-                                    <option value="smc8d1">SM8 Div 1</option>
-                                    <option value="smc8d2">SM8 Div 2</option>
-                                </optgroup>                
                             </select>
                         </td>
                     </tr>
