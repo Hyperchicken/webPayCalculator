@@ -2791,7 +2791,6 @@ function updateShiftPayTable() {
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
-    let ordinaryHours = payGrade.ordinaryHours;
     if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     if(partTimeNonDriver) ordinaryDays = Infinity;
@@ -2817,7 +2816,7 @@ function updateShiftPayTable() {
             higherDuties = true;
         }
         else {
-            shiftPayGrade = grades[getPayGrade()];
+            shiftPayGrade = payGrade;
         }
         let rateTables = { //rates for current shift
             gradeRates: shiftPayGrade.payRates,
@@ -3259,8 +3258,8 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
                 if(shifts[j].al && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i] > 0) {
                     alShifts[i]--;
-                    shiftPay[j].push(new PayElement("annualLeave", shiftPayGrade.ordinaryHours, j, rateTables));
-                    shiftPay[j].push(new PayElement("leaveLoading", shiftPayGrade.ordinaryHours, j, rateTables));
+                    shiftPay[j].push(new PayElement("annualLeave", payGrade.ordinaryHours, j, rateTables));
+                    shiftPay[j].push(new PayElement("leaveLoading", payGrade.ordinaryHours, j, rateTables));
                 }
             }
         }
@@ -3273,10 +3272,10 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                 if(shifts[j].lsl && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].phc && !shifts.ddo) && lslShifts[i] > 0) {
                     lslShifts[i]--;
                     if(shifts[j].lslHalfPay) {
-                        shiftPay[j].push(new PayElement("longServiceLeaveHalf", shiftPayGrade.ordinaryHours / 2, j, rateTables)); //half ordinary hours
+                        shiftPay[j].push(new PayElement("longServiceLeaveHalf", payGrade.ordinaryHours / 2, j, rateTables)); //half ordinary hours
                     }
                     else {
-                        shiftPay[j].push(new PayElement("longServiceLeaveFull", shiftPayGrade.ordinaryHours, j, rateTables)); //full ordinary hours
+                        shiftPay[j].push(new PayElement("longServiceLeaveFull", payGrade.ordinaryHours, j, rateTables)); //full ordinary hours
                     }
                 }
             }
