@@ -37,6 +37,7 @@
         <li class="topnav dropdown">
             <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
+                <a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
                 <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
