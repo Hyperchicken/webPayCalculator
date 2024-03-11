@@ -2626,9 +2626,9 @@ function printShiftHours() {
     for(let i = 0; i < shifts.length; i++) {
         if(timeField[i*2].checkValidity() && timeField[(i*2)+1].checkValidity() && !(timeField[i*2].value == timeField[(i*2)+1].value && timeField[i*2].value != "")) {
             hoursField[i].innerHTML = shifts[i].hoursString;
-            if(shifts[i].hoursDecimal >= 8.5) {
-                hoursField[i].classList.add("shift-hours-high");
-            }
+            if(shifts[i].hoursDecimal >= 9.5) {
+                hoursField[i].classList.add("shift-hours-warning");
+            } else hoursField[i].classList.remove("shift-hours-warning");
             totalHours += shifts[i].hoursDecimal;
         }
     }
