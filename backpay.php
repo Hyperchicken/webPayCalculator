@@ -56,15 +56,20 @@
                 <h3 style="margin-bottom: 0;">Data Entry</h3>
                 <p class="grid-1-6" style="font-size: 0.9em;">Enter in the Year To Date Gross (YTD GROSS) amount from the following three payslips.</p>
                 <div class="grid-heading grid-2-3">PAYSLIP FORTNIGHT ENDING</div>
-                <div class="shift-options-heading grid-heading grid-4-5">YTD GROSS</div>
+                <div class="shift-options-heading grid-heading grid-4-5">Value</div>
 
-                <div class="day-of-week centre-text grid-2-3">01/07/2023 <i class="fas fa-long-arrow-alt-right"></i> 6/7/19</div>
+                <div class="day-of-week grid-2-3">15/07/2023 - Gross:</div>
                 <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
             
-                <div class="day-of-week centre-text grid-2-3">22/12/19 <i class="fas fa-long-arrow-alt-right"></i> 13/01/2024</div>
+                <div class="day-of-week grid-2-3">15/07/2023 - YTD Gross:</div>
                 <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
 
-                <div class="day-of-week centre-text grid-2-3">24/5/20 <i class="fas fa-long-arrow-alt-right"></i> </div>
+                <div class="grid-1-6x∫ v">
+
+                <div class="day-of-week grid-2-3">13/01/2024 - YTD Gross:</div>
+                <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
+
+                <div class="day-of-week grid-2-3">09/03/2024 - YTD Gross:</div>
                 <div class="grid-4-5" style="color: #000; background-color: #fff; border-radius: 5px;"><label style="padding-left: 5px;">$</label><input type="text" inputmode="decimal" placeholder="0.00" class="fortnight-value" pattern="\d+(\.\d{0,2})?" style="width: 80%" oninput="calculateBackpay()"></div>
             </div>
         </div> 
