@@ -31,15 +31,19 @@ function calculateBackpay() {
     let field1 = $(".fortnight-value")[0];
     let field2 = $(".fortnight-value")[1];
     let field3 = $(".fortnight-value")[2];
-    let ytd1 = parseFloat(field1.value);
-    let ytd2 = parseFloat(field2.value);
-    let ytd3 = parseFloat(field3.value);
+    let field4 = $(".fortnight-value")[3];
+    let ytd0 = parseFloat(field1.value);
+    let ytd1 = parseFloat(field2.value);
+    let ytd2 = parseFloat(field3.value);
+    let ytd3 = parseFloat(field4.value);
+    if(isNaN(ytd0)) ytd0 = 0;
     if(isNaN(ytd1)) ytd1 = 0;
     if(isNaN(ytd2)) ytd2 = 0;
     if(isNaN(ytd3)) ytd3 = 0;
     setSaveData("ytd0", field1.value);
     setSaveData("ytd1", field2.value);
     setSaveData("ytd2", field3.value);
+    setSaveData("ytd3", field4.value);
 
     let resultArea = document.getElementById("result-area");
     resultArea.innerHTML = ""; //clear existing results
@@ -47,8 +51,8 @@ function calculateBackpay() {
         resultArea.innerHTML = "<p>Invalid data in at least one field.</p>";
     }
     else {
-        let firstIncreaseTotal = (ytd2 - ytd1) * 0.025;
-        let secondIncreaseTotal = (ytd3 - ytd2) * 0.05;
+        let firstIncreaseTotal = Math.max(((ytd2 - ytd1 - ytd0) * 0.025), 0);
+        let secondIncreaseTotal = Math.max(((ytd3 - ytd2) * 0.05), 0);
     
         let combinedTotal = parseFloat(firstIncreaseTotal.toFixed(2)) + parseFloat(secondIncreaseTotal.toFixed(2));
         
@@ -56,9 +60,9 @@ function calculateBackpay() {
         let secondIncreaseTotalElement = document.createElement("p");
         let combinedTotalElement = document.createElement("p");
         
-        firstIncreaseTotalElement.textContent = "First increase (+1%) backpay: $" + firstIncreaseTotal.toFixed(2);
-        secondIncreaseTotalElement.textContent = "Second increase (+2.5%) backpay: $" + secondIncreaseTotal.toFixed(2);
-        combinedTotalElement.textContent = "Total backpay (Gross): $" + combinedTotal.toFixed(2);
+        firstIncreaseTotalElement.textContent = `First backpay (paid 26/03/24): $${firstIncreaseTotal.toFixed(2)} gross`;
+        secondIncreaseTotalElement.textContent = `Second backpay (paid 09/03/24): $${secondIncreaseTotal.toFixed(2)} gross`;
+        combinedTotalElement.textContent = `Combined backpay: $${combinedTotal.toFixed(2)} gross`;
     
         resultArea.appendChild(firstIncreaseTotalElement);
         resultArea.appendChild(secondIncreaseTotalElement);
@@ -123,7 +127,7 @@ function getSaveData(key) {
 }
 
 function loadSavedData() {
-    for(let field = 0; field < 3; field++) {
+    for(let field = 0; field < 4; field++) {
         let saveData = getSaveData("ytd" + field);
         if(saveData) $(".fortnight-value")[field].value = saveData;
         else $(".fortnight-value")[field].value = "";
