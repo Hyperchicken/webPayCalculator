@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.40";
-const calcLastUpdateDate = "20/01/2024";
+const calcVersion = "1.41";
+const calcLastUpdateDate = "11/03/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -673,7 +673,6 @@ let numberOfCustomPostTaxFields = 4;
 
 //init on document load
 $(document).ready(function() { 
-    populateGradeSelectList();
     initButtons();
     let timeFields = document.querySelectorAll(".time");
     for(let i = 0; i < timeFields.length; i++) {
@@ -751,6 +750,7 @@ $(document).ready(function() {
         },
         onSelect: function(){
             updateDates();
+            populateGradeSelectList();
             loadSavedData();
             updateGrade();
             updateShiftTable();
@@ -763,6 +763,7 @@ $(document).ready(function() {
             toggleDatepicker();
         }
     });
+    
     //update date to saved date if ahead of the deafult date
     let savedFortnight = new Date(getSaveData("lastSelectedFortnight", false));
     let datepickerDate = $("#week-commencing-date").datepicker("getDate");
@@ -770,6 +771,7 @@ $(document).ready(function() {
         $("#week-commencing-date").datepicker("setDate", savedFortnight);
     }
     //update any existing data on page load
+    populateGradeSelectList();
     updateDates();
     loadSavedData(); //load any save data (previously entered data, attatched to the set date)
     updateGrade();
@@ -850,6 +852,9 @@ $(document).ready(function() {
     $("#aboutMenuButton").on("click", function(){
         topHelpBoxPreset("about");
         closeMenu();
+    });
+    $("#backpayMenuButton").on("click", function(){
+        location.replace("backpay.php");
     });
     // Close the dropdown menu if the user clicks outside of it
     window.onclick = function (event) {
@@ -1005,6 +1010,7 @@ function datepickerShiftDays(shiftValue) {
     
     //load any save data from the newly set date and update all relevant calculator data
     updateDates();
+    populateGradeSelectList();
     loadSavedData();
     updateGrade();
     updateShiftTable();
@@ -1777,7 +1783,7 @@ function generateOptionsShelfButtons(day) {
                 higherDutiesOption.setAttribute("value", higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup][i]);
                 higherDutiesSelectbox.appendChild(higherDutiesOption);
             }
-            if(shifts[day].higherDutiesGrade == "") {
+            if(shifts[day].higherDutiesGrade == "") { //if no existing higher duties grade, try load last used higher duties grade, else set to current grade
                 if(getSaveData("lastHigherDutiesGrade", false)) {
                     shifts[day].higherDutiesGrade = getSaveData("lastHigherDutiesGrade", false);
                 }
@@ -1789,6 +1795,9 @@ function generateOptionsShelfButtons(day) {
                     updateResults();
                     saveToStorage("higherDutiesGrade", shifts[day].higherDutiesGrade);
                     setSaveData("lastHigherDutiesGrade", shifts[day].higherDutiesGrade, false)
+            }
+            if(!higherDutiesGroups[grades[getPayGrade()].higherDutiesGroup].includes(shifts[day].higherDutiesGrade)) { //if higher duties grade not in the current higher duties group, set to current grade
+                shifts[day].higherDutiesGrade = getPayGrade();
             }
             higherDutiesSelectbox.value = shifts[day].higherDutiesGrade;
             higherDutiesButton.appendChild(higherDutiesSelectbox);
@@ -2071,13 +2080,20 @@ function updateGrade() {
         $(".week-commencing").hide();
     }
     else {
+        let weekCommencingDate = $("#week-commencing-date").datepicker("getDate").stripTime();
+        let gradeStartDate = grades[selectedGrade].startDate;
+        let gradeEndDate = grades[selectedGrade].endDate;
+        if(!gradeStartDate) gradeStartDate = "2000-01-01";
+        if(!gradeEndDate) gradeEndDate = "2100-01-01";
+        if(new Date(gradeStartDate).stripTime() > weekCommencingDate || new Date(gradeEndDate).stripTime() <= weekCommencingDate) {
+            $("#payClassWarning").show();
+        }
         $("#welcomeMessage").hide();
         $("#results-container").show();
         $(".shift-input").show();
         $(".week-commencing").show();
         if(grades[selectedGrade].suburbanGroupWorking) {
             $("#sgw-row").show();
-            $("#payClassWarning").show();
         }
         setFormColour(grades[selectedGrade].colour);
         setSaveData("paygrade", selectedGrade, false);
@@ -2811,7 +2827,7 @@ function updateShiftPayTable() {
         let s = shifts[day]; //alias for current shift
         let shiftPayGrade; //paygrade for current shift only
         let higherDuties = false;
-        if(s.higherDuties && s.higherDutiesGrade && payGrade.higherDutiesGroup) {
+        if(s.higherDuties && s.higherDutiesGrade && higherDutiesGroups[payGrade.higherDutiesGroup].includes(s.higherDutiesGrade)) {
             shiftPayGrade = grades[s.higherDutiesGrade];
             higherDuties = true;
         }
@@ -3771,35 +3787,6 @@ function resetForm() {
     closeAllOptionsShelves();
 }
 
-/**
- * **INCOMPLETE** Display a printable version of the calculator page.
- */
-function showPrintView() {
-    $("body").css("background-color", "#FFF");
-    $("body").css("color", "#000");
-    $(".row").hide();
-    let selectedDate = $("#week-commencing-date").datepicker("getDate");
-    let printViewDiv = document.createElement("div");
-    printViewDiv.id = "printViewDiv";
-    printViewDiv.innerHTML = "<h3>Fortnight Commencing " + selectedDate.getDate() + "/" + (selectedDate.getMonth() + 1) + "/" + selectedDate.getFullYear() +  "</h3>";
-    
-    let shiftBox = document.createElement("div");
-    let resultBox = document.createElement("div");
-
-    let shiftTable = document.createElement("table");
-    let shiftTableTopRow = document.createElement("thead");
-    let shiftTableTitle = document.createElement("td");
-    shiftTableTitle.textContent = "Shift Details";
-    shiftTableTopRow.appendChild(shiftTableTitle);
-
-    shiftTable.appendChild(shiftTableTopRow);
-    shiftBox.appendChild(shiftTable);
-
-    printViewDiv.appendChild(shiftBox);
-    printViewDiv.appendChild(resultBox);
-    document.body.appendChild(printViewDiv);
-}
-
 function importExportMenu() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.getElementById("helpboxTitle").textContent = "Import/Export Save Data";
@@ -3822,7 +3809,7 @@ function importExportMenu() {
 
     let exportButton = document.createElement("button");
     exportButton.classList.add("button", "export-button");
-    exportButton.textContent = "Export";
+    exportButton.innerHTML = "Export <i class='fas fa-arrow-circle-up'></i>";
     exportButton.addEventListener('click', () => {
         let saveData = JSON.stringify(localStorage);
         importExportTextArea.value = saveData;
@@ -3843,7 +3830,7 @@ function importExportMenu() {
 
     let importButton = document.createElement("button");
     importButton.classList.add("button", "import-button");
-    importButton.textContent = "Import";
+    importButton.innerHTML = "Import <i class='fas fa-arrow-circle-down'></i>";
     importButton.addEventListener('click', () => {
         let success = false;
         try {
@@ -4540,30 +4527,46 @@ function topHelpBoxPreset(presetName) {
 
 function populateGradeSelectList() {
     let dropdown = document.getElementById('pay-grade');
-    let newOption = (text, value) => {
+    dropdown.innerHTML = "<option value='none' disabled hidden>Select Grade</option>";
+    let weekCommencingDate = $("#week-commencing-date").datepicker("getDate").stripTime();
+    let newOption = (text, value, hidden) => {
         let elem = document.createElement("option");
         elem.setAttribute("value", value);
+        if(hidden) elem.setAttribute("hidden", "");
         elem.innerText = text;
         return elem ;
     }
+
     let gradeGroups = new Map();
 
     for(let grade in grades) {
+        let gradeStartDate = grades[grade].startDate;
+        let gradeEndDate = grades[grade].endDate;
+        if(!gradeStartDate) gradeStartDate = "2000-01-01";
+        if(!gradeEndDate) gradeEndDate = "2100-01-01";
+        let hidden = false;
+        if(new Date(gradeStartDate).stripTime() > weekCommencingDate || new Date(gradeEndDate).stripTime() <= weekCommencingDate) {
+            hidden = true;
+        }
+        let payCodeSuffix = grades[grade].payCode;
+        if(payCodeSuffix) payCodeSuffix = ` - ${payCodeSuffix}`;
         let group = grades[grade].group;
         if(group) {
             if(!gradeGroups.has(group)) {
                 gradeGroups.set(group, []);
             }
-            gradeGroups.get(group).push(newOption(grades[grade].name, grade));
+            gradeGroups.get(group).push(newOption(`${grades[grade].name}${payCodeSuffix}`, grade, hidden));
         }
         else {
             if(!gradeGroups.has("Other")) {
                 gradeGroups.set("Other", []);
             }
-            gradeGroups.get("Other").push(newOption(grades[grade].name, grade));
+            gradeGroups.get("Other").push(newOption(`${grades[grade].name}${payCodeSuffix}`, grade, hidden));
+            
         }
+
+        
     }
-    console.log(gradeGroups);
     for(const [groupName, groupGrades] of gradeGroups) {
         let optgroupElem = document.createElement("optgroup");
         optgroupElem.setAttribute("label", groupName);
