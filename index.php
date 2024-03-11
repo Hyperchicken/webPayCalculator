@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.40">
+    <link rel="stylesheet" href="style.css?v=1.41">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,9 +25,9 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.15"></script> 
-    <script src="rates.js?v=1.06"></script> 
-    <script src="grades.js?v=1.07"></script> 
-    <script src="scripts.js?v=1.40"></script> 
+    <script src="rates.js?v=1.07"></script> 
+    <script src="grades.js?v=1.08"></script> 
+    <script src="scripts.js?v=1.41"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -110,8 +110,9 @@
                 </table>
 
                 <div id="payClassWarning" class="data-entry-message-box start-hidden">
-                    <p><i class="fas fa-exclamation-triangle" style="color: yellow;"></i> Feedback helps make the calculator accurate.<br><a href="#" id="payclassWarningFeedbackLink">Click here to report errors and feedback.</a></p>
+                    <p><i class="fas fa-exclamation-triangle" style="color: orange;"></i> Selected grade not valid for the selected fortnight. Calculation may be inaccurate. Please check grade.</p>
                 </div>
+                
 
                 <div id="welcomeMessage" class="data-entry-message-box start-hidden">
                     <p>Welcome to the Pay Calculator!</p>
