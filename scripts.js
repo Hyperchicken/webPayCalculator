@@ -4532,7 +4532,10 @@ function populateGradeSelectList() {
     let newOption = (text, value, hidden) => {
         let elem = document.createElement("option");
         elem.setAttribute("value", value);
-        if(hidden) elem.setAttribute("hidden", "");
+        if(hidden) {
+            elem.setAttribute("hidden", "");
+            elem.setAttribute("disabled", "");
+        } 
         elem.innerText = text;
         return elem ;
     }
