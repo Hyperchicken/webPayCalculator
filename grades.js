@@ -24,7 +24,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesLoco,
         "afternoonShiftRates": afternoonShiftRatesLoco,
         "nightShiftRates": nightShiftRatesLoco,
-        "colour": "#4691db"
+        "colour": "#4691db",
+        "startDate": "",
+        "endDate": ""
     },
     "level1" : {
         "name" : "Train Driver Level 1",
@@ -44,7 +46,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesLoco,
         "afternoonShiftRates": afternoonShiftRatesLoco,
         "nightShiftRates": nightShiftRatesLoco,
-        "colour": "rgb(114, 99, 191)"
+        "colour": "rgb(114, 99, 191)",
+        "startDate": "",
+        "endDate": ""
     },
     "trainee" : {
         "name" : "Trainee Driver",
@@ -64,7 +68,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesLoco,
         "afternoonShiftRates": afternoonShiftRatesLoco,
         "nightShiftRates": nightShiftRatesLoco,
-        "colour": "rgb(56, 149, 149)"
+        "colour": "rgb(56, 149, 149)",
+        "startDate": "",
+        "endDate": ""
     },
     "conversion" : {
         "name" : "Conversion Trainee Driver",
@@ -84,7 +90,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesLoco,
         "afternoonShiftRates": afternoonShiftRatesLoco,
         "nightShiftRates": nightShiftRatesLoco,
-        "colour": "rgb(207, 133, 50)"
+        "colour": "rgb(207, 133, 50)",
+        "startDate": "",
+        "endDate": ""
     },
     "so8" : {
         "name" : "Train Services Officer SO-8",
@@ -104,7 +112,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     "so9" : {
         "name" : "Train Services Officer SO-9",
@@ -124,7 +134,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     "so10" : {
         "name" : "Train Services Officer SO-10",
@@ -144,7 +156,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     "so11" : {
         "name" : "Train Services Officer SO-11",
@@ -164,7 +178,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     "so12" : {
         "name" : "Train Services Officer SO-12",
@@ -184,7 +200,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     "so13" : {
         "name" : "Train Services Officer SO-13",
@@ -204,7 +222,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "#606060"
+        "colour": "#606060",
+        "startDate": "",
+        "endDate": ""
     },
     //DAOS AND ROSTERS
     "dao" : {
@@ -225,7 +245,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(157, 29, 29)"
+        "colour": "rgb(157, 29, 29)",
+        "startDate": "",
+        "endDate": ""
     },
     "daoteamleader" : {
         "name": "Driver Allocation Officer Team Leader",
@@ -245,7 +267,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(157, 29, 29)"
+        "colour": "rgb(157, 29, 29)",
+        "startDate": "",
+        "endDate": ""
     },
     "driverrosters" : {
         "name": "Driver Rosters",
@@ -265,7 +289,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(157, 29, 29)"
+        "colour": "rgb(157, 29, 29)",
+        "startDate": "",
+        "endDate": ""
     },
     //STATIONS
     "traineeStationAssistant" : {
@@ -286,7 +312,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "stationAssistant" : {
         "name": "Station Assistant",
@@ -306,7 +334,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "stationOfficer" : {
         "name": "Station Officer",
@@ -326,7 +356,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "seniorStationOfficer" : {
         "name": "Senior Station Officer",
@@ -346,7 +378,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "traineeStationMaster" : {
         "name": "Trainee Station Master",
@@ -366,7 +400,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "stationMaster" : {
         "name": "Station Master",
@@ -386,7 +422,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     "seniorStationMaster" : {
         "name": "Senior Station Master",
@@ -406,14 +444,16 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "2024-03-10",
+        "endDate": ""
     },
     //Legacy Stations Grades - EBA 2019 and earlier
     "sac1y1" : {
         "name": "Station Assistant 1 Year 1",
         "shortname": "SA1 Yr1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -427,13 +467,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac1y2" : {
         "name": "Station Assistant 1 Year 2",
         "shortname": "SA1 Yr2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -447,13 +489,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac1y3" : {
         "name": "Station Assistant 1 Year 3",
         "shortname": "SA1 Yr3",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -467,13 +511,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac2y1" : {
         "name": "Station Assistant 2 Year 1",
         "shortname": "SA2 Yr1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -487,14 +533,16 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     }
     ,
     "sac2y2" : {
         "name": "Station Assistant 2 Year 2",
         "shortname": "SA2 Yr2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -508,14 +556,16 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     }
     ,
     "sac2y3" : {
         "name": "Station Assistant 2 Year 3",
         "shortname": "SA2 Yr3",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -529,13 +579,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac3y1" : {
         "name": "Station Assistant 3 Year 1",
         "shortname": "SA3 Yr1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -549,13 +601,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac3y2" : {
         "name": "Station Assistant 3 Year 2",
         "shortname": "SA3 Yr2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -569,13 +623,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "sac3y3" : {
         "name": "Station Assistant 3 Year 3",
         "shortname": "SA3 Yr3",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -589,13 +645,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "lsay1" : {
         "name": "Leading Station Assistant Year 1",
         "shortname": "LSA Yr1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -609,13 +667,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "lsay2" : {
         "name": "Leading Station Assistant Year 2",
         "shortname": "LSA Yr2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -629,13 +689,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "lsay3" : {
         "name": "Leading Station Assistant Year 3",
         "shortname": "LSA Yr3",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -649,13 +711,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesTPW,
         "afternoonShiftRates": afternoonShiftRatesTPW,
         "nightShiftRates": nightShiftRatesTPW,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc1d1" : {
         "name": "Station Officer 1 Div 1",
         "shortname": "SO1 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -669,13 +733,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc1d2" : {
         "name": "Station Officer 1 Div 2",
         "shortname": "SO1 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -689,13 +755,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc2d1" : {
         "name": "Station Officer 2 Div 1",
         "shortname": "SO2 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -709,13 +777,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc2d2" : {
         "name": "Station Officer 2 Div 2",
         "shortname": "SO2 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -729,13 +799,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc3d1" : {
         "name": "Station Officer 3 Div 1",
         "shortname": "SO3 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -749,13 +821,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "soc3d2" : {
         "name": "Station Officer 3 Div 2",
         "shortname": "SO3 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -769,13 +843,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc4d1" : {
         "name": "Station Master 4 Div 1",
         "shortname": "SM4 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -789,13 +865,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc4d2" : {
         "name": "Station Master 4 Div 2",
         "shortname": "SM4 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -809,13 +887,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc5d1" : {
         "name": "Station Master 5 Div 1",
         "shortname": "SM5 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -829,13 +909,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc5d2" : {
         "name": "Station Master 5 Div 2",
         "shortname": "SM5 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -849,13 +931,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc6d1" : {
         "name": "Station Master 6 Div 1",
         "shortname": "SM6 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -869,14 +953,16 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     }
     ,
     "smc6d2" : {
         "name": "Station Master 6 Div 2",
         "shortname": "SM6 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -890,13 +976,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc7d1" : {
         "name": "Station Master 7 Div 1",
         "shortname": "SM7 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -910,13 +998,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc7d2" : {
         "name": "Station Master 7 Div 2",
         "shortname": "SM7 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -930,13 +1020,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc8d1" : {
         "name": "Station Master 8 Div 1",
         "shortname": "SM8 Div1",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -950,13 +1042,15 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     },
     "smc8d2" : {
         "name": "Station Master 8 Div 2",
         "shortname": "SM8 Div2",
         "payCode": "",
-        "group": "Stations (EBA 2019)",
+        "group": "Stations",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
         "ddo": true,
@@ -970,7 +1064,9 @@ const grades = {
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
-        "colour": "rgb(19, 49, 96)"
+        "colour": "rgb(19, 49, 96)",
+        "startDate": "",
+        "endDate": "2024-03-09"
     }
     
 }
