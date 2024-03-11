@@ -579,7 +579,7 @@ hr {
 
 .grid-backpay {
     display: grid;
-    grid-template-columns: auto 160px auto 140px auto;
+    grid-template-columns: 0 auto auto 120px 0;
     grid-gap: 3px;
     align-items: center;
 }
