@@ -61,7 +61,7 @@ function calculateBackpay() {
         let combinedTotalElement = document.createElement("p");
         
         firstIncreaseTotalElement.textContent = `First backpay (paid 26/03/24): $${firstIncreaseTotal.toFixed(2)} gross`;
-        secondIncreaseTotalElement.textContent = `Second backpay (paid 09/03/24): $${secondIncreaseTotal.toFixed(2)} gross`;
+        secondIncreaseTotalElement.textContent = `Second backpay (paid 09/04/24): $${secondIncreaseTotal.toFixed(2)} gross`;
         combinedTotalElement.textContent = `Combined backpay: $${combinedTotal.toFixed(2)} gross`;
     
         resultArea.appendChild(firstIncreaseTotalElement);
