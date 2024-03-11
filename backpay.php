@@ -61,7 +61,6 @@
                                 <ul><li>15/07/2023</li><li>13/01/2024</li><li>09/03/2024</li></ul>
                             <li>Enter the Gross amount from only the first payslip and the YTD Gross from all three payslips into the respective fields below.</li>
                             <li>I make no guarantees that the results will be accurate.</li>
-                            <li>In particular, this backpay calculator may be completely inaccurate for most Station Staff due to grade reclassifications.</li>
                         </ul>
                     </p>
                     <hr>
