@@ -3216,7 +3216,10 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
                             shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
                         }
-                        if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
+                        /*if(s.startHour < 18 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
+                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
+                        }*/
+                        if(s.startHour < 18 && (s.startHour + shiftPayGrade.ordinaryHours > 18 || (s.startHour + shiftPayGrade.ordinaryHours == 18 && Math.min(s.startMinute, s.endMinute) >= 30))) { //afternoon shift
                             shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                         }
                         if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
