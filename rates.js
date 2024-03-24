@@ -1,6 +1,6 @@
 /*
     rates.js - pay rates, allowances, tax rates and more.
-    version 1.08
+    version 1.09
 */
 
 //enterprise agreement pay rates
