@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.41">
+    <link rel="stylesheet" href="style.css?v=1.42">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -24,10 +24,10 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.15"></script> 
-    <script src="rates.js?v=1.07"></script> 
-    <script src="grades.js?v=1.08"></script> 
-    <script src="scripts.js?v=1.41"></script> 
+    <script src="publicHolidays.js?v1.16"></script> 
+    <script src="rates.js?v=1.08"></script> 
+    <script src="grades.js?v=1.09"></script> 
+    <script src="scripts.js?v=1.42"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -39,7 +39,6 @@
             <div class="dropdown-content">
                 <a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
-                <!--<a id="printViewMenuButton"><i class="fas fa-print fa-fw menu-icon"></i>Print View</a>-->
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
                 <a id="importExportMenuButton"><i class="fa fa-file-export fa-fw menu-icon"></i>Import/Export Data</a>

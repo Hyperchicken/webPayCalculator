@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.41";
-const calcLastUpdateDate = "11/03/2024";
+const calcVersion = "1.42";
+const calcLastUpdateDate = "21/03/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1127,7 +1127,7 @@ function updateOptionsButtons() {
             }
         }
         else { //if actual shift
-            if(s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDutiesShift || s.extendedShift || s.disruption) {
+            if(s.al || s.ojtShift || s.ph || s.sick || s.phc || s.wm || s.ddo || s.bonus || s.daoTeamLeader || s.relievingExpenses || s.suburbanGroupWorking || s.higherDutiesShift || s.extendedShift || s.disruption) {
                 if(s.sick) {
                     /*if(s.hoursDecimal > 4.0) {
                         setButton("Sick-Part", sickColour);
@@ -1141,6 +1141,9 @@ function updateOptionsButtons() {
                     else {
                         setButton("Sick-Part", sickColour);
                     }
+                }
+                if(s.al) {
+                    setButton("A/Leave", alColour);
                 }
                 if(s.ojtShift) {
                     setButton("OJT", ojtColour);
@@ -1528,120 +1531,82 @@ function generateOptionsShelfButtons(day) {
                 phSpan.appendChild(phRosterButton);
                 xPayButton.classList.remove("dual-button-r");
                 xPayButton.classList.add("dual-button-m");
-                if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
-                    xLeaveButton.style.background = "#808080ad";
-                    xLeaveButton.style.color = "black";
-                    if(shifts[day].phExtraPay) {
-                        phRosterButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = true;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                            saveToStorage("phor", "true");
-                        });
-                        xPayButton.style.background = "";
-                        phRosterButton.style.background = buttonBackgroundColour;
-                    }
-                    else if(shifts[day].phOffRoster) {
-                        xPayButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = true;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "true");
-                            saveToStorage("phor", "false");
-                        });
-                        xPayButton.style.background = buttonBackgroundColour;
-                        phRosterButton.style.background = "";
-                    }
+                if(shifts[day].phExtraPay) {
+                    xLeaveButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = false;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "false");
+                        saveToStorage("phor", "false");
+                    });
+                    phRosterButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = false;
+                        shifts[day].phOffRoster = true;
+                        reloadPageData();
+                        saveToStorage("phxp", "false");
+                        saveToStorage("phor", "true");
+                    });
+                    xLeaveButton.style.background = buttonBackgroundColour;
+                    xPayButton.style.background = "";
+                    phRosterButton.style.background = buttonBackgroundColour;
+                } else if(shifts[day].phOffRoster) {
+                    xPayButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = true;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "true");
+                        saveToStorage("phor", "false");
+                    });
+                    xLeaveButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = false;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "false");
+                        saveToStorage("phor", "false");
+                    });
+                    xLeaveButton.style.background = buttonBackgroundColour;
+                    xPayButton.style.background = buttonBackgroundColour;
+                    phRosterButton.style.background = "";
                 }
                 else {
-                    if(shifts[day].phExtraPay) {
-                        xLeaveButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                            saveToStorage("phor", "false");
-                        });
-                        phRosterButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = true;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                            saveToStorage("phor", "true");
-                        });
-                        xLeaveButton.style.background = buttonBackgroundColour;
-                        xPayButton.style.background = "";
-                        phRosterButton.style.background = buttonBackgroundColour;
-                    } else if(shifts[day].phOffRoster) {
-                        xPayButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = true;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "true");
-                            saveToStorage("phor", "false");
-                        });
-                        xLeaveButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                            saveToStorage("phor", "false");
-                        });
-                        xLeaveButton.style.background = buttonBackgroundColour;
-                        xPayButton.style.background = buttonBackgroundColour;
-                        phRosterButton.style.background = "";
-                    }
-                    else {
-                        xPayButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = true;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "true");
-                            saveToStorage("phor", "false");
-                        });
-                        phRosterButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = true;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                            saveToStorage("phor", "true");
-                        });
-                        xLeaveButton.style.background = "";
-                        xPayButton.style.background = buttonBackgroundColour;
-                        phRosterButton.style.background = buttonBackgroundColour;
-                    }
+                    xPayButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = true;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "true");
+                        saveToStorage("phor", "false");
+                    });
+                    phRosterButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = false;
+                        shifts[day].phOffRoster = true;
+                        reloadPageData();
+                        saveToStorage("phxp", "false");
+                        saveToStorage("phor", "true");
+                    });
+                    xLeaveButton.style.background = "";
+                    xPayButton.style.background = buttonBackgroundColour;
+                    phRosterButton.style.background = buttonBackgroundColour;
                 }
             }
             else {
-                if(day == 0 || day == 7) { //force extra pay on sunday as per EBA
+                if(shifts[day].phExtraPay) {
                     xLeaveButton.addEventListener("click", function() {
-                        //add tooltip functionality explaining reason you cant have extra leave on a sunday
+                        shifts[day].phExtraPay = false;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "false");
                     });
-                    xLeaveButton.style.background = "#808080ad";
-                    xLeaveButton.style.color = "black";
+                    xLeaveButton.style.background = buttonBackgroundColour;
                     xPayButton.style.background = "";
-                }
-                else {
-                    if(shifts[day].phExtraPay) {
-                        xLeaveButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = false;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "false");
-                        });
-                        xLeaveButton.style.background = buttonBackgroundColour;
-                        xPayButton.style.background = "";
-                    } else {
-                        xPayButton.addEventListener("click", function() {
-                            shifts[day].phExtraPay = true;
-                            shifts[day].phOffRoster = false;
-                            reloadPageData();
-                            saveToStorage("phxp", "true");
-                        });
-                        xLeaveButton.style.background = "";
-                        xPayButton.style.background = buttonBackgroundColour;
-                    }
+                } else {
+                    xPayButton.addEventListener("click", function() {
+                        shifts[day].phExtraPay = true;
+                        shifts[day].phOffRoster = false;
+                        reloadPageData();
+                        saveToStorage("phxp", "true");
+                    });
+                    xLeaveButton.style.background = "";
+                    xPayButton.style.background = buttonBackgroundColour;
                 }
             }
         }
@@ -2142,10 +2107,10 @@ function fieldToShift(field) {
 function updateShiftTable() {
     let times = timeField();
     let fortnightCommencingDate = $("#week-commencing-date").datepicker("getDate");
-    let shiftDate = new Date();
     for(let i = 0; i < times.length; i += 2) {
-        shiftDate.setDate(fortnightCommencingDate.getDate() + fieldToShift(i));
         let currentShift = fieldToShift(i);
+        let shiftDate = new Date(fortnightCommencingDate);
+        shiftDate.setDate(fortnightCommencingDate.getDate() + currentShift);
         if(times[i].value.length == 4 && times[i+1].value.length == 4 && times[i].checkValidity() && times[i+1].checkValidity()){
             shifts[currentShift].setShiftTimes(times[i].value, times[i+1].value);
         }
@@ -2611,10 +2576,10 @@ function updateDates() {
                 if(phIndex >= 0) {
                     dayOfWeekFields[i].classList.add("day-of-week-button");
                     dayOfWeekFields[i].innerHTML += "<p class='subtext'>" + publicHolidays[phIndex].name + " Public Holiday</p>";
-                    $(dayOfWeekFields[i]).on("click", () => {
+                    /*$(dayOfWeekFields[i]).on("click", () => {
                         topHelpBox(publicHolidays[phIndex].infoTitle, publicHolidays[phIndex].infoText);
                         window.location.replace("#topHelpDiv");
-                    });
+                    });*/
                 }
                 else {
                     dayOfWeekFields[i].classList.remove("day-of-week-button");
@@ -2807,7 +2772,6 @@ function updateShiftPayTable() {
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
-    if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade) ordinaryHours = 7.6; //override ord hours for driver part-time employees
     let ordinaryDays = payGrade.ordinaryDays; //default ordinary days of 10 worked shifts. Shifts over this number are considered overtime shifts.
     if(partTimeNonDriver) ordinaryDays = Infinity;
     let ddoFortnight = false;
@@ -2834,6 +2798,10 @@ function updateShiftPayTable() {
         else {
             shiftPayGrade = payGrade;
         }
+        let shiftOrdinaryHours = shiftPayGrade.ordinaryHours;
+        if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade){
+            shiftOrdinaryHours = 7.6;
+        }
         let rateTables = { //rates for current shift
             gradeRates: shiftPayGrade.payRates,
             earlyShiftRates:  shiftPayGrade.earlyShiftRates,
@@ -2858,28 +2826,28 @@ function updateShiftPayTable() {
             if(s.sick) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
                 if(s.ph) {
-                    shiftPay[day].push(new PayElement("phGaz", shiftPayGrade.ordinaryHours, day, rateTables, false, higherDuties));
+                    shiftPay[day].push(new PayElement("phGaz", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
                 else {
-                    shiftPay[day].push(new PayElement("sickFull", shiftPayGrade.ordinaryHours, day, rateTables, false, higherDuties));
+                    shiftPay[day].push(new PayElement("sickFull", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
             }
             else if(s.ph) { //public holiday
                 if(s.phOffRoster) {
                     //phOffRosterCount++;
                     if(getEmploymentType() != "parttime" && !s.al && !s.lsl && !s.phOffRosterNoPay) { //dont pay NON ROS PH to part time, when on leave, or when PH OFF No Pay is set
-                        shiftPay[day].push(new PayElement("nonRosPH", shiftPayGrade.ordinaryHours, day, rateTables, false, higherDuties));
+                        shiftPay[day].push(new PayElement("nonRosPH", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                     }
                 }
                 else {
                     deductAnnualLeaveShifts[weekNo(day)]++;
                     deductLSLShifts[weekNo(day)]++;
-                    shiftPay[day].push(new PayElement("phGaz", shiftPayGrade.ordinaryHours, day, rateTables, false, higherDuties));
+                    shiftPay[day].push(new PayElement("phGaz", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
             }
             else if(s.phc) { //public holiday credit leave
                 deductAnnualLeaveShifts[weekNo(day)]++;
-                shiftPay[day].push(new PayElement("phCredit", shiftPayGrade.ordinaryHours, day, rateTables, false, higherDuties));
+                shiftPay[day].push(new PayElement("phCredit", shiftOrdinaryHours, day, rateTables, false, higherDuties));
             }
             if(s.ddo && !ddoFortnight) {
                 deductAnnualLeaveShifts[weekNo(day)]++;
@@ -2914,8 +2882,8 @@ function updateShiftPayTable() {
             }
             normalHours = parseFloat((todayNormalHours + tomorrowNormalHours).toFixed(10));
 
-            if(todayPhHours + tomorrowPhHours > shiftPayGrade.ordinaryHours) {
-                phOvertimeHours = todayPhHours + tomorrowPhHours - shiftPayGrade.ordinaryHours;
+            if(todayPhHours + tomorrowPhHours > shiftOrdinaryHours) {
+                phOvertimeHours = todayPhHours + tomorrowPhHours - shiftOrdinaryHours;
                 tomorrowPhHours -= phOvertimeHours;
                 if(tomorrowPhHours < 0.0) {
                     todayPhHours += tomorrowPhHours;
@@ -2937,70 +2905,106 @@ function updateShiftPayTable() {
             if(getEmploymentType() == "parttime" && s.phOffRoster && s.ph) {
                 shiftPay[day].push(new PayElement("phGaz", shiftHours, day, rateTables, false, higherDuties));
             }
-            /*else if(s.sick && s.hoursDecimal <= 4) {
-                shiftPay[day].push(new PayElement("sickFull", shiftPayGrade.ordinaryHours, day, rateTables)); //if went of sick half-way through shift or earlier, pay sick full day.
-            }*/
-            else {
-                //Public Holidays
-                let normalPhWorkedHours = 0.0;
-                let sundayPhWorkedHours = 0.0;
-                if(todayPhHours > 0.0) {
-                    if (day == 0 || day == 7) {
-                        sundayPhWorkedHours += todayPhHours;
+            else if(s.al) {
+                shiftPay[day].push(new PayElement("annualLeave", shiftHours, day, rateTables));
+                shiftPay[day].push(new PayElement("leaveLoading", shiftHours, day, rateTables));
+            }
+            else {//Worked shift
+                //Public Holidays EBA 2019
+                if(s.date < new Date("2024-03-10").stripTime()){
+                    let normalPhWorkedHours = 0.0;
+                    let sundayPhWorkedHours = 0.0;
+                    if(todayPhHours > 0.0) {
+                        if (day == 0 || day == 7) {
+                            sundayPhWorkedHours += todayPhHours;
+                        }
+                        else {
+                            normalPhWorkedHours += todayPhHours;
+                        }
                     }
-                    else {
+                    if(tomorrowPhHours > 0.0) {
+                        if (day == 6 || day == 13) {
+                            sundayPhWorkedHours += tomorrowPhHours;
+                        }
+                        else {
+                            normalPhWorkedHours += tomorrowPhHours;
+                        }
+                    }
+                    if(normalPhWorkedHours > 0.0) {
+                        shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        if(partTimeNonDriver) {
+                            if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                                shiftPay[day].push(new PayElement("phPen150", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                            } 
+                            else if(s.ph && (day != 0 && day != 7)) {
+                                shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                                shiftPay[day].push(new PayElement("newPHCD", normalPhWorkedHours, day, rateTables));
+                            }
+                        }
+                        else {
+                            shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                            if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
+                                shiftPay[day].push(new PayElement("phXpay", shiftOrdinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                            } 
+                            else if(s.ph && (day != 0 && day != 7)) {
+                                shiftPay[day].push(new PayElement("newPHCD", shiftOrdinaryHours, day, rateTables));
+                            }
+                        }
+                    }
+                    if(sundayPhWorkedHours > 0.0) {
+                        shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        if(s.ph && tomorrowPh && (day == 6 || day == 13)) {
+                            shiftPay[day].push(new PayElement("phPen50", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        }
+                        else {
+                            shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        }
+                    }
+                    if(phOvertimeHours > 0.0) {
+                        shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift, s.higherDuties));
+                    }
+                }
+                else { //Public Holidays EBA 2023
+                    let normalPhWorkedHours = 0.0;
+                    if(todayPhHours > 0.0) {
                         normalPhWorkedHours += todayPhHours;
                     }
-                }
-                if(tomorrowPhHours > 0.0) {
-                    if (day == 6 || day == 13) {
-                        sundayPhWorkedHours += tomorrowPhHours;
-                    }
-                    else {
+                    if(tomorrowPhHours > 0.0) {
                         normalPhWorkedHours += tomorrowPhHours;
                     }
-                }
-                if(normalPhWorkedHours > 0.0) {
-                    shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    if(partTimeNonDriver) {
-                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
-                            shiftPay[day].push(new PayElement("phPen150", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
-                        } 
-                        else if(s.ph && (day != 0 && day != 7)) {
+                    if(normalPhWorkedHours > 0.0) {
+                        shiftPay[day].push(new PayElement("phWorked", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                        if(partTimeNonDriver) {
+                            if(s.ph && s.phExtraPay) {
+                                shiftPay[day].push(new PayElement("phPen150", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                            } 
+                            else if(s.ph) {
+                                shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
+                                shiftPay[day].push(new PayElement("newPHCD", normalPhWorkedHours, day, rateTables));
+                            }
+                        }
+                        else {
                             shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                            shiftPay[day].push(new PayElement("newPHCD", normalPhWorkedHours, day, rateTables));
+                            if(s.ph && s.phExtraPay) {
+                                shiftPay[day].push(new PayElement("phXpay", shiftOrdinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
+                            } 
+                            else if(s.ph) {
+                                shiftPay[day].push(new PayElement("newPHCD", shiftOrdinaryHours, day, rateTables));
+                            }
                         }
                     }
-                    else {
-                        shiftPay[day].push(new PayElement("phPen50", normalPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                        if(s.ph && s.phExtraPay && (day != 0 && day != 7)) {
-                            shiftPay[day].push(new PayElement("phXpay", shiftPayGrade.ordinaryHours, day, rateTables, s.ojtShift, higherDuties)); //payroll interpretation: XPay based on ordinary hours
-                        } 
-                        else if(s.ph && (day != 0 && day != 7)) {
-                            shiftPay[day].push(new PayElement("newPHCD", shiftPayGrade.ordinaryHours, day, rateTables));
-                        }
+                    if(phOvertimeHours > 0.0) {
+                        shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift, s.higherDuties));
                     }
-                }
-                if(sundayPhWorkedHours > 0.0) {
-                    shiftPay[day].push(new PayElement("phWorked", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    if(s.ph && tomorrowPh && (day == 6 || day == 13)) {
-                        shiftPay[day].push(new PayElement("phPen50", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    }
-                    else {
-                        shiftPay[day].push(new PayElement("phPen150", sundayPhWorkedHours, day, rateTables, s.ojtShift, higherDuties));
-                    }
-                }
-                if(phOvertimeHours > 0.0) {
-                    shiftPay[day].push(new PayElement("ot250", phOvertimeHours, day, rateTables, s.ojtShift, s.higherDuties));
                 }
 
                 //Normal hours
                 if(s.shiftWorkedNumber <= ordinaryDays && normalHours > 0.0){ 
                     if(s.rosteredShiftNumber > ordinaryDays) {
-                        shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, shiftPayGrade.ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
+                        shiftPay[day].push(new PayElement("overtime", Math.min(normalHours, shiftOrdinaryHours), day, rateTables, s.ojtShift, higherDuties));
                     }
                     else {
-                        shiftPay[day].push(new PayElement("normal", Math.min(normalHours, shiftPayGrade.ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
+                        shiftPay[day].push(new PayElement("normal", Math.min(normalHours, shiftOrdinaryHours), day, rateTables, s.ojtShift, higherDuties));
                     }
                 }
 
@@ -3016,20 +3020,20 @@ function updateShiftPayTable() {
                         sickHours = s.hoursDecimal;
                     }
                     else { //otherwise sick-part
-                        sickHours = shiftPayGrade.ordinaryHours - s.hoursDecimal;
+                        sickHours = shiftOrdinaryHours - s.hoursDecimal;
                     }
                     if(sickHours > 0.0) {
                         shiftPay[day].push(new PayElement("sickFull", sickHours, day, rateTables, false, higherDuties));
                     }
                 }
-                else if(shiftPayGrade.drivingGrade && s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < shiftPayGrade.ordinaryHours) {
-                    let guaranteeHours = shiftPayGrade.ordinaryHours - s.hoursDecimal;
+                else if(shiftPayGrade.drivingGrade && s.shiftWorkedNumber <= ordinaryDays && s.rosteredShiftNumber <= ordinaryDays && s.hoursDecimal < shiftOrdinaryHours) {
+                    let guaranteeHours = shiftOrdinaryHours - s.hoursDecimal;
                     shiftPay[day].push(new PayElement("guarantee", guaranteeHours, day, rateTables, s.ojtShift, higherDuties));
                 }
 
                 //Weekend Penalties
                 if(s.shiftWorkedNumber <= ordinaryDays) { //not OT shift only
-                    let penaltyTime = Math.min(shiftPayGrade.ordinaryHours, normalHours);
+                    let penaltyTime = Math.min(shiftOrdinaryHours, normalHours);
                     if(day == 5 || day == 12) { //friday shift
                         if(tomorrowNormalHours > 0.0) { //time into saturday
                             penaltyTime -= todayNormalHours;
@@ -3040,7 +3044,7 @@ function updateShiftPayTable() {
                     }
                     else if(day == 6 || day == 13) { //saturday shift
                         if(todayNormalHours > 0.0) { //saturday time
-                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, shiftPayGrade.ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
+                            shiftPay[day].push(new PayElement("wePen50", Math.min(todayNormalHours, shiftOrdinaryHours), day, rateTables, s.ojtShift, higherDuties));
                         }
                         penaltyTime -= todayNormalHours;
                         if(tomorrowNormalHours > 0.0 && penaltyTime > 0.0) { //sunday time
@@ -3049,7 +3053,7 @@ function updateShiftPayTable() {
                     }
                     else if(day == 0 || day == 7) { //sunday
                         if(todayNormalHours > 0.0) { //sunday time
-                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, shiftPayGrade.ordinaryHours), day, rateTables, s.ojtShift, higherDuties));
+                            shiftPay[day].push(new PayElement("wePen100", Math.min(todayNormalHours, shiftOrdinaryHours), day, rateTables, s.ojtShift, higherDuties));
                         }
                     }
                 }
@@ -3121,16 +3125,16 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
 
 
                 //Excess Hours Overtime
-                if((normalHours > shiftPayGrade.ordinaryHours) && s.shiftWorkedNumber <= ordinaryDays) {
-                    let overtimeHours = normalHours - shiftPayGrade.ordinaryHours;
+                if((normalHours > shiftOrdinaryHours) && s.shiftWorkedNumber <= ordinaryDays) {
+                    let overtimeHours = normalHours - shiftOrdinaryHours;
                     let todayOvertimeHours = 0.0;
                     let tomorrowOvertimeHours = 0.0;
                     let rost50hours = 0.0;
                     let rost100hours = 0.0;
                     let excessHoursThreshold = payGrade.excessHoursThreshold;
 
-                    if(todayNormalHours > shiftPayGrade.ordinaryHours){
-                        todayOvertimeHours = todayNormalHours - shiftPayGrade.ordinaryHours;
+                    if(todayNormalHours > shiftOrdinaryHours){
+                        todayOvertimeHours = todayNormalHours - shiftOrdinaryHours;
                     }
                     tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
                     if((day == 6 || day == 13) && tomorrowOvertimeHours > 0.0) {
@@ -3211,7 +3215,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                     else if([1,2,3,4,5,8,9,10,11,12].includes(day) && normalHours > 0.0) { 
                         shiftworkHours += normalHours;
                     }
-                    shiftworkHours = Math.round(Math.min(shiftworkHours, shiftPayGrade.ordinaryHours)); //capped at ordinary hours. rounded to nearest whole hour
+                    shiftworkHours = Math.round(Math.min(shiftworkHours, shiftOrdinaryHours)); //capped at ordinary hours. rounded to nearest whole hour
                     if(shiftworkHours > 0.0) {
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
                             shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
@@ -3226,6 +3230,11 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                             shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false));
                         }
                     }
+                }
+
+                //suburban allowance
+                if(shiftPayGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
+                shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
                 }
             }
         }
@@ -3242,10 +3251,6 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
         //suburban group working
         if(getSuburbanGroupWorking() && shiftPayGrade.suburbanGroupWorking && !(shiftHours <= 0 && (s.sick || s.al || s.lsl || s.phc))) {
             shiftPay[day].push(new PayElement("suburbanGroupWorking", 1, day, rateTables));
-        }
-        //suburban allowance
-        if(shiftPayGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
-            shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
         }
         //disruption allowance
         if(s.disruption && s.shiftWorkedNumber > 0 && shiftPayGrade.relievingExpenses) {

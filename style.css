@@ -697,17 +697,17 @@ div.day-of-week > p {
     background-color: #0004;
     padding: 0 1px 1px 3px;
     margin-left: -3px;
-    cursor: pointer;
+    /*cursor: pointer;*/
 }
 
-.day-of-week-button:hover {
+/*.day-of-week-button:hover {
     background-color: #0008;
 }
 
 .day-of-week-button:active:hover {
     background-color: #fff8;
     border-style: inset;
-}
+}*/
 
 .subtext {
     font-size: 0.65em;
