@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.43";
-const calcLastUpdateDate = "03/05/2024";
+const calcVersion = "1.44";
+const calcLastUpdateDate = "07/05/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2750,8 +2750,10 @@ function getEbaRate(date, rates) {
  * @returns {number} day index of the first shift that has a DDO or -1 if no DDO is found
  */
 function ddoWeek() {
-    for(let i = 0; i < shifts.length; i++) {
-        if(shifts[i].ddo) return i;
+    if(getEmploymentType() == "fulltime") {
+        for(let i = 0; i < shifts.length; i++) {
+            if(shifts[i].ddo) return i;
+        }
     }
     return -1;
 }
@@ -3189,7 +3191,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                 if(s.shiftWorkedNumber > ordinaryDays){
                     let ot150Hours = 0.0;
                     let ot200Hours = 0.0;
-                    if(day == 12 && tomorrowNormalHours > 0.0) { //friday with saturday time
+                    if(day == 12 && s.shiftWorkedNumber <= 12 && tomorrowNormalHours > 0.0) { //friday with saturday time
                         ot150Hours += todayNormalHours;
                         ot200Hours += tomorrowNormalHours;
                     }
