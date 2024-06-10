@@ -218,7 +218,7 @@ const grades = {
         "higherDutiesGroup": "drivers",
         "suburbanAllowance" :  false,
         "excessHoursThreshold": driverExcessHoursThreshold,
-        "payRates": OGL,
+        "payRates": OGM,
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
