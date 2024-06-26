@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.44";
-const calcLastUpdateDate = "07/05/2024";
+const calcVersion = "1.45";
+const calcLastUpdateDate = "10/06/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2801,7 +2801,7 @@ function updateShiftPayTable() {
             shiftPayGrade = payGrade;
         }
         let shiftOrdinaryHours = shiftPayGrade.ordinaryHours;
-        if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade){
+        if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade){ //ord hours override for part time drivers
             shiftOrdinaryHours = 7.6;
         }
         let rateTables = { //rates for current shift
@@ -3222,13 +3222,16 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
                             shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
                         }
-                        if(s.startHour < 18) { //afternoon shift
+                        /* if(s.startHour < 18) { //afternoon shift
                             if(s.hoursDecimal <= 8 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) {
                                 shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                             }
                             if(s.hoursDecimal > 8 && ((s.startHour + 8) > 18 || ((s.startHour + 8) == 18 && s.startMinute >= 30))) {
                                 shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                             }
+                        } */
+                        if(s.startHour < 18 && ((s.hoursDecimal > shiftOrdinaryHours && s.startHour + Math.abs(s.startMinute / 60) + shiftOrdinaryHours >= 18.5) || (s.hoursDecimal <= shiftOrdinaryHours && s.endHour48 > 18) || (s.hoursDecimal <= shiftOrdinaryHours && s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
+                            shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                         }
                         if((s.startHour >= 18 && s.startHour <= 23) || (s.startHour >= 0 && s.startHour <= 3)) { //night shift
                             shiftPay[day].push(new PayElement("nightShift", shiftworkHours, day, rateTables, false));
