@@ -250,7 +250,7 @@ const grades = {
         "endDate": ""
     },
     "daoteamleader" : {
-        "name": "Driver Allocation Officer Team Leader",
+        "name": "DAO Team Leader",
         "shortname": "DAO TL",
         "payCode": "OGI",
         "group": "DAOs and Rosters",
@@ -498,7 +498,7 @@ const grades = {
     "fc" : {
         "name": "Fleet Controller",
         "shortname": "Fleet",
-        "payCode": "OAL",
+        "payCode": "OAK",
         "group": "Train Controllers",
         "ordinaryDays": 10,
         "ordinaryHours": 8,
