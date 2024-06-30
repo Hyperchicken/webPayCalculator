@@ -2770,7 +2770,7 @@ function updateShiftPayTable() {
     }
     let partTimeNonDriver = false;
     if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) partTimeNonDriver = true;
-    let alShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
+    let alShifts = [[0,[]], [0,[]]]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
@@ -2820,7 +2820,8 @@ function updateShiftPayTable() {
         let shiftHours = s.hoursDecimal;
         if(shiftHours <= 0) { //if shift has zero hours
             if(s.al) { //annual leave
-                alShifts[weekNo(day)]++;
+                alShifts[weekNo(day)][0]++;
+                if(higherDuties) alShifts[weekNo(day)][1].push(shiftPayGrade);
             }
             if(s.lsl) {
                 lslShifts[weekNo(day)]++;
@@ -3222,14 +3223,6 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                         if(s.startHour == 4 || (s.startHour == 5 && s.startMinute <= 30)) { //early shift
                             shiftPay[day].push(new PayElement("earlyShift", shiftworkHours, day, rateTables, false));
                         }
-                        /* if(s.startHour < 18) { //afternoon shift
-                            if(s.hoursDecimal <= 8 && (s.endHour48 > 18 || (s.endHour48 == 18 && s.endMinute >= 30))) {
-                                shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
-                            }
-                            if(s.hoursDecimal > 8 && ((s.startHour + 8) > 18 || ((s.startHour + 8) == 18 && s.startMinute >= 30))) {
-                                shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
-                            }
-                        } */
                         if(s.startHour < 18 && ((s.hoursDecimal > shiftOrdinaryHours && s.startHour + Math.abs(s.startMinute / 60) + shiftOrdinaryHours >= 18.5) || (s.hoursDecimal <= shiftOrdinaryHours && s.endHour48 > 18) || (s.hoursDecimal <= shiftOrdinaryHours && s.endHour48 == 18 && s.endMinute >= 30))) { //afternoon shift
                             shiftPay[day].push(new PayElement("afternoonShift", shiftworkHours, day, rateTables, false));
                         }
@@ -3248,7 +3241,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
         //bonus pay
         if(s.bonus) {
             if(s.bonusHours > 0) {
-                shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours, day, rateTables)); 
+                shiftPay[day].push(new PayElement("bonusPayment", s.bonusHours, day, rateTables, false, higherDuties)); 
             }
         }
         //relieving expenses
@@ -3269,28 +3262,38 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
         }
     }
 
-    let rateTables = {
-        gradeRates: grades[getPayGrade()].payRates,
-        earlyShiftRates:  grades[getPayGrade()].earlyShiftRates,
-        afternoonShiftRates:  grades[getPayGrade()].afternoonShiftRates,
-        nightShiftRates:  grades[getPayGrade()].nightShiftRates
-    };
-
     //pay calculation: pass 2. determine and cap which days to pay annual and long service leave on.
     //AL capped at 5 days per week, with any sick or PH-Gaz day during annual leave to be paid in place of annual leave.
     //LSL capped at 5 days per week, with any PH-Gaz paid in place of LSL.
     for(let i = 0; i < 2; i++) {
         let endWeekDay = [7, 14];
-        if(alShifts[i] > 0) {
-            if(alShifts[i] > 5 && payGrade.drivingGrade) alShifts[i] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave (driving grades only)
-            if(alShifts[i] + deductAnnualLeaveShifts[i] > 5) {
-                alShifts[i] -= deductAnnualLeaveShifts[i]; //deduct any sick or PH-Gaz shifts from annual leave count
+        if(alShifts[i][0] > 0) {
+            if(alShifts[i][0] > 5 && payGrade.drivingGrade) alShifts[i][0] = 5; //cap at 5 annual leave shifts if more than 5 shifts are set to annual leave (driving grades only)
+            if(alShifts[i][0] + deductAnnualLeaveShifts[i] > 5) {
+                alShifts[i][0] -= deductAnnualLeaveShifts[i]; //deduct any sick or PH-Gaz shifts from annual leave count
             }
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
-                if(shifts[j].al && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i] > 0) {
-                    alShifts[i]--;
-                    shiftPay[j].push(new PayElement("annualLeave", payGrade.ordinaryHours, j, rateTables));
-                    shiftPay[j].push(new PayElement("leaveLoading", payGrade.ordinaryHours, j, rateTables));
+                if(shifts[j].al && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].sick && !shifts[j].phc && !shifts.ddo) && alShifts[i][0] > 0) {
+                    let rateTables = {
+                        gradeRates: payGrade.payRates,
+                        earlyShiftRates:  payGrade.earlyShiftRates,
+                        afternoonShiftRates:  payGrade.afternoonShiftRates,
+                        nightShiftRates:  payGrade.nightShiftRates
+                    };
+                    let higherDutiesFlag = false;
+                    let shiftOrdinaryHours = payGrade.ordinaryHours;
+                    if(alShifts[i][1].length > 0) { //higher duties on annual leave shift
+                        let higherDutiesGrade = alShifts[i][1].pop();
+                        higherDutiesFlag = true;
+                        shiftOrdinaryHours = higherDutiesGrade.ordinaryHours;
+                        rateTables.gradeRates = higherDutiesGrade.payRates;
+                        rateTables.earlyShiftRates = higherDutiesGrade.earlyShiftRates;
+                        rateTables.afternoonShiftRates = higherDutiesGrade.afternoonShiftRates;
+                        rateTables.nightShiftRates = higherDutiesGrade.nightShiftRates;
+                    }
+                    alShifts[i][0]--;
+                    shiftPay[j].push(new PayElement("annualLeave", shiftOrdinaryHours, j, rateTables, false, higherDutiesFlag));
+                    shiftPay[j].push(new PayElement("leaveLoading", shiftOrdinaryHours, j, rateTables, false, higherDutiesFlag));
                 }
             }
         }
@@ -3312,6 +3315,13 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
             }
         }
     }
+
+    let rateTables = {
+        gradeRates: grades[getPayGrade()].payRates,
+        earlyShiftRates:  grades[getPayGrade()].earlyShiftRates,
+        afternoonShiftRates:  grades[getPayGrade()].afternoonShiftRates,
+        nightShiftRates:  grades[getPayGrade()].nightShiftRates
+    };
 
     //pay calculation: DDO.
     if(payGrade.ddo && getEmploymentType() == "fulltime") {
