@@ -1897,8 +1897,8 @@ function generateOptionsShelfButtons(day) {
     bonusButton.setAttribute("class", "button bonus-button shelf-button");
     bonusTextbox.setAttribute("type", "text");
     bonusTextbox.setAttribute("inputmode", "decimal");
-    bonusTextbox.pattern = "\\d{1,2}(\\.\\d{0,2})?";
-    bonusTextbox.maxLength = "5";
+    bonusTextbox.pattern = "\\d{1,2}(\\.\\d{0,8})?";
+    bonusTextbox.maxLength = "10";
     bonusButton.appendChild(bonusButtonText);
     if(shifts[day].bonus) { //if bonus payment
         let bonusHrsText = document.createElement("a");
@@ -2770,7 +2770,7 @@ function updateShiftPayTable() {
     }
     let partTimeNonDriver = false;
     if(getEmploymentType() == "parttime" && !grades[getPayGrade()].drivingGrade) partTimeNonDriver = true;
-    let alShifts = [[0,[]], [0,[]]]; //[week1 count, week2 count]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
+    let alShifts = [[0,[]], [0,[]]]; //[[week1 count, [higherDutiesGrades]], [week2 count, [higherDutiesGrades]]  //shifts counted as annual leave. used to avoid using annual leave when sick or ph-gaz.
     let deductAnnualLeaveShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an annual leave shift should there be a full week of annual leave
     let lslShifts = [0, 0]; //[week1 count, week2 count]  //shifts counted as long service leave. used to avoid using lsl when ph-gaz.
     let deductLSLShifts = [0, 0]; //[week1, week2] //counters to keep track of shifts that would override an lsl shift should there be a full week of lsl
