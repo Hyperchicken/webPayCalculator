@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.45";
-const calcLastUpdateDate = "01/07/2024";
+const calcVersion = "1.45a";
+const calcLastUpdateDate = "02/07/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -3304,6 +3304,12 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
             }
             for(let j = endWeekDay[i] - 7; j < endWeekDay[i]; j++) {
                 if(shifts[j].lsl && (!(shifts[j].ph && !shifts[j].phOffRoster) && !shifts[j].phc && !shifts.ddo) && lslShifts[i] > 0) {
+                    let rateTables = {
+                        gradeRates: payGrade.payRates,
+                        earlyShiftRates:  payGrade.earlyShiftRates,
+                        afternoonShiftRates:  payGrade.afternoonShiftRates,
+                        nightShiftRates:  payGrade.nightShiftRates
+                    };
                     lslShifts[i]--;
                     if(shifts[j].lslHalfPay) {
                         shiftPay[j].push(new PayElement("longServiceLeaveHalf", payGrade.ordinaryHours / 2, j, rateTables)); //half ordinary hours
