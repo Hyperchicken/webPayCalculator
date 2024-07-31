@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.45a";
-const calcLastUpdateDate = "02/07/2024";
+const calcVersion = "1.46";
+const calcLastUpdateDate = "31/07/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -314,6 +314,7 @@ class PayElement {
             "afternoonShift",
             "nightShift",
             "metroSig2",
+            "suburbanAllowanceSupp",
             "relExp",
             "suburbanGroupWorking",
             "mealAllowanceWasted",
@@ -368,6 +369,7 @@ class PayElement {
             case "afternoonShift": payClassName = "A/Shift"; break;
             case "nightShift": payClassName = "N/Shift"; break;
             case "metroSig2": payClassName = "Metro Sig2"; break;
+            case "suburbanAllowanceSupp": payClassName = "Metro Sig2 Supp"; break;
             case "relExp": payClassName = "Rel-Exp"; break;
             case "suburbanGroupWorking": payClassName = "Sub Group"; break;
             case "mealAllowanceWasted": payClassName = "Meal Allow"; break;
@@ -594,6 +596,9 @@ class PayElement {
                 break;
             case "metroSig2":
                 rate += getEbaRate(shiftDate, suburbanAllowanceRates);
+                break;
+            case "suburbanAllowanceSupp":
+                rate += getEbaRate(shiftDate, suburbanAllowanceSuppRates);
                 break;
             case "relExp":
                 rate += getEbaRate(shiftDate, relievingExpensesRates);
@@ -3234,7 +3239,10 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
 
                 //suburban allowance
                 if(shiftPayGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
-                shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
+                    shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
+                    if(getEbaRate($("#week-commencing-date").datepicker("getDate").stripTime(), suburbanAllowanceSuppRates) > 0){ //only add supp allowance if rate > 0
+                        shiftPay[day].push(new PayElement("suburbanAllowanceSupp", 1, day, rateTables));
+                    }
                 }
             }
         }
