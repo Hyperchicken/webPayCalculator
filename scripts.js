@@ -3469,17 +3469,23 @@ function calculateTax(payElements) {
     }
 
     //etdsc membership
+    let etdscDateIndex = 0;
+    for(let i in etdscDeductionDate){
+        if(fortnightEndDate.stripTime().getTime() >= new Date(etdscDeductionDate[i]).stripTime().getTime()){
+            etdscDateIndex = i;
+        }
+    }
     if(etdscMembership == "full") {
-        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscFullMemberRate, 6));
-        postTaxDeduction -= etdscFullMemberRate;
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", etdscFullMemberRate[etdscDateIndex], 6));
+        postTaxDeduction -= etdscFullMemberRate[etdscDateIndex];
     }
     else if(etdscMembership == "half") {
-        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscHalfMemberRate, 6));
-        postTaxDeduction -= etdscHalfMemberRate;
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscHalfMemberRate[etdscDateIndex], 6));
+        postTaxDeduction -= etdscHalfMemberRate[etdscDateIndex];
     }
     else if(etdscMembership == "jobshare") {
-        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscJobshareMemberRate, 6));
-        postTaxDeduction -= etdscJobshareMemberRate;
+        taxPay.push(new TaxElement("Electric Train Drivers Social Club", -etdscJobshareMemberRate[etdscDateIndex], 6));
+        postTaxDeduction -= etdscJobshareMemberRate[etdscDateIndex];
     }
 
     //student loan

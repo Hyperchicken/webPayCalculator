@@ -107,9 +107,10 @@ const nightShiftRatesTPW =              [3.5639,       3.6173,       3.6716,    
 const disruptionAllowanceRates=         [0,            0,            0,            0,            0,            0,            0,            0.8610,       0.8696,       0.8914,       0.9003,       0.9228,       0.9320,       0.9553,       0.9649,       0.9890,       1.0390,       1.0598,       1.0810,       1.0999,       1.1192,       1.1388,       1.1587];
 
 //ETDSC fortnightly membership rates
-const etdscFullMemberRate = 6;
-const etdscHalfMemberRate = 3;
-const etdscJobshareMemberRate = 12;
+const etdscDeductionDate =      ["2014-07-01",  "2024-08-25"];
+const etdscFullMemberRate =     [6,             10];
+const etdscHalfMemberRate =     [3,             5];
+const etdscJobshareMemberRate = [12,            20];
 
 //compulsary super contribution rates
 const superRatesDate =  ["2014-07-01",  "2021-07-01",   "2022-07-01",   "2023-07-01",   "2024-07-01",   "2025-07-01"];
