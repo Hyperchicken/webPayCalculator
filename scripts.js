@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.46";
-const calcLastUpdateDate = "31/07/2024";
+const calcVersion = "1.47";
+const calcLastUpdateDate = "02/09/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -3240,9 +3240,6 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                 //suburban allowance
                 if(shiftPayGrade.suburbanAllowance && s.shiftWorkedNumber > 0) {
                     shiftPay[day].push(new PayElement("metroSig2", 1, day, rateTables));
-                    if(getEbaRate($("#week-commencing-date").datepicker("getDate").stripTime(), suburbanAllowanceSuppRates) > 0){ //only add supp allowance if rate > 0
-                        shiftPay[day].push(new PayElement("suburbanAllowanceSupp", 1, day, rateTables));
-                    }
                 }
             }
         }
