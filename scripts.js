@@ -7,7 +7,7 @@
 "use strict";
 
 //version
-const calcVersion = "1.48";
+const calcVersion = "1.48a";
 const calcLastUpdateDate = "25/09/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
@@ -2433,9 +2433,10 @@ function updateResults() {
             preTaxDeductionElement.textContent = "Pre-tax Allows/Deds: " + ((preTaxAllowsDeds < 0) ? "-$" : "$") + Math.abs(preTaxAllowsDeds).toFixed(2);
             resultArea.appendChild(preTaxDeductionElement);
 
+            let postTaxAllowsDeds = taxTotals.postTaxDeduction + taxTotals.postTaxAllowance;
             let postTaxDeductionElement = document.createElement("p");
             postTaxDeductionElement.classList.add("hours-worked");
-            postTaxDeductionElement.textContent = "Post-tax Allows/Deds: " + ((taxTotals.postTaxDeduction < 0) ? "-$" : "$") + Math.abs(taxTotals.postTaxDeduction).toFixed(2);
+            postTaxDeductionElement.textContent = "Post-tax Allows/Deds: " + ((postTaxAllowsDeds < 0) ? "-$" : "$") + Math.abs(postTaxAllowsDeds).toFixed(2);
             resultArea.appendChild(postTaxDeductionElement);
     
             let totalNetElement = document.createElement("h3");
@@ -3360,6 +3361,7 @@ function calculateTax(payElements) {
     let preTaxDeduction = 0;
     let preTaxAllowance = 0;
     let postTaxDeduction = 0;
+    let postTaxAllowance = 0;
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
 
     payElements.forEach(function(e){
@@ -3374,7 +3376,7 @@ function calculateTax(payElements) {
             preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
         }
         if(["mealAllowanceOT"].includes(e.payType)) { 
-            postTaxDeduction += parseFloat(e.value.toFixed(2)); //add allowances to post-tax deduction subtotal
+            postTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to post-tax allowance subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
     });
@@ -3547,7 +3549,7 @@ function calculateTax(payElements) {
 
     let netIncome = grossIncome + taxBalance + postTaxDeduction + preTaxDeduction;
     
-    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction, preTaxAllowance: preTaxAllowance};
+    return {postTaxDeduction: postTaxDeduction, taxBalance: taxBalance, netIncome: netIncome, taxableIncome: taxableIncome, preTaxDeduction: preTaxDeduction, preTaxAllowance: preTaxAllowance, postTaxAllowance: postTaxAllowance};
 }
 
 //Data storage
