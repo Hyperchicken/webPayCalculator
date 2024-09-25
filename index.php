@@ -27,7 +27,7 @@
     <script src="publicHolidays.js?v1.17"></script> 
     <script src="rates.js?v=1.13"></script> 
     <script src="grades.js?v=1.11"></script> 
-    <script src="scripts.js?v=1.47"></script> 
+    <script src="scripts.js?v=1.48"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 

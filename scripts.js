@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.47";
-const calcLastUpdateDate = "02/09/2024";
+const calcVersion = "1.48";
+const calcLastUpdateDate = "25/09/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -3363,7 +3363,7 @@ function calculateTax(payElements) {
     let taxFreeThreshold = true, stsl = false, etdscMembership, superSalSac = 0, superSalSacPercent = false, novatedLeasePreTax = 0, novatedLeasePostTax = 0, additionalTaxWithheld = 0, additionalTaxWithheldPercent = false;
 
     payElements.forEach(function(e){
-        if(!["mealAllowanceWasted"].includes(e.payType)) { //all except wasted meal added to taxable income
+        if(!["mealAllowanceWasted", "mealAllowanceOT"].includes(e.payType)) { //all except wasted meal added to taxable income
             taxableIncome += parseFloat(e.value.toFixed(2));
         }
         /*else {
@@ -3373,7 +3373,7 @@ function calculateTax(payElements) {
         if(["earlyShift", "afternoonShift", "nightShift", "metroSig2", "mealAllowanceWasted", "leaveLoading"].includes(e.payType)) {
             preTaxAllowance += parseFloat(e.value.toFixed(2)); //add allowances to pre-tax allowance subtotal
         }
-        if(["mealAllowanceOT"].includes(e.payType)) {
+        if(["mealAllowanceOT"].includes(e.payType)) { 
             postTaxDeduction += parseFloat(e.value.toFixed(2)); //add allowances to post-tax deduction subtotal
         }
         grossIncome += parseFloat(e.value.toFixed(2));
