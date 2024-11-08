@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.48a";
-const calcLastUpdateDate = "25/09/2024";
+const calcVersion = "1.49";
+const calcLastUpdateDate = "08/11/2024";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -2833,7 +2833,7 @@ function updateShiftPayTable() {
                 lslShifts[weekNo(day)]++;
             }
             if(s.sick) {
-                deductAnnualLeaveShifts[weekNo(day)]++;
+                if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
                 if(s.ph) {
                     shiftPay[day].push(new PayElement("phGaz", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
@@ -2849,17 +2849,17 @@ function updateShiftPayTable() {
                     }
                 }
                 else {
-                    deductAnnualLeaveShifts[weekNo(day)]++;
+                    if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
                     deductLSLShifts[weekNo(day)]++;
                     shiftPay[day].push(new PayElement("phGaz", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
             }
             else if(s.phc) { //public holiday credit leave
-                deductAnnualLeaveShifts[weekNo(day)]++;
+                if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phCredit", shiftOrdinaryHours, day, rateTables, false, higherDuties));
             }
             if(s.ddo && !ddoFortnight) {
-                deductAnnualLeaveShifts[weekNo(day)]++;
+                if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
                 ddoFortnight = true;
             }
         }
