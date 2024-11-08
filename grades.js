@@ -1,5 +1,5 @@
 //grades.js
-//version 1.11
+//version 1.13
 //defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
@@ -264,6 +264,50 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": 4,
         "payRates": OGI,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
+        "colour": "rgb(157, 29, 29)",
+        "startDate": "",
+        "endDate": ""
+    },
+    "rostersadministratordiv1" : {
+        "name": "Rosters Administrator Div 1",
+        "shortname": "RA div1",
+        "payCode": "OEN",
+        "group": "Train Crew Rostering",
+        "ordinaryDays": 10,
+        "ordinaryHours": 8,
+        "ddo": true,
+        "drivingGrade": false,
+        "suburbanGroupWorking": false,
+        "relievingExpenses": false,
+        "higherDutiesGroup": "rosters",
+        "suburbanAllowance":  false,
+        "excessHoursThreshold": 4,
+        "payRates": OEN,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
+        "colour": "rgb(157, 29, 29)",
+        "startDate": "",
+        "endDate": ""
+    },
+    "rostersadministratordiv2" : {
+        "name": "Rosters Administrator Div 2",
+        "shortname": "RA div2",
+        "payCode": "OEO",
+        "group": "Train Crew Rostering",
+        "ordinaryDays": 10,
+        "ordinaryHours": 8,
+        "ddo": true,
+        "drivingGrade": false,
+        "suburbanGroupWorking": false,
+        "relievingExpenses": false,
+        "higherDutiesGroup": "rosters",
+        "suburbanAllowance":  false,
+        "excessHoursThreshold": 4,
+        "payRates": OEO,
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
@@ -1436,6 +1480,8 @@ const higherDutiesGroups = {
         "so13"
     ],
     "rosters": [
+        "rostersadministratordiv1",
+        "rostersadministratordiv2",
         "dao",
         "daoteamleader",
         "driverrosters",
