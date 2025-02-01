@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.49">
+    <link rel="stylesheet" href="style.css?v=0.01">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,9 +25,9 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.18"></script> 
-    <script src="rates.js?v=1.14"></script> 
-    <script src="grades.js?v=1.13"></script> 
-    <script src="scripts.js?v=1.49"></script> 
+    <script src="rates.js?v=0.01"></script> 
+    <script src="grades.js?v=0.01"></script> 
+    <script src="scripts.js?v=0.01"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -86,10 +86,10 @@
                         </td>
                         <td>
                             <select name="employment-type" id="employment-type" oninput="updateGrade()">
-                                <option value="fulltime">Full-Time (with EDO)</option>
-                                <option value="fulltimenoedo">Full-Time (no EDO)</option>
+                                <option value="fulltime">Full-Time</option>
+                                <!--<option value="fulltimenoedo">Full-Time (no EDO)</option>
                                 <option value="parttime">Part-Time</option>
-                                <option value="jobsharefwa">Job-Share/FWA</option>
+                                <option value="jobsharefwa">Job-Share/FWA</option>-->
                             </select>
                         </td>
                     </tr>

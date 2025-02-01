@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 body {
-    background-color: rgb(17, 95, 167);
+    background-color: #522d6a;
     color: white;
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
@@ -553,7 +553,7 @@ hr {
 }
 
 .container {
-    background-color: #4691db;
+    background-color: #753f98;
     padding: 10px;
     border: 1px solid lightgrey;
     border-radius: 3px;

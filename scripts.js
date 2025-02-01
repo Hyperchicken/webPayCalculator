@@ -1,5 +1,5 @@
 /*
-    Web-based Pay Calculator by Petar Stankovic
+    Web-based Pay Calculator (V/Line) by Petar Stankovic
     Github Respository - https://github.com/Hyperchicken/webPayCalculator
     scripts.js - All of the calculator logic and page interactiveness is programmed into this file.
 */
@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.49";
-const calcLastUpdateDate = "08/11/2024";
+const calcVersion = "0.01";
+const calcLastUpdateDate = "01/02/2025";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -68,7 +68,7 @@ class Shift {
         this.ph = false; //public holiday
         this.phExtraPay = false; //ph extra pay. extra leave if false.
         this.phOffRoster = false; //PH off roster (rostered OFF on a PH). 'true' indicates shift converted to PH
-        this.phOffRosterNoPay = false; //Ph off roster where paid leave of absence is not paid.
+        this.phAvRoster = false; //Ph AV roster
         this.wm = false; //wasted meal
         this.sick = false; //sick full day
         this.sickPart = false; //worked but went home sick partway through shift
@@ -110,7 +110,7 @@ class Shift {
     }
 
     get ojtShift() {
-        if(getPayGrade() == "spot" && this.ojt) {
+        if(/*getPayGrade() == "spot" &&*/ this.ojt) {
             return true;
         }
         else {
@@ -1102,15 +1102,13 @@ function updateOptionsButtons() {
             }*/
             if(s.ph) {
                 if(s.phOffRoster) {
-                    if(s.phOffRosterNoPay) {
-                        setButton("PH No Pay", phColour);
-                    }
-                    else {
-                        setButton("PH-OFF", phColour);
-                    }
+                    setButton("PH-OFF", phColour);
+                }
+                else if(s.phAvRoster) {
+                    setButton("PH-AV", phColour);
                 }
                 else {
-                    setButton("PH-Gazette", phColour);
+                    setButton("PH-Roster", phColour);
                 }
                 offButton = false;
             }
@@ -1151,7 +1149,7 @@ function updateOptionsButtons() {
                     setButton("A/Leave", alColour);
                 }
                 if(s.ojtShift) {
-                    setButton("OJT", ojtColour);
+                    setButton("PDT", ojtColour);
                 }
                 if(s.phc && !grades[getPayGrade()].drivingGrade && getEmploymentType() == "parttime") {
                     setButton("PH&nbspCredit", phcColour);
@@ -1322,9 +1320,9 @@ function generateOptionsShelfButtons(day) {
         setSaveData("day" + day + name, value);
     }
 
-    //OJT button
+    //PDT (OJT in sparks land) button
     let ojtButton = document.createElement("a");
-    ojtButton.textContent = "OJT";
+    ojtButton.textContent = "PDT";
     ojtButton.setAttribute("class", "button ojt-button shelf-button");
     if(shifts[day].ojt) {//if OJT
         ojtButton.addEventListener("click", function(){
@@ -1334,7 +1332,7 @@ function generateOptionsShelfButtons(day) {
         });
         ojtButton.style.background = "";
     }
-    else {//if not OJT
+    else {//if not PDT
         ojtButton.addEventListener("click", function(){
             shifts[day].ojt = true;
             reloadPageData();
@@ -1520,7 +1518,7 @@ function generateOptionsShelfButtons(day) {
         });
         phButton.style.background = "";
         if(shifts[day].hoursDecimal > 0) {
-            let xLeaveButton = document.createElement("a");
+            /*let xLeaveButton = document.createElement("a");
             let xPayButton = document.createElement("a");
             let phRosterButton = document.createElement("a");
             xLeaveButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
@@ -1613,82 +1611,84 @@ function generateOptionsShelfButtons(day) {
                     xLeaveButton.style.background = "";
                     xPayButton.style.background = buttonBackgroundColour;
                 }
-            }
+            }*/
         }
         else { //if no hours
             let offRosterButton = document.createElement("a");
             let phRosterButton = document.createElement("a");
-            let offRosterNoPayButton = document.createElement("a");
-            phRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
-            offRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-m");
-            offRosterNoPayButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
-            phRosterButton.textContent = "Converted to PH";
+            let avRosterButton = document.createElement("a");
+            phRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-m");
+            offRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-l");
+            avRosterButton.setAttribute("class", "button ph-button shelf-button dual-button-r");
+            phRosterButton.textContent = "PH Roster";
             offRosterButton.textContent = "OFF Roster";
-            offRosterNoPayButton.textContent = "OFF No Pay";
-            phSpan.appendChild(phRosterButton);
+            avRosterButton.textContent = "AV Roster";
             phSpan.appendChild(offRosterButton);
-            phSpan.appendChild(offRosterNoPayButton);
+            phSpan.appendChild(phRosterButton);
+            phSpan.appendChild(avRosterButton);
             phDiv.appendChild(phSpan);
-            if(shifts[day].phOffRoster && !shifts[day].phOffRosterNoPay) {
+            if(shifts[day].phOffRoster) {
                 phRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = false;
-                    shifts[day].phOffRosterNoPay = false;
+                    shifts[day].phAvRoster = false;
                     reloadPageData();
                     saveToStorage("phor", "false");
+                    saveToStorage("phav", "false");
                 });
-                offRosterNoPayButton.addEventListener("click", function() {
-                    shifts[day].phOffRoster = true;
-                    shifts[day].phOffRosterNoPay = true;
+                avRosterButton.addEventListener("click", function() {
+                    shifts[day].phOffRoster = false;
+                    shifts[day].phAvRoster = true;
                     reloadPageData();
-                    saveToStorage("phor", "nopay");
+                    saveToStorage("phor", "false");
+                    saveToStorage("phav", "true");
                 });
                 phRosterButton.style.background = buttonBackgroundColour;
                 offRosterButton.style.background = "";
-                offRosterNoPayButton.style.background = buttonBackgroundColour;
+                avRosterButton.style.background = buttonBackgroundColour;
             } 
-            else if(shifts[day].phOffRoster && shifts[day].phOffRosterNoPay) {
+            else if(shifts[day].phAvRoster) {
                 phRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = false;
-                    shifts[day].phOffRosterNoPay = false;
+                    shifts[day].phAvRoster = false;
                     reloadPageData();
                     saveToStorage("phor", "false");
+                    saveToStorage("phav", "false");
                 });
                 offRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = true;
-                    shifts[day].phOffRosterNoPay = false;
+                    shifts[day].phAvRoster = false;
                     reloadPageData();
                     saveToStorage("phor", "true");
+                    saveToStorage("phav", "false");
                 });
                 phRosterButton.style.background = buttonBackgroundColour;
                 offRosterButton.style.background = buttonBackgroundColour;
-                offRosterNoPayButton.style.background = "";
+                avRosterButton.style.background = "";
             }
             else {
                 offRosterButton.addEventListener("click", function() {
                     shifts[day].phOffRoster = true;
-                    shifts[day].phOffRosterNoPay = false;
+                    shifts[day].phAvRoster = false;
                     reloadPageData();
                     saveToStorage("phor", "true");
+                    saveToStorage("phav", "false");
                 });
-                offRosterNoPayButton.addEventListener("click", function() {
-                    shifts[day].phOffRoster = true;
-                    shifts[day].phOffRosterNoPay = true;
+                avRosterButton.addEventListener("click", function() {
+                    shifts[day].phOffRoster = false;
+                    shifts[day].phAvRoster = true;
                     reloadPageData();
-                    saveToStorage("phor", "nopay");
+                    saveToStorage("phor", "false");
+                    saveToStorage("phav", "true");
                 });
                 phRosterButton.style.background = "";
                 offRosterButton.style.background = buttonBackgroundColour;
-                offRosterNoPayButton.style.background = buttonBackgroundColour;
+                avRosterButton.style.background = buttonBackgroundColour;
             }
         }
     }
     else {//if not PH
         phButton.addEventListener("click", function(){
             shifts[day].ph = true;
-            if(day == 0 || day == 7) {
-                shifts[day].phExtraPay = true;
-                saveToStorage("phxp", "true");
-            }
             reloadPageData();
             saveToStorage("ph", "true");
         });
@@ -1946,7 +1946,7 @@ function generateOptionsShelfButtons(day) {
     if(getPayGrade() == "dao") {
         shelf.appendChild(teamLeaderButton);
     }
-    if(getPayGrade() == "spot") {
+    if(getPayGrade() == "drivervl") {
         shelf.appendChild(ojtButton);
     }
     if(!grades[getPayGrade()].drivingGrade) { //not driving grade
@@ -2844,7 +2844,7 @@ function updateShiftPayTable() {
             else if(s.ph) { //public holiday
                 if(s.phOffRoster) {
                     //phOffRosterCount++;
-                    if(getEmploymentType() != "parttime" && !s.al && !s.lsl && !s.phOffRosterNoPay) { //dont pay NON ROS PH to part time, when on leave, or when PH OFF No Pay is set
+                    if(getEmploymentType() != "parttime" && !s.al && !s.lsl && !s.phAvRoster) { //dont pay NON ROS PH to part time, when on leave, or when PH OFF No Pay is set
                         shiftPay[day].push(new PayElement("nonRosPH", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                     }
                 }
@@ -3702,6 +3702,7 @@ function loadSavedData(datePrefix = "") {
         let phSave = getSaveData("day" + day + "ph");
         let phxpSave = getSaveData("day" + day + "phxp");
         let phorSave = getSaveData("day" + day + "phor");
+        let phavsave = getSaveData("day" + day + "phav");
         let alSave = getSaveData("day" + day + "al");
         let lslSave = getSaveData("day" + day + "lsl");
         let lslHalfPaySave = getSaveData("day" + day + "lslHalfPay");
@@ -3722,14 +3723,8 @@ function loadSavedData(datePrefix = "") {
         if(sickSave == "true") shifts[day].sick = true;
         if(phSave == "true") shifts[day].ph = true;
         if(phxpSave == "true") shifts[day].phExtraPay = true;
-        if(phorSave == "true") {
-            shifts[day].phOffRoster = true;
-            shifts[day].phOffRosterNoPay = false;
-        }
-        if(phorSave == "nopay") {
-            shifts[day].phOffRoster = true;
-            shifts[day].phOffRosterNoPay = true;
-        }
+        if(phorSave == "true") shifts[day].phOffRoster = true;
+        if(phavsave == "true") shifts[day].phAvRoster = true;
         if(alSave == "true") shifts[day].al = true;
         if(lslSave == "true") shifts[day].lsl = true;
         if(lslHalfPaySave == "true") shifts[day].lslHalfPay = true;
@@ -3784,6 +3779,7 @@ function resetForm() {
         setSaveData("day" + day + "ph", "");
         setSaveData("day" + day + "phxp", "");
         setSaveData("day" + day + "phor", "");
+        setSaveData("day" + day + "phav", "");
         setSaveData("day" + day + "al", "");
         setSaveData("day" + day + "lsl", "");
         setSaveData("day" + day + "lslHalfPay", "");
@@ -3804,7 +3800,7 @@ function resetForm() {
         shifts[day].ph = false;
         shifts[day].phExtraPay = false;
         shifts[day].phOffRoster = false;
-        shifts[day].phOffRosterNoPay = false;
+        shifts[day].phAvRoster = false;
         shifts[day].al = false;
         shifts[day].lsl = false;
         shifts[day].lslHalfPay = false;
