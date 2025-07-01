@@ -1,5 +1,5 @@
 //grades.js
-//version 1.13
+//version 1.14
 //defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
@@ -710,9 +710,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OBU,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)",
         "startDate": "2024-03-10",
         "endDate": ""
@@ -732,9 +732,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OBW,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)",
         "startDate": "2024-03-10",
         "endDate": ""
@@ -754,9 +754,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OCB,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)",
         "startDate": "2024-03-10",
         "endDate": ""
@@ -776,9 +776,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OCF,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)",
         "startDate": "2024-03-10",
         "endDate": ""
@@ -798,9 +798,9 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OCJ,
-        "earlyShiftRates": earlyShiftRatesTPW,
-        "afternoonShiftRates": afternoonShiftRatesTPW,
-        "nightShiftRates": nightShiftRatesTPW,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
         "colour": "rgb(19, 49, 96)",
         "startDate": "2024-03-10",
         "endDate": ""
