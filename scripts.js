@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.49";
-const calcLastUpdateDate = "08/11/2024";
+const calcVersion = "1.50";
+const calcLastUpdateDate = "1/1/2025";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -137,6 +137,24 @@ class Shift {
         let hoursFloat = 0.0;
         let hours = this.endHour - this.startHour;
         let minutes = this.endMinute - this.startMinute;
+        if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
+        if(minutes < 0) {
+            minutes += 60;
+            hours--;
+        }
+        hoursFloat = hours + (minutes/60);
+        return hoursFloat;
+    }
+
+    /**
+     * Calculate shift hours as a decimal number
+     * @returns {number} hours worked as decimal (ie 7.6 hours)
+     */
+    get hoursDecimalExtendedShift() {
+        let hoursFloat = 0.0;
+        let hours = this.endHour - this.startHour;
+        let minutes = this.endMinute - this.startMinute;
+        if(this.extendedShift && (minutes > 0 || hours > 0)) minutes += this.calcExtendedShiftMinutes();
         if(hours < 0 || (hours == 0 && minutes < 0)) hours += 24;
         if(minutes < 0) {
             minutes += 60;
@@ -2621,10 +2639,10 @@ function printShiftHours() {
             if(shifts[i].hoursDecimal >= 9.5) {
                 hoursField[i].classList.add("shift-hours-warning");
             } else hoursField[i].classList.remove("shift-hours-warning");
-            totalHours += shifts[i].hoursDecimal;
+            totalHours += shifts[i].hoursDecimalExtendedShift;
         }
     }
-    totalField.textContent = Math.floor(totalHours) + ":" + parseInt((totalHours % 1) * 60).toString().padStart(2, "0");
+    totalField.textContent = Math.floor(totalHours) + ":" + Math.trunc(Math.round((totalHours % 1) * 60)).toString().padStart(2, "0");
 }
 
 /**
@@ -2869,7 +2887,7 @@ function updateShiftPayTable() {
             }
         }
         else { //if shift has hours
-            //categorise hours into today/tomorrow and ph/nonPh
+            //categorise hours worked
             let todayNormalHours = 0.0;
             let tomorrowNormalHours = 0.0;
             let normalHours;
@@ -2877,6 +2895,8 @@ function updateShiftPayTable() {
             let tomorrowPhHours = 0.0;
             let phOvertimeHours = 0.0;
             let tomorrowPh;
+            let extShiftTodayHours = 0.0;
+            let extShiftTomorrowHours = 0.0;
 
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
@@ -2904,6 +2924,20 @@ function updateShiftPayTable() {
                     tomorrowPhHours = 0;
                 }
             }
+            
+            if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) {
+                extShiftTodayHours = s.extendedShiftMinutes/60;
+                if(s.endHour48 + s.endMinute/60 + extShiftTodayHours > 24) {
+                    if(s.endHour48 > 23) {
+                        extShiftTomorrowHours = extShiftTodayHours;
+                        extShiftTodayHours = 0;
+                    }
+                    else {
+                        extShiftTomorrowHours = (s.endHour48 + s.endMinute/60 + extShiftTodayHours) - 24;
+                        extShiftTodayHours -= extShiftTomorrowHours;
+                    }
+                }
+            }
 
             //sick non-driver part-timers: set working hours to zero.
             if((s.sick || s.phc) && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
@@ -2914,6 +2948,13 @@ function updateShiftPayTable() {
                 tomorrowPhHours = 0.0;
                 phOvertimeHours = 0.0;
             }
+            /* //debug tally and print worked hours to console
+            let workedHoursTally = 0.0;
+            let workedHours = todayNormalHours + tomorrowNormalHours + todayPhHours + tomorrowPhHours + phOvertimeHours + extShiftTodayHours + extShiftTomorrowHours;
+            workedHoursTally += workedHours;
+            console.log(`Day ${day}: ${workedHours}hrs`);
+            console.log(`Sub-total: ${workedHoursTally}hrs`);
+            */
 
             //part-time PH-roster calculation
             if(getEmploymentType() == "parttime" && s.phOffRoster && s.ph) {
@@ -3073,23 +3114,6 @@ function updateShiftPayTable() {
                 }
 
                 //extended shift hours for part-time non-driver
-                let extShiftTodayHours = 0.0;
-                let extShiftTomorrowHours = 0.0;
-                if(partTimeNonDriver && s.extendedShift && s.extendedShiftMinutes > 0) {
-                    extShiftTodayHours = s.extendedShiftMinutes/60;
-                    if(s.endHour48 + s.endMinute/60 + extShiftTodayHours > 24) {
-                        if(s.endHour48 > 23) {
-                            extShiftTomorrowHours = extShiftTodayHours;
-                            extShiftTodayHours = 0;
-                        }
-                        else {
-                            extShiftTomorrowHours = (s.endHour48 + s.endMinute/60 + extShiftTodayHours) - 24;
-                            extShiftTodayHours -= extShiftTomorrowHours;
-                        }
-                    }
-                }
-                
-                
                 if(extShiftTodayHours > 0.0 || extShiftTomorrowHours > 0.0) {
                     let ot150time = 0.0;
                     let ot200time = 0.0;
