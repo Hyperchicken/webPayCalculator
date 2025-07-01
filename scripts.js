@@ -2357,11 +2357,16 @@ function updateResults() {
         let taxCalculationEnabled = getSaveData("enableTaxCalc", false) == "yes" ? true : false;
         if(taxCalculationEnabled) {
             taxTotals = calculateTax(groupedElements);
-            //calculate compulsary super contribution
+            //calculate super guarantee contribution
             let nonOvertimePay = 0.0;
             let superRate = superRates[0];
+            let fortnightCommencingDate = new Date($("#week-commencing-date").datepicker("getDate"));
+            let fortnightEndDate = new Date(fortnightCommencingDate);
+            fortnightEndDate.setDate(fortnightEndDate.getDate() + 13);
+            let payDate = new Date(fortnightCommencingDate);
+            payDate.setDate(payDate.getDate() + 16);
             for(let i = superRates.length - 1; i >= 0; i--) {
-                if(selectedDate.stripTime().getTime() >= new Date(superRatesDate[i]).stripTime().getTime()){
+                if(payDate >= new Date(superRatesDate[i]).stripTime().getTime()){ //select super guarantee rate based on the pay date (following Tuesday)
                     superRate = superRates[i];
                     break;
                 }
@@ -2370,7 +2375,7 @@ function updateResults() {
                 if(["normal", "guarantee", "sickFull", "sickPart", "annualLeave", "phGaz", "phXpay", "phWorked", "edo", "phPen50", "phPen150", "wePen50", "wePen100", "rost+50", "rost+100", "phCredit", "earlyShift", "afternoonShift", "nightShift", "metroSig2", "leaveLoading", "longServiceLeaveFull", "longServiceLeaveHalf"].includes(e.payType)) nonOvertimePay += e.value;
             });
             if(nonOvertimePay > 0) {
-                taxPay.push(new TaxElement("Super Guarantee", nonOvertimePay * superRate, 1));
+                taxPay.push(new TaxElement(`Super Guarantee (${fortnightCommencingDate.getDate()}/${fortnightCommencingDate.getMonth()+1} to ${fortnightEndDate.getDate()}/${fortnightEndDate.getMonth()+1})`, nonOvertimePay * superRate, 1));
             }
             taxPay.sort(function(a, b){
                 return a.sortIndex - b.sortIndex;
