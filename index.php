@@ -39,7 +39,7 @@
             <div class="dropdown-content">
                 <a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
-                <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Form</a>
+                <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Fortnight</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
                 <a id="importExportMenuButton"><i class="fa fa-file-export fa-fw menu-icon"></i>Import/Export Data</a>
                 <!--<a id="bulkLeaveMenuButton"><i class="fas fa-calendar-alt fa-fw menu-icon"></i>Bulk Leave</a>-->
