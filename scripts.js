@@ -2830,9 +2830,6 @@ function updateShiftPayTable() {
             shiftPayGrade = payGrade;
         }
         let shiftOrdinaryHours = shiftPayGrade.ordinaryHours;
-        if(getEmploymentType() == "parttime" && grades[getPayGrade()].drivingGrade){ //ord hours override for part time drivers
-            shiftOrdinaryHours = 7.6;
-        }
         let rateTables = { //rates for current shift
             gradeRates: shiftPayGrade.payRates,
             earlyShiftRates:  shiftPayGrade.earlyShiftRates,
