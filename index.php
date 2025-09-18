@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.49">
+    <link rel="stylesheet" href="style.css?v=1.52">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -24,10 +24,10 @@
     <link rel="manifest" href="site.webmanifest">
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
-    <script src="publicHolidays.js?v1.18"></script> 
+    <script src="publicHolidays.js?v1.19"></script> 
     <script src="rates.js?v=1.14"></script> 
     <script src="grades.js?v=1.14"></script> 
-    <script src="scripts.js?v=1.50"></script> 
+    <script src="scripts.js?v=1.52"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
