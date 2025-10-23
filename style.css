@@ -585,6 +585,17 @@ hr {
     align-items: center;
 }
 
+.grid-customelementsform {
+    display: grid;
+    grid-template-columns: auto 150px;
+    row-gap: 8px;
+    column-gap: 3px;
+    align-items: center;
+    max-width: 320px;
+    margin-bottom: 10px;
+    padding-right: 20px;
+}
+
 .grid-taxform {
     display: grid;
     grid-template-columns: auto 150px;
@@ -644,6 +655,10 @@ hr {
     border-bottom-right-radius: 4px;
 }
 
+.input-group-addon.purple {
+    background-color: #a19bff;
+}
+
 .input-group-addon.inactive {
     background-color: #d0d0d0;
     color: #979797;
@@ -675,6 +690,19 @@ hr {
     border-radius: 4px;
     margin-right: 10px;
     padding: 0 5px;
+}
+
+.customelementsmenu-text-input {
+    height: 30px;
+    border-style: none;
+    border-radius: 4px;
+    padding: 0 5px;
+}
+
+.customelementsmenu-text-input.rate {
+    max-width: 120px;
+    justify-self: right;
+    text-align: center;
 }
 
 .time {

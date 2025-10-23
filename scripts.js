@@ -852,6 +852,10 @@ $(document).ready(function() {
         taxConfigurator();
         closeMenu();
     });
+    $("#customElementMenuButton").on("click", function(){
+        customElementMenu();
+        closeMenu();
+    });
     $("#changelogMenuButton").on("click", function(){
         //topHelpBoxPreset("changelog");
         topHelpBox("Changelog", "Loading...");
@@ -4142,6 +4146,124 @@ function bulkLeaveMenu() {
 }
 
 /**
+ * Creates a help box window for adding custom pay elements to the current fortnight
+ */
+function customElementMenu() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("helpboxTitle").textContent = "Custom Elements";
+    let contentElement = document.getElementById("helpboxContent");
+    contentElement.style.maxHeight = "unset"; //allow form to be full height (avoid scrollable behaviour)
+    contentElement.innerHTML = ""; //clear any existing content
+    let formHeader = document.createElement("div");
+    formHeader.classList.add("grid-1-3")
+    formHeader.innerHTML = "<em>Create custom elements for the current fortnight.</em><p><br>Manually add any ad-hoc payments and adjustments that may be on your payslip.</p><hr>";
+
+
+    let createCustomElementForm = (id) => {
+        let formGroup = document.createElement("div");
+        formGroup.classList.add("grid-1-3", "grid-customelementsform");
+
+        let heading = document.createElement("span");
+        heading.classList.add("grid-1-3", "bold");
+        heading.textContent = "Custom Pay Element";
+
+        let customElementNameLabel = document.createElement("span");
+        customElementNameLabel.textContent = "Element Name";
+        let customElementNameField = document.createElement("input");
+        customElementNameField.classList.add("customelementsmenu-text-input");
+
+        let customElementRateLabel = document.createElement("span");
+        customElementRateLabel.textContent = "Rate";
+        let customElementRateField = document.createElement("input");
+        customElementRateField.classList.add("customelementsmenu-text-input", "rate");
+        customElementRateField.value = getEbaRate($("#week-commencing-date").datepicker("getDate"), grades[getPayGrade()].payRates);
+
+        let customElementHoursLabel = document.createElement("span");
+        customElementHoursLabel.textContent = "Hours";
+        let customElementHoursField = document.createElement("div");
+        customElementHoursField.classList.add("input-group");
+        let customElementHoursFieldAddon = document.createElement("span");
+        customElementHoursFieldAddon.classList.add("input-group-addon", "dollar", "purple");
+        customElementHoursFieldAddon.textContent = "x";
+        let customElementHoursFieldInput = document.createElement("input");
+        customElementHoursFieldInput.id = id;
+        customElementHoursFieldInput.setAttribute("type", "text");
+        customElementHoursFieldInput.setAttribute("inputmode", "decimal");
+        customElementHoursFieldInput.setAttribute("placeholder", "0");
+        customElementHoursField.append(customElementHoursFieldAddon, customElementHoursFieldInput);
+
+        let customElementValueLabel = document.createElement("span");
+        customElementValueLabel.textContent = "Value";
+        let customElementValueField = document.createElement("div");
+        customElementValueField.classList.add("input-group");
+        let customElementValueFieldAddon = document.createElement("span");
+        customElementValueFieldAddon.classList.add("input-group-addon", "dollar");
+        customElementValueFieldAddon.textContent = "=";
+        let customElementValueFieldInput = document.createElement("input");
+        customElementValueFieldInput.id = id;
+        customElementValueFieldInput.setAttribute("type", "text");
+        customElementValueFieldInput.setAttribute("inputmode", "decimal");
+        customElementValueFieldInput.setAttribute("placeholder", "0");
+        customElementValueField.append(customElementValueFieldAddon, customElementValueFieldInput);
+
+        let customElementRemoveButton = document.createElement("button");
+        customElementRemoveButton.setAttribute("type", "button");
+        customElementRemoveButton.textContent = "Delete Element";
+
+        formGroup.append(
+            heading,
+            customElementNameLabel,
+            customElementNameField,
+            customElementRateLabel,
+            customElementRateField,
+            customElementHoursLabel,
+            customElementHoursField,
+            customElementValueLabel,
+            customElementValueField,
+            customElementRemoveButton
+        );
+        return formGroup;
+    }
+
+    let formArea = document.createElement("form");
+    formArea.id = "customElementFormArea";
+    formArea.classList.add("grid-taxform");
+
+    let customElementForm = createCustomElementForm();
+    formArea.appendChild(customElementForm);
+
+    formArea.appendChild(document.createElement("hr"));
+    
+    let buttonArea = document.createElement("div");
+    buttonArea.classList.add(); //add grid class
+    let addCustomElementButton = document.createElement("button");
+    addCustomElementButton.setAttribute("type", "button");
+    addCustomElementButton.textContent = "Add Pay Element";
+    let addCustomAllowanceDeductionButton = document.createElement("button");
+    addCustomAllowanceDeductionButton.setAttribute("type", "button");
+    addCustomAllowanceDeductionButton.textContent = "Add Allowance/Deduction";
+
+    buttonArea.append(addCustomElementButton, addCustomAllowanceDeductionButton);
+
+
+    //show helpbox
+    contentElement.appendChild(formHeader);
+    contentElement.appendChild(formArea);
+    contentElement.appendChild(buttonArea);
+    $("#topHelpDiv").addClass("show-top-helpbox");
+    if(helpboxContent.scrollHeight > helpboxContent.clientHeight) {
+        $(".scroll-indicator").show()
+    }
+    else {
+        $(".scroll-indicator").hide()
+    }
+
+    //check and load saved tax config data
+    //if(getSaveData(enableTaxCalcId, false) == "true") enableCheckboxInput.checked = true;
+    
+}
+
+/**
  * Creates a help box window with settings to confugure tax and net pay
  */
 function taxConfigurator() {
@@ -4371,13 +4493,21 @@ function taxConfigurator() {
 
     //fixed tax rate
     let fixedTaxRateId = "fixedTaxRate";
-    let fixedTaxRateLabel = document.createElement("span");
-    fixedTaxRateLabel.textContent = "Custom Fixed Tax Rate";
+    let fixedTaxRateLabel = document.createElement("div");
+    let fixedTaxRateLabelText = document.createElement("span");
+    fixedTaxRateLabelText.style.display = "inline-block";
+    fixedTaxRateLabelText.style.width = "100%";
+    fixedTaxRateLabelText.textContent = "Custom Fixed Tax Rate";
     let fixedTaxRateInput = createDollarPercentInput(fixedTaxRateId, false, true, true, "None");
     fixedTaxRateInput.addEventListener("input", function(){
         setSaveData(fixedTaxRateId, document.forms.taxSettings.elements.namedItem(fixedTaxRateId).value, false);
         updateResults();
     });
+    let fixedTaxRateLabelSubtext = document.createElement("span");
+    fixedTaxRateLabelSubtext.style.fontSize = "70%";
+    fixedTaxRateLabelSubtext.style.color = "#9db8c6"
+    fixedTaxRateLabelSubtext.textContent = "If unsure, leave BLANK";
+    fixedTaxRateLabel.append(fixedTaxRateLabelText, fixedTaxRateLabelSubtext);
     formArea.appendChild(fixedTaxRateLabel);
     formArea.appendChild(fixedTaxRateInput);
 
