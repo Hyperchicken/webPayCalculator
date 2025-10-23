@@ -3164,7 +3164,7 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
 
 
                 //Excess Hours Overtime
-                if((normalHours > shiftOrdinaryHours) && s.shiftWorkedNumber <= ordinaryDays) {
+                if(normalHours > shiftOrdinaryHours) {
                     let overtimeHours = normalHours - shiftOrdinaryHours;
                     let todayOvertimeHours = 0.0;
                     let tomorrowOvertimeHours = 0.0;
@@ -3214,9 +3214,13 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                         rost100Element = "ot200";
                     }
 
-                    if(rost50hours > 0.0) shiftPay[day].push(new PayElement(rost50Element, rost50hours, day, rateTables, s.ojtShift, higherDuties));
-                    if(rost100hours > 0.0) shiftPay[day].push(new PayElement(rost100Element, rost100hours, day, rateTables, s.ojtShift, higherDuties));
-                    if(overtimeHours > 2) shiftPay[day].push(new PayElement("mealAllowanceOT", 1, day, rateTables));
+                    if(s.shiftWorkedNumber <= ordinaryDays) {
+                        if(rost50hours > 0.0) shiftPay[day].push(new PayElement(rost50Element, rost50hours, day, rateTables, s.ojtShift, higherDuties));
+                        if(rost100hours > 0.0) shiftPay[day].push(new PayElement(rost100Element, rost100hours, day, rateTables, s.ojtShift, higherDuties));
+                    }
+                    if(overtimeHours >= 2) shiftPay[day].push(new PayElement("mealAllowanceOT", 1, day, rateTables));
+                    if(overtimeHours >= 5) shiftPay[day].push(new PayElement("mealAllowanceOT", 1, day, rateTables));
+                    if(overtimeHours >= 10) shiftPay[day].push(new PayElement("mealAllowanceOT", 1, day, rateTables));
                 }
 
                 /*//Shift Extended Overtime (part-time non-driving grades)
