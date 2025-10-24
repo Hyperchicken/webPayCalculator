@@ -443,6 +443,11 @@ input:checked + .small-slider:before {
     border-color: #3d1cb3;
 }
 
+.bonus-day-off-button {
+    background-color: #8bb31cff;
+    border-color: #8bb31cff;
+}
+
 .bonus-button {
     background-color: #e79e00;
     border-color: #e79e00;

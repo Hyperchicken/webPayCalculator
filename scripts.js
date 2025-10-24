@@ -26,6 +26,7 @@ const teamLeaderColour = "#e70082";
 const alColour = "#1c4ab3";
 const lslColour = "#601cb3";
 const phcColour = "#3d1cb3";
+const bonusDayOffColour = "#8bb31cff";
 const higherDutiesColour = "#00b391";
 const buttonBackgroundColour = "#5554";
 
@@ -326,6 +327,7 @@ class PayElement {
             "newPHCD",
             "nonRosPH",
             "phCredit",
+            "bonusDayOff",
             "bonusPayment",
             "disruption",
             "earlyShift",
@@ -395,6 +397,7 @@ class PayElement {
             case "disruption": payClassName = "Disruption"; break;
             case "bonusPayment": payClassName = "Bonus Pay"; break;
             case "phCredit": payClassName = "NewPH/lieu"; break;
+            case "bonusDayOff": payClassName = "Bonus Days"; break;
             case "newPHCD": payClassName = "New PHCD"; break;
             case "edo": payClassName = "EDO"; break;
             case "leaveLoading": payClassName = "Leave Ldg 20%"; break;
@@ -533,6 +536,9 @@ class PayElement {
             case "newPHCD": tooltipText = "<strong>New PHCD</strong>"
                 + "<p><em>New Publc Holiday Credit.</em> PH credits added to your leave balance as a result of choosing Extra Leave on a public holiday.</p>";
                 break;
+            case "bonusDayOff": tooltipText = "<strong>Bonus Days</strong>"
+                + "<p><em>Bonus Day Off.</em> Bonus Days off as per clause 3.37 of the 2023 EBA</p>";
+                break;
             case "edo": tooltipText = "<strong>EDO</strong>"
                 + "<p><em>Discretionary Day Off</em>. +4 hours paid on a DDO fortnight, -4 hours deducted otherwise.</p>"
                 break;
@@ -578,6 +584,7 @@ class PayElement {
             case "nonRosPH": 
             case "annualLeave":
             case "phCredit":
+            case "bonusDayOff":
             case "bonusPayment":
             case "longServiceLeaveFull":
             case "longServiceLeaveHalf":
@@ -1111,6 +1118,10 @@ function updateOptionsButtons() {
             }
             if(s.phc) {
                 setButton("PH&nbspCredit", phcColour);
+                offButton = false;
+            }
+            if(s.bonusDayOff && !grades[getPayGrade()].drivingGrade) {
+                setButton("Bonus Day Off", bonusDayOffColour);
                 offButton = false;
             }
             if(s.relievingExpenses && grades[getPayGrade()].relievingExpenses) {
@@ -1915,6 +1926,27 @@ function generateOptionsShelfButtons(day) {
         phcButton.style.background = buttonBackgroundColour;
     }
 
+    //Bonus Day Off button
+    let bonusDayOffButton = document.createElement("a");
+    bonusDayOffButton.textContent = "Bonus Day Off";
+    bonusDayOffButton.setAttribute("class", "button bonus-day-off-button shelf-button");
+    if(shifts[day].bonusDayOff) {//if phc
+        bonusDayOffButton.addEventListener("click", function(){
+            shifts[day].bonusDayOff = false;
+            reloadPageData();
+            saveToStorage("bonusDayOff", "false");
+        });
+        bonusDayOffButton.style.background = "";
+    }
+    else {//if not bonus day off
+        bonusDayOffButton.addEventListener("click", function(){
+            shifts[day].bonusDayOff = true;
+            reloadPageData();
+            saveToStorage("bonusDayOff", "true");
+        });
+        bonusDayOffButton.style.background = buttonBackgroundColour;
+    }
+
     //Bonus Payment button
     let bonusButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
     let bonusButtonText = document.createElement("a");
@@ -1993,8 +2025,11 @@ function generateOptionsShelfButtons(day) {
     }
     shelf.appendChild(phDiv);
     shelf.appendChild(alButton);
-    shelf.appendChild(phcButton);
     shelf.appendChild(lslSpan);
+    shelf.appendChild(phcButton);
+    if(!grades[getPayGrade()].drivingGrade) { //not driving grade
+        shelf.appendChild(bonusDayOffButton);
+    }
     shelf.appendChild(bonusButton);
 
     //set focus if any
@@ -2878,6 +2913,10 @@ function updateShiftPayTable() {
                     shiftPay[day].push(new PayElement("phGaz", shiftOrdinaryHours, day, rateTables, false, higherDuties));
                 }
             }
+            else if(s.bonusDayOff && !shiftPayGrade.drivingGrade) { //ops staff bonus day off leave
+                if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
+                shiftPay[day].push(new PayElement("bonusDayOff", shiftOrdinaryHours, day, rateTables, false, higherDuties));
+            }
             else if(s.phc) { //public holiday credit leave
                 if(s.al) deductAnnualLeaveShifts[weekNo(day)]++;
                 shiftPay[day].push(new PayElement("phCredit", shiftOrdinaryHours, day, rateTables, false, higherDuties));
@@ -3740,6 +3779,7 @@ function loadSavedData(datePrefix = "") {
         let lslSave = getSaveData("day" + day + "lsl");
         let lslHalfPaySave = getSaveData("day" + day + "lslHalfPay");
         let phcSave = getSaveData("day" + day + "phc");
+        let bonusDayOffSave = getSaveData("day" + day + "bonusDayOff");
         let relExpSave = getSaveData("day" + day + "relievingExpenses");
         let suburbanGroupWorkingSave = getSaveData("day" + day + "suburbanGroupWorking");
         let higherDutiesSave = getSaveData("day" + day + "higherDuties");
@@ -3768,6 +3808,7 @@ function loadSavedData(datePrefix = "") {
         if(lslSave == "true") shifts[day].lsl = true;
         if(lslHalfPaySave == "true") shifts[day].lslHalfPay = true;
         if(phcSave == "true") shifts[day].phc = true;
+        if(bonusDayOffSave == "true") shifts[day].bonusDayOff = true;
         if(relExpSave == "true") shifts[day].relievingExpenses = true;
         if(suburbanGroupWorkingSave == "true") shifts[day].suburbanGroupWorking = true;
         if(higherDutiesSave == "true") shifts[day].higherDuties = true;
