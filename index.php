@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.52">
+    <link rel="stylesheet" href="style.css?v=1.53">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -27,7 +27,7 @@
     <script src="publicHolidays.js?v1.19"></script> 
     <script src="rates.js?v=1.14"></script> 
     <script src="grades.js?v=1.14"></script> 
-    <script src="scripts.js?v=1.52"></script> 
+    <script src="scripts.js?v=1.53"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -38,7 +38,7 @@
             <a class="dropbtn" id="menuButton"><i class="fas fa-bars dropbtn-icon"></i></a>
             <div class="dropdown-content">
                 <!--<a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>-->
-                <a id="customElementMenuButton"><i class="fa fa-square-root-alt fa-fw menu-icon"></i>Custom Elements</a>
+                <!--<a id="customElementMenuButton"><i class="fa fa-square-root-alt fa-fw menu-icon"></i>Custom Elements</a>-->
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Fortnight</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
