@@ -2,7 +2,7 @@
     Database of Victorian public holidays used for public holiday detection feature.
 
     Version: 1.19
-    Public holdays from 2020 up to 2025
+    Public holdays from 2020 up to 2026
 
     Based on information provided in the Metro Enterprise Agreements and the following government website:
     https://www.business.vic.gov.au/victorian-public-holidays-and-daylight-saving/victorian-public-holidays
