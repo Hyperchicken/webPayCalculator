@@ -1,5 +1,5 @@
 //grades.js
-//version 1.14
+//version 1.15
 //defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
@@ -598,6 +598,28 @@ const grades = {
         "suburbanAllowance":  false,
         "excessHoursThreshold": opsExcessHoursThreshold,
         "payRates": OAK,
+        "earlyShiftRates": earlyShiftRatesSal,
+        "afternoonShiftRates": afternoonShiftRatesSal,
+        "nightShiftRates": nightShiftRatesSal,
+        "colour": "rgb(39, 121, 66)",
+        "startDate": "2024-03-10",
+        "endDate": ""
+    },
+    "snc" : {
+        "name": "Senior Network Controller",
+        "shortname": "SNC",
+        "payCode": "OGM",
+        "group": "METROL",
+        "ordinaryDays": 10,
+        "ordinaryHours": 8,
+        "ddo": true,
+        "drivingGrade": false,
+        "suburbanGroupWorking": false,
+        "relievingExpenses": false,
+        "higherDutiesGroup": "metrol",
+        "suburbanAllowance":  false,
+        "excessHoursThreshold": opsExcessHoursThreshold,
+        "payRates": OGM,
         "earlyShiftRates": earlyShiftRatesSal,
         "afternoonShiftRates": afternoonShiftRatesSal,
         "nightShiftRates": nightShiftRatesSal,
@@ -1501,6 +1523,7 @@ const higherDutiesGroups = {
         "tc3",
         "tc4",
         "fc",
+        "snc",
         "pids1",
         "pids2"
     ]
