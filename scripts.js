@@ -3863,6 +3863,7 @@ function resetForm() {
         setSaveData("day" + day + "lsl", "");
         setSaveData("day" + day + "lslHalfPay", "");
         setSaveData("day" + day + "phc", "")
+        setSaveData("day" + day + "bonusDayOff", "");
         setSaveData("day" + day + "relievingExpenses", "")
         setSaveData("day" + day + "suburbanGroupWorking", "")
         setSaveData("day" + day + "higherDuties", "")
@@ -3884,6 +3885,7 @@ function resetForm() {
         shifts[day].lsl = false;
         shifts[day].lslHalfPay = false;
         shifts[day].phc = false;
+        shifts[day].bonusDayOff = false;
         shifts[day].relievingExpenses = false;
         shifts[day].suburbanGroupWorking = false;
         shifts[day].higherDuties = false;
