@@ -1,5 +1,5 @@
 //grades.js
-//version 1.15
+//version 1.16
 //defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
