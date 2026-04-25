@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.55">
+    <link rel="stylesheet" href="style.css?v=1.56k">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -25,9 +25,9 @@
     <script src="jquery.js"></script> 
     <script src="jquery-ui.js"></script>
     <script src="publicHolidays.js?v1.19"></script> 
-    <script src="rates.js?v=1.15"></script> 
-    <script src="grades.js?v=1.15"></script> 
-    <script src="scripts.js?v=1.55"></script> 
+    <script src="rates.js?v=1.16"></script> 
+    <script src="grades.js?v=1.16"></script> 
+    <script src="scripts.js?v=1.56k"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -39,6 +39,7 @@
             <div class="dropdown-content">
                 <!--<a id="backpayMenuButton"><i class="fas fa-money-check-alt fa-fw menu-icon"></i>Backpay Calculator</a>-->
                 <!--<a id="customElementMenuButton"><i class="fa fa-square-root-alt fa-fw menu-icon"></i>Custom Elements</a>-->
+                <a id="toggleNotesButton"><i class="fas fa-eye-slash fa-fw menu-icon"></i>Hide Shift Notes</a>
                 <a id="helpMenuButton"><i class="fas fa-question-circle fa-fw menu-icon"></i>Help Guide</a>
                 <a id="resetMenuButton"><i class="fas fa-undo fa-fw menu-icon"></i>Clear Fortnight</a>
                 <a id="saveInfoMenuButton"><i class="fas fa-save fa-fw menu-icon"></i>Save Data Info</a>
@@ -137,10 +138,11 @@
 
                     <div class="day-of-week">Sunday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
-                    <input type="text" inputmode="decimal" id="sun1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(0)">
+                    <input type="text" inputmode="decimal" id="sun1-start" name="sun1-start" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(0)">
                     <input type="text" inputmode="decimal" id="sun1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(1)">
                     <div class="shift-hours" id="sun1-hours"></div>
                     <div class="shift-options-shelf" id="sun1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="sun1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Monday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -148,6 +150,7 @@
                     <input type="text" inputmode="decimal" id="mon1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(3)">
                     <div class="shift-hours" id="mon1-hours"></div>
                     <div class="shift-options-shelf" id="mon1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="mon1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Tuesday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -155,6 +158,7 @@
                     <input type="text" inputmode="decimal" id="tue1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(5)">
                     <div class="shift-hours" id="tue1-hours"></div>
                     <div class="shift-options-shelf" id="tue1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="tue1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Wednesday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -162,6 +166,7 @@
                     <input type="text" inputmode="decimal" id="wed1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(7)">
                     <div class="shift-hours" id="wed1-hours"></div>
                     <div class="shift-options-shelf" id="wed1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="wed1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Thursday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -169,6 +174,7 @@
                     <input type="text" inputmode="decimal" id="thu1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(9)">
                     <div class="shift-hours" id="thu1-hours"></div>
                     <div class="shift-options-shelf" id="thu1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="thu1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Friday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -176,6 +182,7 @@
                     <input type="text" inputmode="decimal" id="fri1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(11)">
                     <div class="shift-hours" id="fri1-hours"></div>
                     <div class="shift-options-shelf" id="fri1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="fri1-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Saturday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -183,6 +190,7 @@
                     <input type="text" inputmode="decimal" id="sat1-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(13)">
                     <div class="shift-hours" id="sat1-hours"></div>
                     <div class="shift-options-shelf" id="sat1-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="sat1-notes">[notes shelf]</div>
 
                     <div class="hr"></div>
                 
@@ -192,6 +200,7 @@
                     <input type="text" inputmode="decimal" id="sun2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(15)">
                     <div class="shift-hours" id="sun2-hours"></div>
                     <div class="shift-options-shelf" id="sun2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="sun2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Monday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -199,6 +208,7 @@
                     <input type="text" inputmode="decimal" id="mon2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(17)">
                     <div class="shift-hours" id="mon2-hours"></div>
                     <div class="shift-options-shelf" id="mon2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="mon2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Tuesday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -206,6 +216,7 @@
                     <input type="text" inputmode="decimal" id="tue2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(19)">
                     <div class="shift-hours" id="tue2-hours"></div>
                     <div class="shift-options-shelf" id="tue2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="tue2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Wednesday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -213,6 +224,7 @@
                     <input type="text" inputmode="decimal" id="wed2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(21)">
                     <div class="shift-hours" id="wed2-hours"></div>
                     <div class="shift-options-shelf" id="wed2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="wed2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Thursday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -220,6 +232,7 @@
                     <input type="text" inputmode="decimal" id="thu2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(23)">
                     <div class="shift-hours" id="thu2-hours"></div>
                     <div class="shift-options-shelf" id="thu2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="thu2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Friday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -227,6 +240,7 @@
                     <input type="text" inputmode="decimal" id="fri2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(25)">
                     <div class="shift-hours" id="fri2-hours"></div>
                     <div class="shift-options-shelf" id="fri2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="fri2-notes">[notes shelf]</div>
                 
                     <div class="day-of-week">Saturday</div>
                     <div class="shift-options"><a class="button options-button">...</a></div>
@@ -234,6 +248,7 @@
                     <input type="text" inputmode="decimal" id="sat2-end" placeholder="0000" maxlength="4" pattern="([0-1][0-9]|2[0-3])[0-5][0-9]" autocomplete="off" class="time" oninput="timeChanged(27)">
                     <div class="shift-hours" id="sat2-hours"></div>
                     <div class="shift-options-shelf" id="sat2-options">[options buttons]</div>
+                    <div class="shift-notes-shelf" id="sat2-notes">[notes shelf]</div>
 
                     <div class="day-of-week last-sunday">Sunday</div>
                     <div class="last-sunday grid-2-6">

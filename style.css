@@ -453,13 +453,39 @@ input:checked + .small-slider:before {
     border-color: #e79e00;
 }
 
+.notes-button {
+    background-color: #5b5b5b;
+    border-color: #5b5b5b;
+}
+
+.notes-button-active {
+    width: 100%;
+    display: block !important;
+}
+
+.notes-button-active > a {
+    display: block;
+}
+
+.notes-textbox {
+    width: 100%;
+    display: block;
+    resize: none;
+    field-sizing: content;
+    min-height: 3em;
+    max-height: 25vh;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
 .higher-duties-button {
     background-color: #00b391;
     border-color: #00b391;
     margin-right: 100px;
 }
 
-.bonus-button-text {
+.bonus-button-text, .notes-button-text {
     color: #fff;
 }
 
@@ -521,6 +547,22 @@ input:checked + .small-slider:before {
 
 .shift-options-shelf span {
     display: inline-block;
+}
+
+.shift-notes-shelf {
+    grid-column: 1 / 6;
+    display: none;
+    background: linear-gradient(0deg,#FFF2 0%, #FFF0 100%);
+    border-radius: 0 0 8px 8px;
+    padding: 0 10px 5px 10px;
+    margin: 0 -5px 5px -5px;
+}
+
+.shift-notes-shelf p {
+    white-space: pre-line;
+    font-size: 0.85em;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin: 0 0.75em;
 }
 
 .row {
@@ -1044,6 +1086,10 @@ li.dropdown {
     background-color: #555B;
     margin: 0 -8px;
     display: none;
+}
+
+.changelog > li {
+    margin-bottom: 1em;
 }
 
 #helpboxTitle {

@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.55";
-const calcLastUpdateDate = "12/02/2026";
+const calcVersion = "1.56";
+const calcLastUpdateDate = "25/04/2026";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -26,6 +26,7 @@ const teamLeaderColour = "#e70082";
 const alColour = "#1c4ab3";
 const lslColour = "#601cb3";
 const phcColour = "#3d1cb3";
+const notesColour = "#5b5b5b";
 const bonusDayOffColour = "#8bb31cff";
 const higherDutiesColour = "#00b391";
 const buttonBackgroundColour = "#5554";
@@ -89,6 +90,8 @@ class Shift {
         this.suburbanGroupWorking = false; //suburban group working allowance
         this.higherDuties = false; //working in higher duties
         this.higherDutiesGrade = ""; //higher duties grade. Shift will be paid at the selected grade's rates.
+        this.notes = false;
+        this.notesText = ""; 
         this.shiftWorkedNumber = 0;
         this.rosteredShiftNumber = 0;
     }    
@@ -694,6 +697,7 @@ let taxPay = [];
 
 let focusBonusTextbox; //used keep track of bonus-pay option button textbox to be selected when loading pay-options buttons.
 let focusExtendedShiftTextbox;
+let focusNotesTextbox;
 let day14ph = false; //day 14 public holiday
 for (let i = 0; i < 14; i++) shifts.push(new Shift(i)); //init shifts array with 0 length shifts
 let timeField = function() {return document.querySelectorAll(".time")}; //alias for time input boxes
@@ -825,17 +829,36 @@ $(document).ready(function() {
         }
         else {
             $(".dropbtn").addClass("active");
+            if(getSaveData("hideShiftNotes", false) == "true") {
+                document.getElementById("toggleNotesButton").firstElementChild.classList.remove("fa-eye-slash");
+                document.getElementById("toggleNotesButton").firstElementChild.classList.add("fa-eye");
+                document.getElementById("toggleNotesButton").childNodes[2].textContent = "Unhide Shift Notes";
+            }
+            else {
+                document.getElementById("toggleNotesButton").firstElementChild.classList.remove("fa-eye");
+                document.getElementById("toggleNotesButton").firstElementChild.classList.add("fa-eye-slash");
+                document.getElementById("toggleNotesButton").childNodes[2].textContent = "Hide Shift Notes";
+            }
         }
+    });
+    $("#toggleNotesButton").on("click", function(){
+        if(getSaveData("hideShiftNotes", false) == "true") {
+            setSaveData("hideShiftNotes", "false" , false);
+        }
+        else {
+            setSaveData("hideShiftNotes", "true" , false);
+        }
+        closeAllOptionsShelves();
+        updateOptionsButtons();
+        closeMenu();
     });
     $("#helpMenuButton").on("click", function(){
         topHelpBoxPreset("gettingStarted");
         closeMenu();
-        $(".dropbtn").removeClass("active");
     });
     $("#importExportMenuButton").on("click", function(){
         importExportMenu();
         closeMenu();
-        $(".dropbtn").removeClass("active");
     });
     $("#resetMenuButton").on("click", function(){
         if(confirm("Clear sign-on/off times and shift options for the current fortnight?")) {
@@ -1058,17 +1081,26 @@ function datepickerShiftDays(shiftValue) {
 
 /**
  * Update and refresh all shift options dropdown buttons with the appropriate colour, text and icons; based on the shift-options on each shift.
+ * Also updates any shift notes text display
  */
 function updateOptionsButtons() {
     let optionsButtons = $(".options-button");
     for(let i = 0; i < optionsButtons.length; i++) {
         let s = shifts[i];
         let buttonIcon = document.createElement("i");
-        if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //set appropriate button icon
-            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-up");
+        $(".shift-notes-shelf")[i].textContent = "";
+        $(".shift-notes-shelf:eq("+i+")").hide(); //hide notes shelf by default
+        if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //if options shelf open
+            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-up"); //options button arrow up
         }
-        else {
-            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-down");
+        else { //if options shelf closed
+            buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-down");//options button arrow up
+            if(getSaveData("hideShiftNotes", false) != "true" && shifts[i].notes && shifts[i].notesText.length > 0) { //show notes shelf only if notes are enabled and has text
+                let noteParagraph = document.createElement("p");
+                noteParagraph.textContent = shifts[i].notesText;
+                $(".shift-notes-shelf")[i].appendChild(noteParagraph);
+                $(".shift-notes-shelf:eq("+i+")").show(); 
+            }
         }
         let buttonText = document.createElement("span");
         optionsButtons[i].textContent = "";
@@ -1320,7 +1352,6 @@ function refreshOptionsShelf(day) {
 function closeAllOptionsShelves() {
     for(let i = 0; i < $(".shift-options-shelf").length; i++){ //close all shelves first
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) {
-            //$(".shift-options-shelf:eq("+i+")").slideUp(150, updateOptionsButtons);
             $(".shift-options-shelf:eq("+i+")").toggle();
             updateOptionsButtons();
         }
@@ -1496,6 +1527,7 @@ function generateOptionsShelfButtons(day) {
     extendedShiftTextbox.setAttribute("type", "text");
     extendedShiftTextbox.setAttribute("inputmode", "decimal");
     extendedShiftTextbox.setAttribute("placeholder", "0000");
+    extendedShiftTextbox.setAttribute("autocomplete", "off");
     extendedShiftTextbox.pattern = "([0-1][0-9]|2[0-3])[0-5][0-9]";
     extendedShiftTextbox.maxLength = "4";
     extendedShiftButton.appendChild(extendedShiftButtonText);
@@ -1994,6 +2026,52 @@ function generateOptionsShelfButtons(day) {
         });
         bonusButton.style.background = buttonBackgroundColour;
     }
+
+    //Shift Notes button
+    let notesButton = document.createElement("span"); //is a span instead of an anchor for provision of textbox
+    let notesButtonText = document.createElement("a");
+    let notesTextbox = document.createElement("textarea");
+    notesButtonText.textContent = "Notes";
+    if(getSaveData("hideShiftNotes", false) == "true") notesButtonText.textContent = "Notes (hidden)";
+    notesButtonText.setAttribute("class", "notes-button-text");
+    notesButton.setAttribute("class", "button notes-button shelf-button");
+    //notesTextbox.setAttribute("autocorrect", "off");
+    notesTextbox.setAttribute("autocomplete", "off");
+    notesTextbox.setAttribute("placeholder", "Write notes about your shift here.");
+    notesTextbox.classList.add("notes-textbox");
+    notesTextbox.maxLength = "2000";
+    notesButton.appendChild(notesButtonText);
+    if(shifts[day].notes) { //if notes enabled
+        notesTextbox.value = shifts[day].notesText;
+        notesButton.appendChild(notesTextbox);
+        notesButton.classList.add("notes-button-active");
+        notesButtonText.addEventListener("click", function(){
+            if(!notesTextbox.value.length) {
+                shifts[day].notes = false;
+                reloadPageData();
+                saveToStorage("shiftNotes", "false");
+            }
+            else {
+                closeAllOptionsShelves();
+            }
+        });
+        notesTextbox.addEventListener("input", function(){ 
+            shifts[day].notesText = this.value;
+            saveToStorage("shiftNotesText", this.value);
+            updateOptionsButtons();
+            updateShiftPayTable();
+            updateResults();
+        });
+    }
+    else {
+        notesButton.addEventListener("click", function(){
+            shifts[day].notes = true;
+            focusNotesTextbox = true;
+            reloadPageData();
+            saveToStorage("shiftNotes", "true");
+        });
+        notesButton.style.background = buttonBackgroundColour;
+    }
     
 
     //append buttons to shelf
@@ -2031,15 +2109,22 @@ function generateOptionsShelfButtons(day) {
         shelf.appendChild(bonusDayOffButton);
     }
     shelf.appendChild(bonusButton);
+    shelf.appendChild(notesButton);
 
     //set focus if any
     if(focusBonusTextbox) {
-        bonusTextbox.select();
+        bonusTextbox.focus();
+        //bonusTextbox.select();
         focusBonusTextbox = false;
     }
     if(focusExtendedShiftTextbox) {
-        extendedShiftTextbox.select();
+        extendedShiftTextbox.focus();
+        //extendedShiftTextbox.select();
         focusExtendedShiftTextbox = false;
+    }
+    if(focusNotesTextbox) {
+        notesTextbox.focus();
+        focusNotesTextbox = false;
     }
 }
 
@@ -3789,6 +3874,8 @@ function loadSavedData(datePrefix = "") {
         let bonusSave = getSaveData("day" + day + "bonus");
         let bonusHoursSave = getSaveData("day" + day + "bonusHours");
         let teamLeaderSave = getSaveData("day" + day + "teamLeader");
+        let notesSave = getSaveData("day" + day + "shiftNotes")
+        let notesTextSave = getSaveData("day" + day + "shiftNotesText")
 
         if(ojtSave == "true") shifts[day].ojt = true;
         if(ddoSave == "true") shifts[day].ddo = true;
@@ -3818,6 +3905,8 @@ function loadSavedData(datePrefix = "") {
         if(bonusSave == "true") shifts[day].bonus = true;
         if(bonusHoursSave) shifts[day].bonusHours = parseFloat(bonusHoursSave);
         if(teamLeaderSave == "true") shifts[day].teamLeader = true;
+        if(notesSave == "true") shifts[day].notes = true;
+        if(notesTextSave) shifts[day].notesText = notesTextSave;
     }
 
     //shift times save data
