@@ -8,7 +8,7 @@
 
 //version
 const calcVersion = "1.56";
-const calcLastUpdateDate = "25/04/2026";
+const calcLastUpdateDate = "26/04/2026";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -1090,6 +1090,7 @@ function updateOptionsButtons() {
         let buttonIcon = document.createElement("i");
         $(".shift-notes-shelf")[i].textContent = "";
         $(".shift-notes-shelf:eq("+i+")").hide(); //hide notes shelf by default
+        $("#notes-hidden-indicator").hide(); //hide notes hidden indicator by default
         if($(".shift-options-shelf:eq("+i+")").is(":visible")) { //if options shelf open
             buttonIcon.setAttribute("class", "button-icon fas fa-lg fa-angle-up"); //options button arrow up
         }
@@ -1101,6 +1102,9 @@ function updateOptionsButtons() {
                 $(".shift-notes-shelf")[i].appendChild(noteParagraph);
                 $(".shift-notes-shelf:eq("+i+")").show(); 
             }
+        }
+        if(getSaveData("hideShiftNotes", false)){ //if notes have been hidden, show the notes hidden indicator.
+            $("#notes-hidden-indicator").show();
         }
         let buttonText = document.createElement("span");
         optionsButtons[i].textContent = "";
@@ -3960,6 +3964,8 @@ function resetForm() {
         setSaveData("day" + day + "bonus", "");
         setSaveData("day" + day + "bonusHours", "");
         setSaveData("day" + day + "teamLeader", "");
+        setSaveData("day" + day + "shiftNotes", "");
+        setSaveData("day" + day + "shiftNotesText", "");
         
 
         shifts[day].ojt = false;
@@ -3982,6 +3988,8 @@ function resetForm() {
         shifts[day].bonus = false;
         shifts[day].bonusHours = 0.0;
         shifts[day].teamLeader = false;
+        shifts[day].notes = false;
+        shifts[day].notesText = "";
 
     }
     setSaveData("day14ph", "");

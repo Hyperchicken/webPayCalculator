@@ -614,6 +614,26 @@ hr {
     max-width: 420px;
 }
 
+.input-container-heading {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.input-container-heading h3 {
+    margin: 0;
+}
+
+.input-container-heading span {
+    align-self: center;
+    font-size: 0.8em;
+}
+
+.input-container-heading svg {
+    margin-left: 0.5em;
+    font-size: 0.9em;
+}
+
 .centre-text {
     text-align: center;
 }

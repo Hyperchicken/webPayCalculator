@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#333333">
     <title>Pay Calculator</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.56k">
+    <link rel="stylesheet" href="style.css?v=1.56">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -27,7 +27,7 @@
     <script src="publicHolidays.js?v1.19"></script> 
     <script src="rates.js?v=1.16"></script> 
     <script src="grades.js?v=1.16"></script> 
-    <script src="scripts.js?v=1.56k"></script> 
+    <script src="scripts.js?v=1.56"></script> 
     <script defer src="icons/font-awesome-all.js"></script> 
 </head>
 
@@ -69,8 +69,10 @@
     <div class="row">
         <div class="col-shift">
             <div class="container input-container">
-                <h3>Data Entry</h3>
-
+                <div class="input-container-heading">
+                    <h3>Data Entry</h3>
+                    <span id="notes-hidden-indicator" style="display:none;">Notes hidden <i class="fas fa-eye-slash fa-fw"></i></span>
+                </div>
                 <table class="pay-grade-container">
                     <tr>
                         <td>
