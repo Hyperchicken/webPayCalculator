@@ -1,5 +1,5 @@
 //grades.js
-//version 1.16
+//version 1.17
 //defines each grade and their parameters.
 const opsExcessHoursThreshold = 4
 const driverExcessHoursThreshold = 3
@@ -836,7 +836,7 @@ const grades = {
         "ordinaryHours": 8,
         "ddo": true,
         "drivingGrade": false,
-        "suburbanGroupWorking": true,
+        "suburbanGroupWorking": false,
         "relievingExpenses": true,
         "higherDutiesGroup": "ao",
         "suburbanAllowance":  false,
@@ -858,7 +858,7 @@ const grades = {
         "ordinaryHours": 8,
         "ddo": true,
         "drivingGrade": false,
-        "suburbanGroupWorking": true,
+        "suburbanGroupWorking": false,
         "relievingExpenses": true,
         "higherDutiesGroup": "ao",
         "suburbanAllowance":  false,
@@ -880,7 +880,7 @@ const grades = {
         "ordinaryHours": 8,
         "ddo": true,
         "drivingGrade": false,
-        "suburbanGroupWorking": true,
+        "suburbanGroupWorking": false,
         "relievingExpenses": true,
         "higherDutiesGroup": "ao",
         "suburbanAllowance":  false,
@@ -902,7 +902,7 @@ const grades = {
         "ordinaryHours": 8,
         "ddo": true,
         "drivingGrade": false,
-        "suburbanGroupWorking": true,
+        "suburbanGroupWorking": false,
         "relievingExpenses": true,
         "higherDutiesGroup": "ao",
         "suburbanAllowance":  false,
@@ -924,7 +924,7 @@ const grades = {
         "ordinaryHours": 8,
         "ddo": true,
         "drivingGrade": false,
-        "suburbanGroupWorking": true,
+        "suburbanGroupWorking": false,
         "relievingExpenses": true,
         "higherDutiesGroup": "ao",
         "suburbanAllowance":  false,
@@ -940,35 +940,14 @@ const grades = {
 }
 
 const higherDutiesGroups = {
-    "stations eba 2019": [
-        "sac1y1",
-        "sac1y2",
-        "sac1y3",
-        "sac2y1",
-        "sac2y2",
-        "sac2y3",
-        "sac3y1",
-        "sac3y2",
-        "sac3y3",
-        "lsay1",
-        "lsay2",
-        "lsay3",
-        "soc1d1",
-        "soc1d2",
-        "soc2d1",
-        "soc2d2",
-        "soc3d1",
-        "soc3d2",
-        "smc4d1",
-        "smc4d2",
-        "smc5d1",
-        "smc5d2",
-        "smc6d1",
-        "smc6d2",
-        "smc7d1",
-        "smc7d2",
-        "smc8d1",
-        "smc8d2"
+    "stations eba 2023": [
+        "traineeStationAssistant",
+        "stationAssistant",
+        "stationOfficer",
+        "seniorStationOfficer",
+        "traineeStationMaster",
+        "stationMaster",
+        "seniorStationMaster"
     ],
     "ao": [
        "aoy1",
