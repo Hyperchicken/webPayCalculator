@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.56a";
-const calcLastUpdateDate = "28/04/2026";
+const calcVersion = "1.56b";
+const calcLastUpdateDate = "29/04/2026";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
