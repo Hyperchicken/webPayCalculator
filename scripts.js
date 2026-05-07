@@ -7,8 +7,8 @@
 "use strict";
 
 //version
-const calcVersion = "1.56b";
-const calcLastUpdateDate = "29/04/2026";
+const calcVersion = "1.57";
+const calcLastUpdateDate = "07/05/2026";
 
 //message of the day. topHelpBox message that appears once per calcVersion.
 //set to blank string ("") to disable message of the day
@@ -3026,6 +3026,10 @@ function updateShiftPayTable() {
             let tomorrowPh;
             let extShiftTodayHours = 0.0;
             let extShiftTomorrowHours = 0.0;
+            let overtimeHours = 0.0;
+            let todayOvertimeHours = 0.0;
+            let tomorrowOvertimeHours = 0.0;
+            let tomorrowNonOvertimeHours = 0.0;
 
             if((day + 1) == 14) tomorrowPh = day14ph;
                 else tomorrowPh = shifts[day + 1].ph;
@@ -3067,6 +3071,15 @@ function updateShiftPayTable() {
                     }
                 }
             }
+
+            if(normalHours > shiftOrdinaryHours ) {
+                overtimeHours = normalHours - shiftOrdinaryHours;
+            }
+            if(todayNormalHours > shiftOrdinaryHours){
+                todayOvertimeHours = todayNormalHours - shiftOrdinaryHours;
+            }
+            tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
+            tomorrowNonOvertimeHours = tomorrowNormalHours - tomorrowOvertimeHours;
 
             //sick non-driver part-timers: set working hours to zero.
             if((s.sick || s.phc) && getEmploymentType() == "parttime" && !shiftPayGrade.drivingGrade) {
@@ -3293,17 +3306,10 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
 
                 //Excess Hours Overtime
                 if(normalHours > shiftOrdinaryHours) {
-                    let overtimeHours = normalHours - shiftOrdinaryHours;
-                    let todayOvertimeHours = 0.0;
-                    let tomorrowOvertimeHours = 0.0;
                     let rost50hours = 0.0;
                     let rost100hours = 0.0;
                     let excessHoursThreshold = payGrade.excessHoursThreshold;
 
-                    if(todayNormalHours > shiftOrdinaryHours){
-                        todayOvertimeHours = todayNormalHours - shiftOrdinaryHours;
-                    }
-                    tomorrowOvertimeHours = overtimeHours - todayOvertimeHours;
                     if((day == 6 || day == 13) && tomorrowOvertimeHours > 0.0) {
                         if(todayOvertimeHours > excessHoursThreshold) {
                             rost50hours = excessHoursThreshold;
@@ -3377,8 +3383,8 @@ a PH or weekend get the increased rate. Extended shift is OT pay code. Rostered 
                 //Shiftwork Allowances
                 if(s.shiftWorkedNumber <= ordinaryDays && day != 6 && day != 13) { //excess shifts and saturdays not eligible
                     let shiftworkHours = 0.0;
-                    if((day == 0 || day == 7) && tomorrowNormalHours > 0.0) { //sunday into monday
-                        shiftworkHours +=  tomorrowNormalHours;
+                    if((day == 0 || day == 7) && tomorrowNonOvertimeHours > 0.0) { //sunday into monday
+                        shiftworkHours +=  tomorrowNonOvertimeHours;
                     }
                     else if((day == 5 || day == 12) && todayNormalHours > 0.0) { //friday into saturday
                         shiftworkHours += todayNormalHours;
